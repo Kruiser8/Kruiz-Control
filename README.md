@@ -9,6 +9,11 @@ Kruiz Control enables a pseudo code approach to manage and automatically handle 
   <a href="https://github.com/Kruiser8/Kruiz-Control/blob/master/settings/Settings.md">Settings</a>
 </b></p>
 
+<p align="center"><i><b>
+  <a href="https://twitter.com/kruiser8">@Kruiser8</a> |
+  <a href="mailto:kruiser.twitch@gmail.com">kruiser.twitch@gmail.com</a>
+</b></i></p>
+
 ## Table of Contents
 
 - [Installation](#installation)
@@ -20,6 +25,12 @@ Kruiz Control enables a pseudo code approach to manage and automatically handle 
   + [triggers.txt](#triggerstxt)
   + [fileTriggers.txt and the triggers folder](#filetriggerstxt-and-the-triggers-folder)
   + [sounds folder](#sounds-folder)
+- [FAQ](#faq)
+  + [SLOBS Support](#slobs-support)
+  + [XSplit Support](#xsplit-support)
+  + [Support for Mixer and Youtube Alerts](#support-for-mixer-and-youtube-alerts)
+  + [Support for Mixer and Youtube Chat](#support-for-mixer-and-youtube-chat)
+  + [Will you support X](#will-you-support-x)
 - [Commissions](#commissions)
 - [Credits](#credits)
 
@@ -93,6 +104,27 @@ Delay 5
 In order to use a sound with `Play`, add the sound file to the *sounds* folder. The supported audio formats are mp3, wav, and ogg.
 
 ***
+
+## FAQ
+
+### SLOBS Support
+It may be possible to use SLOBS RPC-based API to provide similar functionality but this needs to be investigated.
+
+### XSplit Support
+XSplit does not provide a direct websocket interface. It may be possible to implement plugin that provides a websocket interface to connect with xsplit. If you know a way to achieve this, [please reach out](mailto:kruiser.twitch@gmail.com).
+
+### Support for Mixer and Youtube Alerts
+Definitely for Streamlabs. I just haven't had the time to implement it yet.
+
+More investigation time is needed to implement Youtube and Mixer StreamElements.
+
+### Support for Mixer and Youtube Chat
+Potentially if I can find the libraries to implement it. Again, if you know a way to achieve this, [please reach out](mailto:kruiser.twitch@gmail.com).
+
+### Will you support X
+Please reach out if you have any ideas or other questions that were not covered in the documentation.
+Email: [kruiser.twitch@gmail.com](mailto:kruiser.twitch@gmail.com)
+Twitter: [@Kruiser8](https://twitter.com/kruiser8)
 
 ## Commissions
 I do take commissions to implement custom functionality when necessary. Please reach out to [kruiser.twitch@gmail.com](mailto:kruiser.twitch@gmail.com) if you have a specific request.
