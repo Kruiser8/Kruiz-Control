@@ -119,7 +119,7 @@ class ChatHandler extends Handler {
       (permissions.includes('f') && flags.founder) ||
       (permissions.includes('m') && flags.mod) ||
       (permissions.includes('b') && flags.broadcaster) ||
-      (permissions.includes('u') && info && user === info)
+      (permissions === 'u' && info && user === info)
     ){
       return true;
     }

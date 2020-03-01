@@ -9,6 +9,20 @@ Kruiz Control enables a pseudo code approach to manage and automatically handle 
   <a href="https://github.com/Kruiser8/Kruiz-Control/blob/master/settings/Settings.md">Settings</a>
 </b></p>
 
+## Table of Contents
+
+- [Installation](#installation)
+  + [OBS Websocket](#obs-websocket)
+  + [Settings](#settings)
+  + [Add as Browser Source](#add-as-browser-source)
+- [Usage](#usage)
+  + [Pseudo Code Format](#pseudo-code-format)
+  + [triggers.txt](#triggerstxt)
+  + [fileTriggers.txt and the triggers folder](#filetriggerstxt-and-the-triggers-folder)
+  + [sounds folder](#sounds-folder)
+- [Commissions](#commissions)
+- [Credits](#credits)
+
 ***
 
 ## Installation
@@ -47,12 +61,12 @@ Setup your triggers inside of this file if you do not need actions to be run one
 As an example, if the below is in the _triggers.txt_ file, then both sounds can be played at the same time.
 
 #### triggers.txt
-```m
+```
 OnChannelPoint SHIKAKA
 Play 30 Shikaka.mp3
 
 OnCommand sbvm !intervention
-Play 45 Intervention.mp3
+Play 45 MashiahMusic__Kygo-Style-Melody.wav
 ```
 
 ### fileTriggers.txt and the triggers folder
@@ -76,4 +90,17 @@ Delay 5
 ```
 
 ### sounds folder
-In order to use a sound with `Play`, add the sound file to the sounds folder.
+In order to use a sound with `Play`, add the sound file to the *sounds* folder. The supported audio formats are mp3, wav, and ogg.
+
+***
+
+## Commissions
+I do take commissions to implement custom functionality when necessary. Please reach out to [kruiser.twitch@gmail.com](mailto:kruiser.twitch@gmail.com) if you have a specific request.
+
+***
+
+## Credits
+- [async](https://github.com/caolan/async) by Caolan McMahon (caolan)
+- [comfyjs](https://github.com/instafluff/ComfyJS) by Instafluff (instafluff)
+- [node-shlex](https://github.com/rgov/node-shlex) by Ryan Govostes (rgov)
+- [obs-websocket-js](https://github.com/haganbmj/obs-websocket-js) by Brendan Hagan (haganbmj)

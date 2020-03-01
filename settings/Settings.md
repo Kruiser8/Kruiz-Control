@@ -4,7 +4,9 @@ The following details each of the settings files that need to be filled out for 
 
 This script uses text files to improve the average user experience.
 
-- [Channel Points](#channelpoints)
+## Table of Contents
+
+- [Channel Points](#channel-points)
 - [Chat](#chat)
 - [OBS](#obs)
 - [StreamElements](#streamelements)
@@ -12,7 +14,7 @@ This script uses text files to improve the average user experience.
 
 ***
 
-## ChannelPoints
+## Channel Points
 
 ### user.txt
 Specify the twitch channel to watch for channel point redemptions.

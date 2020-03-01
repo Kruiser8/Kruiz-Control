@@ -2,11 +2,11 @@
  * Port of a subset of the features of CPython's shlex module, which provides a
  * shell-like lexer. Original code by Eric S. Raymond and other contributors.
  *
- * Ported to single js file by Kruiser8 from https://github.com/rgov/node-shlex
+ * Ported to single js file by Kruiser8
  *
  * Author: Ryan Govostes (rgov)
  * License: MIT
- * Repository: https://github.com/haganbmj/obs-websocket-js
+ * Repository: https://github.com/rgov/node-shlex
  */
 class Shlexer {
   constructor (string) {
