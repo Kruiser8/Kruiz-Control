@@ -115,7 +115,7 @@ OnCommand u kruiser8 !secret
 ------------ | -------------
 **Info** | Used to send a message to chat.
 **Format** | `Chat Send <message>`
-**Example** | `Chat Send Hello World`
+**Example** | `Chat Send "Hello World"`
 
 ***
 
@@ -174,7 +174,7 @@ Enables the ability to take interact with and respond to OBS.
 ------------ | -------------
 **Info** | Used to trigger a set of actions when a custom message is sent. Used to receive triggers from [OBS Send](#obssend).
 **Format** | `OnOBSCustomMessage <message>`
-**Example** | `OnOBSCustomMessage My Custom Message`
+**Example** | `OnOBSCustomMessage "My Custom Message"`
 
 ### Actions
 
