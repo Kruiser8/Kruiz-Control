@@ -16,7 +16,7 @@ Kruiz Control enables a pseudo code approach to manage and automatically handle 
 
 ## Table of Contents
 
-- [Getting Started](#getting-started)
+- [Setup Guide](#setup-guide)
 - [Installation](#installation)
   + [OBS Websocket](#obs-websocket)
   + [Settings](#settings)
