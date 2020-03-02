@@ -16,6 +16,7 @@ Kruiz Control enables a pseudo code approach to manage and automatically handle 
 
 ## Table of Contents
 
+- [Getting Started](#getting-started)
 - [Installation](#installation)
   + [OBS Websocket](#obs-websocket)
   + [Settings](#settings)
@@ -35,6 +36,14 @@ Kruiz Control enables a pseudo code approach to manage and automatically handle 
 - [Credits](#credits)
 
 ***
+
+## Setup Guide
+
+- Install the [OBS Websocket Plugin](https://github.com/Palakis/obs-websocket/releases).
+- Fill out [the settings files](https://github.com/Kruiser8/Kruiz-Control/blob/master/settings/Settings.md) in the settings folder.
+- Add the **index.html** to OBS as a browser source.
+- Type `!example` in your twitch chat. If your user responds with `Success! It worked!`, you're good to go!
+- Customize the _triggers.txt_ with your own triggers from the [the documentation](https://github.com/Kruiser8/Kruiz-Control/blob/master/js/Documentation.md).
 
 ## Installation
 
@@ -64,7 +73,7 @@ Add the **index.html** file as a browser source within your broadcast software. 
 ## Usage
 
 ### Pseudo Code Format
-For information on the pseudo code format, please see [the documentation](https://github.com/Kruiser8/Kruiz-Control/blob/master/js/Documentation.md)
+For information on the pseudo code format, please see [the documentation](https://github.com/Kruiser8/Kruiz-Control/blob/master/js/Documentation.md).
 
 ### triggers.txt
 Setup your triggers inside of this file if you do not need actions to be run one after another.
