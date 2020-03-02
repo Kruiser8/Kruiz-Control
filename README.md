@@ -43,7 +43,7 @@ Kruiz Control enables a pseudo code approach to manage and automatically handle 
 - Fill out [the settings files](https://github.com/Kruiser8/Kruiz-Control/blob/master/settings/Settings.md) in the settings folder.
 - Add the **index.html** to OBS as a browser source.
 - Type `!example` in your twitch chat. If your user responds with `Success! It worked!`, you're good to go!
-- Customize the _triggers.txt_ with your own triggers from the [the documentation](https://github.com/Kruiser8/Kruiz-Control/blob/master/js/Documentation.md).
+- Customize the _triggers.txt_ with your own triggers from [the documentation](https://github.com/Kruiser8/Kruiz-Control/blob/master/js/Documentation.md).
 
 ## Installation
 
