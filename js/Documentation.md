@@ -81,12 +81,16 @@ Oncommand !caseSensitive
 chat SEND "Triggers and Actions are case sensitive"
 ```
 
+***
+
 ### Quotes
 It is recommended to use quotes when providing multi-word arguments. For example,
 ```
 Chat Send "Some really long message"
 OBS Scene "Starting Soon"
 ```
+
+***
 
 ### Comments
 Trigger files support comments using the **#** character. This allows you to leave text in the trigger file that is not treated as a trigger or action.
@@ -95,7 +99,7 @@ Trigger files support comments using the **#** character. This allows you to lea
 ```
 # My really complicated trigger
 OnCommand !example
-Chat Send "This is a silly example!""
+Chat Send "This is a silly example!"
 ```
 
 ***
@@ -110,7 +114,9 @@ Enables the ability to run actions when channel point rewards are redeemed.
 ------------ | -------------
 **Info** | Used to trigger a set of actions when a channel point reward is redeemed.
 **Format** | `OnChannelPoint <reward_name>`
-**Example** | `OnChannelPoint Example Reward`
+**Example** | `OnChannelPoint "Example Reward"`
+
+***
 
 ### Channel Point Actions
 None at the moment.
@@ -137,6 +143,8 @@ Additionally, you can use *u* as the permission to specify a specific user that 
 OnCommand u kruiser8 !secret
 ```
 
+***
+
 #### OnCommand
 | | |
 ------------ | -------------
@@ -144,12 +152,16 @@ OnCommand u kruiser8 !secret
 **Format** | `OnCommand <permission> <optional_info> <command>`
 **Example** | `OnCommand a !example`
 
+***
+
 #### OnKeyword
 | | |
 ------------ | -------------
 **Info** | Used to trigger a set of actions when a keyword or phrase appears in a message.
 **Format** | `OnKeyword <permission> <optional_info> <command>`
 **Example** | `OnKeyword smv "music"`
+
+***
 
 ### Actions
 
@@ -168,6 +180,8 @@ A small selection of actions that are included for increased usability.
 ### Miscellaneous Triggers
 None at the moment.
 
+***
+
 ### Miscellaneous Actions
 
 #### Delay
@@ -176,6 +190,8 @@ None at the moment.
 **Info** | Used to wait a specific number of seconds before taking the next action.
 **Format** | `Delay <seconds>`
 **Example** | `Delay 8`
+
+***
 
 #### Play
 | | |
@@ -194,9 +210,11 @@ Enables the ability to take interact with and respond to OBS.
 #### OnOBSCustomMessage
 | | |
 ------------ | -------------
-**Info** | Used to trigger a set of actions when a custom message is sent. Used to receive triggers from [OBS Send](#obssend).
+**Info** | Used to trigger a set of actions when a custom message is sent. Used to receive triggers from [OBS Send](#obs-send).
 **Format** | `OnOBSCustomMessage <message>`
 **Example** | `OnOBSCustomMessage "My Custom Message"`
+
+***
 
 #### OnOBSStreamStarted
 | | |
@@ -205,6 +223,8 @@ Enables the ability to take interact with and respond to OBS.
 **Format** | `OnOBSStreamStarted`
 **Example** | `OnOBSStreamStarted`
 
+***
+
 #### OnOBSStreamStopped
 | | |
 ------------ | -------------
@@ -212,12 +232,16 @@ Enables the ability to take interact with and respond to OBS.
 **Format** | `OnOBSStreamStopped`
 **Example** | `OnOBSStreamStopped`
 
+***
+
 #### OnOBSSwitchScenes
 | | |
 ------------ | -------------
 **Info** | Used to trigger a set of actions when the scene changes in OBS.
 **Format** | `OnOBSSwitchScenes <scene>`
 **Example** | `OnOBSSwitchScenes BRB`
+
+***
 
 ### OBS Actions
 
@@ -228,6 +252,8 @@ Enables the ability to take interact with and respond to OBS.
 **Format** | `OBS Scene <scene>`
 **Example** | `OBS Scene Ending`
 
+***
+
 #### OBS Source
 | | |
 ------------ | -------------
@@ -235,12 +261,16 @@ Enables the ability to take interact with and respond to OBS.
 **Format** | `OBS Source <source> <on/off>`
 **Example** | `OBS Source Webcam off`
 
+***
+
 #### OBS Source Filter
 | | |
 ------------ | -------------
 **Info** | Used to toggle the visibility of a source filter in OBS.
 **Format** | `OBS Source <source> Filter <filter> <on/off>`
 **Example** | `OBS Source Webcam Filter Rainbow on`
+
+***
 
 #### OBS Send
 | | |
@@ -263,12 +293,16 @@ Enables the ability to trigger actions based on StreamElement alerts. Note that 
 **Format** | `OnSETwitchBits`
 **Example** | `OnSETwitchBits`
 
+***
+
 #### OnSEDonation
 | | |
 ------------ | -------------
 **Info** | Used to trigger actions when someone donates through StreamElements.
 **Format** | `OnSEDonation`
 **Example** | `OnSEDonation`
+
+***
 
 #### OnSETwitchFollow
 | | |
@@ -277,12 +311,16 @@ Enables the ability to trigger actions based on StreamElement alerts. Note that 
 **Format** | `OnSETwitchFollow`
 **Example** | `OnSETwitchFollow`
 
+***
+
 #### OnSETwitchHost
 | | |
 ------------ | -------------
 **Info** | Used to trigger actions when someone hosts the channel.
 **Format** | `OnSETwitchHost`
 **Example** | `OnSETwitchHost`
+
+***
 
 #### OnSETwitchRaid
 | | |
@@ -291,12 +329,16 @@ Enables the ability to trigger actions based on StreamElement alerts. Note that 
 **Format** | `OnSETwitchRaid`
 **Example** | `OnSETwitchRaid`
 
+***
+
 #### OnSETwitchSub
 | | |
 ------------ | -------------
 **Info** | Used to trigger actions when someone subscribes to the channel.
 **Format** | `OnSETwitchSub`
 **Example** | `OnSETwitchSub`
+
+***
 
 ### StreamElements Actions
 None at the moment.
@@ -315,12 +357,16 @@ Enables the ability to trigger actions based on Streamlabs alerts. Note that the
 **Format** | `OnSLTwitchBits`
 **Example** | `OnSLTwitchBits`
 
+***
+
 #### OnSLDonation
 | | |
 ------------ | -------------
 **Info** | Used to trigger actions when someone donates through StreamElements.
 **Format** | `OnSLDonation`
 **Example** | `OnSLDonation`
+
+***
 
 #### OnSLTwitchFollow
 | | |
@@ -329,12 +375,16 @@ Enables the ability to trigger actions based on Streamlabs alerts. Note that the
 **Format** | `OnSLTwitchFollow`
 **Example** | `OnSLTwitchFollow`
 
+***
+
 #### OnSLTwitchHost
 | | |
 ------------ | -------------
 **Info** | Used to trigger actions when someone hosts the channel.
 **Format** | `OnSLTwitchHost`
 **Example** | `OnSLTwitchHost`
+
+***
 
 #### OnSLTwitchRaid
 | | |
@@ -343,12 +393,16 @@ Enables the ability to trigger actions based on Streamlabs alerts. Note that the
 **Format** | `OnSLTwitchRaid`
 **Example** | `OnSLTwitchRaid`
 
+***
+
 #### OnSLTwitchSub
 | | |
 ------------ | -------------
 **Info** | Used to trigger actions when someone subscribes to the channel.
 **Format** | `OnSLTwitchSub`
 **Example** | `OnSLTwitchSub`
+
+***
 
 ### Streamlabs Actions
 None at the moment.

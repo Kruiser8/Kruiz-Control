@@ -4,6 +4,7 @@
 Kruiz Control enables a pseudo code approach to manage and automatically handle Twitch Channel Points, Twitch Chat, OBS, and StreamElements or Streamlabs alerts.
 </i></p>
 <p align="center"><b>
+  <a href="https://www.twitch.tv/videos/560557778">Demo (WIP)</a> |
   <a href="https://github.com/Kruiser8/Kruiz-Control/archive/master.zip">Download</a> |
   <a href="https://github.com/Kruiser8/Kruiz-Control/blob/master/js/Documentation.md">Documentation</a> |
   <a href="https://github.com/Kruiser8/Kruiz-Control/blob/master/settings/Settings.md">Settings</a>
@@ -16,7 +17,8 @@ Kruiz Control enables a pseudo code approach to manage and automatically handle 
 
 ## Table of Contents
 
-- [Setup Guide](#setup-guide)
+- [Getting Started](#getting-started)
+- [Compatibility](#compatibility)
 - [Installation](#installation)
   + [OBS Websocket](#obs-websocket)
   + [Settings](#settings)
@@ -43,7 +45,22 @@ Kruiz Control enables a pseudo code approach to manage and automatically handle 
 - Fill out [the settings files](https://github.com/Kruiser8/Kruiz-Control/blob/master/settings/Settings.md) in the settings folder.
 - Add the **index.html** to OBS as a browser source.
 - Type `!example` in your twitch chat. If your user responds with `Success! It worked!`, you're good to go!
-- Customize the _triggers.txt_ with your own triggers from [the documentation](https://github.com/Kruiser8/Kruiz-Control/blob/master/js/Documentation.md).
+- Customize the _triggers.txt_ with your own triggers from the [the documentation](https://github.com/Kruiser8/Kruiz-Control/blob/master/js/Documentation.md).
+
+***
+
+## Compatibility
+
+Kruiz Control supports
+- Twitch Channel Points
+- Twitch Chat,
+- Streamlabs Alerts
+- StreamElements Alerts,
+- OBS scene, source, and filter changes
+
+The script should run on any broadcast software that supports browser sources, however only OBS supports changing scenes, sources, and filters.
+
+***
 
 ## Installation
 
@@ -117,13 +134,13 @@ In order to use a sound with `Play`, add the sound file to the *sounds* folder. 
 ## FAQ
 
 ### SLOBS Support
-It may be possible to use SLOBS RPC-based API to provide similar functionality but this needs to be investigated.
+The script should work with SLOBS _BUT_ the OBS-like functionality will not work. That is, you will not be able to change scenes, sources, or filters. It may be possible to use SLOBS RPC-based API to provide similar functionality but this needs to be investigated.
 
 ### XSplit Support
-XSplit does not provide a direct websocket interface. It may be possible to implement plugin that provides a websocket interface to connect with xsplit. If you know a way to achieve this, [please reach out](mailto:kruiser.twitch@gmail.com).
+The script should work with XSplit _BUT_ the OBS-like functionality will not work. XSplit does not provide a direct websocket interface to do such actions. It may be possible to implement a plugin that provides a websocket interface to connect with xsplit. If you know a way to achieve this, [please reach out](mailto:kruiser.twitch@gmail.com).
 
 ### Support for Mixer and Youtube Alerts
-Definitely for Streamlabs. I just haven't had the time to implement it yet.
+I can definitely add support for Mixer and Youtube alerts from Streamlabs. I just haven't had the time to implement it yet.
 
 More investigation time is needed to implement Youtube and Mixer StreamElements.
 
@@ -132,7 +149,9 @@ Potentially if I can find the libraries to implement it. Again, if you know a wa
 
 ### Will you support X
 Please reach out if you have any ideas or other questions that were not covered in the documentation.
+
 Email: [kruiser.twitch@gmail.com](mailto:kruiser.twitch@gmail.com)
+
 Twitter: [@Kruiser8](https://twitter.com/kruiser8)
 
 ## Commissions

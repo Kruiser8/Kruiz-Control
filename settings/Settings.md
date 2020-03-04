@@ -34,6 +34,8 @@ Get an IRC auth token here: [http://twitchapps.com/tmi/](http://twitchapps.com/t
 oauth:exampleoauth4kruizcontrol12345
 ```
 
+***
+
 ### user.txt
 Specify the twitch channel to connect to chat.
 ```
@@ -54,6 +56,8 @@ Specify the IP + port to use for the OBS websocket.
 ```
 localhost:4444
 ```
+
+***
 
 ### password.txt
 Specify the password to use when connecting to the websocket.
