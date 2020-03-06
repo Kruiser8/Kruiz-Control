@@ -99,10 +99,10 @@ As an example, if the below is in the _triggers.txt_ file, then both sounds can 
 #### triggers.txt
 ```
 OnChannelPoint SHIKAKA
-Play 30 Shikaka.mp3
+Play 30 wait Shikaka.mp3
 
 OnCommand sbvm !intervention
-Play 45 MashiahMusic__Kygo-Style-Melody.wav
+Play 45 nowait MashiahMusic__Kygo-Style-Melody.wav
 ```
 
 ### fileTriggers.txt and the triggers folder
