@@ -9,6 +9,7 @@ This script uses text files to improve the average user experience.
 - [Channel Points](#channel-points)
 - [Chat](#chat)
 - [OBS](#obs)
+- [SLOBS](#slobs)
 - [StreamElements](#streamelements)
 - [Streamlabs](#streamlabs)
 
@@ -64,6 +65,11 @@ Specify the password to use when connecting to the websocket.
 ```
 my0b5p455w0rd
 ```
+
+***
+
+## SLOBS
+None at this time. If you need to use a different IP or port setup, please reach out for more information.
 
 ***
 

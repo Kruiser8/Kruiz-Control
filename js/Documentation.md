@@ -9,47 +9,55 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Comments](#comments)
 - [Channel Points](#channel-points)
   * [Triggers](#channel-point-triggers)
-	+ [OnChannelPoint](#onchannelpoint)
+    + [OnChannelPoint](#onchannelpoint)
   * [Actions](#channel-point-actions)
 - [Chat](#chat)
   * [Triggers](#chat-triggers)
-	+ [OnCommand](#oncommand)
-	+ [OnKeyword](#onkeyword)
+    + [OnCommand](#oncommand)
+    + [OnKeyword](#onkeyword)
   * [Actions](#chat-actions)
     + [Chat Send](#chat-send)
 - [Miscellaneous](#miscellaneous)
   * [Triggers](#miscellaneous-triggers)
   * [Actions](#miscellaneous-actions)
     + [Delay](#delay)
-	+ [Play](#play)
+    + [Play](#play)
 - [OBS](#obs)
   * [Triggers](#obs-triggers)
-	+ [OnOBSCustomMessage](#onobscustommessage)
-	+ [OnOBSStreamStarted](#onobsstreamstarted)
-	+ [OnOBSStreamStopped](#onobsstreamstopped)
-	+ [OnOBSSwitchScenes](#onobsswitchscenes)
+    + [OnOBSCustomMessage](#onobscustommessage)
+    + [OnOBSStreamStarted](#onobsstreamstarted)
+    + [OnOBSStreamStopped](#onobsstreamstopped)
+    + [OnOBSSwitchScenes](#onobsswitchscenes)
   * [Actions](#obs-actions)
     + [OBS Scene](#obs-scene)
-	+ [OBS Source](#obs-source)
-	+ [OBS Source Filter](#obs-source-filter)
-	+ [OBS Send](#obs-send)
+    + [OBS Source](#obs-source)
+    + [OBS Source Filter](#obs-source-filter)
+    + [OBS Send](#obs-send)
+- [SLOBS](#slobs)
+  * [Triggers](#slobs-triggers)
+    + [OnSLOBSStreamStarted](#onslobsstreamstarted)
+    + [OnSLOBSStreamStopped](#onslobsstreamstopped)
+    + [OnSLOBSSwitchScenes](#onslobsswitchscenes)
+  * [Actions](#slobs-actions)
+    + [SLOBS Scene](#slobs-scene)
+    + [SLOBS Source](#slobs-source)
 - [StreamElements](#streamelements)
   * [Triggers](#streamelements-triggers)
-	+ [OnSETwitchBits](#onsetwitchbits)
-	+ [OnSEDonation](#onsedonation)
-	+ [OnSETwitchFollow](#onsetwitchfollow)
-	+ [OnSETwitchHost](#onsetwitchhost)
-	+ [OnSETwitchRaid](#onsetwitchraid)
-	+ [OnSETwitchSub](#onsetwitchsub)
+    + [OnSETwitchBits](#onsetwitchbits)
+    + [OnSEDonation](#onsedonation)
+    + [OnSETwitchFollow](#onsetwitchfollow)
+    + [OnSETwitchHost](#onsetwitchhost)
+    + [OnSETwitchRaid](#onsetwitchraid)
+    + [OnSETwitchSub](#onsetwitchsub)
   * [Actions](#streamelements-actions)
 - [Streamlabs](#streamlabs)
   * [Triggers](#streamlabs-triggers)
-	+ [OnSLTwitchBits](#onsltwitchbits)
-	+ [OnSLDonation](#onsldonation)
-	+ [OnSLTwitchFollow](#onsltwitchfollow)
-	+ [OnSLTwitchHost](#onsltwitchhost)
-	+ [OnSLTwitchRaid](#onsltwitchraid)
-	+ [OnSLTwitchSub](#onsltwitchsub)
+    + [OnSLTwitchBits](#onsltwitchbits)
+    + [OnSLDonation](#onsldonation)
+    + [OnSLTwitchFollow](#onsltwitchfollow)
+    + [OnSLTwitchHost](#onsltwitchhost)
+    + [OnSLTwitchRaid](#onsltwitchraid)
+    + [OnSLTwitchSub](#onsltwitchsub)
   * [Actions](#streamlabs-actions)
 
 ***
@@ -196,9 +204,9 @@ None at the moment.
 #### Play
 | | |
 ------------ | -------------
-**Info** | Used to play a sound effect inside of the _sounds_ folder. `<volume>` is a number between 1 and 100.
-**Format** | `Play <volume> <song_file>`
-**Example** | `Play 30 MashiahMusic__Kygo-Style-Melody.wav`
+**Info** | Used to play a sound effect inside of the _sounds_ folder. `<volume>` is a number between 1 and 100. `<wait/nowait>` determines whether or not the script waits until the song is done playing before completing the next action.
+**Format** | `Play <volume> <wait/nowait> <song_file>`
+**Example** | `Play 30 wait MashiahMusic__Kygo-Style-Melody.wav`
 
 ***
 
@@ -278,6 +286,58 @@ Enables the ability to take interact with and respond to OBS.
 **Info** | Used to send a custom event to the OBS websocket that is echo'd to all connected clients. Useful for connecting other browser sources or triggering other triggers.
 **Format** | `OBS Send <message>`
 **Example** | `OBS Send PlayShikaka`
+
+***
+
+## SLOBS
+Enables the ability to take interact with and respond to SLOBS.
+
+### SLOBS Triggers
+
+#### OnSLOBSStreamStarted
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when the stream starts.
+**Format** | `OnSLOBSStreamStarted`
+**Example** | `OnSLOBSStreamStarted`
+
+***
+
+#### OnSLOBSStreamStopped
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when the stream stops.
+**Format** | `OnSLOBSStreamStopped`
+**Example** | `OnSLOBSStreamStopped`
+
+***
+
+#### OnSLOBSSwitchScenes
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when the scene changes in SLOBS.
+**Format** | `OnSLOBSSwitchScenes <scene>`
+**Example** | `OnSLOBSSwitchScenes BRB`
+
+***
+
+### SLOBS Actions
+
+#### SLOBS Scene
+| | |
+------------ | -------------
+**Info** | Used to change the scene in SLOBS.
+**Format** | `SLOBS Scene <scene>`
+**Example** | `SLOBS Scene Ending`
+
+***
+
+#### SLOBS Source
+| | |
+------------ | -------------
+**Info** | Used to toggle the visibility of a source in SLOBS.
+**Format** | `SLOBS Source <source> <on/off>`
+**Example** | `SLOBS Source Webcam off`
 
 ***
 

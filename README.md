@@ -29,7 +29,6 @@ Kruiz Control enables a pseudo code approach to manage and automatically handle 
   + [fileTriggers.txt and the triggers folder](#filetriggerstxt-and-the-triggers-folder)
   + [sounds folder](#sounds-folder)
 - [FAQ](#faq)
-  + [SLOBS Support](#slobs-support)
   + [XSplit Support](#xsplit-support)
   + [Support for Mixer and Youtube Alerts](#support-for-mixer-and-youtube-alerts)
   + [Support for Mixer and Youtube Chat](#support-for-mixer-and-youtube-chat)

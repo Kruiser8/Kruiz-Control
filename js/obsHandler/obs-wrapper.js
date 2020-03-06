@@ -1,5 +1,5 @@
 /**
- * Connect to the Streamlabs websocket and setup the event handlers
+ * Connect to the OBS websocket and setup the event handlers
  * @param {string} address obs websocket address
  * @param {string} password obs websocket password
  * @param {function} onSwitchScenes handle switch scene messages
@@ -31,7 +31,8 @@ function connectOBSWebsocket(address, password, onSwitchScenes, onStreamStarted,
   obs.on('BroadcastCustomMessage', onCustomMessage);
 
   obs.getCurrentScene = async function() {
-    return await this.send('GetCurrentScene').catch(err => { // Promise convention dicates you have a catch on every chain.
+    return await this.send('GetCurrentScene').catch(err => {
+      // Promise convention dicates you have a catch on every chain.
       console.error(err);
     });
   };
@@ -40,7 +41,8 @@ function connectOBSWebsocket(address, password, onSwitchScenes, onStreamStarted,
     await this.send('SetSceneItemProperties', {
       'item': source,
       'visible': enabled
-    }).catch(err => { // Promise convention dicates you have a catch on every chain.
+    }).catch(err => {
+      // Promise convention dicates you have a catch on every chain.
       console.error(err);
     });
   };
@@ -50,7 +52,8 @@ function connectOBSWebsocket(address, password, onSwitchScenes, onStreamStarted,
       'sourceName': source,
       'filterName': filter,
       'filterEnabled': enabled
-    }).catch(err => { // Promise convention dicates you have a catch on every chain.
+    }).catch(err => {
+      // Promise convention dicates you have a catch on every chain.
       console.error(err);
     });
   };
@@ -58,7 +61,8 @@ function connectOBSWebsocket(address, password, onSwitchScenes, onStreamStarted,
   obs.setCurrentScene = async function(scene) {
     await this.send('SetCurrentScene', {
       'scene-name': scene
-    }).catch(err => { // Promise convention dicates you have a catch on every chain.
+    }).catch(err => {
+      // Promise convention dicates you have a catch on every chain.
       console.error(err);
     });
   };
@@ -69,7 +73,8 @@ function connectOBSWebsocket(address, password, onSwitchScenes, onStreamStarted,
       'data': {
         'message': message
       }
-    }).catch(err => { // Promise convention dicates you have a catch on every chain.
+    }).catch(err => {
+      // Promise convention dicates you have a catch on every chain.
       console.error(err);
     });
   };

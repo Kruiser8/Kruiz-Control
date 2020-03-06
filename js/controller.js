@@ -86,12 +86,16 @@ class Controller {
       }
       else if (data[0] === 'Play') {
         // Play audio and await the end of the audio
-        var audio = new Audio("sounds/" + data.slice(2).join(' ').trim());
+        var audio = new Audio("sounds/" + data.slice(3).join(' ').trim());
         audio.volume = parseInt(data[1]) / 100;
-        await new Promise((resolve) => {
-          audio.onended = resolve;
+        if (data[2].toLowerCase() === 'wait') {
+          await new Promise((resolve) => {
+            audio.onended = resolve;
+            audio.play();
+          });
+        } else {
           audio.play();
-        });
+        }
       }
       else {
         // Get parser and run trigger content

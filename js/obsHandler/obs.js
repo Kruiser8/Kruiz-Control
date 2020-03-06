@@ -59,7 +59,7 @@ class OBSHandler extends Handler {
    */
   async onSwitchScenes(data) {
     var currentScene = await this.obs.getCurrentScene();
-    if (this.onSwitch.indexOf(currentScene.name) !== -1) {
+    if (currentScene.name === data.sceneName && this.onSwitch.indexOf(currentScene.name) !== -1) {
       controller.handleData(this.onSwitchTrigger[data.sceneName]);
     }
   }
