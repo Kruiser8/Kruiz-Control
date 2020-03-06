@@ -1,7 +1,7 @@
 # Kruiz Control
 
 <p align="center"><i>
-Kruiz Control enables a pseudo code approach to manage and automatically handle Twitch Channel Points, Twitch Chat, OBS, and StreamElements or Streamlabs alerts.
+Kruiz Control enables a pseudo code approach to manage and automatically handle Twitch Channel Points, Twitch Chat, OBS or SLOBS, and StreamElements or Streamlabs alerts.
 </i></p>
 <p align="center"><b>
   <a href="https://www.twitch.tv/videos/560557778">Demo (WIP)</a> |
@@ -132,9 +132,6 @@ In order to use a sound with `Play`, add the sound file to the *sounds* folder. 
 ***
 
 ## FAQ
-
-### SLOBS Support
-The script should work with SLOBS _BUT_ the OBS-like functionality will not work. That is, you will not be able to change scenes, sources, or filters. It may be possible to use SLOBS RPC-based API to provide similar functionality but this needs to be investigated.
 
 ### XSplit Support
 The script should work with XSplit _BUT_ the OBS-like functionality will not work. XSplit does not provide a direct websocket interface to do such actions. It may be possible to implement a plugin that provides a websocket interface to connect with xsplit. If you know a way to achieve this, [please reach out](mailto:kruiser.twitch@gmail.com).
