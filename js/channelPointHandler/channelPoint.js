@@ -23,7 +23,7 @@ class ChannelPointHandler extends Handler {
    * @param {number} id of the new trigger
    */
   addTriggerData(trigger, triggerLine, triggerId) {
-    if (trigger === 'OnChannelPoint') {
+    if (trigger.toLowerCase() === 'onchannelpoint') {
       var reward = triggerLine.slice(1).join(' ');
       this.rewards.push(reward);
       this.rewardsTrigger[reward] = triggerId;

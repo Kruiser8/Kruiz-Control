@@ -40,8 +40,9 @@ class ChatHandler extends Handler {
    * @param {number} id of the new trigger
    */
   addTriggerData(trigger, triggerLine, triggerId) {
+    trigger = trigger.toLowerCase();
     switch (trigger) {
-      case 'OnCommand':
+      case 'oncommand':
         var command = '';
         var info = '';
         var permission = triggerLine[1].toLowerCase();
@@ -63,7 +64,7 @@ class ChatHandler extends Handler {
           this.commandsTrigger[command] = triggerId;
         }
         break;
-      case 'OnKeyword':
+      case 'onkeyword':
         var keyword = '';
         var info = '';
         var permission = triggerLine[1].toLowerCase();
@@ -96,8 +97,8 @@ class ChatHandler extends Handler {
    * @param {array} triggerData contents of trigger line
    */
   async handleData(triggerData) {
-    var trigger = triggerData[1];
-    if (trigger === 'Send') {
+    var trigger = triggerData[1].toLowerCase();
+    if (trigger === 'send') {
       ComfyJS.Say(triggerData.slice(2).join(' '));
     }
     return;

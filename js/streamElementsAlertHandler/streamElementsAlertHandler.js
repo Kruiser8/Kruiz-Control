@@ -23,13 +23,14 @@ class StreamElementsAlertHandler extends Handler {
    * @param {number} id of the new trigger
    */
   addTriggerData(trigger, triggerLine, triggerId) {
+    trigger = trigger.toLowerCase()
     var alertMapping = {
-      'OnSETwitchBits': 'cheer-latest',
-      'OnSEDonation': 'tip-latest',
-      'OnSETwitchFollow': 'follower-latest',
-      'OnSETwitchHost': 'host-latest',
-      'OnSETwitchRaid': 'raid-latest',
-      'OnSETwitchSub': 'subscriber-latest'
+      'onsetwitchbits': 'cheer-latest',
+      'onsedonation': 'tip-latest',
+      'onsetwitchfollow': 'follower-latest',
+      'onsetwitchhost': 'host-latest',
+      'onsetwitchraid': 'raid-latest',
+      'onsetwitchsub': 'subscriber-latest'
     }
     this.alerts.push(alertMapping[trigger]);
     this.alertsTrigger[alertMapping[trigger]] = triggerId;

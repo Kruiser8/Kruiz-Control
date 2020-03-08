@@ -31,19 +31,20 @@ class OBSHandler extends Handler {
    * @param {number} id of the new trigger
    */
   addTriggerData(trigger, triggerLine, triggerId) {
+    trigger = trigger.toLowerCase();
     switch (trigger) {
-      case 'OnOBSSwitchScenes':
+      case 'onobsswitchscenes':
         var scene = triggerLine.slice(1).join(' ');
         this.onSwitch.push(scene);
         this.onSwitchTrigger[scene] = triggerId;
         break;
-      case 'OnOBSStreamStarted':
+      case 'onobsstreamstarted':
         this.onStartTrigger.push(triggerId);
         break;
-      case 'OnOBSStreamStopped':
+      case 'onobsstreamstopped':
         this.onStopTrigger.push(triggerId);
         break;
-      case 'OnOBSCustomMessage':
+      case 'onobscustommessage':
         var message = triggerLine.slice(1).join(' ');
         this.onCustom.push(message);
         this.onCustomTrigger[message] = triggerId;
@@ -101,13 +102,13 @@ class OBSHandler extends Handler {
    * @param {array} triggerData contents of trigger line
    */
   async handleData(triggerData) {
-    var trigger = triggerData[1];
+    var trigger = triggerData[1].toLowerCase();
     switch (trigger) {
-      case 'Scene':
+      case 'scene':
         var scene = triggerData.slice(2).join(' ');
         await this.obs.setCurrentScene(scene);
         break;
-      case 'Source':
+      case 'source':
         var source = triggerData[2];
         if (triggerData.length === 4) {
           var status = triggerData[3].toLowerCase() === 'on' ? true : false;
@@ -119,7 +120,7 @@ class OBSHandler extends Handler {
           await this.obs.setFilterVisibility(source, filter, status);
         }
         break;
-      case 'Send':
+      case 'send':
         var message = triggerData.slice(2).join(' ');
         await this.obs.broadcastCustomMessage(message)
     }

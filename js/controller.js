@@ -17,7 +17,7 @@ class Controller {
    * @param {Handler} instance parser object to add
    */
   addParser(name, instance) {
-    this.parsers[name] = instance;
+    this.parsers[name.toLowerCase()] = instance;
   }
 
   /**
@@ -26,6 +26,7 @@ class Controller {
    * @return {Handler|null} the parser or null if none exists
    */
   getParser(name) {
+    name = name.toLowerCase();
     if (this.parsers[name]) {
       return this.parsers[name];
     } else {
@@ -40,7 +41,7 @@ class Controller {
    * @param {string} name name of parser that handles the trigger
    */
   addTrigger(trigger, name) {
-    this.triggers[trigger] = name;
+    this.triggers[trigger.toLowerCase()] = name.toLowerCase();
   }
 
   /**
@@ -49,6 +50,7 @@ class Controller {
    * @return {Handler|null} the parser or null if none exists
    */
   getTrigger(trigger) {
+    trigger = trigger.toLowerCase();
     if (this.triggers[trigger]) {
       return this.triggers[trigger];
     } else {
@@ -80,11 +82,11 @@ class Controller {
 
     for (var i = 0; i < triggerSequence.length; i++) {
       var data = triggerSequence[i];
-      if (data[0] === 'Delay') {
+      if (data[0].toLowerCase() === 'delay') {
         // Custom delay handler
         await timeout(parseInt(data[1]) * 1000);
       }
-      else if (data[0] === 'Play') {
+      else if (data[0].toLowerCase() === 'play') {
         // Play audio and await the end of the audio
         var audio = new Audio("sounds/" + data.slice(3).join(' ').trim());
         audio.volume = parseInt(data[1]) / 100;

@@ -10,7 +10,7 @@
 function connectOBSWebsocket(address, password, onSwitchScenes, onStreamStarted, onStreamStopped, onCustomMessage) {
   var obs = new OBSWebSocket();
   obs.connect({ address: address, password: password }).catch(err => { // Promise convention dicates you have a catch on every chain.
-    console.log(err);
+    console.error(err);
   });
 
 

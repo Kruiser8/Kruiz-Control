@@ -40,9 +40,9 @@ Kruiz Control enables a pseudo code approach to manage and automatically handle 
 
 ## Setup Guide
 
-- Install the [OBS Websocket Plugin](https://github.com/Palakis/obs-websocket/releases).
+- (If using OBS) Install the [OBS Websocket Plugin](https://github.com/Palakis/obs-websocket/releases).
 - Fill out [the settings files](https://github.com/Kruiser8/Kruiz-Control/blob/master/settings/Settings.md) in the settings folder.
-- Add the **index.html** to OBS as a browser source.
+- Add the **index.html** to OBS/SLOBS as a browser source.
 - Type `!example` in your twitch chat. If your user responds with `Success! It worked!`, you're good to go!
 - Customize the _triggers.txt_ with your own triggers from the [the documentation](https://github.com/Kruiser8/Kruiz-Control/blob/master/js/Documentation.md).
 
@@ -56,14 +56,15 @@ Kruiz Control supports
 - Streamlabs Alerts
 - StreamElements Alerts,
 - OBS scene, source, and filter changes
+- SLOBS scene and source changes
 
-The script should run on any broadcast software that supports browser sources, however only OBS supports changing scenes, sources, and filters.
+The script should run on any broadcast software that supports browser sources, however only OBS and SLOBS supports changing scenes and sources.
 
 ***
 
 ## Installation
 
-### OBS Websocket
+### OBS Websocket (if using OBS)
 To use this script with OBS, install the [obs-websocket](https://github.com/Palakis/obs-websocket/releases) plugin.
 
 In OBS, click **Tools** > **WebSockets Server Settings** and enable the websocket server.
@@ -76,13 +77,12 @@ Before the script will work, you'll need to fill out all of the settings files. 
 ### Add as Browser Source
 Add the **index.html** file as a browser source within your broadcast software. It is *recommended* to add this source to one scene that is included in all other scenes (like your alert scene) rather than recreate this source in every scene.
 
-#### Steps for adding to OBS
+#### Steps for adding to OBS/SLOBS
 - In OBS, under **Sources** click the + icon to add a new **Browser** source.
 - Name it and select OK.
 - Check the `Local file` checkbox.
 - Click **Browse** and open the **index.html** file within the Kruiz Control script directory.
 - Recommended to set the width/height to 100 or less to reduce the size of the source.
-- Check *Shutdown source when not visible*
 
 ***
 
@@ -149,6 +149,8 @@ Please reach out if you have any ideas or other questions that were not covered 
 Email: [kruiser.twitch@gmail.com](mailto:kruiser.twitch@gmail.com)
 
 Twitter: [@Kruiser8](https://twitter.com/kruiser8)
+
+***
 
 ## Commissions
 I do take commissions to implement custom functionality when necessary. Please reach out to [kruiser.twitch@gmail.com](mailto:kruiser.twitch@gmail.com) if you have a specific request.

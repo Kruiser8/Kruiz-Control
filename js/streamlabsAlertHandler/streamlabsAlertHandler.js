@@ -23,13 +23,14 @@ class StreamlabsAlertHandler extends Handler {
    * @param {number} id of the new trigger
    */
   addTriggerData(trigger, triggerLine, triggerId) {
+    trigger = trigger.toLowerCase();
     var alertMapping = {
-      'OnSLTwitchBits': 'bits',
-      'OnSLDonation': 'donation',
-      'OnSLTwitchFollow': 'follow',
-      'OnSLTwitchHost': 'host',
-      'OnSLTwitchRaid': 'raid',
-      'OnSLTwitchSub': 'subscription'
+      'onsltwitchbits': 'bits',
+      'onsldonation': 'donation',
+      'onsltwitchfollow': 'follow',
+      'onsltwitchhost': 'host',
+      'onsltwitchraid': 'raid',
+      'onsltwitchsub': 'subscription'
     }
     this.alerts.push(alertMapping[trigger]);
     this.alertsTrigger[alertMapping[trigger]] = triggerId;

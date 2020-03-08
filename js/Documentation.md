@@ -77,13 +77,13 @@ Trigger files are sections of triggers and actions separated by empty lines. Eac
 ```
 
 ### Triggers and Actions
-Triggers and Actions are currently case sensitive. The following example sends a message after a command.
+Triggers and Actions are currently case insensitive. The following example sends a message after a command.
 ```
 OnCommand !caseSensitive
 Chat Send "Triggers and Actions are case sensitive"
 ```
 
-The following is an **INCORRECT** example due to rogue capitalization.
+The following is *also* correct.
 ```
 Oncommand !caseSensitive
 chat SEND "Triggers and Actions are case sensitive"

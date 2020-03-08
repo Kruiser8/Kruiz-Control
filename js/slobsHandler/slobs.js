@@ -22,16 +22,17 @@ class SLOBSHandler extends Handler {
    * @param {number} id of the new trigger
    */
   addTriggerData(trigger, triggerLine, triggerId) {
+    trigger = trigger.toLowerCase();
     switch (trigger) {
-      case 'OnSLOBSSwitchScenes':
+      case 'onslobsswitchscenes':
         var scene = triggerLine.slice(1).join(' ');
         this.onSwitch.push(scene);
         this.onSwitchTrigger[scene] = triggerId;
         break;
-      case 'OnSLOBSStreamStarted':
+      case 'onslobsstreamstarted':
         this.onStartTrigger.push(triggerId);
         break;
-      case 'OnSLOBSStreamStopped':
+      case 'onslobsstreamstopped':
         this.onStopTrigger.push(triggerId);
         break;
       default:
@@ -77,13 +78,13 @@ class SLOBSHandler extends Handler {
    * @param {array} triggerData contents of trigger line
    */
   async handleData(triggerData) {
-    var trigger = triggerData[1];
+    var trigger = triggerData[1].toLowerCase();
     switch (trigger) {
-      case 'Scene':
+      case 'scene':
         var scene = triggerData.slice(2).join(' ');
         await this.slobs.setCurrentScene(scene);
         break;
-      case 'Source':
+      case 'source':
         var source = triggerData.slice(2, triggerData.length - 1).join(' ');
         var status = triggerData[triggerData.length - 1].toLowerCase() === 'on' ? true : false;
         await this.slobs.setSourceVisibility(source, status);
