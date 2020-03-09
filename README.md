@@ -4,7 +4,7 @@
 Kruiz Control enables a pseudo code approach to manage and automatically handle Twitch Channel Points, Twitch Chat, OBS or SLOBS, and StreamElements or Streamlabs alerts.
 </i></p>
 <p align="center"><b>
-  <a href="https://www.twitch.tv/videos/560557778">Demo (WIP)</a> |
+  <a href="https://youtu.be/YaXLsWQuhLE">Tutorial</a> |
   <a href="https://github.com/Kruiser8/Kruiz-Control/archive/master.zip">Download</a> |
   <a href="https://github.com/Kruiser8/Kruiz-Control/blob/master/js/Documentation.md">Documentation</a> |
   <a href="https://github.com/Kruiser8/Kruiz-Control/blob/master/settings/Settings.md">Settings</a>
@@ -17,7 +17,7 @@ Kruiz Control enables a pseudo code approach to manage and automatically handle 
 
 ## Table of Contents
 
-- [Getting Started](#getting-started)
+- [Setup Guide](#setup-guide)
 - [Compatibility](#compatibility)
 - [Installation](#installation)
   + [OBS Websocket](#obs-websocket)

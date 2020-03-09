@@ -158,7 +158,7 @@ OnCommand u kruiser8 !secret
 ------------ | -------------
 **Info** | Used to trigger a set of actions when a command is used at the beginning of a message.
 **Format** | `OnCommand <permission> <optional_info> <command>`
-**Example** | `OnCommand a !example`
+**Example** | `OnCommand e !example`
 
 ***
 

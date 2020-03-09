@@ -64,7 +64,7 @@ class Controller {
    * @param {string} triggerId id of the trigger to run
    */
   async handleData(triggerId) {
-    if (this.triggerAsyncMap[triggerId]) {
+    if (typeof(this.triggerAsyncMap[triggerId]) !== "undefined") {
       var queue = this.triggerAsync[this.triggerAsyncMap[triggerId]];
       queue.push(triggerId);
     } else {
