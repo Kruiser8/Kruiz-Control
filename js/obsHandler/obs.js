@@ -109,14 +109,18 @@ class OBSHandler extends Handler {
         await this.obs.setCurrentScene(scene);
         break;
       case 'source':
-        var source = triggerData[2];
-        if (triggerData.length === 4) {
-          var status = triggerData[3].toLowerCase() === 'on' ? true : false;
+        var status = triggerData[triggerData.length - 1].toLowerCase() === 'on' ? true : false;
+        var filterIndex = triggerData.indexOf('filter');
+        if (filterIndex === -1) {
+          filterIndex = triggerData.indexOf('Filter');
+        }
+        if (filterIndex === -1) {
+          var source = triggerData.slice(2, triggerData.length - 1).join(' ');
           await this.obs.setSourceVisibility(source, status);
         }
-        else if (triggerData.length === 6) {
-          var filter = triggerData[4];
-          var status = triggerData[5].toLowerCase() === 'on' ? true : false;
+        else {
+          var source = triggerData.slice(2, filterIndex).join(' ');
+          var filter = triggerData.slice(filterIndex + 1, triggerData.length - 1).join(' ');
           await this.obs.setFilterVisibility(source, filter, status);
         }
         break;
