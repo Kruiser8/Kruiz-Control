@@ -12,7 +12,7 @@ Kruiz Control enables a pseudo code approach to manage and automatically handle 
 
 <p align="center"><i><b>
   <a href="https://twitter.com/kruiser8">@Kruiser8</a> |
-  <a href="mailto:kruiser.twitch@gmail.com">kruiser.twitch@gmail.com</a>
+  <a href="https://discord.gg/93yU5H">Support Discord</a>
 </b></i></p>
 
 ## Table of Contents
