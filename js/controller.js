@@ -30,7 +30,7 @@ class Controller {
     if (this.parsers[name]) {
       return this.parsers[name];
     } else {
-      console.error('Unable to find parser for input: ', name);
+      console.error('Unable to find parser for input: ' + name);
       return null;
     }
   }
@@ -54,7 +54,7 @@ class Controller {
     if (this.triggers[trigger]) {
       return this.triggers[trigger];
     } else {
-      console.error('Unable to find trigger for input: ', trigger);
+      console.error('Unable to find trigger for input: ' + trigger);
       return null;
     }
   }
@@ -63,53 +63,131 @@ class Controller {
    * Setup async queue for given trigger id
    * @param {string} triggerId id of the trigger to run
    */
-  async handleData(triggerId) {
+  async handleData(triggerId, triggerParams) {
+    triggerParams = triggerParams || {};
     if (typeof(this.triggerAsyncMap[triggerId]) !== "undefined") {
       var queue = this.triggerAsync[this.triggerAsyncMap[triggerId]];
-      queue.push(triggerId);
+      queue.push({
+        triggerId: triggerId,
+        triggerParams: triggerParams
+      });
     } else {
-      this.performTrigger(triggerId, null);
+      this.performTrigger({
+        triggerId: triggerId,
+        triggerParams: triggerParams
+      }, null);
     }
   }
 
   /**
    * Perform the trigger content.
-   * @param {string} triggerId id of the trigger to run
+   * @param {Object} triggerInfo id and params of the trigger
    */
-  async performTrigger(triggerId, callback) {
+  async performTrigger(triggerInfo, callback) {
+    var triggerId = triggerInfo.triggerId;
+    var triggerParams = triggerInfo.triggerParams;
+
     // Get trigger content
     var triggerSequence = this.triggerData[triggerId];
 
+    // Setup regex for any parameters
+    var triggerRegex = null;
+    if (Object.keys(triggerParams).length > 0) {
+      triggerRegex = new RegExp('{' + Object.keys(triggerParams).join('}|{') + '}', 'gi');
+    }
+
+    // Run through actions
     for (var i = 0; i < triggerSequence.length; i++) {
       var data = triggerSequence[i];
-      if (data[0].toLowerCase() === 'delay') {
-        // Custom delay handler
-        await timeout(parseInt(data[1]) * 1000);
-      }
-      else if (data[0].toLowerCase() === 'play') {
-        // Play audio and await the end of the audio
-        var audio = new Audio("sounds/" + data.slice(3).join(' ').trim());
-        audio.volume = parseInt(data[1]) / 100;
-        if (data[2].toLowerCase() === 'wait') {
-          await new Promise((resolve) => {
-            audio.onended = resolve;
-            audio.play();
-          });
-        } else {
-          audio.play();
+      var run_data = [];
+      var isEval = data[0].toLowerCase() === 'eval';
+
+      // If need to check for parameters
+      if (triggerRegex) {
+        for (var j = 0; j < data.length; j++) {
+          // Copy data into new array to avoid replacing directly
+          run_data.push(data[j])
+
+          // Find and replace all matches
+          var result = run_data[j].match(triggerRegex);
+          if (result) {
+            result.forEach(match => {
+              if (isEval) {
+                run_data[j] = run_data[j].replace(match, JSON.stringify(triggerParams[match.substring(1, match.length - 1)]));
+              } else {
+                run_data[j] = run_data[j].replace(match, triggerParams[match.substring(1, match.length - 1)]);
+              }
+            });
+          }
         }
+      } else {
+        run_data = data;
       }
-      else {
-        // Get parser and run trigger content
-        var parser = this.getParser(data[0]);
-        if (parser) {
-          await parser.handleData(data);
+
+      // Execute action
+      var runParams = await this.runTrigger(run_data, triggerParams, triggerRegex);
+
+      // Handle parameters returned by action
+      if (runParams) {
+        // If continue param set to false, exit trigger
+        if (runParams.continue === false) {
+          return;
         }
+
+        // Recreate regex with new params
+        Object.keys(runParams).forEach(attribute => {
+          triggerParams[attribute] = runParams[attribute];
+        });
+        triggerRegex = new RegExp('{' + Object.keys(triggerParams).join('}|{') + '}', 'gi');
       }
     }
   }
 
-  parseInput(data, isLast, useAsync) {
+  /**
+   * Perform the action content.
+   * @param {array} data action to perform
+   */
+  async runTrigger(data) {
+    var parserName = data[0].toLowerCase();
+    if (parserName === 'delay') {
+      // Custom delay handler
+      await timeout(parseInt(data[1]) * 1000);
+    }
+    else if (parserName === 'play') {
+      // Play audio and await the end of the audio
+      var audio = new Audio("sounds/" + data.slice(3).join(' ').trim());
+      var volume = parseInt(data[1]);
+      if (!isNaN(volume)) {
+        audio.volume = volume / 100;
+      }
+      if (data[2].toLowerCase() === 'wait') {
+        await new Promise((resolve) => {
+          audio.onended = resolve;
+          audio.play();
+        });
+      } else {
+        audio.play();
+      }
+    } else if (parserName === 'eval') {
+      var evaluation = data.slice(1).join(' ');
+      var res = await eval(evaluation);
+      return res;
+    }
+    else {
+      // Get parser and run trigger content
+      var parser = this.getParser(parserName);
+      if (parser) {
+        return await parser.handleData(data);
+      }
+    }
+  }
+
+  /**
+   * Parse the input text into triggers and actions
+   * @param {array} data action to perform
+   * @param {boolean} useAsync create an async handler for the triggers
+   */
+  parseInput(data, useAsync) {
     // Pre Parser when no triggers added
     if (this.triggerCount === 0) {
       for (var handler in this.parsers) {
@@ -142,7 +220,6 @@ class Controller {
         else if (dataLength === 0 && currentParser) {
           var parser = this.getParser(currentParser)
           if (parser) {
-
             parser.addTriggerData(triggerSequence[0][0], triggerSequence[0], this.triggerCount);
             triggerIds.push(this.triggerCount);
             this.triggerData[this.triggerCount] = triggerSequence.slice(1);
@@ -178,17 +255,15 @@ class Controller {
         this.triggerAsyncMap[triggerIds[id]] = asyncId;
       }
     }
+  }
 
-    // Post parser after all triggers read
-    if (isLast) {
-      for (var handler in this.parsers) {
-        this.parsers[handler].postParse();
-      }
+  /**
+   * Post parse after all triggers read
+   */
+  doneParsing() {
+    for (var handler in this.parsers) {
+      this.parsers[handler].postParse();
     }
   }
 }
 controller = new Controller();
-
-function timeout(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}

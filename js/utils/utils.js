@@ -48,3 +48,18 @@
     }
   });
 }
+
+/**
+ * Escape a string for use in a RegExp
+ */
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+}
+
+/**
+ * Return a promise for the specified amount of milliseconds
+ * @param {number} ms Milliseconds to wait in the promise
+ */
+function timeout(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}

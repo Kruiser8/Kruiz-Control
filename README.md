@@ -57,8 +57,15 @@ Kruiz Control supports
 - StreamElements Alerts,
 - OBS scene, source, and filter changes
 - SLOBS scene and source changes
+- Playing music (mp3, wav, ogg)
+- Timers (triggering on an interval)
+- Sending API calls
 
-The script should run on any broadcast software that supports browser sources, however only OBS and SLOBS supports changing scenes and sources.
+and more in [the documentation](https://github.com/Kruiser8/Kruiz-Control/blob/master/js/Documentation.md)!
+
+The script should run on any broadcast software that supports browser sources, however only OBS and SLOBS support changing scenes and sources.
+
+OBS.Live should also be supported but is untested.
 
 ***
 
@@ -141,19 +148,19 @@ I can definitely add support for Mixer and Youtube alerts from Streamlabs. I jus
 More investigation time is needed to implement Youtube and Mixer StreamElements.
 
 ### Support for Mixer and Youtube Chat
-Potentially if I can find the libraries to implement it. Again, if you know a way to achieve this, [please reach out](mailto:kruiser.twitch@gmail.com).
+Potentially if I can find the libraries to implement it. Again, if you know a way to achieve this, please reach out via [twitter](https://twitter.com/kruiser8) or [discord](https://discord.gg/wU3ZK3Q).
 
 ### Will you support X
 Please reach out if you have any ideas or other questions that were not covered in the documentation.
 
-Email: [kruiser.twitch@gmail.com](mailto:kruiser.twitch@gmail.com)
+Discord: [Kruiser Scripts Discord](https://discord.gg/wU3ZK3Q)
 
 Twitter: [@Kruiser8](https://twitter.com/kruiser8)
 
 ***
 
 ## Commissions
-I do take commissions to implement custom functionality when necessary. Please reach out to [kruiser.twitch@gmail.com](mailto:kruiser.twitch@gmail.com) if you have a specific request.
+I do take commissions to implement custom functionality when necessary. Please reach out if you have a specific request.
 
 ***
 

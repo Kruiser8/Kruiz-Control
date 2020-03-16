@@ -1,6 +1,6 @@
-OnCommand b !sample1
+OnCommand b 0 !sample1
 Delay 10
 Chat Send "The first sample"
 
-OnCommand b !sample2
+OnCommand b 0 !sample2
 Chat Send "The second sample"

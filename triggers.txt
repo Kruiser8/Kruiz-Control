@@ -1,2 +1,2 @@
-OnCommand b !example
+OnCommand b 0 !example
 Chat Send "Success! It worked!"
