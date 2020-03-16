@@ -27,6 +27,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Triggers](#miscellaneous-triggers)
   * [Actions](#miscellaneous-actions)
     + [Delay](#delay)
+    + [Eval](#eval)
     + [Play](#play)
 - [OBS](#obs)
   * [Triggers](#obs-triggers)
@@ -301,7 +302,7 @@ None at the moment.
 **Format** | `Eval <expression_or_function>`
 **Example** | `Eval ({total: {total} + 1})`
 
-`<expression_or_function>` is a javascript expression or function that returns an Object. Each property is then usable as a parameter in the rest of the trigger.
+`<expression_or_function>` is a javascript expression or function that returns an Object. Each property of the Object is usable as a parameter in the rest of the trigger.
 
 If you need a _simple_ expression to return parameters, wrap the expression in parenthesis. The example below increments a parameter named _total_ by 1.
 ```js
@@ -809,7 +810,7 @@ None at the moment.
 ##### Parameters
 | | |
 ------------ | -------------
-**<name>** | The variable value is assigned to the name of the variable.
+**\<name\>** | The variable value is assigned to the name of the variable.
 
 ***
 
@@ -823,7 +824,7 @@ None at the moment.
 ##### Parameters
 | | |
 ------------ | -------------
-**<name>** | The variable value is assigned to the name of the variable.
+**\<name\>** | The variable value is assigned to the name of the variable.
 
 ***
 
@@ -846,7 +847,7 @@ None at the moment.
 ##### Parameters
 | | |
 ------------ | -------------
-**<name>** | The variable value is assigned name of the variable.
+**\<name\>** | The variable value is assigned name of the variable.
 
 ***
 
@@ -869,4 +870,4 @@ None at the moment.
 ##### Parameters
 | | |
 ------------ | -------------
-**<name>** | The variable value is assigned name of the variable.
+**\<name\>** | The variable value is assigned name of the variable.

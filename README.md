@@ -108,7 +108,7 @@ As an example, if the below is in the _triggers.txt_ file, then both sounds can 
 OnChannelPoint SHIKAKA
 Play 30 wait Shikaka.mp3
 
-OnCommand sbvm !intervention
+OnCommand sbvm 0 !intervention
 Play 45 nowait MashiahMusic__Kygo-Style-Melody.wav
 ```
 
