@@ -6,8 +6,8 @@ Kruiz Control enables a pseudo code approach to manage and automatically handle 
 <p align="center"><b>
   <a href="https://youtu.be/YaXLsWQuhLE">Tutorial</a> |
   <a href="https://github.com/Kruiser8/Kruiz-Control/archive/master.zip">Download</a> |
-  <a href="https://github.com/Kruiser8/Kruiz-Control/blob/master/js/Documentation.md">Documentation</a> |
-  <a href="https://github.com/Kruiser8/Kruiz-Control/blob/master/settings/Settings.md">Settings</a>
+  <a href="https://github.com/Kruiser8/Kruiz-Control/blob/master/js/Documentation.md#kruiz-control-documentation">Documentation</a> |
+  <a href="https://github.com/Kruiser8/Kruiz-Control/blob/master/settings/Settings.md#kruiz-control-settings">Settings</a>
 </b></p>
 
 <p align="center"><i><b>
@@ -52,9 +52,9 @@ Kruiz Control enables a pseudo code approach to manage and automatically handle 
 
 Kruiz Control supports
 - Twitch Channel Points
-- Twitch Chat,
+- Twitch Chat
 - Streamlabs Alerts
-- StreamElements Alerts,
+- StreamElements Alerts
 - OBS scene, source, and filter changes
 - SLOBS scene and source changes
 - Playing music (mp3, wav, ogg)
