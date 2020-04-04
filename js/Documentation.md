@@ -206,7 +206,7 @@ Enables the ability to run actions when channel point rewards are redeemed.
 #### OnChannelPoint
 | | |
 ------------ | -------------
-**Info** | Used to trigger a set of actions when a channel point reward is redeemed.
+**Info** | Used to trigger a set of actions when a channel point reward is redeemed. Using `*` as the `<reward_name>` will execute the trigger for all channel point rewards.
 **Format** | `OnChannelPoint <reward_name>`
 **Example** | `OnChannelPoint "Example Reward"`
 
