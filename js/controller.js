@@ -93,14 +93,13 @@ class Controller {
     // Setup regex for any parameters
     var triggerRegex = null;
     if (Object.keys(triggerParams).length > 0) {
-      triggerRegex = new RegExp('{' + Object.keys(triggerParams).join('}|{') + '}', 'gi');
+      triggerRegex = new RegExp('{' + Object.keys(triggerParams).join('}|{') + '}|\\[' + Object.keys(triggerParams).join('\\]|\\[') + '\\]', 'gi');
     }
 
     // Run through actions
     for (var i = 0; i < triggerSequence.length; i++) {
       var data = triggerSequence[i];
       var run_data = [];
-      var isEval = data[0].toLowerCase() === 'eval';
 
       // If need to check for parameters
       if (triggerRegex) {
@@ -110,14 +109,16 @@ class Controller {
 
           // Find and replace all matches
           var result = run_data[j].match(triggerRegex);
-          if (result) {
+          while (result) {
             result.forEach(match => {
-              if (isEval) {
-                run_data[j] = run_data[j].replace(match, JSON.stringify(triggerParams[match.substring(1, match.length - 1)]));
+              if (match.charAt(0) === '[') {
+                var replacement = JSON.stringify(triggerParams[match.substring(1, match.length - 1)]);
+                run_data[j] = run_data[j].replace(match, replacement);
               } else {
                 run_data[j] = run_data[j].replace(match, triggerParams[match.substring(1, match.length - 1)]);
               }
             });
+            result = run_data[j].match(triggerRegex);
           }
         }
       } else {
@@ -138,7 +139,7 @@ class Controller {
         Object.keys(runParams).forEach(attribute => {
           triggerParams[attribute] = runParams[attribute];
         });
-        triggerRegex = new RegExp('{' + Object.keys(triggerParams).join('}|{') + '}', 'gi');
+        triggerRegex = new RegExp('{' + Object.keys(triggerParams).join('}|{') + '}|\\[' + Object.keys(triggerParams).join('\\]|\\[') + '\\]', 'gi');
       }
     }
   }
@@ -151,7 +152,7 @@ class Controller {
     var parserName = data[0].toLowerCase();
     if (parserName === 'delay') {
       // Custom delay handler
-      await timeout(parseInt(data[1]) * 1000);
+      await timeout(parseFloat(data[1]) * 1000);
     }
     else if (parserName === 'play') {
       // Play audio and await the end of the audio

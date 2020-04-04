@@ -5,7 +5,16 @@ class StreamElementsAlertHandler extends Handler {
    constructor() {
     super('StreamElementsAlert',['OnSETwitchBits','OnSETwitchBulkGiftSub','OnSEDonation','OnSETwitchFollow','OnSETwitchGiftSub','OnSETwitchHost','OnSETwitchRaid','OnSETwitchSub']);
     this.alerts = [];
-    this.alertsTrigger = {};
+    this.alertsTrigger = {
+      'cheer-latest': [],
+      'bulk_sub': [],
+      'tip-latest': [],
+      'follower-latest': [],
+      'gift_sub': [],
+      'host-latest': [],
+      'raid-latest': [],
+      'subscriber-latest': []
+    };
     this.alertMapping = {
       'onsetwitchbits': 'cheer-latest',
       'onsetwitchbulkgiftsub': 'bulk_sub',
@@ -45,7 +54,7 @@ class StreamElementsAlertHandler extends Handler {
   addTriggerData(trigger, triggerLine, triggerId) {
     trigger = trigger.toLowerCase()
     this.alerts.push(this.alertMapping[trigger]);
-    this.alertsTrigger[this.alertMapping[trigger]] = triggerId;
+    this.alertsTrigger[this.alertMapping[trigger]].push(triggerId);
     return;
   }
 
@@ -64,7 +73,9 @@ class StreamElementsAlertHandler extends Handler {
     }
     if (this.alerts.indexOf(type) != -1) {
       var params = this.eventHandlers[type](message.event);
-      controller.handleData(this.alertsTrigger[type], params);
+      this.alertsTrigger[type].forEach(triggerId => {
+        controller.handleData(triggerId, params);
+      });
     }
   }
 
