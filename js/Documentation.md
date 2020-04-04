@@ -37,7 +37,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnOBSSwitchScenes](#onobsswitchscenes)
     + [OnOBSTransitionTo](#onobstransitionto)
   * [Actions](#obs-actions)
-    + [OBS Current Scene](#obs-currentscene)
+    + [OBS Current Scene](#obs-current-scene)
     + [OBS Scene](#obs-scene)
     + [OBS Scene Source](#obs-scene-source)
     + [OBS Source](#obs-source)
@@ -82,7 +82,9 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Actions](#variable-actions)
     + [Variable Load](#variable-load)
     + [Variable Set](#variable-set)
+    + [Variable Global Clear](#variable-global-clear)
     + [Variable Global Load](#variable-global-load)
+    + [Variable Global Remove](#variable-global-remove)
     + [Variable Global Set](#variable-global-set)
 
 ***
@@ -446,7 +448,7 @@ Enables the ability to take interact with and respond to OBS.
 #### OBS Source
 | | |
 ------------ | -------------
-**Info** | Used to toggle the visibility of a source in OBS.
+**Info** | Used to toggle the visibility of a source in OBS. Only works if the source is in the current scene.
 **Format** | `OBS Source <source> <on/off>`
 **Example** | `OBS Source Webcam off`
 
