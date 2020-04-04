@@ -1,13 +1,14 @@
 /**
- * Connect to the OBS websocket and setup the event handlers
- * @param {string} address obs websocket address
- * @param {string} password obs websocket password
- * @param {function} onSwitchScenes handle switch scene messages
- * @param {function} onStreamStart handle stream start messages
- * @param {function} onStreamStop handle stream stop messages
- * @param {function} onCustomMessage handle custom messages
- */
-function connectOBSWebsocket(address, password, onSwitchScenes, onStreamStarted, onStreamStopped, onCustomMessage) {
+* Connect to the OBS websocket and setup the event handlers
+* @param {string} address obs websocket address
+* @param {string} password obs websocket password
+* @param {function} onSwitchScenes handle switch scene messages
+* @param {function} onTransitionBegin handle transition starts
+* @param {function} onStreamStart handle stream start messages
+* @param {function} onStreamStop handle stream stop messages
+* @param {function} onCustomMessage handle custom messages
+*/
+function connectOBSWebsocket(address, password, onSwitchScenes, onTransitionBegin, onStreamStarted, onStreamStopped, onCustomMessage) {
   var obs = new OBSWebSocket();
   obs.connect({ address: address, password: password }).catch(err => { // Promise convention dicates you have a catch on every chain.
     console.error(err);
@@ -26,6 +27,7 @@ function connectOBSWebsocket(address, password, onSwitchScenes, onStreamStarted,
   });
 
   obs.on('SwitchScenes', onSwitchScenes);
+  obs.on('TransitionBegin', onTransitionBegin);
   obs.on('StreamStarted', onStreamStarted);
   obs.on('StreamStopped', onStreamStopped);
   obs.on('BroadcastCustomMessage', onCustomMessage);
@@ -37,14 +39,25 @@ function connectOBSWebsocket(address, password, onSwitchScenes, onStreamStarted,
     });
   };
 
-  obs.setSourceVisibility = async function(source, enabled) {
-    await this.send('SetSceneItemProperties', {
-      'item': source,
-      'visible': enabled
-    }).catch(err => {
-      // Promise convention dicates you have a catch on every chain.
-      console.error(err);
-    });
+  obs.setSourceVisibility = async function(source, enabled, scene) {
+    if (scene) {
+      await this.send('SetSceneItemProperties', {
+        'item': source,
+        'visible': enabled,
+        'scene-name': scene
+      }).catch(err => {
+        // Promise convention dicates you have a catch on every chain.
+        console.error(err);
+      });
+    } else {
+      await this.send('SetSceneItemProperties', {
+        'item': source,
+        'visible': enabled
+      }).catch(err => {
+        // Promise convention dicates you have a catch on every chain.
+        console.error(err);
+      });
+    }
   };
 
   obs.setFilterVisibility = async function(source, filter, enabled) {

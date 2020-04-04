@@ -17,25 +17,25 @@ class VariableHandler extends Handler {
       // Loads a global variable
       if (action === 'load') {
         var varName = triggerData.slice(3).join(' ');
-        var variable = localStorage.getItem(varName) || 'No variable found';
+        var variable = await idbKeyval.get(varName) || 'No variable found';
         var response = {};
         response[varName] = variable;
         return response;
       }
       // Clears all global variables
       else if (action === 'clear') {
-        localStorage.clear();
+        idbKeyval.clear();
       }
       // Remove a global variable
       else if (action === 'remove') {
         var varName = triggerData.slice(3).join(' ');
-        localStorage.removeItem(varName);
+        idbKeyval.del(varName);
       }
       // Set a global variable
       else if (action === 'set') {
         var varName = triggerData[3];
         var variable = triggerData.slice(4).join(' ');
-        localStorage.setItem(varName, variable);
+        idbKeyval.set(varName, variable);
         var response = {};
         response[varName] = variable;
         return response;

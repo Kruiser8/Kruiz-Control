@@ -3,9 +3,11 @@ class OBSHandler extends Handler {
    * Create a new OBS handler.
    */
   constructor() {
-    super('OBS', ['OnOBSSwitchScenes', 'OnOBSStreamStarted', 'OnOBSStreamStopped', 'OnOBSCustomMessage']);
+    super('OBS', ['OnOBSSwitchScenes', 'OnOBSTransitionTo', 'OnOBSStreamStarted', 'OnOBSStreamStopped', 'OnOBSCustomMessage']);
     this.onSwitch = [];
     this.onSwitchTrigger = {};
+    this.onTransitionTo = [];
+    this.onTransitionToTrigger = {};
     this.onStartTrigger = [];
     this.onStopTrigger = [];
     this.onCustom = [];
@@ -19,7 +21,7 @@ class OBSHandler extends Handler {
    */
   init(address, password) {
     this.obs = connectOBSWebsocket(
-      address, password, this.onSwitchScenes.bind(this), this.onStreamStart.bind(this),
+      address, password, this.onSwitchScenes.bind(this), this.onTransitionBegin.bind(this), this.onStreamStart.bind(this),
       this.onStreamStop.bind(this), this.onCustomMessage.bind(this)
     );
   }
@@ -35,8 +37,23 @@ class OBSHandler extends Handler {
     switch (trigger) {
       case 'onobsswitchscenes':
         var scene = triggerLine.slice(1).join(' ');
-        this.onSwitch.push(scene);
-        this.onSwitchTrigger[scene] = triggerId;
+        if (this.onSwitch.indexOf(scene) !== -1) {
+          this.onSwitchTrigger[scene].push(triggerId);
+        } else {
+          this.onSwitchTrigger[scene] = [];
+          this.onSwitch.push(scene);
+          this.onSwitchTrigger[scene].push(triggerId);
+        }
+        break;
+      case 'onobstransitionto':
+        var scene = triggerLine.slice(1).join(' ');
+        if (this.onTransitionTo.indexOf(scene) !== -1) {
+          this.onTransitionToTrigger[scene].push(triggerId);
+        } else {
+          this.onTransitionToTrigger[scene] = [];
+          this.onTransitionTo.push(scene);
+          this.onTransitionToTrigger[scene].push(triggerId);
+        }
         break;
       case 'onobsstreamstarted':
         this.onStartTrigger.push(triggerId);
@@ -46,8 +63,14 @@ class OBSHandler extends Handler {
         break;
       case 'onobscustommessage':
         var message = triggerLine.slice(1).join(' ');
-        this.onCustom.push(message);
-        this.onCustomTrigger[message] = triggerId;
+        if (this.onCustom.indexOf(message) !== -1) {
+          this.onCustomTrigger[message].push(triggerId);
+        } else {
+          this.onCustomTrigger[message] = [];
+          this.onCustom.push(message);
+          this.onCustomTrigger[message].push(triggerId);
+        }
+        break;
       default:
         // do nothing
     }
@@ -61,7 +84,21 @@ class OBSHandler extends Handler {
   async onSwitchScenes(data) {
     var currentScene = await this.obs.getCurrentScene();
     if (currentScene.name === data.sceneName && this.onSwitch.indexOf(currentScene.name) !== -1) {
-      controller.handleData(this.onSwitchTrigger[data.sceneName]);
+      this.onSwitchTrigger[data.sceneName].forEach(triggerId => {
+        controller.handleData(triggerId);
+      });
+    }
+  }
+
+  /**
+   * Handle transitions from obs websocket.
+   * @param {Object} data scene information
+   */
+  async onTransitionBegin(data) {
+    if (this.onTransitionTo.indexOf(data.toScene) !== -1) {
+      this.onTransitionToTrigger[data.toScene].forEach(triggerId => {
+        controller.handleData(triggerId);
+      });
     }
   }
 
@@ -93,7 +130,9 @@ class OBSHandler extends Handler {
    */
   onCustomMessage(broadcast) {
     if (broadcast.realm === 'kruiz-control' && this.onCustom.indexOf(broadcast.data.message) !== -1) {
-      controller.handleData(this.onCustomTrigger[broadcast.data.message], {data: broadcast.data.data});
+      this.onCustomTrigger[broadcast.data.message].forEach(triggerId => {
+        controller.handleData(triggerId, {data: broadcast.data.data});
+      });
     }
   }
 
@@ -104,12 +143,21 @@ class OBSHandler extends Handler {
   async handleData(triggerData) {
     var trigger = triggerData[1].toLowerCase();
     switch (trigger) {
+      case 'currentscene':
+        var currentScene = await this.obs.getCurrentScene();
+        return {current_scene: currentScene.name};
+        break;
       case 'scene':
         var currentScene = await this.obs.getCurrentScene();
         var scene = triggerData.slice(2).join(' ');
         await this.obs.setCurrentScene(scene);
         return {previous_scene: currentScene};
         break;
+      case 'scenesource':
+        var status = triggerData[triggerData.length - 1].toLowerCase() === 'on' ? true : false;
+        var scene = triggerData[2];
+        var source = triggerData.slice(3, triggerData.length - 1).join(' ');
+        await this.obs.setSourceVisibility(source, status, scene);
       case 'source':
         var status = triggerData[triggerData.length - 1].toLowerCase() === 'on' ? true : false;
         var filterIndex = triggerData.indexOf('filter');
@@ -133,6 +181,9 @@ class OBSHandler extends Handler {
           var data = triggerData.slice(3).join(' ');
         }
         await this.obs.broadcastCustomMessage(message, data);
+        break;
+      default:
+        break;
     }
     return;
   }

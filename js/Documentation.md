@@ -35,8 +35,11 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnOBSStreamStarted](#onobsstreamstarted)
     + [OnOBSStreamStopped](#onobsstreamstopped)
     + [OnOBSSwitchScenes](#onobsswitchscenes)
+    + [OnOBSTransitionTo](#onobstransitionto)
   * [Actions](#obs-actions)
+    + [OBS Current Scene](#obs-currentscene)
     + [OBS Scene](#obs-scene)
+    + [OBS Scene Source](#obs-scene-source)
     + [OBS Source](#obs-source)
     + [OBS Source Filter](#obs-source-filter)
     + [OBS Send](#obs-send)
@@ -146,7 +149,26 @@ Chat Send "{user} used the example command!"
 
 The **OnCommand** Trigger provides a `user` parameter. This parameter is used in the next action as `{user}` and is replaced with the name of the viewer that used the command in Twitch chat.
 
-Parameters are replaced on every action line in any position.
+- Parameters are identified by `{parameter}` or `[parameter]`.
+- Parameters are replaced on every action line in any position.
+- Parameters can be nested `{{user}_sub_months}`
+
+#### {parameter}
+When `{parameter}` is used, the literal value of the parameter is used. **In almost all cases, use this.**
+For example, here's the result when used in a Chat Send action.
+```
+Chat Send "{user} used the example command!"
+> "Kruiser8 used the example command!"
+```
+
+#### [parameter]
+When `[parameter]` is used, the value of the parameter is JSON.stringify'd before replacement. **This is primarily for use with [Eval](#eval).** This allows parameters to be easily used and be properly escaped when used in Eval javascript code.
+
+For example, here's the result when used in an Eval action.
+```
+Eval (function() { var name = [user]; var data = [data]; // rest of code ... }())
+> (function() { var name = "Kruiser8"; var data = {"property": value}; // rest of code ... }())
+```
 
 ***
 
@@ -367,13 +389,36 @@ Enables the ability to take interact with and respond to OBS.
 #### OnOBSSwitchScenes
 | | |
 ------------ | -------------
-**Info** | Used to trigger a set of actions when the scene changes in OBS.
+**Info** | Used to trigger a set of actions when the scene changes in OBS. This is fired once the new scene is loaded.
 **Format** | `OnOBSSwitchScenes <scene>`
 **Example** | `OnOBSSwitchScenes BRB`
 
 ***
 
+#### OnOBSTransitionTo
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when a transition to a scene starts. Allows triggers to occur prior to a scene switch.
+**Format** | `OnOBSTransitionTo <scene>`
+**Example** | `OnOBSTransitionTo BRB`
+
+***
+
 ### OBS Actions
+
+#### OBS Current Scene
+| | |
+------------ | -------------
+**Info** | Used to get the current scene in OBS.
+**Format** | `OBS CurrentScene`
+**Example** | `OBS CurrentScene`
+
+##### Parameters
+| | |
+------------ | -------------
+**current_scene** | The name of the active scene.
+
+***
 
 #### OBS Scene
 | | |
@@ -386,6 +431,15 @@ Enables the ability to take interact with and respond to OBS.
 | | |
 ------------ | -------------
 **previous_scene** | The name of the active scene before changing to the specified scene. This allows users to revert scenes from anywhere.
+
+***
+
+#### OBS Scene Source
+| | |
+------------ | -------------
+**Info** | Used to toggle the visibility of a source in a specific scene in OBS.
+**Format** | `OBS SceneSource <scene> <source> <on/off>`
+**Example** | `OBS SceneSource Webcam Camera on`
 
 ***
 
@@ -787,10 +841,10 @@ None at the moment.
 ***
 
 ## Variable
-Enables the ability to set and load variables per session or across sessions. That is, Global variables should persist even if you close the overlay.
+Enables the ability to set and load variables per session or across sessions (globally). That is, global variables persist even if you close the overlay.
 
 <p align="center"><b>
-GLOBAL VARIABLES ARE NOT MEANT TO BE USED AS AN ALTERNATIVE TO A DATABASE OR FILE API--USE SPARINGLY!
+Global variables have been updated to allow more data to be stored. However, please be aware of how much data you're storing.
 </b></p>
 
 ### Variable Triggers

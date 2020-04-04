@@ -25,8 +25,13 @@ class ChannelPointHandler extends Handler {
   addTriggerData(trigger, triggerLine, triggerId) {
     if (trigger.toLowerCase() === 'onchannelpoint') {
       var reward = triggerLine.slice(1).join(' ');
-      this.rewards.push(reward);
-      this.rewardsTrigger[reward] = triggerId;
+      if (this.rewards.indexOf(reward) !== -1) {
+        this.rewardsTrigger[reward].push(triggerId);
+      } else {
+        this.rewardsTrigger[reward] = [];
+        this.rewards.push(reward);
+        this.rewardsTrigger[reward].push(triggerId);
+      }
     }
     return;
   }
@@ -49,16 +54,35 @@ class ChannelPointHandler extends Handler {
           // Grab data to return
           var user = dataMessage.data.redemption.user.display_name;
           var message = '';
-          if ('undefined' !== dataMessage.data.redemption.user_input) {
+          if ('undefined' !== typeof(dataMessage.data.redemption.user_input)) {
             message = dataMessage.data.redemption.user_input;
           }
 
-          // Handle trigger
-          controller.handleData(this.rewardsTrigger[reward], {
-            user: user,
-            message: message,
-            data: dataMessage
-          });
+          // Handle triggers
+          this.rewardsTrigger[reward].forEach(triggerId => {
+            controller.handleData(triggerId, {
+              user: user,
+              message: message,
+              data: dataMessage
+            });
+          })
+        }
+        if (this.rewards.indexOf('*') !== -1) {
+          // Grab data to return
+          var user = dataMessage.data.redemption.user.display_name;
+          var message = '';
+          if ('undefined' !== typeof(dataMessage.data.redemption.user_input)) {
+            message = dataMessage.data.redemption.user_input;
+          }
+
+          // Handle triggers
+          this.rewardsTrigger['*'].forEach(triggerId => {
+            controller.handleData(triggerId, {
+              user: user,
+              message: message,
+              data: dataMessage
+            });
+          })
         }
       }
     }

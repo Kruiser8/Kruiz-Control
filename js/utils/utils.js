@@ -57,6 +57,30 @@ function escapeRegExp(string) {
 }
 
 /**
+ * Check if the input is numeric
+ * @param {mixed} n input
+ */
+function isNumeric(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+/**
+ * Increment the value by the input increment.
+ * If the value is not numeric, sets to 0.
+ *
+ * @param {mixed} value starting value
+ * @param {numeric} increment incremental value
+ */
+function incrementVar(value, increment) {
+  if (!isNumeric(value)) {
+    value = 0;
+  } else {
+    value = parseFloat(value);
+  }
+  return value + increment;
+}
+
+/**
  * Return a promise for the specified amount of milliseconds
  * @param {number} ms Milliseconds to wait in the promise
  */

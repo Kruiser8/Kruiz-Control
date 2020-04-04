@@ -26,8 +26,13 @@ class SLOBSHandler extends Handler {
     switch (trigger) {
       case 'onslobsswitchscenes':
         var scene = triggerLine.slice(1).join(' ');
-        this.onSwitch.push(scene);
-        this.onSwitchTrigger[scene] = triggerId;
+        if (this.onSwitch.indexOf(scene) !== -1) {
+          this.onSwitchTrigger[scene].push(triggerId);
+        } else {
+          this.onSwitch.push(scene);
+          this.onSwitchTrigger[scene] = [];
+          this.onSwitchTrigger[scene] = triggerId;
+        }
         break;
       case 'onslobsstreamstarted':
         this.onStartTrigger.push(triggerId);
@@ -47,7 +52,9 @@ class SLOBSHandler extends Handler {
    */
   async onSwitchScenes(data) {
     if (this.onSwitch.indexOf(data.name) !== -1) {
-      controller.handleData(this.onSwitchTrigger[data.name]);
+      this.onSwitchTrigger[data.name].forEach(triggerId => {
+        controller.handleData(triggerId);
+      });
     }
   }
 

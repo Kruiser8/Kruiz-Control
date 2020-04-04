@@ -5,7 +5,15 @@ class StreamlabsAlertHandler extends Handler {
   constructor() {
     super('StreamlabsAlert',['OnSLTwitchBits','OnSLDonation','OnSLTwitchFollow','OnSLTwitchGiftSub','OnSLTwitchHost','OnSLTwitchRaid','OnSLTwitchSub']);
     this.alerts = [];
-    this.alertsTrigger = {};
+    this.alertsTrigger = {
+      'bits': [],
+      'donation': [],
+      'follow': [],
+      'gift_sub': [],
+      'host': [],
+      'raid': [],
+      'subscription': []
+    };
     this.alertMapping = {
       'onsltwitchbits': 'bits',
       'onsldonation': 'donation',
@@ -43,7 +51,7 @@ class StreamlabsAlertHandler extends Handler {
   addTriggerData(trigger, triggerLine, triggerId) {
     trigger = trigger.toLowerCase();
     this.alerts.push(this.alertMapping[trigger]);
-    this.alertsTrigger[this.alertMapping[trigger]] = triggerId;
+    this.alertsTrigger[this.alertMapping[trigger]].push(triggerId);
     return;
   }
 
@@ -59,7 +67,9 @@ class StreamlabsAlertHandler extends Handler {
       }
       if (this.alerts.indexOf(type) != -1) {
         var params = this.eventHandlers[type](message.message);
-        controller.handleData(this.alertsTrigger[type], params);
+        this.alertsTrigger[type].forEach(triggerId => {
+          controller.handleData(triggerId, params);
+        });
       }
     }
   }
