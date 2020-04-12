@@ -65,13 +65,13 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Actions](#streamelements-actions)
 - [Streamlabs](#streamlabs)
   * [Triggers](#streamlabs-triggers)
-    + [OnSLTwitchBits](#onsltwitchbits)
-    + [OnSLDonation](#onsldonation)
-    + [OnSLTwitchFollow](#onsltwitchfollow)
-    + [OnSLTwitchGiftSub](#onsltwitchgiftsub)
-    + [OnSLTwitchHost](#onsltwitchhost)
-    + [OnSLTwitchRaid](#onsltwitchraid)
-    + [OnSLTwitchSub](#onsltwitchsub)
+    + [OnSLTwitchBits | OnSLTwitchBitsNoSync](#onsltwitchbits--onsltwitchbitsnosync)
+    + [OnSLDonation | OnSLDonationNoSync](#onsldonation--onsldonationnosync)
+    + [OnSLTwitchFollow | OnSLTwitchFollowNoSync](#onsltwitchfollow--onsltwitchfollownosync)
+    + [OnSLTwitchGiftSub | OnSLTwitchGiftSubv](#onsltwitchgiftsub--onsltwitchgiftsubnosync)
+    + [OnSLTwitchHost | OnSLTwitchHostNoSync](#onsltwitchhost--onsltwitchhostnosync)
+    + [OnSLTwitchRaid | OnSLTwitchRaidNoSync](#onsltwitchraid--onsltwitchraidnosync)
+    + [OnSLTwitchSub | OnSLTwitchSubNoSync](#onsltwitchsub--onsltwitchsubnosync)
   * [Actions](#streamlabs-actions)
 - [Timer](#timer)
   * [Triggers](#timer-triggers)
@@ -696,11 +696,18 @@ None at the moment.
 ***
 
 ## Streamlabs
-Enables the ability to trigger actions based on Streamlabs alerts. Note that the triggers only work if your alert box is open. In the future, this may be optional BUT it will cause triggers to not be in sync with your alert box.
+Enables the ability to trigger actions based on Streamlabs alerts.
+
+The default alert triggers require that your Streamlabs alert box is open. This allows Kruiz Control to synchronize with your alerts and trigger actions at the same time as the alerts.
+
+Use the `NoSync` version of a trigger if:
+- You do not use the alert box for a specific alert type.
+- You want a trigger to run as soon as alerts come in.
+- You do not always have the alert box open but need the trigger to always run.
 
 ### Streamlabs Triggers
 
-#### OnSLTwitchBits
+#### OnSLTwitchBits | OnSLTwitchBitsNoSync
 | | |
 ------------ | -------------
 **Info** | Used to trigger actions when someone cheers bits.
@@ -717,7 +724,7 @@ Enables the ability to trigger actions based on Streamlabs alerts. Note that the
 
 ***
 
-#### OnSLDonation
+#### OnSLDonation | OnSLDonationNoSync
 | | |
 ------------ | -------------
 **Info** | Used to trigger actions when someone donates through StreamElements.
@@ -735,7 +742,7 @@ Enables the ability to trigger actions based on Streamlabs alerts. Note that the
 
 ***
 
-#### OnSLTwitchFollow
+#### OnSLTwitchFollow | OnSLTwitchFollowNoSync
 | | |
 ------------ | -------------
 **Info** | Used to trigger actions when someone follows the channel.
@@ -750,7 +757,7 @@ Enables the ability to trigger actions based on Streamlabs alerts. Note that the
 
 ***
 
-#### OnSLTwitchGiftSub
+#### OnSLTwitchGiftSub | OnSLTwitchGiftSubNoSync
 | | |
 ------------ | -------------
 **Info** | Used to trigger actions when someone gifts a subscription to the channel.
@@ -768,7 +775,7 @@ Enables the ability to trigger actions based on Streamlabs alerts. Note that the
 
 ***
 
-#### OnSLTwitchHost
+#### OnSLTwitchHost | OnSLTwitchHostNoSync
 | | |
 ------------ | -------------
 **Info** | Used to trigger actions when someone hosts the channel.
@@ -784,7 +791,7 @@ Enables the ability to trigger actions based on Streamlabs alerts. Note that the
 
 ***
 
-#### OnSLTwitchRaid
+#### OnSLTwitchRaid | OnSLTwitchRaidNoSync
 | | |
 ------------ | -------------
 **Info** | Used to trigger actions when someone raids the channel.
@@ -800,7 +807,7 @@ Enables the ability to trigger actions based on Streamlabs alerts. Note that the
 
 ***
 
-#### OnSLTwitchSub
+#### OnSLTwitchSub | OnSLTwitchSubNoSync
 | | |
 ------------ | -------------
 **Info** | Used to trigger actions when someone subscribes to the channel.

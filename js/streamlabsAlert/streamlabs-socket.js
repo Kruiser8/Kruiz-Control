@@ -10,6 +10,7 @@ function connectStreamlabsWebsocket(token, onEvent) {
   streamlabs.onclose = function () {
     console.error('Error connecting to streamlabs socket: Incorrect token or connection error');
   }
-    //Perform Action on event
+
+  //Perform Action on event
   streamlabs.on('event', onEvent);
 }
