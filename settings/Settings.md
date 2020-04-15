@@ -69,7 +69,14 @@ my0b5p455w0rd
 ***
 
 ## SLOBS
-None at this time. If you need to use a different IP or port setup, please reach out for more information.
+Follow the below steps to enable the SLOBS API for Kruiz Control.
+- Open SLOBS
+- Click the settings gear in the bottom left
+- Open the `Remote Control` tab
+- Click the QR Code so that it shows.
+- Restart SLOBS
+
+There are no specific settings at this time. If you need to use a different IP or port setup, please reach out for more information.
 
 ***
 
