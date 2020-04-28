@@ -9,6 +9,7 @@ class Controller {
     this.triggerData = {};
     this.triggerAsyncMap = {};
     this.triggerAsync = [];
+    this.successful = [];
   }
 
   /**
@@ -18,6 +19,29 @@ class Controller {
    */
   addParser(name, instance) {
     this.parsers[name.toLowerCase()] = instance;
+  }
+
+  /**
+   * Add to the list of successfully initialized parsers.
+   * @param {string} name name to use for the parser
+   */
+  addSuccess(name) {
+    if (this.successful.indexOf(name) === -1) {
+      this.successful.push(name.toLowerCase());
+    }
+  }
+
+  /**
+   * Retrieve a list of parsers that failed to initialize.
+   */
+  getUnsuccessful() {
+    var unsuccessful = [];
+    Object.keys(this.parsers).forEach((parser, i) => {
+      if (this.successful.indexOf(parser) === -1) {
+        unsuccessful.push(parser);
+      }
+    });
+    return unsuccessful;
   }
 
   /**

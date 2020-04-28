@@ -4,6 +4,7 @@ class VariableHandler extends Handler {
    */
   constructor() {
     super('Variable', []);
+    this.success();
     this.variables = {};
   }
 

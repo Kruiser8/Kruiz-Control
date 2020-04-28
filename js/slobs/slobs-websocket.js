@@ -1,10 +1,11 @@
 /**
  * Connect to Streamlabs OBS JSON RPC API and setup the event handlers
+ * @param {Handler} slobsHandler handler to mark successful initialization
  * @param {function} onSwitchScenes handle switch scene messages
  * @param {function} onStreamStart handle stream start messages
  * @param {function} onStreamStop handle stream stop messages
  */
- function connectSLOBSWebsocket(onSwitchScenes, onStreamStarted, onStreamStopped) {
+ function connectSLOBSWebsocket(slobsHandler, onSwitchScenes, onStreamStarted, onStreamStopped) {
   var socket = new SockJS('http://127.0.0.1:59650/api');
   var slobsSocket = {
     requestId: 1,
@@ -14,6 +15,7 @@
   };
 
   socket.onopen = () => {
+    slobsHandler.success();
     slobsSocket.sendSLOBS("getScenes", "ScenesService");
     slobsSocket.sendSLOBS("activeScene", "ScenesService");
     slobsSocket.sendSLOBS("sceneSwitched", "ScenesService");

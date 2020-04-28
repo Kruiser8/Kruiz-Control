@@ -21,7 +21,7 @@ class OBSHandler extends Handler {
    */
   init(address, password) {
     this.obs = connectOBSWebsocket(
-      address, password, this.onSwitchScenes.bind(this), this.onTransitionBegin.bind(this), this.onStreamStart.bind(this),
+      address, password, this, this.onSwitchScenes.bind(this), this.onTransitionBegin.bind(this), this.onStreamStart.bind(this),
       this.onStreamStop.bind(this), this.onCustomMessage.bind(this)
     );
   }
@@ -129,7 +129,7 @@ class OBSHandler extends Handler {
    * @param {Object} broadcast obs custom message
    */
   onCustomMessage(broadcast) {
-    if (broadcast.realm === 'kruiz-control' && this.onCustom.indexOf(broadcast.data.message) !== -1) {
+    if (broadcast.realm === 'kruiz-control' && typeof(broadcast.data.message) !== 'undefined' && this.onCustom.indexOf(broadcast.data.message) !== -1) {
       this.onCustomTrigger[broadcast.data.message].forEach(triggerId => {
         controller.handleData(triggerId, {data: broadcast.data.data});
       });

@@ -9,6 +9,7 @@ class SLOBSHandler extends Handler {
     this.onStartTrigger = [];
     this.onStopTrigger = [];
     this.slobs = connectSLOBSWebsocket(
+      this,
       this.onSwitchScenes.bind(this),
       this.onStreamStart.bind(this),
       this.onStreamStop.bind(this)

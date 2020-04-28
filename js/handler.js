@@ -5,6 +5,7 @@ class Handler {
    * @param {array} triggers list of triggers this handler is responsible for
    */
   constructor(parserName, triggers) {
+    this.parserName = parserName;
     triggers = triggers || [];
 
     // Configure handler with controller
@@ -12,6 +13,13 @@ class Handler {
     triggers.forEach(trigger => {
       controller.addTrigger(trigger, parserName);
     });
+  }
+
+  /**
+   * Register trigger as successfully initialized.
+   */
+  success() {
+    controller.addSuccess(this.parserName);
   }
 
   /**

@@ -59,7 +59,7 @@ class StreamlabsAlertHandler extends Handler {
    * @param {string} socketToken streamlabs socket api token
    */
   init(socketToken) {
-    connectStreamlabsWebsocket(socketToken, this.onStreamlabsMessage.bind(this));
+    connectStreamlabsWebsocket(this, socketToken, this.onStreamlabsMessage.bind(this));
   }
 
   /**

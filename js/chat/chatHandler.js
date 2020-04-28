@@ -18,6 +18,11 @@ class ChatHandler extends Handler {
    * @param {string} oauth twitch irc oauth to send messages
    */
   init(user, oauth) {
+    ComfyJS.onConnected = ( address, port, isFirstConnect ) => {
+      if (isFirstConnect) {
+        this.success();
+      }
+    }
     if (user) {
       if (oauth) {
         ComfyJS.Init(user, oauth);

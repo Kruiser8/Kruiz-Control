@@ -3,6 +3,12 @@ $(document).ready(function() {
   readFile("triggers.txt", function(data) {
     readTriggerFile(data);
   });
+  setTimeout(function() {
+    var unsuccessful = controller.getUnsuccessful();
+    if (unsuccessful.length > 0) {
+      console.error(`The following handlers failed to initialize: ${unsuccessful.join(', ')}`);
+    }
+  }, 2000);
 });
 
 /**

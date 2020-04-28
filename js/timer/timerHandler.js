@@ -4,6 +4,7 @@ class TimerHandler extends Handler {
    */
   constructor() {
     super('Timer', ['OnTimer']);
+    this.success();
     this.timers = [];
   }
 
