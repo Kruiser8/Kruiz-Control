@@ -110,6 +110,10 @@ class Controller {
   async performTrigger(triggerInfo, callback) {
     var triggerId = triggerInfo.triggerId;
     var triggerParams = triggerInfo.triggerParams;
+    triggerParams = {
+      '_successful_': this.successful.join(', '),
+      '_unsuccessful_': this.getUnsuccessful().join(', ')
+    }
 
     // Get trigger content
     var triggerSequence = this.triggerData[triggerId];
