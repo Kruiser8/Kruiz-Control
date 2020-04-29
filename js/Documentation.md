@@ -27,7 +27,9 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Triggers](#miscellaneous-triggers)
   * [Actions](#miscellaneous-actions)
     + [Delay](#delay)
+    + [Error](#error)
     + [Eval](#eval)
+    + [Log](#log)
     + [Play](#play)
 - [OBS](#obs)
   * [Triggers](#obs-triggers)
@@ -319,6 +321,15 @@ None at the moment.
 
 ***
 
+#### Error
+| | |
+------------ | -------------
+**Info** | Used to `console.error` log a message for use in debugging or testing.
+**Format** | `Error <message>`
+**Example** | `Error "Is this called?"`
+
+***
+
 #### Eval
 | | |
 ------------ | -------------
@@ -339,6 +350,15 @@ Eval (function() { var arr = {api_data}; return {random: arr[Math.floor(Math.ran
 ```
 
 If a `continue` parameter is returned and the value is `false`, the trigger will exit and not continue processing actions.
+
+***
+
+#### Log
+| | |
+------------ | -------------
+**Info** | Used to `console.log` log a message for use in debugging or testing. Logs do not show in the OBS log file but [`Error`](#error) logs do.
+**Format** | `Log <message>`
+**Example** | `Log "Is this called?"`
 
 ***
 

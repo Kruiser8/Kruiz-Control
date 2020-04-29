@@ -110,10 +110,8 @@ class Controller {
   async performTrigger(triggerInfo, callback) {
     var triggerId = triggerInfo.triggerId;
     var triggerParams = triggerInfo.triggerParams;
-    triggerParams = {
-      '_successful_': this.successful.join(', '),
-      '_unsuccessful_': this.getUnsuccessful().join(', ')
-    }
+    triggerParams['_successful_'] = this.successful.join(', ');
+    triggerParams['_unsuccessful_'] = this.getUnsuccessful().join(', ');
 
     // Get trigger content
     var triggerSequence = this.triggerData[triggerId];
@@ -197,10 +195,19 @@ class Controller {
       } else {
         audio.play();
       }
-    } else if (parserName === 'eval') {
+    }
+    else if (parserName === 'eval') {
       var evaluation = data.slice(1).join(' ');
       var res = await eval(evaluation);
       return res;
+    }
+    else if (parserName === 'error') {
+      var message = data.slice(1).join(' ');
+      console.error(message);
+    }
+    else if (parserName === 'log') {
+      var message = data.slice(1).join(' ');
+      console.log(message);
     }
     else {
       // Get parser and run trigger content
