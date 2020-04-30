@@ -63,12 +63,13 @@
     }
   }
 
-  slobsSocket.setSourceVisibility = function(source, enabled) {
-    if (slobsSocket.activeScene && slobsSocket.scenes[slobsSocket.activeScene]) {
-      var scene = slobsSocket.scenes[slobsSocket.activeScene];
-      scene.nodes.forEach(sceneItem => {
+  slobsSocket.setSourceVisibility = function(scene, source, enabled) {
+    scene = scene || slobsSocket.activeScene;
+    var sceneInfo = slobsSocket.scenes[scene];
+    if (sceneInfo) {
+      sceneInfo.nodes.forEach(sceneItem => {
         if (sceneItem.name === source) {
-          var sceneItemId = `SceneItem["${scene.id}","${sceneItem.id}","${sceneItem.sourceId}"]`;
+          var sceneItemId = `SceneItem["${sceneInfo.id}","${sceneItem.id}","${sceneItem.sourceId}"]`;
           slobsSocket.sendSLOBS("setVisibility", sceneItemId, [enabled]);
         }
       });

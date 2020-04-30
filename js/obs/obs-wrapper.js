@@ -14,7 +14,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
   obs.connect({ address: address, password: password }).then(() => {
     obsHandler.success();
   }).catch(err => { // Promise convention dicates you have a catch on every chain.
-    console.error(err);
+    console.error(JSON.stringify(err));
   });
 
 

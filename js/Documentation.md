@@ -562,10 +562,19 @@ Enables the ability to take interact with and respond to SLOBS.
 
 ***
 
+#### SLOBS Scene Source
+| | |
+------------ | -------------
+**Info** | Used to toggle the visibility of a source in a specific scene in SLOBS.
+**Format** | `SLOBS SceneSource <scene> <source> <on/off>`
+**Example** | `SLOBS SceneSource Webcam Camera on`
+
+***
+
 #### SLOBS Source
 | | |
 ------------ | -------------
-**Info** | Used to toggle the visibility of a source in SLOBS.
+**Info** | Used to toggle the visibility of a source in SLOBS. Defaults to the current scene.
 **Format** | `SLOBS Source <source> <on/off>`
 **Example** | `SLOBS Source Webcam off`
 
