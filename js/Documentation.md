@@ -53,6 +53,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnSLOBSSwitchScenes](#onslobsswitchscenes)
   * [Actions](#slobs-actions)
     + [SLOBS Scene](#slobs-scene)
+    + [SLOBS Scene Source](#slobs-scene-source)
     + [SLOBS Source](#slobs-source)
 - [StreamElements](#streamelements)
   * [Triggers](#streamelements-triggers)
