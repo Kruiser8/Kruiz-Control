@@ -184,8 +184,8 @@ The following parameters are always available. Use the `_successful_` and `_unsu
 #### Parameters
 | | |
 ------------ | -------------
-**_successful_** | A comma delimited list of handlers that initialized correctly.
-**_unsuccessful_** | A comma delimited list of handlers that did not initialize correctly.
+**\_successful\_** | A comma delimited list of handlers that initialized correctly.
+**\_unsuccessful\_** | A comma delimited list of handlers that did not initialize correctly.
 
 ***
 
