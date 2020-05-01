@@ -8,6 +8,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Quotes](#quotes)
   * [Comments](#comments)
   * [Parameters](#parameters)
+- [Default Parameters](#default-parameters)
 - [API](#api)
   * [Triggers](#api-triggers)
   * [Actions](#api-actions)
@@ -174,6 +175,17 @@ For example, here's the result when used in an Eval action.
 Eval (function() { var name = [user]; var data = [data]; // rest of code ... }())
 > (function() { var name = "Kruiser8"; var data = {"property": value}; // rest of code ... }())
 ```
+
+***
+
+## Default Parameters
+The following parameters are always available. Use the `_successful_` and `_unsuccessful_` parameters to test that the <a href="https://github.com/Kruiser8/Kruiz-Control/blob/master/settings/Settings.md#kruiz-control-settings">Kruiz Control settings</a> are correct.
+
+#### Parameters
+| | |
+------------ | -------------
+**_successful_** | A comma delimited list of handlers that initialized correctly.
+**_unsuccessful_** | A comma delimited list of handlers that did not initialize correctly.
 
 ***
 
