@@ -43,7 +43,9 @@ class ChannelPointHandler extends Handler {
   onChannelPointMessage(message) {
     // Parse message data to extract event name
     var data = JSON.parse(message.data);
-    if (data.type === 'MESSAGE') {
+    if (data.type === 'RESPONSE' && data.error === '') {
+      this.success();
+    } else if (data.type === 'MESSAGE') {
       var dataMessage = JSON.parse(data.data.message);
       if (dataMessage.type === 'reward-redeemed') {
 

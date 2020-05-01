@@ -42,7 +42,7 @@ class StreamElementsAlertHandler extends Handler {
    * @param {string} jwtToken streamelements jwt token
    */
   init(jwtToken) {
-    connectStreamElementsWebsocket(jwtToken, this.onStreamElementsMessage.bind(this));
+    connectStreamElementsWebsocket(this, jwtToken, this.onStreamElementsMessage.bind(this));
   }
 
   /**

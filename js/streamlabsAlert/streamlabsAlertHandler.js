@@ -3,9 +3,19 @@ class StreamlabsAlertHandler extends Handler {
    * Create a new Streamlabs Alert handler.
    */
   constructor() {
-    super('StreamlabsAlert',['OnSLTwitchBits','OnSLDonation','OnSLTwitchFollow','OnSLTwitchGiftSub','OnSLTwitchHost','OnSLTwitchRaid','OnSLTwitchSub']);
+    super('StreamlabsAlert',['OnSLTwitchBits','OnSLDonation','OnSLTwitchFollow','OnSLTwitchGiftSub','OnSLTwitchHost','OnSLTwitchRaid','OnSLTwitchSub','OnSLTwitchBitsNoSync','OnSLDonationNoSync','OnSLTwitchFollowNoSync','OnSLTwitchGiftSubNoSync','OnSLTwitchHostNoSync','OnSLTwitchRaidNoSync','OnSLTwitchSubNoSync']);
     this.alerts = [];
     this.alertsTrigger = {
+      'bits': [],
+      'donation': [],
+      'follow': [],
+      'gift_sub': [],
+      'host': [],
+      'raid': [],
+      'subscription': []
+    };
+    this.alertsNoSync = [];
+    this.alertsNoSyncTrigger = {
       'bits': [],
       'donation': [],
       'follow': [],
@@ -21,7 +31,14 @@ class StreamlabsAlertHandler extends Handler {
       'onsltwitchgiftsub': 'gift_sub',
       'onsltwitchhost': 'host',
       'onsltwitchraid': 'raid',
-      'onsltwitchsub': 'subscription'
+      'onsltwitchsub': 'subscription',
+      'onsltwitchbitsnosync': 'bits',
+      'onsldonationnosync': 'donation',
+      'onsltwitchfollownosync': 'follow',
+      'onsltwitchgiftsubnosync': 'gift_sub',
+      'onsltwitchhostnosync': 'host',
+      'onsltwitchraidnosync': 'raid',
+      'onsltwitchsubnosync': 'subscription'
     };
     this.eventHandlers = {
       'bits': this.getBitParameters,
@@ -32,6 +49,9 @@ class StreamlabsAlertHandler extends Handler {
       'raid': this.getRaidParameters,
       'subscription': this.getSubParameters
     };
+    this.alertIds = [];
+    this.alertIdsNoSync = [];
+    this.onSLMessageQueue = async.queue(this.parseStreamlabsMessage.bind(this), 1);
   }
 
   /**
@@ -39,7 +59,7 @@ class StreamlabsAlertHandler extends Handler {
    * @param {string} socketToken streamlabs socket api token
    */
   init(socketToken) {
-    connectStreamlabsWebsocket(socketToken, this.onStreamlabsMessage.bind(this));
+    connectStreamlabsWebsocket(this, socketToken, this.onStreamlabsMessage.bind(this));
   }
 
   /**
@@ -50,8 +70,13 @@ class StreamlabsAlertHandler extends Handler {
    */
   addTriggerData(trigger, triggerLine, triggerId) {
     trigger = trigger.toLowerCase();
-    this.alerts.push(this.alertMapping[trigger]);
-    this.alertsTrigger[this.alertMapping[trigger]].push(triggerId);
+    if (trigger.endsWith('nosync')) {
+      this.alertsNoSync.push(this.alertMapping[trigger]);
+      this.alertsNoSyncTrigger[this.alertMapping[trigger]].push(triggerId);
+    } else {
+      this.alerts.push(this.alertMapping[trigger]);
+      this.alertsTrigger[this.alertMapping[trigger]].push(triggerId);
+    }
     return;
   }
 
@@ -60,17 +85,42 @@ class StreamlabsAlertHandler extends Handler {
    * @param {Object} message streamlabs event message
    */
   onStreamlabsMessage(message) {
+    this.onSLMessageQueue.push(message);
+  }
+
+  /**
+   * Handle event messages from streamlabs websocket.
+   * @param {Object} message streamlabs event message
+   */
+  async parseStreamlabsMessage(message, callback) {
     if (message.type === 'alertPlaying') {
-      var type = message.message.type;
-      if (type === 'subscription' && message.message.gifter) {
-        type = 'gift_sub';
+      if (this.alertIds.indexOf(message.message['_id']) === -1) {
+        this.alertIds.push(message.message['_id']);
+        var type = message.message.type;
+        if (type === 'subscription' && message.message.gifter) {
+          type = 'gift_sub';
+        }
+        if (this.alerts.indexOf(type) != -1) {
+          var params = this.eventHandlers[type](message.message);
+          this.alertsTrigger[type].forEach(triggerId => {
+            controller.handleData(triggerId, params);
+          });
+        }
       }
-      if (this.alerts.indexOf(type) != -1) {
-        var params = this.eventHandlers[type](message.message);
-        this.alertsTrigger[type].forEach(triggerId => {
-          controller.handleData(triggerId, params);
-        });
-      }
+    } else if (this.alertsNoSync.indexOf(message.type) !== -1) {
+      message.message.forEach(alertMessage => {
+        if (this.alertIdsNoSync.indexOf(alertMessage['_id']) === -1) {
+          this.alertIdsNoSync.push(alertMessage['_id']);
+          var type = alertMessage.type;
+          if (type === 'subscription' && alertMessage.gifter) {
+            type = 'gift_sub';
+          }
+          var params = this.eventHandlers[type](alertMessage);
+          this.alertsNoSyncTrigger[type].forEach(triggerId => {
+            controller.handleData(triggerId, params);
+          });
+        }
+      });
     }
   }
 

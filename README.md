@@ -12,6 +12,7 @@ Kruiz Control enables a pseudo code approach to manage and automatically handle 
 
 <p align="center"><i><b>
   <a href="https://twitter.com/kruiser8">@Kruiser8</a> |
+  <a href="https://trello.com/b/oIV3q6Im/kruiz-control">Trello (Roadmap)</a> |
   <a href="https://discord.gg/wU3ZK3Q">Support Discord</a>
 </b></i></p>
 
@@ -33,7 +34,7 @@ Kruiz Control enables a pseudo code approach to manage and automatically handle 
   + [Support for Mixer and Youtube Alerts](#support-for-mixer-and-youtube-alerts)
   + [Support for Mixer and Youtube Chat](#support-for-mixer-and-youtube-chat)
   + [Will you support X](#will-you-support-x)
-- [Commissions](#commissions)
+- [Support the Project](#support-the-project)
 - [Credits](#credits)
 
 ***
@@ -159,7 +160,15 @@ Twitter: [@Kruiser8](https://twitter.com/kruiser8)
 
 ***
 
-## Commissions
+## Support the Project
+There are a number of ways to support this project.
+
+- Support Kruiser through <a href="https://patreon.com/kruiser8">Patreon</a>.
+- <a href="https://github.com/Kruiser8/Kruiz-Control-Documentation">Translate the documentation</a>.
+- Help others in the <a href="https://discord.gg/wU3ZK3Q">Support Discord</a>.
+- Contribute ideas for the <a href="https://trello.com/b/oIV3q6Im/kruiz-control">roadmap</a>.
+- Spread the word!
+
 I do take commissions to implement custom functionality when necessary. Please reach out if you have a specific request.
 
 ***

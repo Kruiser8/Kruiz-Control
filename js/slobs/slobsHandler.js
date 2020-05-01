@@ -9,6 +9,7 @@ class SLOBSHandler extends Handler {
     this.onStartTrigger = [];
     this.onStopTrigger = [];
     this.slobs = connectSLOBSWebsocket(
+      this,
       this.onSwitchScenes.bind(this),
       this.onStreamStart.bind(this),
       this.onStreamStop.bind(this)
@@ -94,7 +95,13 @@ class SLOBSHandler extends Handler {
       case 'source':
         var source = triggerData.slice(2, triggerData.length - 1).join(' ');
         var status = triggerData[triggerData.length - 1].toLowerCase() === 'on' ? true : false;
-        await this.slobs.setSourceVisibility(source, status);
+        await this.slobs.setSourceVisibility('', source, status);
+        break;
+      case 'scenesource':
+        var scene = triggerData[2];
+        var source = triggerData.slice(3, triggerData.length - 1).join(' ');
+        var status = triggerData[triggerData.length - 1].toLowerCase() === 'on' ? true : false;
+        await this.slobs.setSourceVisibility(scene, source, status);
         break;
     }
     return;

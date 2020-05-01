@@ -9,6 +9,7 @@ class Controller {
     this.triggerData = {};
     this.triggerAsyncMap = {};
     this.triggerAsync = [];
+    this.successful = [];
   }
 
   /**
@@ -18,6 +19,29 @@ class Controller {
    */
   addParser(name, instance) {
     this.parsers[name.toLowerCase()] = instance;
+  }
+
+  /**
+   * Add to the list of successfully initialized parsers.
+   * @param {string} name name to use for the parser
+   */
+  addSuccess(name) {
+    if (this.successful.indexOf(name) === -1) {
+      this.successful.push(name.toLowerCase());
+    }
+  }
+
+  /**
+   * Retrieve a list of parsers that failed to initialize.
+   */
+  getUnsuccessful() {
+    var unsuccessful = [];
+    Object.keys(this.parsers).forEach((parser, i) => {
+      if (this.successful.indexOf(parser) === -1) {
+        unsuccessful.push(parser);
+      }
+    });
+    return unsuccessful;
   }
 
   /**
@@ -86,6 +110,8 @@ class Controller {
   async performTrigger(triggerInfo, callback) {
     var triggerId = triggerInfo.triggerId;
     var triggerParams = triggerInfo.triggerParams;
+    triggerParams['_successful_'] = this.successful.join(', ');
+    triggerParams['_unsuccessful_'] = this.getUnsuccessful().join(', ');
 
     // Get trigger content
     var triggerSequence = this.triggerData[triggerId];
@@ -169,10 +195,19 @@ class Controller {
       } else {
         audio.play();
       }
-    } else if (parserName === 'eval') {
+    }
+    else if (parserName === 'eval') {
       var evaluation = data.slice(1).join(' ');
       var res = await eval(evaluation);
       return res;
+    }
+    else if (parserName === 'error') {
+      var message = data.slice(1).join(' ');
+      console.error(message);
+    }
+    else if (parserName === 'log') {
+      var message = data.slice(1).join(' ');
+      console.log(message);
     }
     else {
       // Get parser and run trigger content

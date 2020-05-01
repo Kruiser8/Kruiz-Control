@@ -4,6 +4,7 @@ class RandomHandler extends Handler {
    */
   constructor() {
     super('Random', []);
+    this.success();
   }
 
   /**

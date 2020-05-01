@@ -1,10 +1,11 @@
 /**
  * Connect to Streamlabs OBS JSON RPC API and setup the event handlers
+ * @param {Handler} slobsHandler handler to mark successful initialization
  * @param {function} onSwitchScenes handle switch scene messages
  * @param {function} onStreamStart handle stream start messages
  * @param {function} onStreamStop handle stream stop messages
  */
- function connectSLOBSWebsocket(onSwitchScenes, onStreamStarted, onStreamStopped) {
+ function connectSLOBSWebsocket(slobsHandler, onSwitchScenes, onStreamStarted, onStreamStopped) {
   var socket = new SockJS('http://127.0.0.1:59650/api');
   var slobsSocket = {
     requestId: 1,
@@ -14,6 +15,7 @@
   };
 
   socket.onopen = () => {
+    slobsHandler.success();
     slobsSocket.sendSLOBS("getScenes", "ScenesService");
     slobsSocket.sendSLOBS("activeScene", "ScenesService");
     slobsSocket.sendSLOBS("sceneSwitched", "ScenesService");
@@ -61,12 +63,13 @@
     }
   }
 
-  slobsSocket.setSourceVisibility = function(source, enabled) {
-    if (slobsSocket.activeScene && slobsSocket.scenes[slobsSocket.activeScene]) {
-      var scene = slobsSocket.scenes[slobsSocket.activeScene];
-      scene.nodes.forEach(sceneItem => {
+  slobsSocket.setSourceVisibility = function(scene, source, enabled) {
+    scene = scene || slobsSocket.activeScene;
+    var sceneInfo = slobsSocket.scenes[scene];
+    if (sceneInfo) {
+      sceneInfo.nodes.forEach(sceneItem => {
         if (sceneItem.name === source) {
-          var sceneItemId = `SceneItem["${scene.id}","${sceneItem.id}","${sceneItem.sourceId}"]`;
+          var sceneItemId = `SceneItem["${sceneInfo.id}","${sceneItem.id}","${sceneItem.sourceId}"]`;
           slobsSocket.sendSLOBS("setVisibility", sceneItemId, [enabled]);
         }
       });

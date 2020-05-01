@@ -8,6 +8,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Quotes](#quotes)
   * [Comments](#comments)
   * [Parameters](#parameters)
+- [Default Parameters](#default-parameters)
 - [API](#api)
   * [Triggers](#api-triggers)
   * [Actions](#api-actions)
@@ -27,7 +28,9 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Triggers](#miscellaneous-triggers)
   * [Actions](#miscellaneous-actions)
     + [Delay](#delay)
+    + [Error](#error)
     + [Eval](#eval)
+    + [Log](#log)
     + [Play](#play)
 - [OBS](#obs)
   * [Triggers](#obs-triggers)
@@ -51,6 +54,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnSLOBSSwitchScenes](#onslobsswitchscenes)
   * [Actions](#slobs-actions)
     + [SLOBS Scene](#slobs-scene)
+    + [SLOBS Scene Source](#slobs-scene-source)
     + [SLOBS Source](#slobs-source)
 - [StreamElements](#streamelements)
   * [Triggers](#streamelements-triggers)
@@ -65,13 +69,13 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Actions](#streamelements-actions)
 - [Streamlabs](#streamlabs)
   * [Triggers](#streamlabs-triggers)
-    + [OnSLTwitchBits](#onsltwitchbits)
-    + [OnSLDonation](#onsldonation)
-    + [OnSLTwitchFollow](#onsltwitchfollow)
-    + [OnSLTwitchGiftSub](#onsltwitchgiftsub)
-    + [OnSLTwitchHost](#onsltwitchhost)
-    + [OnSLTwitchRaid](#onsltwitchraid)
-    + [OnSLTwitchSub](#onsltwitchsub)
+    + [OnSLTwitchBits | OnSLTwitchBitsNoSync](#onsltwitchbits--onsltwitchbitsnosync)
+    + [OnSLDonation | OnSLDonationNoSync](#onsldonation--onsldonationnosync)
+    + [OnSLTwitchFollow | OnSLTwitchFollowNoSync](#onsltwitchfollow--onsltwitchfollownosync)
+    + [OnSLTwitchGiftSub | OnSLTwitchGiftSubv](#onsltwitchgiftsub--onsltwitchgiftsubnosync)
+    + [OnSLTwitchHost | OnSLTwitchHostNoSync](#onsltwitchhost--onsltwitchhostnosync)
+    + [OnSLTwitchRaid | OnSLTwitchRaidNoSync](#onsltwitchraid--onsltwitchraidnosync)
+    + [OnSLTwitchSub | OnSLTwitchSubNoSync](#onsltwitchsub--onsltwitchsubnosync)
   * [Actions](#streamlabs-actions)
 - [Timer](#timer)
   * [Triggers](#timer-triggers)
@@ -171,6 +175,17 @@ For example, here's the result when used in an Eval action.
 Eval (function() { var name = [user]; var data = [data]; // rest of code ... }())
 > (function() { var name = "Kruiser8"; var data = {"property": value}; // rest of code ... }())
 ```
+
+***
+
+## Default Parameters
+The following parameters are always available. Use the `_successful_` and `_unsuccessful_` parameters to test that the <a href="https://github.com/Kruiser8/Kruiz-Control/blob/master/settings/Settings.md#kruiz-control-settings">Kruiz Control settings</a> are correct.
+
+#### Parameters
+| | |
+------------ | -------------
+**_successful_** | A comma delimited list of handlers that initialized correctly.
+**_unsuccessful_** | A comma delimited list of handlers that did not initialize correctly.
 
 ***
 
@@ -319,6 +334,15 @@ None at the moment.
 
 ***
 
+#### Error
+| | |
+------------ | -------------
+**Info** | Used to `console.error` log a message for use in debugging or testing.
+**Format** | `Error <message>`
+**Example** | `Error "Is this called?"`
+
+***
+
 #### Eval
 | | |
 ------------ | -------------
@@ -339,6 +363,15 @@ Eval (function() { var arr = {api_data}; return {random: arr[Math.floor(Math.ran
 ```
 
 If a `continue` parameter is returned and the value is `false`, the trigger will exit and not continue processing actions.
+
+***
+
+#### Log
+| | |
+------------ | -------------
+**Info** | Used to `console.log` log a message for use in debugging or testing. Logs do not show in the OBS log file but [`Error`](#error) logs do.
+**Format** | `Log <message>`
+**Example** | `Log "Is this called?"`
 
 ***
 
@@ -542,10 +575,19 @@ Enables the ability to take interact with and respond to SLOBS.
 
 ***
 
+#### SLOBS Scene Source
+| | |
+------------ | -------------
+**Info** | Used to toggle the visibility of a source in a specific scene in SLOBS.
+**Format** | `SLOBS SceneSource <scene> <source> <on/off>`
+**Example** | `SLOBS SceneSource Webcam Camera on`
+
+***
+
 #### SLOBS Source
 | | |
 ------------ | -------------
-**Info** | Used to toggle the visibility of a source in SLOBS.
+**Info** | Used to toggle the visibility of a source in SLOBS. Defaults to the current scene.
 **Format** | `SLOBS Source <source> <on/off>`
 **Example** | `SLOBS Source Webcam off`
 
@@ -696,11 +738,18 @@ None at the moment.
 ***
 
 ## Streamlabs
-Enables the ability to trigger actions based on Streamlabs alerts. Note that the triggers only work if your alert box is open. In the future, this may be optional BUT it will cause triggers to not be in sync with your alert box.
+Enables the ability to trigger actions based on Streamlabs alerts.
+
+The default alert triggers require that your Streamlabs alert box is open. This allows Kruiz Control to synchronize with your alerts and trigger actions at the same time as the alerts.
+
+Use the `NoSync` version of a trigger if:
+- You do not use the alert box for a specific alert type.
+- You want a trigger to run as soon as alerts come in.
+- You do not always have the alert box open but need the trigger to always run.
 
 ### Streamlabs Triggers
 
-#### OnSLTwitchBits
+#### OnSLTwitchBits | OnSLTwitchBitsNoSync
 | | |
 ------------ | -------------
 **Info** | Used to trigger actions when someone cheers bits.
@@ -717,7 +766,7 @@ Enables the ability to trigger actions based on Streamlabs alerts. Note that the
 
 ***
 
-#### OnSLDonation
+#### OnSLDonation | OnSLDonationNoSync
 | | |
 ------------ | -------------
 **Info** | Used to trigger actions when someone donates through StreamElements.
@@ -735,7 +784,7 @@ Enables the ability to trigger actions based on Streamlabs alerts. Note that the
 
 ***
 
-#### OnSLTwitchFollow
+#### OnSLTwitchFollow | OnSLTwitchFollowNoSync
 | | |
 ------------ | -------------
 **Info** | Used to trigger actions when someone follows the channel.
@@ -750,7 +799,7 @@ Enables the ability to trigger actions based on Streamlabs alerts. Note that the
 
 ***
 
-#### OnSLTwitchGiftSub
+#### OnSLTwitchGiftSub | OnSLTwitchGiftSubNoSync
 | | |
 ------------ | -------------
 **Info** | Used to trigger actions when someone gifts a subscription to the channel.
@@ -768,7 +817,7 @@ Enables the ability to trigger actions based on Streamlabs alerts. Note that the
 
 ***
 
-#### OnSLTwitchHost
+#### OnSLTwitchHost | OnSLTwitchHostNoSync
 | | |
 ------------ | -------------
 **Info** | Used to trigger actions when someone hosts the channel.
@@ -784,7 +833,7 @@ Enables the ability to trigger actions based on Streamlabs alerts. Note that the
 
 ***
 
-#### OnSLTwitchRaid
+#### OnSLTwitchRaid | OnSLTwitchRaidNoSync
 | | |
 ------------ | -------------
 **Info** | Used to trigger actions when someone raids the channel.
@@ -800,7 +849,7 @@ Enables the ability to trigger actions based on Streamlabs alerts. Note that the
 
 ***
 
-#### OnSLTwitchSub
+#### OnSLTwitchSub | OnSLTwitchSubNoSync
 | | |
 ------------ | -------------
 **Info** | Used to trigger actions when someone subscribes to the channel.

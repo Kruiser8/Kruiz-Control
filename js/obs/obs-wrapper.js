@@ -2,16 +2,19 @@
 * Connect to the OBS websocket and setup the event handlers
 * @param {string} address obs websocket address
 * @param {string} password obs websocket password
+* @param {Handler} obsHandler handler to mark successful initialization
 * @param {function} onSwitchScenes handle switch scene messages
 * @param {function} onTransitionBegin handle transition starts
 * @param {function} onStreamStart handle stream start messages
 * @param {function} onStreamStop handle stream stop messages
 * @param {function} onCustomMessage handle custom messages
 */
-function connectOBSWebsocket(address, password, onSwitchScenes, onTransitionBegin, onStreamStarted, onStreamStopped, onCustomMessage) {
+function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTransitionBegin, onStreamStarted, onStreamStopped, onCustomMessage) {
   var obs = new OBSWebSocket();
-  obs.connect({ address: address, password: password }).catch(err => { // Promise convention dicates you have a catch on every chain.
-    console.error(err);
+  obs.connect({ address: address, password: password }).then(() => {
+    obsHandler.success();
+  }).catch(err => { // Promise convention dicates you have a catch on every chain.
+    console.error(JSON.stringify(err));
   });
 
 
