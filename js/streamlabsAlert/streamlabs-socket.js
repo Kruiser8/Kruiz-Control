@@ -1,16 +1,16 @@
 /**
  * Connect to the Streamlabs websocket and setup the event handlers
- * @param {Handler} streamlabsHandler Streamlabs Handler
+ * @param {Handler} streamlabsAlertHandler Streamlabs Alert Handler
  * @param {string} token Streamlabs Socket API token
  * @param {method} onEvent method to call when events are received
  */
-function connectStreamlabsWebsocket(streamlabsHandler, token, onEvent) {
+function connectStreamlabsWebsocket(streamlabsAlertHandler, token, onEvent) {
   //Connect to socket
   var streamlabs = io(`https://sockets.streamlabs.com?token=${token}`, {transports: ['websocket']});
 
   streamlabs.on('connect', function() {
     console.log('Successfully connected to the streamlabs websocket');
-    streamlabsHandler.success();
+    streamlabsAlertHandler.success();
   });
 
   streamlabs.onclose = function () {

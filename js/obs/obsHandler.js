@@ -148,11 +148,10 @@ class OBSHandler extends Handler {
         return {current_scene: currentScene.name};
         break;
       case 'scene':
-        var sceneData = await this.obs.getCurrentScene();
-        var currentScene = sceneData.name;
+        var currentScene = await this.obs.getCurrentScene();
         var scene = triggerData.slice(2).join(' ');
         await this.obs.setCurrentScene(scene);
-        return { previous_scene: currentScene };
+        return {previous_scene: currentScene.name};
         break;
       case 'scenesource':
         var status = triggerData[triggerData.length - 1].toLowerCase() === 'on' ? true : false;
