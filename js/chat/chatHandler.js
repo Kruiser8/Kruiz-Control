@@ -18,6 +18,7 @@ class ChatHandler extends Handler {
    * @param {string} oauth twitch irc oauth to send messages
    */
   init(user, oauth) {
+    this.channel = user;
     ComfyJS.onConnected = ( address, port, isFirstConnect ) => {
       if (isFirstConnect) {
         this.success();
@@ -56,21 +57,28 @@ class ChatHandler extends Handler {
         }
         if (command.charAt(0) === "!") {
           command = command.substring(1);
-          this.commands.push(command);
+          if (this.commands.indexOf(command) === -1) {
+            this.commands.push(command);
+            this.commandsInfo[command] = [];
+          }
         } else {
-          this.commandsOther.push(command);
+          if (this.commandsOther.indexOf(command) === -1) {
+            this.commandsOther.push(command);
+            this.commandsInfo[command] = [];
+          }
         }
         cooldown = parseInt(cooldown);
         if (isNaN(cooldown)) {
           cooldown = 0;
         }
-        this.commandsInfo[command] = {
+        if ( this.commandsInfo)
+        this.commandsInfo[command].push({
           permission: permission,
           info: info,
           trigger: triggerId,
           cooldown: cooldown * 1000,
           lastUse: 0 - (cooldown * 1000)
-        }
+        });
         break;
       case 'onkeyword':
         var keyword = '';
@@ -89,14 +97,17 @@ class ChatHandler extends Handler {
         if (isNaN(cooldown)) {
           cooldown = 0;
         }
-        this.keywords.push(keyword);
-        this.keywordsInfo[keyword] = {
+        if (this.keywords.indexOf(keyword) === -1) {
+          this.keywords.push(keyword);
+          this.keywordsInfo[keyword] = [];
+        }
+        this.keywordsInfo[keyword].push({
           permission: permission,
           info: info,
           trigger: triggerId,
           cooldown: cooldown * 1000,
           lastUse: 0 - (cooldown * 1000)
-        }
+        });
         break;
       default:
         // do nothing
@@ -133,7 +144,7 @@ class ChatHandler extends Handler {
       (permissions.includes('v') && flags.vip) ||
       (permissions.includes('f') && flags.founder) ||
       (permissions.includes('m') && flags.mod) ||
-      (permissions.includes('b') && flags.broadcaster) ||
+      (permissions.includes('b') && this.channel === user) ||
       (permissions === 'u' && info && user === info)
     ){
       return true;
@@ -171,30 +182,8 @@ class ChatHandler extends Handler {
     ComfyJS.onCommand = ( user, command, message, flags, extra ) => {
       message = '!' + command + ' ' + message;
       // Check for matching command and user permission
-      if( this.commands.indexOf(command) !== -1 ) {
-        var info = this.commandsInfo[command];
-        if (this.checkPermissions(user, flags, info.permission, info.info) && this.updateCooldown(info)) {
-          controller.handleData(info.trigger, {
-            user: user,
-            message: message,
-            data: {
-              user: user,
-              command: command,
-              message: message,
-              flags: flags,
-              extra: extra
-            }
-          });
-        }
-      }
-      // Otherwise, check for keyword match
-      else {
-        var result = message.match(this.keywordsRegex);
-        if (result) {
-          var match = result[0].toLowerCase().trim();
-          var info = this.keywordsInfo[match];
-
-          // Check if user has permission to trigger keyword
+      if (this.commands.indexOf(command) !== -1) {
+        this.commandsInfo[command].forEach(info => {
           if (this.checkPermissions(user, flags, info.permission, info.info) && this.updateCooldown(info)) {
             controller.handleData(info.trigger, {
               user: user,
@@ -208,6 +197,29 @@ class ChatHandler extends Handler {
               }
             });
           }
+        });
+      }
+      // Otherwise, check for keyword match
+      else {
+        var result = message.match(this.keywordsRegex);
+        if (result) {
+          var match = result[0].toLowerCase().trim();
+          this.keywordsInfo[match].forEach(info => {
+            // Check if user has permission to trigger keyword
+            if (this.checkPermissions(user, flags, info.permission, info.info) && this.updateCooldown(info)) {
+              controller.handleData(info.trigger, {
+                user: user,
+                message: message,
+                data: {
+                  user: user,
+                  command: command,
+                  message: message,
+                  flags: flags,
+                  extra: extra
+                }
+              });
+            }
+          });
         }
       }
     }
