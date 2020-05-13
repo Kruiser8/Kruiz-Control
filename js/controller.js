@@ -10,6 +10,10 @@ class Controller {
     this.triggerAsyncMap = {};
     this.triggerAsync = [];
     this.successful = [];
+    this.cooldowns = {};
+    this.initTriggers = [];
+    this.addParser('controller', this);
+    this.addTrigger('OnInit', 'controller');
   }
 
   /**
@@ -81,6 +85,36 @@ class Controller {
       console.error('Unable to find trigger for input: ' + trigger);
       return null;
     }
+  }
+
+  /**
+   * Register trigger from user input.
+   * @param {string} trigger name to use for the handler
+   * @param {array} triggerLine contents of trigger line
+   * @param {number} id of the new trigger
+   */
+  addTriggerData(trigger, triggerLine, triggerId) {
+    this.initTriggers.push(triggerId);
+  }
+
+  /**
+   * Called before parsing user input.
+   */
+  preParse() {
+    return;
+  }
+
+  /**
+   * Called after parsing all user input.
+   */
+  postParse() {
+    return;
+  }
+
+  runInit() {
+    this.initTriggers.forEach(triggerId => {
+      this.handleData(triggerId);
+    });
   }
 
   /**
@@ -196,6 +230,12 @@ class Controller {
         audio.play();
       }
     }
+    else if (parserName === 'cooldown') {
+      var name = data[1];
+      var duration = parseFloat(data[2]);
+      var res = await this.handleCooldown(name, duration);
+      return res;
+    }
     else if (parserName === 'eval') {
       var evaluation = data.slice(1).join(' ');
       var res = await eval(evaluation);
@@ -216,6 +256,23 @@ class Controller {
         return await parser.handleData(data);
       }
     }
+  }
+
+  /**
+   * Get a parser by name.
+   * @param {string} name name of the cooldown
+   * @param {numeric} duration duration of the cooldown
+   * @return {Object} whether or not to continue the trigger.
+   */
+  handleCooldown(name, duration) {
+    var response = {"continue": false};
+    duration = duration * 1000; // convert to milliseconds
+    var curTime = new Date().getTime();
+    if ( typeof(this.cooldowns[name]) === 'undefined' || curTime >= this.cooldowns[name] + duration ) {
+      this.cooldowns[name] = curTime;
+      response["continue"] = true;
+    }
+    return response;
   }
 
   /**

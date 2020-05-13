@@ -33,4 +33,7 @@ function readFileTriggers(data) {
   });
 
   controller.doneParsing();
+  setTimeout(function() {
+    controller.runInit();
+  }, 1000);
 }
