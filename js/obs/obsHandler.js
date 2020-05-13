@@ -148,16 +148,18 @@ class OBSHandler extends Handler {
         return {current_scene: currentScene.name};
         break;
       case 'scene':
-        var currentScene = await this.obs.getCurrentScene();
+        var sceneData = await this.obs.getCurrentScene();
+        var currentScene = sceneData.name;
         var scene = triggerData.slice(2).join(' ');
         await this.obs.setCurrentScene(scene);
-        return {previous_scene: currentScene};
+        return { previous_scene: currentScene };
         break;
       case 'scenesource':
         var status = triggerData[triggerData.length - 1].toLowerCase() === 'on' ? true : false;
         var scene = triggerData[2];
         var source = triggerData.slice(3, triggerData.length - 1).join(' ');
         await this.obs.setSourceVisibility(source, status, scene);
+        break;
       case 'source':
         var status = triggerData[triggerData.length - 1].toLowerCase() === 'on' ? true : false;
         var filterIndex = triggerData.indexOf('filter');
@@ -178,9 +180,23 @@ class OBSHandler extends Handler {
         var message = triggerData[2];
         var data = '';
         if (triggerData.length > 3) {
-          var data = triggerData.slice(3).join(' ');
+          data = triggerData.slice(3).join(' ');
         }
         await this.obs.broadcastCustomMessage(message, data);
+        break;
+      case 'mute':
+        var source = triggerData.slice(2, triggerData.length - 1).join(' ');
+        var status = triggerData[triggerData.length - 1].toLowerCase() === 'on' ? true : false;
+        await this.obs.setMute(source, status);
+        break;
+      case 'volume':
+        var source = triggerData.slice(2, triggerData.length - 1).join(' ');
+        var volume = parseFloat(triggerData[triggerData.length - 1]);
+        if (volume) {
+          await this.obs.setVolume(source, volume);
+        } else {
+          console.error('Unable to parse volume value: ' + triggerData[triggerData.length - 1]);
+        }
         break;
       default:
         break;

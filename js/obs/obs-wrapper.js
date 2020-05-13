@@ -29,6 +29,10 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
     console.log('OBS Websocket Closed');
   });
 
+  obs.on('Exiting', function() {
+    obs.disconnect();
+  });
+
   obs.on('SwitchScenes', onSwitchScenes);
   obs.on('TransitionBegin', onTransitionBegin);
   obs.on('StreamStarted', onStreamStarted);
@@ -36,7 +40,10 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
   obs.on('BroadcastCustomMessage', onCustomMessage);
 
   obs.getCurrentScene = async function() {
-    return await this.send('GetCurrentScene').catch(err => {
+    return await this.send('GetCurrentScene')
+    .then(data => {
+      return data;
+    }).catch(err => {
       // Promise convention dicates you have a catch on every chain.
       console.error(err);
     });
@@ -83,6 +90,26 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
     });
   };
 
+  obs.setMute = async function(source, enabled) {
+    await this.send('SetMute', {
+      'source': source,
+      'mute': enabled
+    }).catch(err => {
+      // Promise convention dicates you have a catch on every chain.
+      console.error(err);
+    });
+  };
+
+  obs.setVolume = async function(source, volume) {
+    await this.send('SetVolume', {
+      'source': source,
+      'volume': volume
+    }).catch(err => {
+      // Promise convention dicates you have a catch on every chain.
+      console.error(err);
+    });
+  };
+
   obs.broadcastCustomMessage = async function(message, data) {
     await this.send('BroadcastCustomMessage', {
       'realm': 'kruiz-control',
@@ -95,6 +122,6 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
       console.error(err);
     });
   };
-
+  
   return obs;
 }
