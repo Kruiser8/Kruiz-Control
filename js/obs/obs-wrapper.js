@@ -45,7 +45,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
       return data;
     }).catch(err => {
       // Promise convention dicates you have a catch on every chain.
-      console.error(err);
+      console.error(JSON.stringify(err));
     });
   };
 
@@ -57,7 +57,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
         'scene-name': scene
       }).catch(err => {
         // Promise convention dicates you have a catch on every chain.
-        console.error(err);
+      console.error(JSON.stringify(err));
       });
     } else {
       await this.send('SetSceneItemProperties', {
@@ -65,7 +65,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
         'visible': enabled
       }).catch(err => {
         // Promise convention dicates you have a catch on every chain.
-        console.error(err);
+      console.error(JSON.stringify(err));
       });
     }
   };
@@ -77,7 +77,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
       'filterEnabled': enabled
     }).catch(err => {
       // Promise convention dicates you have a catch on every chain.
-      console.error(err);
+      console.error(JSON.stringify(err));
     });
   };
 
@@ -86,7 +86,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
       'scene-name': scene
     }).catch(err => {
       // Promise convention dicates you have a catch on every chain.
-      console.error(err);
+      console.error(JSON.stringify(err));
     });
   };
 
@@ -96,7 +96,18 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
       'mute': enabled
     }).catch(err => {
       // Promise convention dicates you have a catch on every chain.
-      console.error(err);
+      console.error(JSON.stringify(err));
+    });
+  };
+
+  obs.getVolume = async function(source) {
+    return await this.send('GetVolume', {
+      'source': source
+    }).then(data => {
+      return data;
+    }).catch(err => {
+      // Promise convention dicates you have a catch on every chain.
+      console.error(JSON.stringify(err));
     });
   };
 
@@ -106,7 +117,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
       'volume': volume
     }).catch(err => {
       // Promise convention dicates you have a catch on every chain.
-      console.error(err);
+      console.error(JSON.stringify(err));
     });
   };
 
@@ -122,6 +133,6 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
       console.error(err);
     });
   };
-  
+
   return obs;
 }

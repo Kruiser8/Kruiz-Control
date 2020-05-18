@@ -21,15 +21,19 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Triggers](#chat-triggers)
     + [OnCommand](#oncommand)
     + [OnKeyword](#onkeyword)
+    + [OnSpeak](#onspeak)
   * [Actions](#chat-actions)
     + [Chat Send](#chat-send)
     + [Chat Whisper](#chat-whisper)
 - [Miscellaneous](#miscellaneous)
   * [Triggers](#miscellaneous-triggers)
+    + [OnInit](#oninit)
   * [Actions](#miscellaneous-actions)
+    + [Cooldown](#cooldown)
     + [Delay](#delay)
     + [Error](#error)
     + [Eval](#eval)
+    + [If](#if)
     + [Log](#log)
     + [Play](#play)
 - [OBS](#obs)
@@ -41,11 +45,13 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnOBSTransitionTo](#onobstransitionto)
   * [Actions](#obs-actions)
     + [OBS Current Scene](#obs-current-scene)
+    + [OBS Mute](#obs-mute)
     + [OBS Scene](#obs-scene)
     + [OBS Scene Source](#obs-scene-source)
     + [OBS Source](#obs-source)
     + [OBS Source Filter](#obs-source-filter)
     + [OBS Send](#obs-send)
+    + [OBS Volume](#obs-volume)
 - [Random](#random)
 - [SLOBS](#slobs)
   * [Triggers](#slobs-triggers)
@@ -110,13 +116,13 @@ Trigger files are sections of triggers and actions separated by empty lines. Eac
 ### Case Sensitivity
 Triggers and Actions are case insensitive. The following example sends a message after a command.
 ```
-OnCommand !caseSensitive
+OnCommand f 0 !caseSensitive
 Chat Send "Triggers and Actions are case insensitive"
 ```
 
 The following is *also* correct.
 ```
-Oncommand !caseSensitive
+Oncommand f 0 !caseSensitive
 chat SEND "Triggers and Actions are case insensitive"
 ```
 
@@ -139,7 +145,7 @@ Trigger files support comments using the **#** character. This allows you to lea
 #### Comment Example
 ```
 # My really complicated trigger
-OnCommand !example
+OnCommand e 10 !example
 Chat Send "This is a silly example!"
 ```
 
@@ -149,7 +155,7 @@ Chat Send "This is a silly example!"
 Triggers and Actions can return data that is used in following actions. Take the following example:
 
 ```
-OnCommand b !example
+OnCommand sb 10 !example
 Chat Send "{user} used the example command!"
 ```
 
@@ -295,6 +301,15 @@ Chat triggers also use a `<cooldown>` parameter to put the command or keyword on
 
 ***
 
+#### OnSpeak
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when a user speaks in chat for the first time.
+**Format** | `OnSpeak <name>`
+**Example** | `OnSpeak Kruiser8`
+
+***
+
 ### Actions
 
 #### Chat Send
@@ -319,11 +334,26 @@ Chat triggers also use a `<cooldown>` parameter to put the command or keyword on
 A small selection of actions that are included for increased usability.
 
 ### Miscellaneous Triggers
-None at the moment.
+
+#### OnInit
+| | |
+------------ | -------------
+**Info** | Used to fire a set of actions when Kruiz Control starts.
+**Format** | `OnInit`
+**Example** | `OnInit`
 
 ***
 
 ### Miscellaneous Actions
+
+#### Cooldown
+| | |
+------------ | -------------
+**Info** | Used to apply a cooldown to triggers. `<name>` is the identifier for the cooldown. `<seconds>` is the number of seconds before the trigger can fire again.
+**Format** | `Cooldown <name> <seconds>`
+**Example** | `Cooldown MyCustomTrigger 30`
+
+***
 
 #### Delay
 | | |
@@ -363,6 +393,24 @@ Eval (function() { var arr = {api_data}; return {random: arr[Math.floor(Math.ran
 ```
 
 If a `continue` parameter is returned and the value is `false`, the trigger will exit and not continue processing actions.
+
+***
+
+#### If
+The **If** action lets you exit out of a trigger if a specific criteria isn't met by comparing two values.
+
+The following `<comparator>` values are valid: `=`, `<`, `>`, `<=`, `>=`, `!=` (not equal).
+
+Multiple comparisons can be combined in one **If** line using the following `<conjunction>` values: `and`, `or`.
+
+
+| | |
+------------ | -------------
+**Info** | Used to determine whether or not the trigger should complete the rest of the actions.
+**Format** | `If <value_a> <comparator> <value_b> <conjunction> <value_c> <comparator> <value_d> ...`
+**Example (single comparison)** | `If {amount} >= 100`
+**Example (two comparisons)** | `If {amount} >= 100 and {amount} < 1000`
+**Example (multiple comparisons)** | `If {amount} >= 100 and {amount} < 1000 and {amount} != 123`
 
 ***
 
@@ -455,6 +503,15 @@ Enables the ability to take interact with and respond to OBS.
 
 ***
 
+#### OBS Mute
+| | |
+------------ | -------------
+**Info** | Used to mute or unmute the specified audio source in OBS.
+**Format** | `OBS Mute <source> <on/off>`
+**Example** | `OBS Mute Mic/Aux on`
+
+***
+
 #### OBS Scene
 | | |
 ------------ | -------------
@@ -505,6 +562,20 @@ Enables the ability to take interact with and respond to OBS.
 **Example (with data)** | `OBS Send PlayAudio Shikaka`
 
 _Note: Messages are echo'd to all websocket connected clients. This is useful for connecting other browser sources or triggering other triggers._
+
+***
+
+#### OBS Volume
+| | |
+------------ | -------------
+**Info** | Used to change the volume of an audio source. `<volume>` must be a number between 0.0 and 1.0. Note, volume stands for the is not a percentage.
+**Format** | `OBS Volume <source> <volume>`
+**Example** | `OBS Volume "Desktop Audio" 0.2`
+
+##### Parameters
+| | |
+------------ | -------------
+**previous_volume** | The volume of the source before changing. This allows users to revert the volume to the prior level.
 
 ***
 

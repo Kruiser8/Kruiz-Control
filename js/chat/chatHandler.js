@@ -3,13 +3,16 @@ class ChatHandler extends Handler {
    * Create a new Chat handler.
    */
   constructor() {
-    super('Chat', ['OnCommand','OnKeyword']);
+    super('Chat', ['OnCommand','OnKeyword','OnSpeak']);
     this.commands = [];
     this.commandsOther = [];
     this.commandsInfo = {};
     this.keywords = [];
     this.keywordsRegex = null;
     this.keywordsInfo = {};
+    this.speaks = [];
+    this.speaksInfo = {};
+    this.speakers = {};
   }
 
   /**
@@ -108,6 +111,14 @@ class ChatHandler extends Handler {
           cooldown: cooldown * 1000,
           lastUse: 0 - (cooldown * 1000)
         });
+        break;
+      case 'onspeak':
+        var user = triggerLine.slice(1).join(' ').toLowerCase();
+        if (this.speaks.indexOf(user) === -1) {
+          this.speaks.push(user);
+          this.speaksInfo[user] = [];
+        }
+        this.speaksInfo[user].push(triggerId);
         break;
       default:
         // do nothing
@@ -225,6 +236,17 @@ class ChatHandler extends Handler {
     }
 
     ComfyJS.onChat = ( user, message, flags, self, extra ) => {
+      // Check for OnSpeak Event
+      var userLower = user.toLowerCase();
+      if (this.speakers[userLower] === undefined && this.speaks.indexOf(userLower) !== -1) {
+        this.speakers[userLower] = true;
+        this.speaksInfo[userLower].forEach(triggerId => {
+          controller.handleData(triggerId);
+        })
+      } else if (this.speakers[userLower] === undefined) {
+        this.speakers[userLower] = true;
+      }
+      
       // Check for matching command and user permission
       var command = message.split(' ')[0];
       if(this.commandsOther.indexOf(command) != -1) {

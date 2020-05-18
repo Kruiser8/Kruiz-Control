@@ -190,12 +190,14 @@ class OBSHandler extends Handler {
         break;
       case 'volume':
         var source = triggerData.slice(2, triggerData.length - 1).join(' ');
+        var currentAudio = await this.obs.getVolume(source);
         var volume = parseFloat(triggerData[triggerData.length - 1]);
         if (volume) {
           await this.obs.setVolume(source, volume);
         } else {
           console.error('Unable to parse volume value: ' + triggerData[triggerData.length - 1]);
         }
+        return {previous_volume: currentAudio.volume};
         break;
       default:
         break;

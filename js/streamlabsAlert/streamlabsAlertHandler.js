@@ -97,7 +97,7 @@ class StreamlabsAlertHandler extends Handler {
       if (this.alertIds.indexOf(message.message['_id']) === -1) {
         this.alertIds.push(message.message['_id']);
         var type = message.message.type;
-        if (type === 'subscription' && message.message.gifter) {
+        if (type === 'subscription' && message.message.gifter_display_name) {
           type = 'gift_sub';
         }
         if (this.alerts.indexOf(type) != -1) {
@@ -112,7 +112,7 @@ class StreamlabsAlertHandler extends Handler {
         if (this.alertIdsNoSync.indexOf(alertMessage['_id']) === -1) {
           this.alertIdsNoSync.push(alertMessage['_id']);
           var type = alertMessage.type;
-          if (type === 'subscription' && alertMessage.gifter) {
+          if (type === 'subscription' && alertMessage.gifter_display_name) {
             type = 'gift_sub';
           }
           var params = this.eventHandlers[type](alertMessage);

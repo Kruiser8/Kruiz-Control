@@ -236,6 +236,10 @@ class Controller {
       var res = await this.handleCooldown(name, duration);
       return res;
     }
+    else if (parserName === 'if') {
+      var res = await this.handleIf(data);
+      return res;
+    }
     else if (parserName === 'eval') {
       var evaluation = data.slice(1).join(' ');
       var res = await eval(evaluation);
@@ -259,7 +263,8 @@ class Controller {
   }
 
   /**
-   * Get a parser by name.
+   * Handle the named cooldown.
+   *
    * @param {string} name name of the cooldown
    * @param {numeric} duration duration of the cooldown
    * @return {Object} whether or not to continue the trigger.
@@ -273,6 +278,78 @@ class Controller {
       response["continue"] = true;
     }
     return response;
+  }
+
+  /**
+   * Handle an IF statement
+   *
+   * @param {array} data line information
+   * @return {Object} whether or not to continue the trigger.
+   */
+  handleIf(data) {
+    var result = false;
+    if (data.length > 3) {
+      var leftArg = data[1];
+      var comparator = data[2];
+      var rightArg = data[3];
+      result = this.handleComparison(leftArg, comparator, rightArg);
+      for (var i = 4; i < data.length; i = i + 4) {
+        var comparison = data[i].toLowerCase();
+        leftArg = data[i+1];
+        comparator = data[i+2];
+        rightArg = data[i+3];
+        var newResult = this.handleComparison(leftArg, comparator, rightArg);
+        if (comparison === 'and') {
+          result = result && newResult;
+        } else if (comparison === 'or') {
+          result = result || newResult;
+        } else {
+          return { continue: false };
+        }
+      }
+    } else {
+      var leftArg = data[1];
+      var comparator = data[2];
+      var rightArg = data[3];
+      result = this.handleComparison(leftArg, comparator, rightArg);
+    }
+    return { continue: result };
+  }
+
+  /**
+   * Handle an IF statement
+   *
+   * @param {string} leftArg left argument
+   * @param {string} comparator comparing argument
+   * @param {string} rightArg right argument
+   * @return {Object} whether or not to continue the trigger.
+   */
+  handleComparison(leftArg, comparator, rightArg) {
+    var result = false;
+
+    if (comparator === '=') {
+      result = (leftArg == rightArg);
+    }
+    else if (comparator === '!=') {
+      result = (leftArg != rightArg);
+    }
+    else {
+      leftArg = parseFloat(leftArg);
+      rightArg = parseFloat(rightArg);
+      if (isNaN(leftArg) || isNaN(rightArg)) {
+        result = false;
+      } else if (comparator === '>=') {
+        result = (leftArg >= rightArg);
+      } else if (comparator === '<=') {
+        result = (leftArg <= rightArg);
+      } else if (comparator === '>') {
+        result = (leftArg > rightArg);
+      } else if (comparator === '<') {
+        result = (leftArg < rightArg);
+      }
+    }
+
+    return result;
   }
 
   /**
