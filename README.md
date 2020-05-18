@@ -128,7 +128,7 @@ OnSLDonation
 OBS Scene DonationCelebration
 Delay 4
 
-OnCommand m !brb
+OnCommand mb 0 !brb
 OBS Scene BRB
 Delay 5
 ```
