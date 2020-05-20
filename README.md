@@ -13,6 +13,7 @@ Kruiz Control enables a pseudo code approach to manage and automatically handle 
 <p align="center"><i><b>
   <a href="https://twitter.com/kruiser8">@Kruiser8</a> |
   <a href="https://trello.com/b/oIV3q6Im/kruiz-control">Trello (Roadmap)</a> |
+  <a href="https://patreon.com/kruiser8">Patreon</a> |
   <a href="https://discord.gg/wU3ZK3Q">Support Discord</a>
 </b></i></p>
 
