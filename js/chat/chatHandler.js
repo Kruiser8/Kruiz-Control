@@ -74,7 +74,6 @@ class ChatHandler extends Handler {
         if (isNaN(cooldown)) {
           cooldown = 0;
         }
-        if ( this.commandsInfo)
         this.commandsInfo[command].push({
           permission: permission,
           info: info,
@@ -191,18 +190,20 @@ class ChatHandler extends Handler {
     }
 
     ComfyJS.onCommand = ( user, command, message, flags, extra ) => {
-      message = '!' + command + ' ' + message;
+      var combined = '!' + command + ' ' + message;
       // Check for matching command and user permission
       if (this.commands.indexOf(command) !== -1) {
         this.commandsInfo[command].forEach(info => {
           if (this.checkPermissions(user, flags, info.permission, info.info) && this.updateCooldown(info)) {
             controller.handleData(info.trigger, {
               user: user,
-              message: message,
+              message: combined,
+              after: message,
               data: {
                 user: user,
                 command: command,
-                message: message,
+                message: combined,
+                after: message,
                 flags: flags,
                 extra: extra
               }
@@ -223,7 +224,7 @@ class ChatHandler extends Handler {
                 message: message,
                 data: {
                   user: user,
-                  command: command,
+                  keyword: match,
                   message: message,
                   flags: flags,
                   extra: extra
@@ -246,44 +247,50 @@ class ChatHandler extends Handler {
       } else if (this.speakers[userLower] === undefined) {
         this.speakers[userLower] = true;
       }
-      
+
       // Check for matching command and user permission
       var command = message.split(' ')[0];
       if(this.commandsOther.indexOf(command) != -1) {
-        var info = this.commandsInfo[command];
-        if (this.checkPermissions(user, flags, info.permission, info.info) && this.updateCooldown(info)) {
-          controller.handleData(info.trigger, {
-            user: user,
-            message: message,
-            data: {
+        this.commandsInfo[command].forEach(info => {
+          if (this.checkPermissions(user, flags, info.permission, info.info) && this.updateCooldown(info)) {
+            var after = message.split(' ').slice(1).join(' ');
+            controller.handleData(info.trigger, {
               user: user,
               message: message,
-              flags: flags,
-              extra: extra
-            }
-          });
-        }
+              after: after,
+              data: {
+                user: user,
+                command: command,
+                message: message,
+                after: after,
+                flags: flags,
+                extra: extra
+              }
+            });
+          }
+        });
       }
       // Otherwise, check for keyword match
       else {
         var result = message.match(this.keywordsRegex);
         if (result) {
           var match = result[0].toLowerCase().trim();
-          var info = this.keywordsInfo[match];
-
-          // Check if user has permission to trigger keyword
-          if (this.checkPermissions(user, flags, info.permission, info.info) && this.updateCooldown(info)) {
-            controller.handleData(info.trigger, {
-              user: user,
-              message: message,
-              data: {
+          this.keywordsInfo[match].forEach(info => {
+            // Check if user has permission to trigger keyword
+            if (this.checkPermissions(user, flags, info.permission, info.info) && this.updateCooldown(info)) {
+              controller.handleData(info.trigger, {
                 user: user,
                 message: message,
-                flags: flags,
-                extra: extra
-              }
-            });
-          }
+                data: {
+                  user: user,
+                  keyword: match,
+                  message: message,
+                  flags: flags,
+                  extra: extra
+                }
+              });
+            }
+          });
         }
       }
     }
