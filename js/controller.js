@@ -373,8 +373,9 @@ class Controller {
 
     // Parse all lines
     for (var i = 0; i < lines.length; i++) {
-      if (!lines[i].startsWith('#')) {
-        var lineData = shlexSplit(lines[i]);
+      var line = lines[i].trim();
+      if (!line.startsWith('#')) {
+        var lineData = shlexSplit(line);
         var dataLength = lineData.length;
 
         // Get new trigger value
