@@ -280,7 +280,8 @@ Chat triggers also use a `<cooldown>` parameter to put the command or keyword on
 | | |
 ------------ | -------------
 **user** | The display name of the user that sent the command.
-**message** | The chat message.
+**after** | The message excluding the command.
+**message** | The entire chat message, including the command.
 **data** | An object with all metadata about the message (for use with [Eval](#eval)).
 
 ***
