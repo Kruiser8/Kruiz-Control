@@ -27,13 +27,11 @@ class SLOBSHandler extends Handler {
     switch (trigger) {
       case 'onslobsswitchscenes':
         var scene = triggerLine.slice(1).join(' ');
-        if (this.onSwitch.indexOf(scene) !== -1) {
-          this.onSwitchTrigger[scene].push(triggerId);
-        } else {
+        if (this.onSwitch.indexOf(scene) === -1) {
           this.onSwitch.push(scene);
           this.onSwitchTrigger[scene] = [];
-          this.onSwitchTrigger[scene] = triggerId;
         }
+        this.onSwitchTrigger[scene].push(triggerId);
         break;
       case 'onslobsstreamstarted':
         this.onStartTrigger.push(triggerId);
