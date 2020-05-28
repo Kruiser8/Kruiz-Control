@@ -554,6 +554,15 @@ Enables the ability to take interact with and respond to OBS.
 
 ***
 
+#### OBS Source URL
+| | |
+------------ | -------------
+**Info** | Used to change the URL of a browser source in OBS.
+**Format** | `OBS Source <source> URL <url>`
+**Example** | `OBS Source Browser URL "https://github.com/Kruiser8/Kruiz-Control"`
+
+***
+
 #### OBS Send
 | | |
 ------------ | -------------

@@ -165,9 +165,20 @@ class OBSHandler extends Handler {
         if (filterIndex === -1) {
           filterIndex = triggerData.indexOf('Filter');
         }
-        if (filterIndex === -1) {
+        var urlIndex = triggerData.indexOf('url');
+        if (urlIndex === -1) {
+          urlIndex = triggerData.indexOf('URL');
+        }
+        if (urlIndex === -1) {
+          urlIndex = triggerData.indexOf('Url');
+        }
+        if (filterIndex === -1 && urlIndex === -1) {
           var source = triggerData.slice(2, triggerData.length - 1).join(' ');
           await this.obs.setSourceVisibility(source, status);
+        } else if (filterIndex === -1 && urlIndex !== -1) {
+          var source = triggerData.slice(2, urlIndex).join(' ');
+          var url = triggerData[triggerData.length - 1];
+          await this.obs.setBrowserSourceURL(source, url);
         }
         else {
           var source = triggerData.slice(2, filterIndex).join(' ');
