@@ -122,32 +122,18 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
   };
 
   /**
-   * Internal function
-   * @param {string} source
-   * @param {string} type
-   * @param {object} settings
-   * @return {Promise<void>}
-   */
-  obs.setSourceSettings = async function(source, type, settings) {
-    await this.send('SetSourceSettings', {
-      'sourceName': source,
-      'sourceType': type,
-      'sourceSettings': settings
-    }).catch(err => {
-      // Promise convention dictates you have a catch on every chain.
-      console.error(JSON.stringify(err));
-    });
-  };
-
-  /**
    * Set the URL of a browser source.
    * @param {string} source
    * @param {string} url
    * @return {Promise<void>}
    */
   obs.setBrowserSourceURL = async function(source, url) {
-    await this.setSourceSettings(source, 'browser_source', {
-      'url': url
+    await this.send('SetSourceSettings', {
+      'sourceName': source,
+      'sourceType': 'browser_source',
+      'sourceSettings': {
+        'url': url
+      }
     }).catch(err => {
       // Promise convention dictates you have a catch on every chain.
       console.error(JSON.stringify(err));
