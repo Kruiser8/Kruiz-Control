@@ -50,6 +50,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OBS Scene Source](#obs-scene-source)
     + [OBS Source](#obs-source)
     + [OBS Source Filter](#obs-source-filter)
+    + [OBS Source URL](#obs-source-url)
     + [OBS Send](#obs-send)
     + [OBS Volume](#obs-volume)
 - [Random](#random)
@@ -559,7 +560,9 @@ Enables the ability to take interact with and respond to OBS.
 ------------ | -------------
 **Info** | Used to change the URL of a browser source in OBS.
 **Format** | `OBS Source <source> URL <url>`
-**Example** | `OBS Source Browser URL "https://github.com/Kruiser8/Kruiz-Control"`
+**Example** | `OBS Source "Browser" URL "https://github.com/Kruiser8/Kruiz-Control"`
+
+_Note: The browser source must be in the current/active scene for this to trigger._
 
 ***
 
