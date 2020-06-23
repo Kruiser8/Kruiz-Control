@@ -17,6 +17,12 @@ Kruiz Control enables a pseudo code approach to manage and automatically handle 
   <a href="https://discord.gg/wU3ZK3Q">Support Discord</a>
 </b></i></p>
 
+***
+
+<h3 align="center"><a href="https://github.com/CrashKoeck/Kruiz-Control-Configurator/releases">Kruiz Control Configurator</a></h3>
+<p align="center"><a href="https://github.com/CrashKoeck/Kruiz-Control-Configurator/releases">Kruiz Control Configurator</a> is a simple frontend for Kruiz Control made by <a href="https://github.com/CrashKoeck">CrashKoeck</a> which allows easy configuration of the settings files. Download the executable and add it into your Kruiz Control folder in order to manage your settings.</p>
+
+
 ## Table of Contents
 
 - [Setup Guide](#setup-guide)
