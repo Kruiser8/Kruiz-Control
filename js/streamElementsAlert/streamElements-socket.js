@@ -2,9 +2,10 @@
  * Connect to the StreamElements websocket and setup the event handlers
  * @param {Handler} streamElementHandler StreamElements Handler
  * @param {string} token StreamElements JWT token
+ * @param {method} onTestEvent method to call when test events are received
  * @param {method} onEvent method to call when events are received
  */
-function connectStreamElementsWebsocket(streamElementHandler, token, onEvent) {
+function connectStreamElementsWebsocket(streamElementHandler, token, onTestEvent, onEvent) {
   const socket = io('https://realtime.streamelements.com', {
       transports: ['websocket']
   });
@@ -29,6 +30,6 @@ function connectStreamElementsWebsocket(streamElementHandler, token, onEvent) {
     console.log(`Successfully connected to channel ${channelId}`);
   });
 
-  socket.on('event:test', onEvent);
+  socket.on('event:test', onTestEvent);
   socket.on('event', onEvent);
 }
