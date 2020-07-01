@@ -142,6 +142,7 @@ class Controller {
    * @param {Object} triggerInfo id and params of the trigger
    */
   async performTrigger(triggerInfo, callback) {
+    var toSkip = 0;
     var triggerId = triggerInfo.triggerId;
     var triggerParams = triggerInfo.triggerParams;
     triggerParams['_successful_'] = this.successful.join(', ');
@@ -158,48 +159,57 @@ class Controller {
 
     // Run through actions
     for (var i = 0; i < triggerSequence.length; i++) {
-      var data = triggerSequence[i];
-      var run_data = [];
-
-      // If need to check for parameters
-      if (triggerRegex) {
-        for (var j = 0; j < data.length; j++) {
-          // Copy data into new array to avoid replacing directly
-          run_data.push(data[j])
-
-          // Find and replace all matches
-          var result = run_data[j].match(triggerRegex);
-          while (result) {
-            result.forEach(match => {
-              if (match.charAt(0) === '[') {
-                var replacement = JSON.stringify(triggerParams[match.substring(1, match.length - 1)]);
-                run_data[j] = run_data[j].replace(match, replacement);
-              } else {
-                run_data[j] = run_data[j].replace(match, triggerParams[match.substring(1, match.length - 1)]);
-              }
-            });
-            result = run_data[j].match(triggerRegex);
-          }
-        }
+      if (toSkip > 0) {
+        toSkip--;
       } else {
-        run_data = data;
-      }
+        var data = triggerSequence[i];
+        var run_data = [];
 
-      // Execute action
-      var runParams = await this.runTrigger(run_data, triggerParams, triggerRegex);
+        // If need to check for parameters
+        if (triggerRegex) {
+          for (var j = 0; j < data.length; j++) {
+            // Copy data into new array to avoid replacing directly
+            run_data.push(data[j])
 
-      // Handle parameters returned by action
-      if (runParams) {
-        // If continue param set to false, exit trigger
-        if (runParams.continue === false) {
-          return;
+            // Find and replace all matches
+            var result = run_data[j].match(triggerRegex);
+            while (result) {
+              result.forEach(match => {
+                if (match.charAt(0) === '[') {
+                  var replacement = JSON.stringify(triggerParams[match.substring(1, match.length - 1)]);
+                  run_data[j] = run_data[j].replace(match, replacement);
+                } else {
+                  run_data[j] = run_data[j].replace(match, triggerParams[match.substring(1, match.length - 1)]);
+                }
+              });
+              result = run_data[j].match(triggerRegex);
+            }
+          }
+        } else {
+          run_data = data;
         }
 
-        // Recreate regex with new params
-        Object.keys(runParams).forEach(attribute => {
-          triggerParams[attribute] = runParams[attribute];
-        });
-        triggerRegex = new RegExp('{' + Object.keys(triggerParams).join('}|{') + '}|\\[' + Object.keys(triggerParams).join('\\]|\\[') + '\\]', 'gi');
+        // Execute action
+        var runParams = await this.runTrigger(run_data, triggerParams, triggerRegex);
+
+        // Handle parameters returned by action
+        if (runParams) {
+          // If continue param set to false, exit trigger
+          if (runParams.continue === false) {
+            return;
+          }
+
+          if (runParams.skip) {
+            toSkip = runParams.skip;
+            delete runParams.skip;
+          }
+
+          // Recreate regex with new params
+          Object.keys(runParams).forEach(attribute => {
+            triggerParams[attribute] = runParams[attribute];
+          });
+          triggerRegex = new RegExp('{' + Object.keys(triggerParams).join('}|{') + '}|\\[' + Object.keys(triggerParams).join('\\]|\\[') + '\\]', 'gi');
+        }
       }
     }
   }
@@ -213,6 +223,17 @@ class Controller {
     if (parserName === 'delay') {
       // Custom delay handler
       await timeout(parseFloat(data[1]) * 1000);
+    }
+    else if (parserName === 'skip') {
+      var lines = parseInt(data[1]);
+      return { skip: lines };
+    }
+    else if (parserName === 'exit') {
+      return { continue: false };
+    }
+    else if (parserName === 'reset') {
+      // Custom reset
+      location.reload(true);
     }
     else if (parserName === 'play') {
       // Play audio and await the end of the audio
@@ -231,9 +252,17 @@ class Controller {
       }
     }
     else if (parserName === 'cooldown') {
-      var name = data[1];
-      var duration = parseFloat(data[2]);
-      var res = await this.handleCooldown(name, duration);
+      var action = data[1].toLowerCase();
+      var res = {};
+      if (action === 'check') {
+        var name = data[2];
+        var res = await this.checkCooldown(name);
+      } else {
+        var name = data[2];
+        var duration = parseFloat(data[3]);
+        var res = await this.handleCooldown(name, duration);
+      }
+
       return res;
     }
     else if (parserName === 'if') {
@@ -263,6 +292,22 @@ class Controller {
   }
 
   /**
+   * Check the named cooldown.
+   *
+   * @param {string} name name of the cooldown
+   * @return {Object} whether or not to continue the trigger.
+   */
+  checkCooldown(name) {
+    var response = {};
+    response[name] = false;
+    var curTime = new Date().getTime();
+    if ( typeof(this.cooldowns[name]) !== 'undefined' && curTime < this.cooldowns[name] ) {
+      response[name] = true;
+    }
+    return response;
+  }
+
+  /**
    * Handle the named cooldown.
    *
    * @param {string} name name of the cooldown
@@ -273,8 +318,8 @@ class Controller {
     var response = {"continue": false};
     duration = duration * 1000; // convert to milliseconds
     var curTime = new Date().getTime();
-    if ( typeof(this.cooldowns[name]) === 'undefined' || curTime >= this.cooldowns[name] + duration ) {
-      this.cooldowns[name] = curTime;
+    if ( typeof(this.cooldowns[name]) === 'undefined' || curTime >= this.cooldowns[name] ) {
+      this.cooldowns[name] = curTime + duration;
       response["continue"] = true;
     }
     return response;
@@ -288,12 +333,17 @@ class Controller {
    */
   handleIf(data) {
     var result = false;
+    var i = 1;
+    var skip = 0;
+    if (data.length % 2 == 1) {
+      skip = parseInt(data[i++]);
+    }
     if (data.length > 3) {
-      var leftArg = data[1];
-      var comparator = data[2];
-      var rightArg = data[3];
+      var leftArg = data[i++];
+      var comparator = data[i++];
+      var rightArg = data[i++];
       result = this.handleComparison(leftArg, comparator, rightArg);
-      for (var i = 4; i < data.length; i = i + 4) {
+      for (i; i < data.length; i = i + 4) {
         var comparison = data[i].toLowerCase();
         leftArg = data[i+1];
         comparator = data[i+2];
@@ -313,7 +363,11 @@ class Controller {
       var rightArg = data[3];
       result = this.handleComparison(leftArg, comparator, rightArg);
     }
-    return { continue: result };
+    if (skip > 0 && ! result) {
+      return { skip: skip };
+    } else {
+      return { continue: result };
+    }
   }
 
   /**
@@ -327,7 +381,7 @@ class Controller {
   handleComparison(leftArg, comparator, rightArg) {
     var result = false;
 
-    if (comparator === '=') {
+    if (comparator === '=' || comparator === '==') {
       result = (leftArg == rightArg);
     }
     else if (comparator === '!=') {
