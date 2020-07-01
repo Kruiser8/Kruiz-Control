@@ -1,9 +1,9 @@
-class StreamlabsAlertHandler extends Handler {
+class StreamlabsHandler extends Handler {
   /**
-   * Create a new Streamlabs Alert handler.
+   * Create a new Streamlabs handler.
    */
   constructor() {
-    super('StreamlabsAlert',['OnSLTwitchBits','OnSLDonation','OnSLTwitchFollow','OnSLTwitchGiftSub','OnSLTwitchHost','OnSLTwitchRaid','OnSLTwitchSub','OnSLTwitchBitsNoSync','OnSLDonationNoSync','OnSLTwitchFollowNoSync','OnSLTwitchGiftSubNoSync','OnSLTwitchHostNoSync','OnSLTwitchRaidNoSync','OnSLTwitchSubNoSync']);
+    super('Streamlabs', ['OnSLTwitchBits','OnSLDonation','OnSLTwitchFollow','OnSLTwitchGiftSub','OnSLTwitchHost','OnSLTwitchRaid','OnSLTwitchSub','OnSLTwitchBitsNoSync','OnSLDonationNoSync','OnSLTwitchFollowNoSync','OnSLTwitchGiftSubNoSync','OnSLTwitchHostNoSync','OnSLTwitchRaidNoSync','OnSLTwitchSubNoSync']);
     this.alerts = [];
     this.alertsTrigger = {
       'bits': [],
@@ -57,6 +57,7 @@ class StreamlabsAlertHandler extends Handler {
   /**
    * Initialize the connection to streamlabs with the input token.
    * @param {string} socketToken streamlabs socket api token
+   * @param {string} accessToken streamlabs api access token
    */
   init(socketToken) {
     connectStreamlabsWebsocket(this, socketToken, this.onStreamlabsMessage.bind(this));
@@ -97,7 +98,7 @@ class StreamlabsAlertHandler extends Handler {
       if (this.alertIds.indexOf(message.message['_id']) === -1) {
         this.alertIds.push(message.message['_id']);
         var type = message.message.type;
-        if (type === 'subscription' && message.message.gifter_display_name) {
+        if (type === 'subMysteryGift' || (type === 'subscription' && message.message.gifter_display_name)) {
           type = 'gift_sub';
         }
         if (this.alerts.indexOf(type) != -1) {
@@ -112,7 +113,7 @@ class StreamlabsAlertHandler extends Handler {
         if (this.alertIdsNoSync.indexOf(alertMessage['_id']) === -1) {
           this.alertIdsNoSync.push(alertMessage['_id']);
           var type = alertMessage.type;
-          if (type === 'subscription' && alertMessage.gifter_display_name) {
+          if (type === 'subMysteryGift' || (type === 'subscription' && alertMessage.gifter_display_name)) {
             type = 'gift_sub';
           }
           var params = this.eventHandlers[type](alertMessage);
@@ -167,10 +168,14 @@ class StreamlabsAlertHandler extends Handler {
    * @param {Object} message streamlabs event message
    */
   getGiftSubParameters(message) {
+    var gifter = message.gifter_display_name;
+    if (!gifter) {
+      gifter = message.gifter;
+    }
     return {
       'data': message,
       'user': message.name,
-      'gifter': message.gifter_display_name,
+      'gifter': gifter,
       'months': message.months,
       'tier': message.subPlan === 'Prime' ? 'Prime' : 'Tier ' + (parseInt(message.subPlan) / 1000)
     }
@@ -218,10 +223,10 @@ class StreamlabsAlertHandler extends Handler {
 /**
  * Create a handler and read user settings
  */
-function streamlabsAlertHandlerExport() {
-  var streamlabsAlert = new StreamlabsAlertHandler();
-  readFile('settings/streamlabs/socketAPIToken.txt', function(id) {
-    streamlabsAlert.init(id.trim());
-  });
+function streamlabsHandlerExport() {
+  var streamlabs = new StreamlabsHandler();
+	readFile('settings/streamlabs/socketAPIToken.txt', function(socket) {
+	  streamlabs.init(socket.trim());
+	});
 }
-streamlabsAlertHandlerExport();
+streamlabsHandlerExport();
