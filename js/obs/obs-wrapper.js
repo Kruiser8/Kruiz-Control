@@ -8,8 +8,9 @@
 * @param {function} onStreamStart handle stream start messages
 * @param {function} onStreamStop handle stream stop messages
 * @param {function} onCustomMessage handle custom messages
+* @param {function} onOBSSourceVisibility handle scene item visibility changes
 */
-function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTransitionBegin, onStreamStarted, onStreamStopped, onCustomMessage) {
+function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTransitionBegin, onStreamStarted, onStreamStopped, onCustomMessage, onOBSSourceVisibility) {
   var obs = new OBSWebSocket();
   obs.connect({ address: address, password: password }).then(() => {
     obsHandler.success();
@@ -38,6 +39,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
   obs.on('StreamStarted', onStreamStarted);
   obs.on('StreamStopped', onStreamStopped);
   obs.on('BroadcastCustomMessage', onCustomMessage);
+  obs.on('SceneItemVisibilityChanged', onOBSSourceVisibility);
 
   obs.getCurrentScene = async function() {
     return await this.send('GetCurrentScene')
@@ -57,7 +59,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
         'scene-name': scene
       }).catch(err => {
         // Promise convention dictates you have a catch on every chain.
-      console.error(JSON.stringify(err));
+        console.error(JSON.stringify(err));
       });
     } else {
       await this.send('SetSceneItemProperties', {
@@ -65,7 +67,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
         'visible': enabled
       }).catch(err => {
         // Promise convention dictates you have a catch on every chain.
-      console.error(JSON.stringify(err));
+        console.error(JSON.stringify(err));
       });
     }
   };
@@ -100,6 +102,15 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
     });
   };
 
+  obs.toggleMute = async function(source) {
+    await this.send('ToggleMute', {
+      'source': source,
+    }).catch(err => {
+      // Promise convention dictates you have a catch on every chain.
+      console.error(JSON.stringify(err));
+    });
+  };
+
   obs.getVolume = async function(source) {
     return await this.send('GetVolume', {
       'source': source
@@ -121,6 +132,18 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
     });
   };
 
+  obs.takeSourceScreenshot = async function(source, filePath) {
+    await this.send('TakeSourceScreenshot', {
+      sourceName: source,
+      saveToFilePath: filePath,
+      width: 100,
+      height: 300
+    }).catch(err => {
+      // Promise convention dictates you have a catch on every chain.
+      console.error(JSON.stringify(err));
+    });
+  };
+
   obs.broadcastCustomMessage = async function(message, data) {
     await this.send('BroadcastCustomMessage', {
       'realm': 'kruiz-control',
@@ -130,7 +153,38 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
       }
     }).catch(err => {
       // Promise convention dictates you have a catch on every chain.
-      console.error(err);
+      console.error(JSON.stringify(err));
+    });
+  };
+
+  obs.getSceneItemProperties = async function(scene, item) {
+    var data = await this.send('GetSceneItemProperties', {
+      'scene-name': scene,
+      'item': item
+    }).catch(err => { // Promise convention dictates you have a catch on every chain.
+      console.error(JSON.stringify(err));
+    });
+    return data;
+  }
+
+  obs.getSourceFilters = async function(source) {
+    var data = await this.send('GetSourceFilters', {
+      'sourceName': source
+    }).catch(err => { // Promise convention dictates you have a catch on every chain.
+      console.error(JSON.stringify(err));
+    });
+    return data;
+  }
+
+  obs.setSceneItemPosition = async function(scene, item, x, y) {
+    await this.send('SetSceneItemProperties', {
+      'item': item,
+      'position': {
+        'x': x,
+        'y': y
+      }
+    }).catch(err => { // Promise convention dictates you have a catch on every chain.
+      console.error(JSON.stringify(err));
     });
   };
 
