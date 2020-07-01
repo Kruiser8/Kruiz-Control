@@ -3,16 +3,25 @@ class ChatHandler extends Handler {
    * Create a new Chat handler.
    */
   constructor() {
-    super('Chat', ['OnCommand','OnKeyword','OnSpeak']);
+    super('Chat', ['OnCommand','OnKeyword','OnEveryChatMessage','OnSpeak']);
+
+    /* OnCommand */
     this.commands = [];
     this.commandsOther = [];
     this.commandsInfo = {};
+
+    /* OnKeyword */
     this.keywords = [];
     this.keywordsRegex = null;
     this.keywordsInfo = {};
+
+    /* OnSpeak */
     this.speaks = [];
     this.speaksInfo = {};
     this.speakers = {};
+
+    /* OnEveryChatMessage */
+    this.chatTriggers = [];
   }
 
   /**
@@ -50,7 +59,7 @@ class ChatHandler extends Handler {
         var info = '';
         var cooldown = 0;
         var permission = triggerLine[1].toLowerCase();
-        if (permission === 'u') {
+        if (permission.includes('u')) {
           info = triggerLine[2].toLowerCase();
           cooldown = triggerLine[3];
           command = triggerLine[4].toLowerCase();
@@ -87,7 +96,7 @@ class ChatHandler extends Handler {
         var info = '';
         var cooldown = 0;
         var permission = triggerLine[1].toLowerCase();
-        if (permission === 'u') {
+        if (permission.includes('u')) {
           info = triggerLine[2].toLowerCase();
           cooldown = triggerLine[3];
           keyword = triggerLine.slice(4).join(' ');
@@ -118,6 +127,9 @@ class ChatHandler extends Handler {
           this.speaksInfo[user] = [];
         }
         this.speaksInfo[user].push(triggerId);
+        break;
+      case 'oneverychatmessage':
+        this.chatTriggers.push(triggerId);
         break;
       default:
         // do nothing
@@ -155,7 +167,7 @@ class ChatHandler extends Handler {
       (permissions.includes('f') && flags.founder) ||
       (permissions.includes('m') && flags.mod) ||
       (permissions.includes('b') && this.channel === user) ||
-      (permissions === 'u' && info && user === info)
+      (permissions.includes('u') && info && user === info)
     ){
       return true;
     }
@@ -191,6 +203,23 @@ class ChatHandler extends Handler {
 
     ComfyJS.onCommand = ( user, command, message, flags, extra ) => {
       var combined = '!' + command + ' ' + message;
+
+      if (user.toLowerCase() != this.channel) {
+        this.chatTriggers.forEach(triggerId => {
+          controller.handleData(triggerId, {
+            user: user,
+            message: combined,
+            data: {
+              user: user,
+              command: command,
+              message: combined,
+              after: message,
+              flags: flags,
+              extra: extra
+            }
+          });
+        });
+      }
       // Check for matching command and user permission
       if (this.commands.indexOf(command) !== -1) {
         this.commandsInfo[command].forEach(info => {
@@ -242,10 +271,34 @@ class ChatHandler extends Handler {
       if (this.speakers[userLower] === undefined && this.speaks.indexOf(userLower) !== -1) {
         this.speakers[userLower] = true;
         this.speaksInfo[userLower].forEach(triggerId => {
-          controller.handleData(triggerId);
-        })
+          controller.handleData(triggerId, {
+            user: user
+          });
+        });
+      } else if (this.speakers[userLower] === undefined && this.speaks.indexOf('*') !== -1) {
+        this.speakers[userLower] = true;
+        this.speaksInfo['*'].forEach(triggerId => {
+          controller.handleData(triggerId, {
+            user: user
+          });
+        });
       } else if (this.speakers[userLower] === undefined) {
         this.speakers[userLower] = true;
+      }
+
+      if (user.toLowerCase() != this.channel) {
+        this.chatTriggers.forEach(triggerId => {
+          controller.handleData(triggerId, {
+            user: user,
+            message: message,
+            data: {
+              user: user,
+              message: message,
+              flags: flags,
+              extra: extra
+            }
+          });
+        });
       }
 
       // Check for matching command and user permission
