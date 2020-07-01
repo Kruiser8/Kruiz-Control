@@ -8,8 +8,16 @@ class SLOBSHandler extends Handler {
     this.onSwitchTrigger = {};
     this.onStartTrigger = [];
     this.onStopTrigger = [];
+  }
+
+  /**
+   * Initialize the connection to SLOBS with the input settings.
+   * @param {string} token slobs api token
+   */
+  init(token) {
     this.slobs = connectSLOBSWebsocket(
       this,
+      token,
       this.onSwitchScenes.bind(this),
       this.onStreamStart.bind(this),
       this.onStreamStop.bind(this)
@@ -52,7 +60,16 @@ class SLOBSHandler extends Handler {
   async onSwitchScenes(data) {
     if (this.onSwitch.indexOf(data.name) !== -1) {
       this.onSwitchTrigger[data.name].forEach(triggerId => {
-        controller.handleData(triggerId);
+        controller.handleData(triggerId, {
+          scene: data.name
+        });
+      });
+    }
+    if (this.onSwitch.indexOf('*') !== -1) {
+      this.onSwitchTrigger['*'].forEach(triggerId => {
+        controller.handleData(triggerId, {
+          scene: data.name
+        });
       });
     }
   }
@@ -86,6 +103,10 @@ class SLOBSHandler extends Handler {
   async handleData(triggerData) {
     var trigger = triggerData[1].toLowerCase();
     switch (trigger) {
+      case 'currentscene':
+        var scene = this.slobs.getCurrentScene();
+        return {current_scene: scene};
+        break;
       case 'scene':
         var scene = triggerData.slice(2).join(' ');
         await this.slobs.setCurrentScene(scene);
@@ -101,6 +122,23 @@ class SLOBSHandler extends Handler {
         var status = triggerData[triggerData.length - 1].toLowerCase() === 'on' ? true : false;
         await this.slobs.setSourceVisibility(scene, source, status);
         break;
+      case 'flip':
+        var scene = triggerData[2];
+        var source = triggerData.slice(3, triggerData.length - 1).join(' ');
+        if (triggerData[triggerData.length - 1].toLowerCase() === 'y') {
+          await this.slobs.flipSourceY(scene, source);
+        } else {
+          await this.slobs.flipSourceX(scene, source);
+        }
+        break;
+      case 'rotate':
+        var scene = triggerData[2];
+        var source = triggerData.slice(3, triggerData.length - 1).join(' ');
+        var degree = parseFloat(triggerData[triggerData.length - 1]);
+        if (!isNaN(degree)) {
+          await this.slobs.rotateSource(scene, source, degree);
+        }
+        break;
     }
     return;
   }
@@ -111,5 +149,8 @@ class SLOBSHandler extends Handler {
  */
 function slobsHandlerExport() {
   var slobsHandler = new SLOBSHandler();
+  readFile('settings/slobs/token.txt', function(token) {
+    slobsHandler.init(token.trim());
+  });
 }
 slobsHandlerExport();

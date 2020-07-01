@@ -1,11 +1,12 @@
 /**
  * Connect to Streamlabs OBS JSON RPC API and setup the event handlers
  * @param {Handler} slobsHandler handler to mark successful initialization
+ * @param {string} token SLOBS API Token
  * @param {function} onSwitchScenes handle switch scene messages
  * @param {function} onStreamStart handle stream start messages
  * @param {function} onStreamStop handle stream stop messages
  */
- function connectSLOBSWebsocket(slobsHandler, onSwitchScenes, onStreamStarted, onStreamStopped) {
+ function connectSLOBSWebsocket(slobsHandler, token, onSwitchScenes, onStreamStarted, onStreamStopped) {
   var socket = new SockJS('http://127.0.0.1:59650/api');
   var slobsSocket = {
     requestId: 1,
@@ -16,6 +17,7 @@
 
   socket.onopen = () => {
     slobsHandler.success();
+    slobsSocket.sendSLOBS("auth", "TcpServerService", [token])
     slobsSocket.sendSLOBS("getScenes", "ScenesService");
     slobsSocket.sendSLOBS("activeScene", "ScenesService");
     slobsSocket.sendSLOBS("sceneSwitched", "ScenesService");
@@ -26,11 +28,11 @@
   socket.onmessage = (e) => {
     if (e.type === 'message') {
       var data = JSON.parse(e.data);
-      if (data.id === 1) {
+      if (data.id === 2) {
         data.result.forEach(scene => {
           slobsSocket.scenes[scene.name] = scene;
         });
-      } else if (data.id === 2) {
+      } else if (data.id === 3) {
         slobsSocket.activeScene = data.result.name;
       } else if (data.result && data.result.resourceId === 'ScenesService.sceneAdded' && data.result.data) {
         slobsSocket.scenes[data.result.data.name] = data.result.data;
@@ -53,6 +55,10 @@
     console.log('Closed SLOBS connection', e);
   };
 
+  slobsSocket.getCurrentScene = function() {
+    return slobsSocket.activeScene;
+  }
+
   slobsSocket.setCurrentScene = function(scene) {
     if (slobsSocket.scenes[scene]) {
       var current = slobsSocket.activeScene;
@@ -71,6 +77,45 @@
         if (sceneItem.name === source) {
           var sceneItemId = `SceneItem["${sceneInfo.id}","${sceneItem.id}","${sceneItem.sourceId}"]`;
           slobsSocket.sendSLOBS("setVisibility", sceneItemId, [enabled]);
+        }
+      });
+    }
+  }
+
+  slobsSocket.flipSourceX = function(scene, source) {
+    scene = scene || slobsSocket.activeScene;
+    var sceneInfo = slobsSocket.scenes[scene];
+    if (sceneInfo) {
+      sceneInfo.nodes.forEach(sceneItem => {
+        if (sceneItem.name === source) {
+          var sceneItemId = `SceneItem["${sceneInfo.id}","${sceneItem.id}","${sceneItem.sourceId}"]`;
+          slobsSocket.sendSLOBS("flipX", sceneItemId);
+        }
+      });
+    }
+  }
+
+  slobsSocket.flipSourceY = function(scene, source) {
+    scene = scene || slobsSocket.activeScene;
+    var sceneInfo = slobsSocket.scenes[scene];
+    if (sceneInfo) {
+      sceneInfo.nodes.forEach(sceneItem => {
+        if (sceneItem.name === source) {
+          var sceneItemId = `SceneItem["${sceneInfo.id}","${sceneItem.id}","${sceneItem.sourceId}"]`;
+          slobsSocket.sendSLOBS("flipY", sceneItemId);
+        }
+      });
+    }
+  }
+
+  slobsSocket.rotateSource = function(scene, source, degree) {
+    scene = scene || slobsSocket.activeScene;
+    var sceneInfo = slobsSocket.scenes[scene];
+    if (sceneInfo) {
+      sceneInfo.nodes.forEach(sceneItem => {
+        if (sceneItem.name === source) {
+          var sceneItemId = `SceneItem["${sceneInfo.id}","${sceneItem.id}","${sceneItem.sourceId}"]`;
+          slobsSocket.sendSLOBS("setTransform", sceneItemId, [{rotation: degree}]);
         }
       });
     }
