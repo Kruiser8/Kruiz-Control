@@ -20,37 +20,58 @@ Each handler provides its own triggers and actions that can be used in a trigger
 - [Chat](#chat)
   * [Triggers](#chat-triggers)
     + [OnCommand](#oncommand)
+    + [OnEveryChatMessage](#oneverychatmessage)
     + [OnKeyword](#onkeyword)
     + [OnSpeak](#onspeak)
   * [Actions](#chat-actions)
     + [Chat Send](#chat-send)
     + [Chat Whisper](#chat-whisper)
+- [Hype Train](#hype-train)
+  * [Triggers](#hype-train-triggers)
+    + [OnHypeTrainConductor](#onhypetrainconductor)
+    + [OnHypeTrainEnd](#onhypetrainend)
+    + [OnHypeTrainLevel](#onhypetrainlevel)
+    + [OnHypeTrainProgress](#onhypetrainprogress)
+    + [OnHypeTrainStart](#onhypetrainstart)
+  * [Actions](#hype-train-actions)
+- [Message](#message)
+  * [Triggers](#message-triggers)
+    + [OnMessage](#onmessage)
+  * [Actions](#message-actions)
+    + [Message Send](#message-send)
 - [Miscellaneous](#miscellaneous)
   * [Triggers](#miscellaneous-triggers)
     + [OnInit](#oninit)
   * [Actions](#miscellaneous-actions)
-    + [Cooldown](#cooldown)
+    + [Cooldown Apply](#cooldown-apply)
+    + [Cooldown Check](#cooldown-check)
     + [Delay](#delay)
     + [Error](#error)
     + [Eval](#eval)
+    + [Exit](#exit)
     + [If](#if)
     + [Log](#log)
     + [Play](#play)
+    + [Reset](#reset)
+    + [Skip](#skip)
 - [OBS](#obs)
   * [Triggers](#obs-triggers)
     + [OnOBSCustomMessage](#onobscustommessage)
+    + [OnOBSSourceVisibility](#onobssourcevisibility)
     + [OnOBSStreamStarted](#onobsstreamstarted)
     + [OnOBSStreamStopped](#onobsstreamstopped)
     + [OnOBSSwitchScenes](#onobsswitchscenes)
     + [OnOBSTransitionTo](#onobstransitionto)
   * [Actions](#obs-actions)
-    + [OBS Current Scene](#obs-current-scene)
+    + [OBS CurrentScene](#obs-currentscene)
     + [OBS Mute](#obs-mute)
+    + [OBS Position](#obs-position)
     + [OBS Scene](#obs-scene)
-    + [OBS Scene Source](#obs-scene-source)
+    + [OBS SceneSource](#obs-scenesource)
     + [OBS Source](#obs-source)
     + [OBS Source Filter](#obs-source-filter)
     + [OBS Send](#obs-send)
+    + [OBS TakeSourceScreenshot](#obs-takesourcescreenshot)
     + [OBS Volume](#obs-volume)
 - [Random](#random)
 - [SLOBS](#slobs)
@@ -59,8 +80,10 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnSLOBSStreamStopped](#onslobsstreamstopped)
     + [OnSLOBSSwitchScenes](#onslobsswitchscenes)
   * [Actions](#slobs-actions)
+    + [SLOBS Flip](#slobs-flip)
+    + [SLOBS Rotate](#slobs-rotate)
     + [SLOBS Scene](#slobs-scene)
-    + [SLOBS Scene Source](#slobs-scene-source)
+    + [SLOBS SceneSource](#slobs-scenesource)
     + [SLOBS Source](#slobs-source)
 - [StreamElements](#streamelements)
   * [Triggers](#streamelements-triggers)
@@ -87,6 +110,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Triggers](#timer-triggers)
     + [OnTimer](#ontimer)
   * [Actions](#timer-actions)
+    + [Timer Reset](#timer-reset)
 - [Variable](#variable)
   * [Triggers](#variable-triggers)
   * [Actions](#variable-actions)
@@ -246,7 +270,7 @@ None at the moment.
 ***
 
 ## Chat
-Enables the ability to take actions on chat message and send messages.
+Enables the ability to take actions on chat message and send messages. Note that Kruiz Control can respond to messages sent by Kruiz Control.
 
 ### Chat Triggers
 Chat triggers use a `<permission>` parameter to specify who can use a command. The following values can be combined in any order.
@@ -262,7 +286,7 @@ Additionally, you can use *u* as the permission to specify a specific user that 
 
 **Example**:
 ```
-OnCommand u kruiser8 !secret
+OnCommand u kruiser8 10 !secret
 ```
 
 Chat triggers also use a `<cooldown>` parameter to put the command or keyword on cooldown for the specified number of seconds. The `<cooldown>` can be any number 0 or higher.
@@ -270,6 +294,7 @@ Chat triggers also use a `<cooldown>` parameter to put the command or keyword on
 ***
 
 #### OnCommand
+_WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mindful of your commands, keywords, and messages so that you do not trigger an infinite loop of messages. Twitch has [chat limits](https://dev.twitch.tv/docs/irc/guide#command--message-limits) and will block you from chatting._
 | | |
 ------------ | -------------
 **Info** | Used to trigger a set of actions when a command is used at the beginning of a message.
@@ -286,7 +311,27 @@ Chat triggers also use a `<cooldown>` parameter to put the command or keyword on
 
 ***
 
+#### OnEveryChatMessage
+_WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mindful of your commands, keywords, and messages so that you do not trigger an infinite loop of messages. Twitch has [chat limits](https://dev.twitch.tv/docs/irc/guide#command--message-limits) and will block you from chatting._
+
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when every chat message is sent. By default, this ignores the broadcaster.
+**Format** | `OnEveryChatMessage`
+**Example** | `OnEveryChatMessage`
+
+##### Parameters
+| | |
+------------ | -------------
+**user** | The display name of the user that sent the command.
+**message** | The entire chat message, including the command.
+**data** | An object with all metadata about the message (for use with [Eval](#eval)).
+
+***
+
 #### OnKeyword
+_WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mindful of your commands, keywords, and messages so that you do not trigger an infinite loop of messages. Twitch has [chat limits](https://dev.twitch.tv/docs/irc/guide#command--message-limits) and will block you from chatting._
+
 | | |
 ------------ | -------------
 **Info** | Used to trigger a set of actions when a keyword or phrase appears in a message.
@@ -305,9 +350,14 @@ Chat triggers also use a `<cooldown>` parameter to put the command or keyword on
 #### OnSpeak
 | | |
 ------------ | -------------
-**Info** | Used to trigger a set of actions when a user speaks in chat for the first time.
+**Info** | Used to trigger a set of actions when a user speaks in chat for the first time. Using `*` as the `<name>` will execute the trigger for all users except those that have another OnSpeak event.
 **Format** | `OnSpeak <name>`
 **Example** | `OnSpeak Kruiser8`
+
+##### Parameters
+| | |
+------------ | -------------
+**user** | The display name of the user that triggered the speak event.
 
 ***
 
@@ -331,6 +381,131 @@ Chat triggers also use a `<cooldown>` parameter to put the command or keyword on
 
 ***
 
+## Hype Train
+A handler to allow you to trigger events from twitch hype trains.
+
+### Hype Train Triggers
+
+#### OnHypeTrainConductor
+| | |
+------------ | -------------
+**Info** | Used to fire a set of actions when the conductor is changed for a given type (sub or cheer). Note that this fires every time progress is made in the hype train regardless of if the conductor changes.
+**Format** | `OnHypeTrainConductor`
+**Example** | `OnHypeTrainConductor`
+
+##### Parameters
+| | |
+------------ | -------------
+**cheer_conductor_id** | Id of the current cheer conductor if one exists.
+**sub_conductor_id** | Id of the current sub conductor if one exists.
+**type** | `SUBS` or `CHEER` to designate the type of conductor changed.
+**data** | Data included with the message.
+
+***
+
+#### OnHypeTrainEnd
+| | |
+------------ | -------------
+**Info** | Used to fire a set of actions when the hype train ends.
+**Format** | `OnHypeTrainEnd`
+**Example** | `OnHypeTrainEnd`
+
+##### Parameters
+| | |
+------------ | -------------
+**cheer_conductor_id** | Id of the current cheer conductor if one exists.
+**sub_conductor_id** | Id of the current sub conductor if one exists.
+**data** | Data included with the message.
+
+***
+
+#### OnHypeTrainLevel
+| | |
+------------ | -------------
+**Info** | Used to fire a set of actions when the hype train levels up.
+**Format** | `OnHypeTrainLevel`
+**Example** | `OnHypeTrainLevel`
+
+##### Parameters
+| | |
+------------ | -------------
+**level** | The current level of the hype train.
+**progress** | The current progress towards the next level (designated by `total`).
+**total** | The amount needed to reach the next level in the hype train.
+**time** | The amount of seconds left in the hype train.
+**data** | Data included with the message.
+
+***
+
+#### OnHypeTrainProgress
+| | |
+------------ | -------------
+**Info** | Used to fire a set of actions when someone contributes to the hype train.
+**Format** | `OnHypeTrainProgress`
+**Example** | `OnHypeTrainProgress`
+
+##### Parameters
+| | |
+------------ | -------------
+**user_id** | The twitch id of the user that contributed.
+**level** | The current level of the hype train.
+**progress** | The current progress towards the next level (designated by `total`).
+**total** | The amount needed to reach the next level in the hype train.
+**time** | The amount of seconds left in the hype train.
+**data** | Data included with the message.
+
+***
+
+#### OnHypeTrainStart
+| | |
+------------ | -------------
+**Info** | Used to fire a set of actions when a hype train starts.
+**Format** | `OnHypeTrainStart`
+**Example** | `OnHypeTrainStart`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | Data included with the message.
+
+***
+
+### Hype Train Actions
+None at the moment.
+
+***
+
+## Message
+A small handler to allow you to trigger events from another event without using an external application (like OBS or Chat).
+
+### Message Triggers
+
+#### OnMessage
+| | |
+------------ | -------------
+**Info** | Used to fire a set of actions when a message is sent with [`Message Send`](#message-send). Using `*` as the `<message>` will execute the trigger for all messages.
+**Format** | `OnMessage <message>`
+**Example** | `OnMessage MyCustomMessage`
+
+##### Parameters
+| | |
+------------ | -------------
+**message** | Name of the message.
+**data** | Data included with the message.
+
+***
+
+### Message Actions
+
+#### Message Send
+| | |
+------------ | -------------
+**Info** | Used to send a message and trigger other events. `<message>` is used to identify the message for [`OnMessage`](#onmessage) events. `<data>` is any information you want to pass through.
+**Format** | `Message Send <message> <data>`
+**Example** | `Message Send MyCustomMessage {user}`
+
+***
+
 ## Miscellaneous
 A small selection of actions that are included for increased usability.
 
@@ -347,12 +522,26 @@ A small selection of actions that are included for increased usability.
 
 ### Miscellaneous Actions
 
-#### Cooldown
+#### Cooldown Apply
 | | |
 ------------ | -------------
 **Info** | Used to apply a cooldown to triggers. `<name>` is the identifier for the cooldown. `<seconds>` is the number of seconds before the trigger can fire again.
-**Format** | `Cooldown <name> <seconds>`
-**Example** | `Cooldown MyCustomTrigger 30`
+**Format** | `Cooldown Apply <name> <seconds>`
+**Example** | `Cooldown Apply MyCustomTrigger 30`
+
+***
+
+#### Cooldown Check
+| | |
+------------ | -------------
+**Info** | Used to check if a cooldown is active. `<name>` is the identifier for the cooldown.
+**Format** | `Cooldown Check <name>`
+**Example** | `Cooldown Check MyCustomTrigger`
+
+##### Parameters
+| | |
+------------ | -------------
+**\<name\>** | [True/False] Whether or not the cooldown is active.
 
 ***
 
@@ -397,6 +586,15 @@ If a `continue` parameter is returned and the value is `false`, the trigger will
 
 ***
 
+#### Exit
+| | |
+------------ | -------------
+**Info** | Used to exit an event without processing the rest of the actions.
+**Format** | `Exit`
+**Example** | `Exit`
+
+***
+
 #### If
 The **If** action lets you exit out of a trigger if a specific criteria isn't met by comparing two values.
 
@@ -404,14 +602,19 @@ The following `<comparator>` values are valid: `=`, `<`, `>`, `<=`, `>=`, `!=` (
 
 Multiple comparisons can be combined in one **If** line using the following `<conjunction>` values: `and`, `or`.
 
+The `<optional_skip>` value allows you to specify the number of lines to skip if the criteria is not met. This value is completely optional and allows for advanced logic handling.
+
 
 | | |
 ------------ | -------------
 **Info** | Used to determine whether or not the trigger should complete the rest of the actions.
-**Format** | `If <value_a> <comparator> <value_b> <conjunction> <value_c> <comparator> <value_d> ...`
+**Format** | `If <optional_skip> <value_a> <comparator> <value_b> <conjunction> <value_c> <comparator> <value_d> ...`
 **Example (single comparison)** | `If {amount} >= 100`
+**Example (single comparison with skip value)** | `If 3 {amount} >= 100`
 **Example (two comparisons)** | `If {amount} >= 100 and {amount} < 1000`
+**Example (two comparisons with skip value)** | `If 2 {amount} >= 100 and {amount} < 1000`
 **Example (multiple comparisons)** | `If {amount} >= 100 and {amount} < 1000 and {amount} != 123`
+**Example (multiple comparisons with skip value)** | `If 6 {amount} >= 100 and {amount} < 1000 and {amount} != 123`
 
 ***
 
@@ -433,6 +636,24 @@ Multiple comparisons can be combined in one **If** line using the following `<co
 
 ***
 
+#### Reset
+| | |
+------------ | -------------
+**Info** | Used to reload Kruiz Control and read in the most recent trigger information.
+**Format** | `Reset`
+**Example** | `Reset`
+
+***
+
+#### Skip
+| | |
+------------ | -------------
+**Info** | Used to skip over the next `<number>` of lines in an event.
+**Format** | `Skip <number>`
+**Example** | `Skip 3`
+
+***
+
 ## OBS
 Enables the ability to take interact with and respond to OBS.
 
@@ -441,14 +662,29 @@ Enables the ability to take interact with and respond to OBS.
 #### OnOBSCustomMessage
 | | |
 ------------ | -------------
-**Info** | Used to trigger a set of actions when a custom message is sent. Used to receive triggers from [OBS Send](#obs-send).
+**Info** | Used to trigger a set of actions when a custom message is sent. Used to receive triggers from [OBS Send](#obs-send). Using `*` as the `<message>` will execute the trigger for all messages.
 **Format** | `OnOBSCustomMessage <message>`
 **Example** | `OnOBSCustomMessage "My Custom Message"`
 
 ##### Parameters
 | | |
 ------------ | -------------
+**message** | The name of the custom message.
 **data** | The data included with the message (or an empty string).
+
+***
+
+#### OnOBSSourceVisibility
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when a source's visibility is changed.
+**Format** | `OnOBSSourceVisibility <scene> <source> <on/off/toggle>`
+**Example** | `OnOBSSourceVisibility Webcam Camera off`
+
+##### Parameters
+| | |
+------------ | -------------
+**visible** | The current visibility setting.
 
 ***
 
@@ -473,24 +709,35 @@ Enables the ability to take interact with and respond to OBS.
 #### OnOBSSwitchScenes
 | | |
 ------------ | -------------
-**Info** | Used to trigger a set of actions when the scene changes in OBS. This is fired once the new scene is loaded.
+**Info** | Used to trigger a set of actions when the scene changes in OBS. This is fired once the new scene is loaded. Using `*` as the `<scene>` will execute the trigger for all scenes.
 **Format** | `OnOBSSwitchScenes <scene>`
 **Example** | `OnOBSSwitchScenes BRB`
+
+##### Parameters
+| | |
+------------ | -------------
+**scene** | The scene switched to.
 
 ***
 
 #### OnOBSTransitionTo
 | | |
 ------------ | -------------
-**Info** | Used to trigger a set of actions when a transition to a scene starts. Allows triggers to occur prior to a scene switch.
+**Info** | Used to trigger a set of actions when a transition to a scene starts. Allows triggers to occur prior to a scene switch. Using `*` as the `<scene>` will execute the trigger for all scenes.
 **Format** | `OnOBSTransitionTo <scene>`
 **Example** | `OnOBSTransitionTo BRB`
+
+##### Parameters
+| | |
+------------ | -------------
+**from** | The scene being switched from.
+**scene** | The scene being switched to.
 
 ***
 
 ### OBS Actions
 
-#### OBS Current Scene
+#### OBS CurrentScene
 | | |
 ------------ | -------------
 **Info** | Used to get the current scene in OBS.
@@ -507,9 +754,18 @@ Enables the ability to take interact with and respond to OBS.
 #### OBS Mute
 | | |
 ------------ | -------------
-**Info** | Used to mute or unmute the specified audio source in OBS.
-**Format** | `OBS Mute <source> <on/off>`
+**Info** | Used to mute or unmute the specified audio source in OBS. Using `toggle` alternates the mute setting.
+**Format** | `OBS Mute <source> <on/off/toggle>`
 **Example** | `OBS Mute Mic/Aux on`
+
+***
+
+#### OBS Position
+| | |
+------------ | -------------
+**Info** | Use this to move an OBS source to the specified `<x>` and `<y>` coordinate.
+**Format** | `OBS Position <scene> <source> <x> <y>`
+**Example** | `OBS Position BRB Webcam 240 600`
 
 ***
 
@@ -527,11 +783,11 @@ Enables the ability to take interact with and respond to OBS.
 
 ***
 
-#### OBS Scene Source
+#### OBS SceneSource
 | | |
 ------------ | -------------
-**Info** | Used to toggle the visibility of a source in a specific scene in OBS.
-**Format** | `OBS SceneSource <scene> <source> <on/off>`
+**Info** | Used to toggle the visibility of a source in a specific scene in OBS. Using `toggle` switches the visibility.
+**Format** | `OBS SceneSource <scene> <source> <on/off/toggle>`
 **Example** | `OBS SceneSource Webcam Camera on`
 
 ***
@@ -539,8 +795,8 @@ Enables the ability to take interact with and respond to OBS.
 #### OBS Source
 | | |
 ------------ | -------------
-**Info** | Used to toggle the visibility of a source in OBS. Only works if the source is in the current scene.
-**Format** | `OBS Source <source> <on/off>`
+**Info** | Used to toggle the visibility of a source in OBS. Only works if the source is in the current scene. Using `toggle` switches the visibility.
+**Format** | `OBS Source <source> <on/off/toggle>`
 **Example** | `OBS Source Webcam off`
 
 ***
@@ -549,7 +805,7 @@ Enables the ability to take interact with and respond to OBS.
 | | |
 ------------ | -------------
 **Info** | Used to toggle the visibility of a source filter in OBS.
-**Format** | `OBS Source <source> Filter <filter> <on/off>`
+**Format** | `OBS Source <source> Filter <filter> <on/off/toggle>`
 **Example** | `OBS Source Webcam Filter Rainbow on`
 
 ***
@@ -562,7 +818,16 @@ Enables the ability to take interact with and respond to OBS.
 **Example** | `OBS Send PlayShikaka`
 **Example (with data)** | `OBS Send PlayAudio Shikaka`
 
-_Note: Messages are echo'd to all websocket connected clients. This is useful for connecting other browser sources or triggering other triggers._
+_Note: Messages are echo'd to all websocket-connected clients. This is useful for connecting other browser sources or triggering other triggers._
+
+***
+
+#### OBS TakeSourceScreenshot
+| | |
+------------ | -------------
+**Info** | Used to take a screenshot of an OBS source and save it to a file. `<file>` is the absolute path to a file.
+**Format** | `OBS TakeSourceScreenshot <source> <file>`
+**Example** | `OBS TakeSourceScreenshot Webcam "C:\Users\YOUR_USER_NAME\Documents\Stream\screenshot.png"`
 
 ***
 
@@ -590,12 +855,21 @@ None at the moment.
 
 ### Random Actions
 
-#### Random
+#### Random Equal
 | | |
 ------------ | -------------
 **Info** | Randomly selects an action.
-**Format** | `Random <action> <action> ...`
-**Example** | `Random "chat send 'hello world'" "chat send 'did you know tarantulas molt?'"`
+**Format** | `Random Equal <action> <action> ...`
+**Example** | `Random Equal "chat send 'hello world'" "chat send 'did you know tarantulas molt?'"`
+
+***
+
+#### Random Probability
+| | |
+------------ | -------------
+**Info** | Randomly selects an action based on the input probabilities. The `<number>` values are scaled to 100 to provide a normalized probability.
+**Format** | `Random Probability <action> <number> <action> <number> ...`
+**Example** | `Random Probability "chat send 'hello world'" 3 "chat send 'did you know tarantulas molt?'" 1`
 
 ***
 
@@ -625,13 +899,36 @@ Enables the ability to take interact with and respond to SLOBS.
 #### OnSLOBSSwitchScenes
 | | |
 ------------ | -------------
-**Info** | Used to trigger a set of actions when the scene changes in SLOBS.
+**Info** | Used to trigger a set of actions when the scene changes in SLOBS. Using `*` as the `<scene>` will execute the trigger for all scenes.
 **Format** | `OnSLOBSSwitchScenes <scene>`
 **Example** | `OnSLOBSSwitchScenes BRB`
+
+##### Parameters
+| | |
+------------ | -------------
+**scene** | The scene switched to.
 
 ***
 
 ### SLOBS Actions
+
+#### SLOBS Flip
+| | |
+------------ | -------------
+**Info** | Used to flip a source in SLOBS.
+**Format** | `SLOBS Flip <scene> <source> <x/y>`
+**Example** | `SLOBS Flip Webcam Camera x`
+
+***
+
+#### SLOBS Rotate
+| | |
+------------ | -------------
+**Info** | Used to rotate a source in SLOBS. `<degree>` is any number (decimals allowed). This resets the base rotation to 0 before applying the rotation.
+**Format** | `SLOBS Rotate <scene> <source> <degree>`
+**Example** | `SLOBS Rotate Webcam Camera 90`
+
+***
 
 #### SLOBS Scene
 | | |
@@ -647,7 +944,7 @@ Enables the ability to take interact with and respond to SLOBS.
 
 ***
 
-#### SLOBS Scene Source
+#### SLOBS SceneSource
 | | |
 ------------ | -------------
 **Info** | Used to toggle the visibility of a source in a specific scene in SLOBS.
@@ -953,13 +1250,19 @@ Enables the ability to run actions on a time interval.
 | | |
 ------------ | -------------
 **Info** | Used to trigger a set of actions every `<interval>` seconds after `<offset>` initial seconds. `<offset>` is optional.
-**Format** | `OnTimer <interval> <offset>`
-**Example** | `OnTimer 300 10`
+**Format** | `OnTimer <name> <interval> <offset>`
+**Example** | `OnTimer MyTimer 300 10`
 
 ***
 
 ### Timer Actions
-None at the moment.
+
+#### Timer Reset
+| | |
+------------ | -------------
+**Info** | Used to reset a timer based on the `<name>`. This can be used to interrupt a timer and restart it.
+**Format** | `Timer Reset <name>`
+**Example** | `Timer Reset MyTimer`
 
 ***
 
