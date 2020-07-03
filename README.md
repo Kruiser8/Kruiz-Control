@@ -41,6 +41,7 @@ Kruiz Control enables a pseudo code approach to manage and automatically handle 
   + [Support for Youtube Chat](#support-for-youtube-chat)
   + [Will you support X](#will-you-support-x)
 - [Support the Project](#support-the-project)
+- [Associated Projects](#associated-projects)
 - [Credits](#credits)
 
 ***
@@ -176,6 +177,14 @@ There are a number of ways to support this project.
 - Spread the word!
 
 I do take commissions to implement custom functionality when necessary. Please reach out if you have a specific request.
+
+***
+
+## Associated Projects
+
+- <a href="https://github.com/Kruiser8/Kruiz-Control-Documentation">Kruiz Control Documentation</a>.
+- <a href="https://github.com/Kruiser8/Kruiz-Control-Widget">Kruiz Control Widget Template</a>.
+- <a href="https://github.com/CrashKoeck/Kruiz-Control-Configurator">Kruiz Control Configurator</a> by <a href="https://github.com/CrashKoeck">CrashKoeck</a>.
 
 ***
 
