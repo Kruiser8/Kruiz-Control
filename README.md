@@ -37,8 +37,8 @@ Kruiz Control enables a pseudo code approach to manage and automatically handle 
   + [sounds folder](#sounds-folder)
 - [FAQ](#faq)
   + [XSplit Support](#xsplit-support)
-  + [Support for Mixer and Youtube Alerts](#support-for-mixer-and-youtube-alerts)
-  + [Support for Mixer and Youtube Chat](#support-for-mixer-and-youtube-chat)
+  + [Support for Youtube Alerts](#support-for-youtube-alerts)
+  + [Support for Youtube Chat](#support-for-youtube-chat)
   + [Will you support X](#will-you-support-x)
 - [Support the Project](#support-the-project)
 - [Credits](#credits)
@@ -149,12 +149,12 @@ In order to use a sound with `Play`, add the sound file to the *sounds* folder. 
 ### XSplit Support
 The script should work with XSplit _BUT_ the OBS-like functionality will not work. XSplit does not provide a direct websocket interface to do such actions. It may be possible to implement a plugin that provides a websocket interface to connect with xsplit. If you know a way to achieve this, [please reach out](mailto:kruiser.twitch@gmail.com).
 
-### Support for Mixer and Youtube Alerts
-I can definitely add support for Mixer and Youtube alerts from Streamlabs. I just haven't had the time to implement it yet.
+### Support for Youtube Alerts
+I can definitely add support for Youtube alerts from Streamlabs. I just haven't had the time to implement it yet.
 
-More investigation time is needed to implement Youtube and Mixer StreamElements.
+More investigation time is needed to implement Youtube with StreamElements.
 
-### Support for Mixer and Youtube Chat
+### Support for Youtube Chat
 Potentially if I can find the libraries to implement it. Again, if you know a way to achieve this, please reach out via [twitter](https://twitter.com/kruiser8) or [discord](https://discord.gg/wU3ZK3Q).
 
 ### Will you support X

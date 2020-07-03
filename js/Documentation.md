@@ -105,7 +105,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnSLTwitchBits | OnSLTwitchBitsNoSync](#onsltwitchbits--onsltwitchbitsnosync)
     + [OnSLDonation | OnSLDonationNoSync](#onsldonation--onsldonationnosync)
     + [OnSLTwitchFollow | OnSLTwitchFollowNoSync](#onsltwitchfollow--onsltwitchfollownosync)
-    + [OnSLTwitchGiftSub | OnSLTwitchGiftSubv](#onsltwitchgiftsub--onsltwitchgiftsubnosync)
+    + [OnSLTwitchGiftSub | OnSLTwitchGiftSubNoSync](#onsltwitchgiftsub--onsltwitchgiftsubnosync)
     + [OnSLTwitchHost | OnSLTwitchHostNoSync](#onsltwitchhost--onsltwitchhostnosync)
     + [OnSLTwitchRaid | OnSLTwitchRaidNoSync](#onsltwitchraid--onsltwitchraidnosync)
     + [OnSLTwitchSub | OnSLTwitchSubNoSync](#onsltwitchsub--onsltwitchsubnosync)
