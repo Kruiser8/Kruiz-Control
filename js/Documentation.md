@@ -74,6 +74,10 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OBS TakeSourceScreenshot](#obs-takesourcescreenshot)
     + [OBS Volume](#obs-volume)
 - [Random](#random)
+  * [Triggers](#random-triggers)
+  * [Actions](#random-triggers)
+    + [Random Equal](#random-equal)
+    + [Random Probability](#random-probability)
 - [SLOBS](#slobs)
   * [Triggers](#slobs-triggers)
     + [OnSLOBSStreamStarted](#onslobsstreamstarted)
@@ -911,6 +915,20 @@ Enables the ability to take interact with and respond to SLOBS.
 ***
 
 ### SLOBS Actions
+
+#### SLOBS CurrentScene
+| | |
+------------ | -------------
+**Info** | Used to get the current active scene in SLOBS.
+**Format** | `SLOBS CurrentScene`
+**Example** | `SLOBS CurrentScene`
+
+##### Parameters
+| | |
+------------ | -------------
+**current_scene** | The name of the active scene.
+
+***
 
 #### SLOBS Flip
 | | |
