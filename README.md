@@ -61,6 +61,7 @@ Kruiz Control enables a pseudo code approach to manage and automatically handle 
 Kruiz Control supports
 - Twitch Channel Points
 - Twitch Chat
+- Twitch Hype Trains
 - Streamlabs Alerts
 - StreamElements Alerts
 - OBS scene, source, and filter changes
