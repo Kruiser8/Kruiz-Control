@@ -8,12 +8,12 @@ This script uses text files to improve the average user experience.
 
 ## Table of Contents
 
-- [Channel Points](#channel-points)
 - [Chat](#chat)
 - [OBS](#obs)
 - [SLOBS](#slobs)
 - [StreamElements](#streamelements)
 - [Streamlabs](#streamlabs)
+- [Twitch](#twitch)
 
 ***
 
