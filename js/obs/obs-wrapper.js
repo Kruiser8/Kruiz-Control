@@ -144,6 +144,25 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
     });
   };
 
+  /**
+   * Set the URL of a browser source.
+   * @param {string} source
+   * @param {string} url
+   * @return {Promise<void>}
+   */
+  obs.setBrowserSourceURL = async function(source, url) {
+    await this.send('SetSourceSettings', {
+      'sourceName': source,
+      'sourceType': 'browser_source',
+      'sourceSettings': {
+        'url': url
+      }
+    }).catch(err => {
+      // Promise convention dictates you have a catch on every chain.
+      console.error(JSON.stringify(err));
+    });
+  };
+
   obs.broadcastCustomMessage = async function(message, data) {
     await this.send('BroadcastCustomMessage', {
       'realm': 'kruiz-control',
