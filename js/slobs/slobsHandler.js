@@ -122,6 +122,12 @@ class SLOBSHandler extends Handler {
         var status = triggerData[triggerData.length - 1].toLowerCase() === 'on' ? true : false;
         await this.slobs.setSourceVisibility(scene, source, status);
         break;
+      case 'scenefolder':
+        var scene = triggerData[2];
+        var folder = triggerData.slice(3, triggerData.length - 1).join(' ');
+        var status = triggerData[triggerData.length - 1].toLowerCase() === 'on' ? true : false;
+        await this.slobs.setFolderVisibility(scene, folder, status);
+        break;
       case 'flip':
         var scene = triggerData[2];
         var source = triggerData.slice(3, triggerData.length - 1).join(' ');
@@ -147,10 +153,9 @@ class SLOBSHandler extends Handler {
 /**
  * Create a handler.
  */
-function slobsHandlerExport() {
+async function slobsHandlerExport() {
   var slobsHandler = new SLOBSHandler();
-  readFile('settings/slobs/token.txt', function(token) {
-    slobsHandler.init(token.trim());
-  });
+  var token = await readFile('settings/slobs/token.txt');
+  slobsHandler.init(token.trim());
 }
 slobsHandlerExport();

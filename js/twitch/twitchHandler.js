@@ -3,10 +3,15 @@ class TwitchHandler extends Handler {
    * Create a new Timer handler.
    */
   constructor() {
-    super('Twitch', ['OnChannelPoint', 'OnHypeTrainStart', 'OnHypeTrainEnd', 'OnHypeTrainLevel', 'OnHypeTrainProgress', 'OnHypeTrainConductor']);
-    this.success();
+    super('Twitch', ['OnChannelPoint', 'OnCommunityGoalStart', 'OnCommunityGoalProgress', 'OnCommunityGoalComplete', 'OnHypeTrainStart', 'OnHypeTrainEnd', 'OnHypeTrainLevel', 'OnHypeTrainProgress', 'OnHypeTrainConductor', 'OnHypeTrainCooldownExpired']);
     this.rewards = [];
     this.rewardsTrigger = {};
+    this.goals = [];
+    this.goalsTrigger = {};
+    this.complete = [];
+    this.completeTrigger = {};
+    this.start = [];
+    this.startTrigger = {};
     this.hypeTrains = [];
     this.hypeTrainsTrigger = {};
     this.hypeTrainsMap = {
@@ -14,7 +19,8 @@ class TwitchHandler extends Handler {
       'onhypetrainend': 'end',
       'onhypetrainlevel': 'level',
       'onhypetrainprogress': 'progress',
-      'onhypetrainconductor': 'conductor'
+      'onhypetrainconductor': 'conductor',
+      'onhypetraincooldownexpired': 'cooldown'
     };
     this.currentConductor = {
       'SUBS': '',
@@ -48,6 +54,36 @@ class TwitchHandler extends Handler {
           this.rewardsTrigger[reward].push(triggerId);
         }
         break;
+      case 'oncommunitygoalprogress':
+        var goal = triggerLine.slice(1).join(' ');
+        if (this.goals.indexOf(goal) !== -1) {
+          this.goalsTrigger[goal].push(triggerId);
+        } else {
+          this.goalsTrigger[goal] = [];
+          this.goals.push(goal);
+          this.goalsTrigger[goal].push(triggerId);
+        }
+        break;
+      case 'oncommunitygoalcomplete':
+        var goal = triggerLine.slice(1).join(' ');
+        if (this.complete.indexOf(goal) !== -1) {
+          this.completeTrigger[goal].push(triggerId);
+        } else {
+          this.completeTrigger[goal] = [];
+          this.complete.push(goal);
+          this.completeTrigger[goal].push(triggerId);
+        }
+        break;
+      case 'oncommunitygoalstart':
+        var goal = triggerLine.slice(1).join(' ');
+        if (this.start.indexOf(goal) !== -1) {
+          this.startTrigger[goal].push(triggerId);
+        } else {
+          this.startTrigger[goal] = [];
+          this.start.push(goal);
+          this.startTrigger[goal].push(triggerId);
+        }
+        break;
       case 'onhypetrainstart':
       case 'onhypetrainend':
       case 'onhypetrainconductor':
@@ -72,59 +108,151 @@ class TwitchHandler extends Handler {
       if (data.type === 'RESPONSE' && data.error === '') {
         this.success();
       } else if (data.type == 'MESSAGE' && data.data.topic.startsWith('community-points-channel-v1.')) {
-        this.onChannelPointMessage(JSON.parse(data.data.message));
+        var dataMessage = JSON.parse(data.data.message);
+        if (dataMessage.type === 'reward-redeemed') {
+          this.onChannelPointMessage(dataMessage);
+        } else if (dataMessage.type === 'community-goal-contribution' || dataMessage.type === 'community-goal-updated') {
+          this.onCommunityGoalMessage(dataMessage);
+        }
       } else if (data.type == 'MESSAGE' && data.data.topic.startsWith('hype-train-events-v1.')) {
         this.onHypeTrainMessage(JSON.parse(data.data.message));
       }
     }
-
   }
 
   /**
-   * Handle event messages from twitch pubsub websocket.
+   * Handle event messages from twitch pubsub websocket for channel points.
    * @param {Object} message twitch channel point data
    */
   onChannelPointMessage(message) {
-    if (message.type === 'reward-redeemed') {
+    // Check if tracking reward
+    var reward = message.data.redemption.reward.title;
+    if (this.rewards.indexOf(reward) !== -1) {
 
-        // Check if tracking reward
-        var reward = message.data.redemption.reward.title;
-        if (this.rewards.indexOf(reward) !== -1) {
+      // Grab data to return
+      var user = message.data.redemption.user.display_name;
+      var input = '';
+      if ('undefined' !== typeof(message.data.redemption.user_input)) {
+        input = message.data.redemption.user_input;
+      }
 
-          // Grab data to return
-          var user = message.data.redemption.user.display_name;
-          var input = '';
-          if ('undefined' !== typeof(message.data.redemption.user_input)) {
-            input = message.data.redemption.user_input;
-          }
+      // Handle triggers
+      this.rewardsTrigger[reward].forEach(triggerId => {
+        controller.handleData(triggerId, {
+          user: user,
+          message: input,
+          data: message
+        });
+      })
+    }
+    if (this.rewards.indexOf('*') !== -1) {
+      // Grab data to return
+      var user = message.data.redemption.user.display_name;
+      var input = '';
+      if ('undefined' !== typeof(message.data.redemption.user_input)) {
+        input = message.data.redemption.user_input;
+      }
 
+      // Handle triggers
+      this.rewardsTrigger['*'].forEach(triggerId => {
+        controller.handleData(triggerId, {
+          user: user,
+          message: input,
+          data: message
+        });
+      })
+    }
+  }
+
+  /**
+   * Handle event messages from twitch pubsub websocket for community goals.
+   * @param {Object} message twitch community goal data
+   */
+  onCommunityGoalMessage(message) {
+    if (message.type === 'community-goal-contribution') {
+      // Check if tracking goal
+      var goal = message.data.contribution.goal.title;
+      if (this.goals.indexOf(goal) !== -1) {
+        // Handle triggers
+        this.goalsTrigger[goal].forEach(triggerId => {
+          controller.handleData(triggerId, {
+            goal: goal,
+            user: message.data.contribution.user.display_name,
+            amount: message.data.contribution.amount,
+            user_total: message.data.contribution.total_contribution,
+            progress: message.data.contribution.goal.points_contributed,
+            total: message.data.contribution.goal.goal_amount,
+            data: message
+          });
+        });
+      }
+      if (this.goals.indexOf('*') !== -1) {
+        this.goalsTrigger[goal].forEach(triggerId => {
+          controller.handleData(triggerId, {
+            goal: goal,
+            user: message.data.contribution.user.display_name,
+            amount: message.data.contribution.amount,
+            user_total: message.data.contribution.total_contribution,
+            progress: message.data.contribution.goal.points_contributed,
+            total: message.data.contribution.goal.goal_amount,
+            data: message
+          });
+        });
+      }
+      if (this.complete.indexOf(goal) !== -1) {
+        var goal = message.data.contribution.goal.title;
+        if (message.data.contribution.goal.status === 'ENDED' && message.data.contribution.total_contribution === message.data.contribution.goal.points_contributed) {
           // Handle triggers
-          this.rewardsTrigger[reward].forEach(triggerId => {
+          this.completeTrigger[goal].forEach(triggerId => {
             controller.handleData(triggerId, {
+              goal: goal,
               user: user,
-              message: input,
+              amount: message.data.contribution.amount,
+              user_total: message.data.contribution.total_contribution,
+              progress: message.data.contribution.goal.points_contributed,
+              total: message.data.contribution.goal.goal_amount,
               data: message
             });
-          })
-        }
-        if (this.rewards.indexOf('*') !== -1) {
-          // Grab data to return
-          var user = message.data.redemption.user.display_name;
-          var input = '';
-          if ('undefined' !== typeof(message.data.redemption.user_input)) {
-            input = message.data.redemption.user_input;
-          }
-
-          // Handle triggers
-          this.rewardsTrigger['*'].forEach(triggerId => {
-            controller.handleData(triggerId, {
-              user: user,
-              message: input,
-              data: message
-            });
-          })
+          });
         }
       }
+      if (this.complete.indexOf('*') !== -1) {
+        // Handle triggers
+        this.completeTrigger[goal].forEach(triggerId => {
+          controller.handleData(triggerId, {
+            goal: goal,
+            user: user,
+            amount: message.data.contribution.amount,
+            user_total: message.data.contribution.total_contribution,
+            progress: message.data.contribution.goal.points_contributed,
+            total: message.data.contribution.goal.goal_amount,
+            data: message
+          });
+        });
+      }
+    } else if (message.type === 'community-goal-updated') {
+      var goal = message.data.community_goal.title;
+      if (this.start.indexOf(goal) !== -1) {
+        if (message.data.community_goal.status === 'STARTED' && message.data.community_goal.points_contributed === 0) {
+          // Handle triggers
+          this.startTrigger[goal].forEach(triggerId => {
+            controller.handleData(triggerId, {
+              goal: goal,
+              data: message
+            });
+          });
+        }
+      }
+      if (this.start.indexOf('*') !== -1) {
+        // Handle triggers
+        this.startTrigger[goal].forEach(triggerId => {
+          controller.handleData(triggerId, {
+            goal: goal,
+            data: message
+          });
+        });
+      }
+    }
   }
 
   /**
@@ -186,6 +314,10 @@ class TwitchHandler extends Handler {
           data: message.data
         });
       });
+    } else if (message.type === 'hype-train-cooldown-expiration') {
+      this.hypeTrainsTrigger['cooldown'].forEach(triggerId => {
+        controller.handleData(triggerId);
+      });
     }
   }
 }
@@ -193,12 +325,10 @@ class TwitchHandler extends Handler {
 /**
  * Create a handler
  */
-function twitchHandlerExport() {
+async function twitchHandlerExport() {
   var twitch = new TwitchHandler();
-  readFile('settings/twitch/user.txt', function(user) {
-    getIdFromUser(user.trim(), function (id) {
-      twitch.init(id.trim());
-    });
-  });
+  var user = await readFile('settings/twitch/user.txt');
+  var id = await getIdFromUser(user.trim());
+  twitch.init(id.trim());
 }
 twitchHandlerExport();

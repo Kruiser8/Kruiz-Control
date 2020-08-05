@@ -1,39 +1,37 @@
 // Do stuff if the document is fully loaded
-$(document).ready(function() {
-  readFile("triggers.txt", function(data) {
-    readTriggerFile(data);
-  });
+$(document).ready(async function() {
+  var data = await readFile("triggers.txt");
+  await readTriggerFile(data);
 });
 
 /**
  * Read all the file triggers
  * @param {string} data list of files to parse
  */
-function readTriggerFile(data) {
+async function readTriggerFile(data) {
   controller.parseInput(data, false);
-  readFile("fileTriggers.txt", function(data) {
-    readFileTriggers(data);
-  });
+  var files = await readFile("fileTriggers.txt");
+  await readFileTriggers(files);
 }
 
 /**
  * Read all the file triggers
  * @param {string} data list of files to parse
  */
-function readFileTriggers(data) {
+async function readFileTriggers(data) {
   data = data.trim();
   var lines = data.split(/\r\n|\n/);
 
-  $.each(lines, function(i, line) {
-    if (!line.startsWith('#')) {
-      readFile('triggers/' + line, function(input) {
-        controller.parseInput(input, true);
-      });
+  for (var i = 0; i < lines.length; i++) {
+    var line = lines[i];
+    if (!line.startsWith('#') && line.trim().length > 0) {
+      var input = await readFile('triggers/' + line);
+      controller.parseInput(input, true);
     }
-  });
+  }
 
   controller.doneParsing();
   setTimeout(function() {
     controller.runInit();
-  }, 1000);
+  }, 2000);
 }

@@ -252,7 +252,21 @@ class OBSHandler extends Handler {
         if (filterIndex === -1) {
           filterIndex = triggerData.indexOf('Filter');
         }
-        if (filterIndex === -1) {
+        var urlIndex = triggerData.indexOf('url');
+        if (urlIndex === -1) {
+          urlIndex = triggerData.indexOf('URL');
+        }
+        if (urlIndex === -1) {
+          urlIndex = triggerData.indexOf('Url');
+        }
+        var textIndex = triggerData.indexOf('text');
+        if (textIndex === -1) {
+          textIndex = triggerData.indexOf('TEXT');
+        }
+        if (textIndex === -1) {
+          textIndex = triggerData.indexOf('Text');
+        }
+        if (filterIndex === -1 && urlIndex === -1 && textIndex == -1) {
           var source = triggerData.slice(2, triggerData.length - 1).join(' ');
           var status = triggerData[triggerData.length - 1].toLowerCase();
           if (status === 'toggle') {
@@ -262,6 +276,14 @@ class OBSHandler extends Handler {
             status = status === 'on' ? true : false;
           }
           await this.obs.setSourceVisibility(source, status);
+        } else if (filterIndex === -1 && urlIndex !== -1 && textIndex === -1) {
+          var source = triggerData.slice(2, urlIndex).join(' ');
+          var url = triggerData[triggerData.length - 1];
+          await this.obs.setBrowserSourceURL(source, url);
+        } else if (filterIndex === -1 && urlIndex === -1 && textIndex !== -1) {
+          var source = triggerData.slice(2, textIndex).join(' ');
+          var text = triggerData[triggerData.length - 1];
+          await this.obs.setSourceText(source, text);
         }
         else {
           var source = triggerData.slice(2, filterIndex).join(' ');
@@ -306,7 +328,6 @@ class OBSHandler extends Handler {
           status = status === 'on' ? true : false;
           await this.obs.setMute(source, status);
         }
-
         break;
       case 'volume':
         var source = triggerData.slice(2, triggerData.length - 1).join(' ');
@@ -335,6 +356,9 @@ class OBSHandler extends Handler {
           initY: data.position.y
         }
         break;
+      case 'version':
+        var data = await this.obs.getVersion();
+        return { version: data.obsWebsocketVersion };
       default:
         break;
     }
@@ -345,12 +369,10 @@ class OBSHandler extends Handler {
 /**
  * Create a handler and read user settings
  */
-function obsHandlerExport() {
+async function obsHandlerExport() {
   var obsHandler = new OBSHandler();
-  readFile('settings/obs/address.txt', function(address) {
-    readFile('settings/obs/password.txt', function(password) {
-      obsHandler.init(address.trim(), password.trim());
-    });
-  });
+  var address = await readFile('settings/obs/address.txt');
+  var password = await readFile('settings/obs/password.txt');
+  obsHandler.init(address.trim(), password.trim());
 }
 obsHandlerExport();
