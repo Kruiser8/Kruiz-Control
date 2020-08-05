@@ -18,8 +18,15 @@ class TimerHandler extends Handler {
    */
   addTriggerData(trigger, triggerLine, triggerId) {
     var name = triggerLine[1];
-    var interval = triggerLine[2];
-    var offset = triggerLine[3] || 0;
+    var interval = parseFloat(triggerLine[2]);
+
+    var offset = 0;
+    if (triggerLine.length > 3) {
+      var temp = parseFloat(triggerLine[3]);
+      if (!isNaN(temp)) {
+        offset = temp;
+      }
+    }
     if (this.timerNames.indexOf(name) === -1) {
       this.timerNames.push(name);
       this.timers[name] = [];
@@ -45,7 +52,7 @@ class TimerHandler extends Handler {
         this.intervals[name][i] = setInterval(function() {
           controller.handleData(triggerId);
         }, interval * 1000);
-      });
+      }, this);
     }
   }
 
@@ -59,12 +66,12 @@ class TimerHandler extends Handler {
         var name = timer[1];
         var interval = timer[2];
         var offset = timer[3];
-        setTimeout(function () {
+        setTimeout(function() {
           controller.handleData(triggerId)
           this.intervals[name].push(setInterval(function() {
             controller.handleData(triggerId);
           }, interval * 1000));
-        }, (offset + 1) * 1000);
+        }.bind(this), (offset + 1) * 1000);
       });
     });
   }

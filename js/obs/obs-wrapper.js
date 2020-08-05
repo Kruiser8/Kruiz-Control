@@ -111,6 +111,16 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
     });
   };
 
+  obs.getVersion = async function() {
+    return await this.send('GetVersion')
+    .then(data => {
+      return data;
+    }).catch(err => {
+      // Promise convention dictates you have a catch on every chain.
+      console.error(JSON.stringify(err));
+    });
+  };
+
   obs.getVolume = async function(source) {
     return await this.send('GetVolume', {
       'source': source
@@ -156,6 +166,18 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
       'sourceType': 'browser_source',
       'sourceSettings': {
         'url': url
+      }
+    }).catch(err => {
+      // Promise convention dictates you have a catch on every chain.
+      console.error(JSON.stringify(err));
+    });
+  };
+
+  obs.setSourceText = async function(source, text) {
+    await this.send('SetSourceSettings', {
+      'sourceName': source,
+      'sourceSettings': {
+        'text': text
       }
     }).catch(err => {
       // Promise convention dictates you have a catch on every chain.

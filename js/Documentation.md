@@ -16,6 +16,9 @@ Each handler provides its own triggers and actions that can be used in a trigger
 - [Channel Points](#channel-points)
   * [Triggers](#channel-point-triggers)
     + [OnChannelPoint](#onchannelpoint)
+    + [OnCommunityGoalComplete](#oncommunitygoalcomplete)
+    + [OnCommunityGoalProgress](#oncommunitygoalprogress)
+    + [OnCommunityGoalStart](#oncommunitygoalstart)
   * [Actions](#channel-point-actions)
 - [Chat](#chat)
   * [Triggers](#chat-triggers)
@@ -28,12 +31,23 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Chat Whisper](#chat-whisper)
 - [Hype Train](#hype-train)
   * [Triggers](#hype-train-triggers)
+    + [OnHypeTrainCooldownExpired](#onhypetraincooldownexpired)
     + [OnHypeTrainConductor](#onhypetrainconductor)
     + [OnHypeTrainEnd](#onhypetrainend)
     + [OnHypeTrainLevel](#onhypetrainlevel)
     + [OnHypeTrainProgress](#onhypetrainprogress)
     + [OnHypeTrainStart](#onhypetrainstart)
   * [Actions](#hype-train-actions)
+- [List](#list)
+  * [Triggers](#list-triggers)
+  * [Actions](#list-actions)
+    + [List Add](#list-add)
+    + [List Contains](#list-contains)
+    + [List Export](#list-export)
+    + [List Get](#list-get)
+    + [List Import](#list-import)
+    + [List Index](#list-index)
+    + [List Remove](#list-remove)
 - [Message](#message)
   * [Triggers](#message-triggers)
     + [OnMessage](#onmessage)
@@ -70,11 +84,17 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OBS SceneSource](#obs-scenesource)
     + [OBS Source](#obs-source)
     + [OBS Source Filter](#obs-source-filter)
+    + [OBS Source Text](#obs-source-text)
     + [OBS Source URL](#obs-source-url)
     + [OBS Send](#obs-send)
     + [OBS TakeSourceScreenshot](#obs-takesourcescreenshot)
+    + [OBS Version](#obs-version)
     + [OBS Volume](#obs-volume)
 - [Random](#random)
+  * [Triggers](#random-triggers)
+  * [Actions](#random-triggers)
+    + [Random Equal](#random-equal)
+    + [Random Probability](#random-probability)
 - [SLOBS](#slobs)
   * [Triggers](#slobs-triggers)
     + [OnSLOBSStreamStarted](#onslobsstreamstarted)
@@ -84,6 +104,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [SLOBS Flip](#slobs-flip)
     + [SLOBS Rotate](#slobs-rotate)
     + [SLOBS Scene](#slobs-scene)
+    + [SLOBS SceneFolder](#slobs-scenefolder)
     + [SLOBS SceneSource](#slobs-scenesource)
     + [SLOBS Source](#slobs-source)
 - [StreamElements](#streamelements)
@@ -102,7 +123,8 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnSLTwitchBits | OnSLTwitchBitsNoSync](#onsltwitchbits--onsltwitchbitsnosync)
     + [OnSLDonation | OnSLDonationNoSync](#onsldonation--onsldonationnosync)
     + [OnSLTwitchFollow | OnSLTwitchFollowNoSync](#onsltwitchfollow--onsltwitchfollownosync)
-    + [OnSLTwitchGiftSub | OnSLTwitchGiftSubv](#onsltwitchgiftsub--onsltwitchgiftsubnosync)
+    + [OnSLTwitchCommunityGiftSub | OnSLTwitchGiftCommunitySubNoSync](#onsltwitchcommunitygiftsub--onsltwitchcommunitygiftsubnosync)
+    + [OnSLTwitchGiftSub | OnSLTwitchGiftSubNoSync](#onsltwitchgiftsub--onsltwitchgiftsubnosync)
     + [OnSLTwitchHost | OnSLTwitchHostNoSync](#onsltwitchhost--onsltwitchhostnosync)
     + [OnSLTwitchRaid | OnSLTwitchRaidNoSync](#onsltwitchraid--onsltwitchraidnosync)
     + [OnSLTwitchSub | OnSLTwitchSubNoSync](#onsltwitchsub--onsltwitchsubnosync)
@@ -199,12 +221,17 @@ Chat Send "{user} used the example command!"
 ```
 
 #### [parameter]
-When `[parameter]` is used, the value of the parameter is JSON.stringify'd before replacement. **This is primarily for use with [Eval](#eval).** This allows parameters to be easily used and be properly escaped when used in Eval javascript code.
+When `[parameter]` is used, the value of the parameter is JSON.stringify'd before replacement. **This is primarily for use with [Eval](#eval) or [Function](#function).** This allows parameters to be easily used and be properly escaped when used in javascript code.
 
-For example, here's the result when used in an Eval action.
+For example, here's the result when used in an [Eval](#eval) action.
 ```
-Eval (function() { var name = [user]; var data = [data]; // rest of code ... }())
-> (function() { var name = "Kruiser8"; var data = {"property": value}; // rest of code ... }())
+Eval '(function() { var name = [user]; var data = [data]; // rest of code ... }())
+> (function() { var name = "Kruiser8"; var data = {"property": value}; // rest of code ... }())'
+```
+Here's an example in the [Function](#function) action.
+```
+Function 'var name = [user]; var data = [data]; // rest of code ... }())
+> (function() { var name = "Kruiser8"; var data = {"property": value}; // rest of code ...'
 ```
 
 ***
@@ -261,7 +288,60 @@ Enables the ability to run actions when channel point rewards are redeemed.
 ------------ | -------------
 **user** | The display name of the user that redeemed the channel point reward.
 **message** | The message included with the channel point redemption (if one is provided)
-**data** | The complete json channel point message (for use with [Eval](#eval)).
+**data** | The complete json channel point message (for use with [Eval](#eval) or [Function](#function)).
+
+***
+
+#### OnCommunityGoalComplete
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when a community goal is completed. Using `*` as the `<goal_title>` will execute the trigger for all channel point rewards.
+**Format** | `OnCommunityGoalComplete <goal_title>`
+**Example** | `OnCommunityGoalComplete "Example Goal"`
+
+##### Parameters
+| | |
+------------ | -------------
+**goal** | The title of the community goal.
+**user** | The display name of the user that completed the goal.
+**amount** | The amount of points donated to complete the goal.
+**user_total** | The total amount of points contributed by the user.
+**progress** | The current amount of points contributed towards the goal.
+**total** | The amount of points required to complete the goal.
+**data** | The complete json community goal message (for use with [Eval](#eval) or [Function](#function)).
+
+#### OnCommunityGoalProgress
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when a user contributes towards a goal. Using `*` as the `<goal_title>` will execute the trigger for all channel point rewards.
+**Format** | `OnCommunityGoalProgress <goal_title>`
+**Example** | `OnCommunityGoalProgress "Example Goal"`
+
+##### Parameters
+| | |
+------------ | -------------
+**goal** | The title of the community goal.
+**user** | The display name of the user that completed the goal.
+**amount** | The amount of points donated to complete the goal.
+**user_total** | The total amount of points contributed by the user.
+**progress** | The current amount of points contributed towards the goal.
+**total** | The amount of points required to complete the goal.
+**data** | The complete json community goal message (for use with [Eval](#eval) or [Function](#function)).
+
+***
+
+#### OnCommunityGoalStart
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when the streamer starts a goal. Using `*` as the `<goal_title>` will execute the trigger for all channel point rewards.
+**Format** | `OnCommunityGoalStart <goal_title>`
+**Example** | `OnCommunityGoalStart "Example Goal"`
+
+##### Parameters
+| | |
+------------ | -------------
+**goal** | The title of the community goal.
+**data** | The complete json community goal message (for use with [Eval](#eval) or [Function](#function)).
 
 ***
 
@@ -308,7 +388,7 @@ _WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mi
 **user** | The display name of the user that sent the command.
 **after** | The message excluding the command.
 **message** | The entire chat message, including the command.
-**data** | An object with all metadata about the message (for use with [Eval](#eval)).
+**data** | An object with all metadata about the message (for use with [Eval](#eval) or [Function](#function)).
 
 ***
 
@@ -326,7 +406,7 @@ _WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mi
 ------------ | -------------
 **user** | The display name of the user that sent the command.
 **message** | The entire chat message, including the command.
-**data** | An object with all metadata about the message (for use with [Eval](#eval)).
+**data** | An object with all metadata about the message (for use with [Eval](#eval) or [Function](#function)).
 
 ***
 
@@ -344,7 +424,7 @@ _WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mi
 ------------ | -------------
 **user** | The display name of the user that triggered the keyword.
 **message** | The chat message.
-**data** | An object with all metadata about the message (for use with [Eval](#eval)).
+**data** | An object with all metadata about the message (for use with [Eval](#eval) or [Function](#function)).
 
 ***
 
@@ -386,6 +466,15 @@ _WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mi
 A handler to allow you to trigger events from twitch hype trains.
 
 ### Hype Train Triggers
+
+#### OnHypeTrainCooldownExpired
+| | |
+------------ | -------------
+**Info** | Used to fire a set of actions when the hype train is no longer on cooldown and can be triggered again.
+**Format** | `OnHypeTrainCooldownExpired`
+**Example** | `OnHypeTrainCooldownExpired`
+
+***
 
 #### OnHypeTrainConductor
 | | |
@@ -473,6 +562,120 @@ A handler to allow you to trigger events from twitch hype trains.
 
 ### Hype Train Actions
 None at the moment.
+
+***
+
+## List
+A small handler to allow you to store and update lists of items.
+
+### List Triggers
+None at the moment.
+
+***
+
+### List Actions
+
+#### List Add
+| | |
+------------ | -------------
+**Info** | Adds an item to the list. `<index>` is optional to add at a specific index.
+**Format** | `List Add <list> <value> <index>`
+**Example** | `List Add MyList {user}`
+**Example with index** | `List Add MyList {user} 2`
+
+##### Parameters
+| | |
+------------ | -------------
+**position** | The position of the value in the list (starting from 1) or `-1` if not found.
+**index** | The index of the value in the list (starting from 0) or `-1` if not found.
+
+***
+
+#### List Contains
+| | |
+------------ | -------------
+**Info** | Check if an item exists in a list.
+**Format** | `List Contains <list> <value>`
+**Example** | `List Contains MyList {user}`
+
+##### Parameters
+| | |
+------------ | -------------
+**contains** | [true/false] If the list contains the value.
+
+***
+
+#### List Export
+| | |
+------------ | -------------
+**Info** | Returns the list as a string using `JSON.stringify`.
+**Format** | `List Export <list>`
+**Example** | `List Export MyList`
+
+##### Parameters
+| | |
+------------ | -------------
+**\<list\>** | The list in string form.
+
+***
+
+#### List Get
+| | |
+------------ | -------------
+**Info** | Returns a value from the list. `<index>` is an optional index. If no index is included, a random element is returned. "First" and "Last" are valid `<index>` values.
+**Format** | `List Get <list> <index/First/Last>`
+**Example** | `List Get MyList`
+**Example with Index** | `List Get MyList 1`
+**Example with Index (Last)** | `List Get MyList Last`
+
+##### Parameters
+| | |
+------------ | -------------
+**value** | The value returned from the list or "None found" if there are no items in the list.
+**position** | The position of the value in the list (starting from 1) or `-1` if not found.
+**index** | The index of the value in the list (starting from 0) or `-1` if not found.
+
+***
+
+#### List Import
+| | |
+------------ | -------------
+**Info** | Used to import a list from an input `JSON.stringify`'d array.
+**Format** | `List Import <list> <import>`
+**Example** | `List Import MyList '["item 1","item 2","item 3"]'`
+
+***
+
+#### List Index
+| | |
+------------ | -------------
+**Info** | Returns the position and index (0-based) of a value in the list.
+**Format** | `List Index <list> <value>`
+**Example** | `List Index MyList {user}`
+
+##### Parameters
+| | |
+------------ | -------------
+**position** | The position of the value in the list (starting from 1) or `-1` if not found.
+**index** | The index of the value in the list (starting from 0) or `-1` if not found.
+
+***
+
+#### List Remove
+| | |
+------------ | -------------
+**Info** | Used to remove and return an item from a list. `<index>` is an optional index. If no index is included, a random element is returned. "First" and "Last" are valid `<index>` values.
+**Format** | `List Remove <list> <index/First/Last>`
+**Example** | `List Remove MyList`
+**Example with Index** | `List Remove MyList 1`
+**Example with Index (Last)** | `List Remove MyList Last`
+
+##### Parameters
+| | |
+------------ | -------------
+**value** | The value returned from the list or "None found" if there are no items in the list.
+**position** | The position of the value in the list (starting from 1) or `-1` if not found.
+**index** | The index of the value in the list (starting from 0) or `-1` if not found.
 
 ***
 
@@ -565,6 +768,8 @@ A small selection of actions that are included for increased usability.
 ***
 
 #### Eval
+**USE [Function](#function) FOR MORE COMPLEX LOGIC**
+
 | | |
 ------------ | -------------
 **Info** | Used with eval() evaluate a string as a function. This enables custom logic to be used in the script. `<expression_or_function>` is explained below.
@@ -575,15 +780,17 @@ A small selection of actions that are included for increased usability.
 
 If you need a _simple_ expression to return parameters, wrap the expression in parenthesis. The example below increments a parameter named _total_ by 1.
 ```js
-Eval ({total: {total} + 1})
+Eval '({total: {total} + 1})'
 ```
 
 If you need a function rather than an expression, use the below format. The below returns a random element from an array in _api_data_.
 ```js
-Eval (function() { var arr = {api_data}; return {random: arr[Math.floor(Math.random() * arr.length)]}}())
+Eval '(function() { var arr = {api_data}; return {random: arr[Math.floor(Math.random() * arr.length)]}}())'
 ```
 
 If a `continue` parameter is returned and the value is `false`, the trigger will exit and not continue processing actions.
+
+If an `actions` array parameter is returned, each item of the array will be inserted into the event and processed.
 
 ***
 
@@ -593,6 +800,26 @@ If a `continue` parameter is returned and the value is `false`, the trigger will
 **Info** | Used to exit an event without processing the rest of the actions.
 **Format** | `Exit`
 **Example** | `Exit`
+
+***
+
+#### Function
+| | |
+------------ | -------------
+**Info** | Used to create a javascript function using the input text. This enables custom logic to be used in the script. `<function>` is explained below.
+**Format** | `Function <function>`
+**Example** | `Function 'return {total: {total} + 1}'`
+
+`<function>` is a javascript function body. For reference, please see this [documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/Function). If the function returns an object, each property of the Object is usable as a parameter in the rest of the trigger.
+
+The below returns a random element from an array in _api_data_.
+```js
+Function 'var arr = {api_data}; return {random: arr[Math.floor(Math.random() * arr.length)]}'
+```
+
+If a `continue` parameter is returned and the value is `false`, the trigger will exit and not continue processing actions.
+
+If an `actions` array parameter is returned, each item of the array will be inserted into the event and processed.
 
 ***
 
@@ -656,7 +883,7 @@ The `<optional_skip>` value allows you to specify the number of lines to skip if
 ***
 
 ## OBS
-Enables the ability to take interact with and respond to OBS.
+Enables the ability to interact with and respond to OBS.
 
 ### OBS Triggers
 
@@ -811,6 +1038,15 @@ Enables the ability to take interact with and respond to OBS.
 
 ***
 
+#### OBS Source Text
+| | |
+------------ | -------------
+**Info** | Used to change the text of a text source in OBS.
+**Format** | `OBS Source <source> Text <text>`
+**Example** | `OBS Source RecentFollow Text {user}`
+
+***
+
 #### OBS Source URL
 | | |
 ------------ | -------------
@@ -843,6 +1079,20 @@ _Note: Messages are echo'd to all websocket-connected clients. This is useful fo
 
 ***
 
+#### OBS Version
+| | |
+------------ | -------------
+**Info** | Used to retrieve the version of the OBS Websocket. This is helpful when debugging newer features.
+**Format** | `OBS Version`
+**Example** | `OBS Version`
+
+##### Parameters
+| | |
+------------ | -------------
+**version** | The version of the websocket.
+
+***
+
 #### OBS Volume
 | | |
 ------------ | -------------
@@ -870,9 +1120,10 @@ None at the moment.
 #### Random Equal
 | | |
 ------------ | -------------
-**Info** | Randomly selects an action.
+**Info** | Randomly selects an action. Note that "Equal" is optional.
 **Format** | `Random Equal <action> <action> ...`
 **Example** | `Random Equal "chat send 'hello world'" "chat send 'did you know tarantulas molt?'"`
+**Example without "Equal"** | `Random "chat send 'a'" "chat send 'b'" "chat send 'c'"`
 
 ***
 
@@ -886,7 +1137,7 @@ None at the moment.
 ***
 
 ## SLOBS
-Enables the ability to take interact with and respond to SLOBS.
+Enables the ability to interact with and respond to SLOBS.
 
 ### SLOBS Triggers
 
@@ -924,6 +1175,20 @@ Enables the ability to take interact with and respond to SLOBS.
 
 ### SLOBS Actions
 
+#### SLOBS CurrentScene
+| | |
+------------ | -------------
+**Info** | Used to get the current active scene in SLOBS.
+**Format** | `SLOBS CurrentScene`
+**Example** | `SLOBS CurrentScene`
+
+##### Parameters
+| | |
+------------ | -------------
+**current_scene** | The name of the active scene.
+
+***
+
 #### SLOBS Flip
 | | |
 ------------ | -------------
@@ -953,6 +1218,15 @@ Enables the ability to take interact with and respond to SLOBS.
 | | |
 ------------ | -------------
 **previous_scene** | The name of the active scene before changing to the specified scene. This allows users to revert scenes from anywhere.
+
+***
+
+#### SLOBS SceneFolder
+| | |
+------------ | -------------
+**Info** | Used to toggle the visibility of a folder (and all nested sources) in a specific scene in SLOBS.
+**Format** | `SLOBS SceneFolder <scene> <folder> <on/off>`
+**Example** | `SLOBS SceneFolder Videos Reaction on`
 
 ***
 
@@ -1176,6 +1450,23 @@ Use the `NoSync` version of a trigger if:
 | | |
 ------------ | -------------
 **user** | The user that followed.
+**data** | The complete json message (for use with [Eval](#eval)).
+
+***
+
+#### OnSLTwitchCommunityGiftSub | OnSLTwitchCommunityGiftSubNoSync
+| | |
+------------ | -------------
+**Info** | Used to trigger actions when someone gifts community subscriptions to the channel.
+**Format** | `OnSLTwitchCommunityGiftSub`
+**Example** | `OnSLTwitchCommunityGiftSub`
+
+##### Parameters
+| | |
+------------ | -------------
+**gifter** | The user that gifted the subscription.
+**amount** | The number of subscriptions gifted by the gifter.
+**tier** | The tier of the subscription. Possible values are `Tier 1`, `Tier 2`, `Tier 3`, and `Prime`.
 **data** | The complete json message (for use with [Eval](#eval)).
 
 ***

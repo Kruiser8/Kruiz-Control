@@ -12,10 +12,7 @@ class RandomHandler extends Handler {
    * @param {array} triggerData contents of trigger line
    */
   async handleData(triggerData) {
-    if (triggerData[1].toLowerCase() == 'equal') {
-      var choice = Math.floor(Math.random() * (triggerData.length - 2) + 2);
-      await controller.runTrigger(shlexSplit(triggerData[choice]));
-    } else {
+    if (triggerData[1].toLowerCase() == 'probability') {
       var actions = {};
       var total = 0;
       for (var i = 2; i + 1 < triggerData.length; i = i + 2) {
@@ -45,6 +42,13 @@ class RandomHandler extends Handler {
           }
         }
       }
+    } else {
+      var exclude = 2;
+      if (triggerData[1].toLowerCase() !== 'equal') {
+        exclude = 1;
+      }
+      var choice = Math.floor(Math.random() * (triggerData.length - exclude) + exclude);
+      await controller.runTrigger(shlexSplit(triggerData[choice]));
     }
   }
 }

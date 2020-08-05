@@ -14,6 +14,7 @@ class Controller {
     this.initTriggers = [];
     this.addParser('controller', this);
     this.addTrigger('OnInit', 'controller');
+    this.addSuccess('controller');
   }
 
   /**
@@ -204,6 +205,14 @@ class Controller {
             delete runParams.skip;
           }
 
+          if (runParams.actions) {
+            runParams.actions.forEach((item, i) => {
+              runParams.actions[i] = shlexSplit(item);
+            });
+
+            triggerSequence.splice(i+1, 0, ...runParams.actions);
+          }
+
           // Recreate regex with new params
           Object.keys(runParams).forEach(attribute => {
             triggerParams[attribute] = runParams[attribute];
@@ -272,6 +281,12 @@ class Controller {
     else if (parserName === 'eval') {
       var evaluation = data.slice(1).join(' ');
       var res = await eval(evaluation);
+      return res;
+    }
+    else if (parserName === 'function') {
+      var func = data.slice(1).join(' ');
+      var fn = new Function(func);
+      var res = await fn();
       return res;
     }
     else if (parserName === 'error') {

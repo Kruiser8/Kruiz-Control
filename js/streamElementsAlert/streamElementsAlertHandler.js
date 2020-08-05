@@ -120,7 +120,7 @@ class StreamElementsAlertHandler extends Handler {
       'data': event,
       'amount': event.amount,
       'message': event.message,
-      'user': event.name
+      'user': event.displayName
     }
   }
 
@@ -215,10 +215,9 @@ class StreamElementsAlertHandler extends Handler {
 /**
  * Create a handler and read user settings
  */
-function streamElementsAlertHandlerExport() {
+async function streamElementsAlertHandlerExport() {
   var streamElementsAlert = new StreamElementsAlertHandler();
-  readFile('settings/streamelements/jwtToken.txt', function(id) {
-    streamElementsAlert.init(id.trim());
-  });
+  var token = await readFile('settings/streamelements/jwtToken.txt');
+  streamElementsAlert.init(token.trim());
 }
 streamElementsAlertHandlerExport();

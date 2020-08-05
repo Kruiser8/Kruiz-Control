@@ -3,13 +3,14 @@ class StreamlabsHandler extends Handler {
    * Create a new Streamlabs handler.
    */
   constructor() {
-    super('Streamlabs', ['OnSLTwitchBits','OnSLDonation','OnSLTwitchFollow','OnSLTwitchGiftSub','OnSLTwitchHost','OnSLTwitchRaid','OnSLTwitchSub','OnSLTwitchBitsNoSync','OnSLDonationNoSync','OnSLTwitchFollowNoSync','OnSLTwitchGiftSubNoSync','OnSLTwitchHostNoSync','OnSLTwitchRaidNoSync','OnSLTwitchSubNoSync']);
+    super('Streamlabs', ['OnSLTwitchBits','OnSLDonation','OnSLTwitchFollow','OnSLTwitchGiftSub','OnSLTwitchCommunityGiftSub','OnSLTwitchHost','OnSLTwitchRaid','OnSLTwitchSub','OnSLTwitchBitsNoSync','OnSLDonationNoSync','OnSLTwitchFollowNoSync','OnSLTwitchGiftSubNoSync','OnSLTwitchCommunityGiftSubNoSync','OnSLTwitchHostNoSync','OnSLTwitchRaidNoSync','OnSLTwitchSubNoSync']);
     this.alerts = [];
     this.alertsTrigger = {
       'bits': [],
       'donation': [],
       'follow': [],
       'gift_sub': [],
+      'cgift_sub': [],
       'host': [],
       'raid': [],
       'subscription': []
@@ -20,6 +21,7 @@ class StreamlabsHandler extends Handler {
       'donation': [],
       'follow': [],
       'gift_sub': [],
+      'cgift_sub': [],
       'host': [],
       'raid': [],
       'subscription': []
@@ -29,6 +31,7 @@ class StreamlabsHandler extends Handler {
       'onsldonation': 'donation',
       'onsltwitchfollow': 'follow',
       'onsltwitchgiftsub': 'gift_sub',
+      'onsltwitchcommunitygiftsub': 'cgift_sub',
       'onsltwitchhost': 'host',
       'onsltwitchraid': 'raid',
       'onsltwitchsub': 'subscription',
@@ -36,6 +39,7 @@ class StreamlabsHandler extends Handler {
       'onsldonationnosync': 'donation',
       'onsltwitchfollownosync': 'follow',
       'onsltwitchgiftsubnosync': 'gift_sub',
+      'onsltwitchcommunitygiftsubnosync': 'cgift_sub',
       'onsltwitchhostnosync': 'host',
       'onsltwitchraidnosync': 'raid',
       'onsltwitchsubnosync': 'subscription'
@@ -45,6 +49,7 @@ class StreamlabsHandler extends Handler {
       'donation': this.getDonationParameters,
       'follow': this.getFollowParameters,
       'gift_sub': this.getGiftSubParameters,
+      'cgift_sub': this.getCommunityGiftSubParameters,
       'host': this.getHostParameters,
       'raid': this.getRaidParameters,
       'subscription': this.getSubParameters
@@ -57,7 +62,6 @@ class StreamlabsHandler extends Handler {
   /**
    * Initialize the connection to streamlabs with the input token.
    * @param {string} socketToken streamlabs socket api token
-   * @param {string} accessToken streamlabs api access token
    */
   init(socketToken) {
     connectStreamlabsWebsocket(this, socketToken, this.onStreamlabsMessage.bind(this));
@@ -98,8 +102,10 @@ class StreamlabsHandler extends Handler {
       if (this.alertIds.indexOf(message.message['_id']) === -1) {
         this.alertIds.push(message.message['_id']);
         var type = message.message.type;
-        if (type === 'subMysteryGift' || (type === 'subscription' && message.message.gifter_display_name)) {
+        if (type === 'subscription' && message.message.gifter_display_name) {
           type = 'gift_sub';
+        } else if (type === 'subMysteryGift') {
+          type = 'cgift_sub';
         }
         if (this.alerts.indexOf(type) != -1) {
           var params = this.eventHandlers[type](message.message);
@@ -113,8 +119,10 @@ class StreamlabsHandler extends Handler {
         if (this.alertIdsNoSync.indexOf(alertMessage['_id']) === -1) {
           this.alertIdsNoSync.push(alertMessage['_id']);
           var type = alertMessage.type;
-          if (type === 'subMysteryGift' || (type === 'subscription' && alertMessage.gifter_display_name)) {
+          if (type === 'subscription' && alertMessage.gifter_display_name) {
             type = 'gift_sub';
+          } else if (type === 'subMysteryGift') {
+            type = 'cgift_sub';
           }
           var params = this.eventHandlers[type](alertMessage);
           this.alertsNoSyncTrigger[type].forEach(triggerId => {
@@ -182,6 +190,23 @@ class StreamlabsHandler extends Handler {
   }
 
   /**
+   * Retrieve the parameters for the gift sub event.
+   * @param {Object} message streamlabs event message
+   */
+  getCommunityGiftSubParameters(message) {
+    var gifter = message.gifter_display_name;
+    if (!gifter) {
+      gifter = message.gifter;
+    }
+    return {
+      'data': message,
+      'amount': message.amount,
+      'gifter': gifter,
+      'tier': message.subPlan === 'Prime' ? 'Prime' : 'Tier ' + (parseInt(message.subPlan) / 1000)
+    }
+  }
+
+  /**
    * Retrieve the parameters for the host event.
    * @param {Object} message streamlabs event message
    */
@@ -223,10 +248,9 @@ class StreamlabsHandler extends Handler {
 /**
  * Create a handler and read user settings
  */
-function streamlabsHandlerExport() {
+async function streamlabsHandlerExport() {
   var streamlabs = new StreamlabsHandler();
-	readFile('settings/streamlabs/socketAPIToken.txt', function(socket) {
-	  streamlabs.init(socket.trim());
-	});
+  var socket = await readFile('settings/streamlabs/socketAPIToken.txt');
+  streamlabs.init(socket.trim());
 }
 streamlabsHandlerExport();

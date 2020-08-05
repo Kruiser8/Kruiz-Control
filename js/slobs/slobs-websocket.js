@@ -82,6 +82,23 @@
     }
   }
 
+  slobsSocket.setFolderVisibility = function(scene, folder, enabled) {
+    scene = scene || slobsSocket.activeScene;
+    var sceneInfo = slobsSocket.scenes[scene];
+    if (sceneInfo) {
+      sceneInfo.nodes.forEach(sceneItem => {
+        if (sceneItem.name === folder && sceneItem.sceneNodeType === 'folder') {
+          sceneInfo.nodes.forEach(source => {
+            if (sceneItem.childrenIds.indexOf(source.id) !== -1) {
+              var sceneItemId = `SceneItem["${sceneInfo.id}","${source.id}","${source.sourceId}"]`;
+              slobsSocket.sendSLOBS("setVisibility", sceneItemId, [enabled]);
+            }
+          });
+        }
+      });
+    }
+  }
+
   slobsSocket.flipSourceX = function(scene, source) {
     scene = scene || slobsSocket.activeScene;
     var sceneInfo = slobsSocket.scenes[scene];
