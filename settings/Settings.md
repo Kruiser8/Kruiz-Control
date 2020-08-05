@@ -75,8 +75,9 @@ Follow the below steps to enable the SLOBS API for Kruiz Control.
 - Open the `Remote Control` tab
 - Click the QR Code so that it shows.
 - Click the `Show details` text/link that appears.
-- Copy the **API Token** value into the **token.txt** file (referenced below)
-- Restart SLOBS
+- Copy the **API Token** value into the **token.txt** file (referenced below).
+- Close SLOBS.
+- Run SLOBS as administrator to enable the SLOBS Remote Control API.
 
 ### token.txt
 **Location:** `settings/slobs/token.txt`
