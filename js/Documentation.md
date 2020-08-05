@@ -1027,6 +1027,8 @@ Enables the ability to interact with and respond to OBS.
 **Format** | `OBS Source <source> <on/off/toggle>`
 **Example** | `OBS Source Webcam off`
 
+_Note: The source must be in the current/active scene for this to trigger._
+
 ***
 
 #### OBS Source Filter
@@ -1036,6 +1038,8 @@ Enables the ability to interact with and respond to OBS.
 **Format** | `OBS Source <source> Filter <filter> <on/off/toggle>`
 **Example** | `OBS Source Webcam Filter Rainbow on`
 
+_Note: The source must be in the current/active scene for this to trigger._
+
 ***
 
 #### OBS Source Text
@@ -1044,6 +1048,8 @@ Enables the ability to interact with and respond to OBS.
 **Info** | Used to change the text of a text source in OBS.
 **Format** | `OBS Source <source> Text <text>`
 **Example** | `OBS Source RecentFollow Text {user}`
+
+_Note: The text source must be in the current/active scene for this to trigger._
 
 ***
 
@@ -1076,6 +1082,8 @@ _Note: Messages are echo'd to all websocket-connected clients. This is useful fo
 **Info** | Used to take a screenshot of an OBS source and save it to a file. `<file>` is the absolute path to a file.
 **Format** | `OBS TakeSourceScreenshot <source> <file>`
 **Example** | `OBS TakeSourceScreenshot Webcam "C:\Users\YOUR_USER_NAME\Documents\Stream\screenshot.png"`
+
+_Note: The source must be in the current/active scene for this to trigger._
 
 ***
 
