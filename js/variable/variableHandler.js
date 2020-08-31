@@ -19,9 +19,7 @@ class VariableHandler extends Handler {
       if (action === 'load') {
         var varName = triggerData.slice(3).join(' ');
         var variable = await idbKeyval.get(varName) || 'No variable found';
-        var response = {};
-        response[varName] = variable;
-        return response;
+        return {[varName]: variable};
       }
       // Clears all global variables
       else if (action === 'clear') {
@@ -37,9 +35,7 @@ class VariableHandler extends Handler {
         var varName = triggerData[3];
         var variable = triggerData.slice(4).join(' ');
         idbKeyval.set(varName, variable);
-        var response = {};
-        response[varName] = variable;
-        return response;
+        return {[varName]: variable};
       }
     } else {
       // Load a variable
@@ -47,18 +43,14 @@ class VariableHandler extends Handler {
       if (action === 'load') {
         var varName = triggerData.slice(2).join(' ');
         var variable = this.variables[varName] || 'No variable found';
-        var response = {};
-        response[varName] = variable;
-        return response;
+        return {[varName]: variable};
       }
       // Loads a global variable
       else if (action === 'set') {
         var varName = triggerData[2];
         var variable = triggerData.slice(3).join(' ');
         this.variables[varName] = variable;
-        var response = {};
-        response[varName] = variable;
-        return response;
+        return {[varName]: variable};
       }
     }
   }
