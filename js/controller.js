@@ -150,7 +150,7 @@ class Controller {
     triggerParams['_unsuccessful_'] = this.getUnsuccessful().join(', ');
 
     // Get trigger content
-    var triggerSequence = this.triggerData[triggerId];
+    var triggerSequence = JSON.parse(JSON.stringify(this.triggerData[triggerId]));
 
     // Setup regex for any parameters
     var triggerRegex = null;

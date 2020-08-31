@@ -54,8 +54,7 @@ class RandomHandler extends Handler {
         var probability = Math.random() * 100;
         for (var i = 0; i < actionIndexes.length; i++) {
           if (probability < actionIndexes[i][0]) {
-            await controller.runTrigger(shlexSplit(actionIndexes[i][1]));
-            return;
+            return { actions: [actionIndexes[i][1]] };
           }
         }
       }
@@ -64,8 +63,8 @@ class RandomHandler extends Handler {
       if (triggerData[1].toLowerCase() !== 'equal') {
         exclude = 1;
       }
-      var choice = Math.floor(Math.random() * (triggerData.length - exclude) + exclude);
-      await controller.runTrigger(shlexSplit(triggerData[choice]));
+      var choice = Math.floor(Math.random() * (triggerData.length - exclude)) + exclude;
+      return { actions: [triggerData[choice]] };
     }
   }
 }
