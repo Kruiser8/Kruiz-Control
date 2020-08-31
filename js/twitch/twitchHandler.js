@@ -155,6 +155,7 @@ class TwitchHandler extends Handler {
       onChannelPointTriggers.sort((a,b) => a-b);
       onChannelPointTriggers.forEach(triggerId => {
         controller.handleData(triggerId, {
+          reward: reward,
           user: user,
           message: input,
           data: message

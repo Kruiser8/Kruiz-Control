@@ -294,6 +294,7 @@ Enables the ability to run actions when channel point rewards are redeemed.
 ##### Parameters
 | | |
 ------------ | -------------
+**reward** | The name of the channel point reward that was redeemed.
 **user** | The display name of the user that redeemed the channel point reward.
 **message** | The message included with the channel point redemption (if one is provided)
 **data** | The complete json channel point message (for use with [Eval](#eval) or [Function](#function)).
