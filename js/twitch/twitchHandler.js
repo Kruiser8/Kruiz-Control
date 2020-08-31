@@ -127,6 +127,7 @@ class TwitchHandler extends Handler {
   onChannelPointMessage(message) {
     // Check if tracking reward
     var reward = message.data.redemption.reward.title;
+    var onChannelPointTriggers = [];
     if (this.rewards.indexOf(reward) !== -1) {
 
       // Grab data to return
@@ -137,13 +138,7 @@ class TwitchHandler extends Handler {
       }
 
       // Handle triggers
-      this.rewardsTrigger[reward].forEach(triggerId => {
-        controller.handleData(triggerId, {
-          user: user,
-          message: input,
-          data: message
-        });
-      })
+      onChannelPointTriggers.push(...this.rewardsTrigger[reward]);
     }
     if (this.rewards.indexOf('*') !== -1) {
       // Grab data to return
@@ -154,13 +149,17 @@ class TwitchHandler extends Handler {
       }
 
       // Handle triggers
-      this.rewardsTrigger['*'].forEach(triggerId => {
+      onChannelPointTriggers.push(...this.rewardsTrigger['*']);
+    }
+    if (onChannelPointTriggers.length > 0) {
+      onChannelPointTriggers.sort((a,b) => a-b);
+      onChannelPointTriggers.forEach(triggerId => {
         controller.handleData(triggerId, {
           user: user,
           message: input,
           data: message
         });
-      })
+      });
     }
   }
 
@@ -172,56 +171,32 @@ class TwitchHandler extends Handler {
     if (message.type === 'community-goal-contribution') {
       // Check if tracking goal
       var goal = message.data.contribution.goal.title;
+      var goalTriggers = [];
       if (this.goals.indexOf(goal) !== -1) {
         // Handle triggers
-        this.goalsTrigger[goal].forEach(triggerId => {
-          controller.handleData(triggerId, {
-            goal: goal,
-            user: message.data.contribution.user.display_name,
-            amount: message.data.contribution.amount,
-            user_total: message.data.contribution.total_contribution,
-            progress: message.data.contribution.goal.points_contributed,
-            total: message.data.contribution.goal.goal_amount,
-            data: message
-          });
-        });
+        goalTriggers.push(...this.goalsTrigger[goal]);
       }
       if (this.goals.indexOf('*') !== -1) {
-        this.goalsTrigger[goal].forEach(triggerId => {
-          controller.handleData(triggerId, {
-            goal: goal,
-            user: message.data.contribution.user.display_name,
-            amount: message.data.contribution.amount,
-            user_total: message.data.contribution.total_contribution,
-            progress: message.data.contribution.goal.points_contributed,
-            total: message.data.contribution.goal.goal_amount,
-            data: message
-          });
-        });
+        goalTriggers.push(...this.goalsTrigger['*']);
       }
       if (this.complete.indexOf(goal) !== -1) {
-        var goal = message.data.contribution.goal.title;
-        if (message.data.contribution.goal.status === 'ENDED' && message.data.contribution.total_contribution === message.data.contribution.goal.points_contributed) {
+        if (message.data.contribution.goal.status === 'ENDED' && message.data.contribution.goal.goal_amount === message.data.contribution.goal.points_contributed) {
           // Handle triggers
-          this.completeTrigger[goal].forEach(triggerId => {
-            controller.handleData(triggerId, {
-              goal: goal,
-              user: user,
-              amount: message.data.contribution.amount,
-              user_total: message.data.contribution.total_contribution,
-              progress: message.data.contribution.goal.points_contributed,
-              total: message.data.contribution.goal.goal_amount,
-              data: message
-            });
-          });
+          goalTriggers.push(...this.completeTrigger[goal]);
         }
       }
       if (this.complete.indexOf('*') !== -1) {
-        // Handle triggers
-        this.completeTrigger[goal].forEach(triggerId => {
+        if (message.data.contribution.goal.status === 'ENDED' && message.data.contribution.goal.goal_amount === message.data.contribution.goal.points_contributed) {
+          // Handle triggers
+          goalTriggers.push(...this.completeTrigger['*']);
+        }
+      }
+      if (goalTriggers.length > 0) {
+        goalTriggers.sort((a,b) => a-b);
+        goalTriggers.forEach(triggerId => {
           controller.handleData(triggerId, {
             goal: goal,
-            user: user,
+            user: message.data.contribution.user.display_name,
             amount: message.data.contribution.amount,
             user_total: message.data.contribution.total_contribution,
             progress: message.data.contribution.goal.points_contributed,
@@ -232,25 +207,27 @@ class TwitchHandler extends Handler {
       }
     } else if (message.type === 'community-goal-updated') {
       var goal = message.data.community_goal.title;
+      var goalTriggers = [];
       if (this.start.indexOf(goal) !== -1) {
         if (message.data.community_goal.status === 'STARTED' && message.data.community_goal.points_contributed === 0) {
           // Handle triggers
-          this.startTrigger[goal].forEach(triggerId => {
-            controller.handleData(triggerId, {
-              goal: goal,
-              data: message
-            });
-          });
+          goalTriggers.push(...this.startTrigger[goal]);
         }
       }
       if (this.start.indexOf('*') !== -1) {
-        // Handle triggers
-        this.startTrigger[goal].forEach(triggerId => {
+        if (message.data.community_goal.status === 'STARTED' && message.data.community_goal.points_contributed === 0) {
+          // Handle triggers
+          goalTriggers.push(...this.startTrigger['*']);
+        }
+      }
+      if (goalTriggers.length > 0) {
+        goalTriggers.sort((a,b) => a-b);
+        goalTriggers.forEach(triggerId => {
           controller.handleData(triggerId, {
             goal: goal,
             data: message
           });
-        });
+        })
       }
     }
   }

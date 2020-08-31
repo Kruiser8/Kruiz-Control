@@ -145,9 +145,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
   obs.takeSourceScreenshot = async function(source, filePath) {
     await this.send('TakeSourceScreenshot', {
       sourceName: source,
-      saveToFilePath: filePath,
-      width: 100,
-      height: 300
+      saveToFilePath: filePath
     }).catch(err => {
       // Promise convention dictates you have a catch on every chain.
       console.error(JSON.stringify(err));
@@ -180,6 +178,20 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
         'text': text
       }
     }).catch(err => {
+      // Promise convention dictates you have a catch on every chain.
+      console.error(JSON.stringify(err));
+    });
+  };
+
+  obs.startStream = async function() {
+    await this.send('StartStreaming').catch(err => {
+      // Promise convention dictates you have a catch on every chain.
+      console.error(JSON.stringify(err));
+    });
+  };
+
+  obs.stopStream = async function() {
+    await this.send('StopStreaming').catch(err => {
       // Promise convention dictates you have a catch on every chain.
       console.error(JSON.stringify(err));
     });
@@ -223,7 +235,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
       'position': {
         'x': x,
         'y': y
-      }
+	}
     }).catch(err => { // Promise convention dictates you have a catch on every chain.
       console.error(JSON.stringify(err));
     });

@@ -120,7 +120,7 @@ class StreamElementsAlertHandler extends Handler {
       'data': event,
       'amount': event.amount,
       'message': event.message,
-      'user': event.displayName
+      'user': (event.displayName) ? event.displayName : event.name
     }
   }
 
@@ -145,7 +145,7 @@ class StreamElementsAlertHandler extends Handler {
       'data': event,
       'amount': event.amount,
       'message': event.message,
-      'user': event.displayName
+      'user': (event.displayName) ? event.displayName : event.name
     }
   }
 
@@ -156,7 +156,7 @@ class StreamElementsAlertHandler extends Handler {
   getFollowParameters(event) {
     return {
       'data': event,
-      'user': event.displayName
+      'user': (event.displayName) ? event.displayName : event.name
     }
   }
 
@@ -167,7 +167,7 @@ class StreamElementsAlertHandler extends Handler {
   getGiftSubParameters(event) {
     return {
       'data': event,
-      'user': event.displayName,
+      'user': (event.displayName) ? event.displayName : event.name,
       'gifter': event.sender,
       'tier': event.tier === 'prime' ? 'Prime' : 'Tier ' + (parseInt(event.tier) / 1000)
     }
@@ -180,7 +180,7 @@ class StreamElementsAlertHandler extends Handler {
   getHostParameters(event) {
     return {
       'data': event,
-      'user': event.displayName,
+      'user': (event.displayName) ? event.displayName : event.name,
       'viewers': event.amount
     }
   }
@@ -192,7 +192,7 @@ class StreamElementsAlertHandler extends Handler {
   getRaidParameters(event) {
     return {
       'data': event,
-      'user': event.displayName,
+      'user': (event.displayName) ? event.displayName : event.name,
       'raiders': event.amount
     }
   }
@@ -204,7 +204,7 @@ class StreamElementsAlertHandler extends Handler {
   getSubParameters(event) {
     return {
       'data': event,
-      'user': event.displayName,
+      'user': (event.displayName) ? event.displayName : event.name,
       'months': event.amount,
       'message': event.message,
       'tier': event.tier === 'prime' ? 'Prime' : 'Tier ' + (parseInt(event.tier) / 1000)

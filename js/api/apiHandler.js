@@ -23,18 +23,24 @@ class ApiHandler extends Handler {
    * @param {string} url API to call
    */
   async callAPI(url) {
-    return $.ajax({
-      url: url,
-      type: 'GET',
-      success: function(data) {
-        return data;
-      },
-      error: function(data) {
-        console.error(`Error calling the api: ${url}`);
-        console.error(data);
-        return 'Error';
-      }
-    });
+    var response = null;
+    try {
+      await $.ajax({
+        url: url,
+        type: 'GET',
+        success: function(data) {
+          response = data;
+        },
+        error: function(data) {
+          console.error(`Error calling the api: ${url}`);
+          console.error(JSON.stringify(data));
+        }
+      });
+    } catch (err) {
+      response = 'Error';
+    }
+
+    return response;
   }
 }
 

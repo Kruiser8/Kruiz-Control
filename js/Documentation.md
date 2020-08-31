@@ -43,11 +43,13 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Actions](#list-actions)
     + [List Add](#list-add)
     + [List Contains](#list-contains)
+    + [List Count](#list-count)
     + [List Export](#list-export)
     + [List Get](#list-get)
     + [List Import](#list-import)
     + [List Index](#list-index)
     + [List Remove](#list-remove)
+    + [List Set](#list-remove)
 - [Message](#message)
   * [Triggers](#message-triggers)
     + [OnMessage](#onmessage)
@@ -63,6 +65,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Error](#error)
     + [Eval](#eval)
     + [Exit](#exit)
+    + [Function](#function)
     + [If](#if)
     + [Log](#log)
     + [Play](#play)
@@ -82,11 +85,13 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OBS Position](#obs-position)
     + [OBS Scene](#obs-scene)
     + [OBS SceneSource](#obs-scenesource)
+    + [OBS Send](#obs-send)
     + [OBS Source](#obs-source)
     + [OBS Source Filter](#obs-source-filter)
     + [OBS Source Text](#obs-source-text)
     + [OBS Source URL](#obs-source-url)
-    + [OBS Send](#obs-send)
+    + [OBS StartStream](#obs-startstream)
+    + [OBS StopStream](#obs-stopstream)
     + [OBS TakeSourceScreenshot](#obs-takesourcescreenshot)
     + [OBS Version](#obs-version)
     + [OBS Volume](#obs-volume)
@@ -94,6 +99,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Triggers](#random-triggers)
   * [Actions](#random-triggers)
     + [Random Equal](#random-equal)
+    + [Random Number](#random-number)
     + [Random Probability](#random-probability)
 - [SLOBS](#slobs)
   * [Triggers](#slobs-triggers)
@@ -122,6 +128,8 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Triggers](#streamlabs-triggers)
     + [OnSLTwitchBits | OnSLTwitchBitsNoSync](#onsltwitchbits--onsltwitchbitsnosync)
     + [OnSLDonation | OnSLDonationNoSync](#onsldonation--onsldonationnosync)
+    + [OnSLTiltifyDonation | OnSLTiltifyDonationNoSync](#onsltiltifydonation--onsltiltifydonationnosync)
+    + [OnSLPatreonPledge | OnSLPatreonPledgeNoSync](#onslpatreonpledge--onslpatreonpledgenosync)
     + [OnSLTwitchFollow | OnSLTwitchFollowNoSync](#onsltwitchfollow--onsltwitchfollownosync)
     + [OnSLTwitchCommunityGiftSub | OnSLTwitchCommunityGiftSubNoSync](#onsltwitchcommunitygiftsub--onsltwitchcommunitygiftsubnosync)
     + [OnSLTwitchGiftSub | OnSLTwitchGiftSubNoSync](#onsltwitchgiftsub--onsltwitchgiftsubnosync)
@@ -389,6 +397,7 @@ _WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mi
 **after** | The message excluding the command.
 **message** | The entire chat message, including the command.
 **data** | An object with all metadata about the message (for use with [Eval](#eval) or [Function](#function)).
+**arg#** | The numbered arguments in the message. Replace `#` with a number, starting at 1 and ending at the last argument passed into the command.
 
 ***
 
@@ -425,13 +434,14 @@ _WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mi
 **user** | The display name of the user that triggered the keyword.
 **message** | The chat message.
 **data** | An object with all metadata about the message (for use with [Eval](#eval) or [Function](#function)).
+**arg#** | The numbered arguments in the message. Replace `#` with a number, starting at 1 and ending at the last argument passed into the command.
 
 ***
 
 #### OnSpeak
 | | |
 ------------ | -------------
-**Info** | Used to trigger a set of actions when a user speaks in chat for the first time. Using `*` as the `<name>` will execute the trigger for all users except those that have another OnSpeak event.
+**Info** | Used to trigger a set of actions when a user speaks in chat for the first time. Using `*` as the `<name>` will execute the trigger for all users.
 **Format** | `OnSpeak <name>`
 **Example** | `OnSpeak Kruiser8`
 
@@ -605,6 +615,20 @@ None at the moment.
 
 ***
 
+#### List Count
+| | |
+------------ | -------------
+**Info** | Check how many items are in a list.
+**Format** | `List Count <list>`
+**Example** | `List Count MyList`
+
+##### Parameters
+| | |
+------------ | -------------
+**count** | The number of items in the list.
+
+***
+
 #### List Export
 | | |
 ------------ | -------------
@@ -676,6 +700,22 @@ None at the moment.
 **value** | The value returned from the list or "None found" if there are no items in the list.
 **position** | The position of the value in the list (starting from 1) or `-1` if not found.
 **index** | The index of the value in the list (starting from 0) or `-1` if not found.
+
+***
+
+#### List Set
+| | |
+------------ | -------------
+**Info** | Adds an item to the list. `<index>` is optional to add at a specific index.
+**Format** | `List Set <list> <index> <value>`
+**Example** | `List Set MyList 1 {user}`
+
+##### Parameters
+| | |
+------------ | -------------
+**position** | The position of the value in the list (starting from 1) or `-1` if not found.
+**index** | The index of the value in the list (starting from 0) or `-1` if not found.
+**value** | The value added to the list.
 
 ***
 
@@ -785,7 +825,7 @@ Eval '({total: {total} + 1})'
 
 If you need a function rather than an expression, use the below format. The below returns a random element from an array in _api_data_.
 ```js
-Eval '(function() { var arr = {api_data}; return {random: arr[Math.floor(Math.random() * arr.length)]}}())'
+Eval '(function() { var arr = [api_data]; return {random: arr[Math.floor(Math.random() * arr.length)]}}())'
 ```
 
 If a `continue` parameter is returned and the value is `false`, the trigger will exit and not continue processing actions.
@@ -814,7 +854,7 @@ If an `actions` array parameter is returned, each item of the array will be inse
 
 The below returns a random element from an array in _api_data_.
 ```js
-Function 'var arr = {api_data}; return {random: arr[Math.floor(Math.random() * arr.length)]}'
+Function 'var arr = [api_data]; return {random: arr[Math.floor(Math.random() * arr.length)]}'
 ```
 
 If a `continue` parameter is returned and the value is `false`, the trigger will exit and not continue processing actions.
@@ -1020,6 +1060,18 @@ Enables the ability to interact with and respond to OBS.
 
 ***
 
+#### OBS Send
+| | |
+------------ | -------------
+**Info** | Used to send a custom event to through the OBS websocket. `<message>` is the identifier of the message. (Optional) `<data>` is anything to send with the message.
+**Format** | `OBS Send <message> <data>`
+**Example** | `OBS Send PlayShikaka`
+**Example (with data)** | `OBS Send PlayAudio Shikaka`
+
+_Note: Messages are echo'd to all websocket-connected clients. This is useful for connecting other browser sources or triggering other triggers._
+
+***
+
 #### OBS Source
 | | |
 ------------ | -------------
@@ -1038,7 +1090,7 @@ _Note: The source must be in the current/active scene for this to trigger._
 **Format** | `OBS Source <source> Filter <filter> <on/off/toggle>`
 **Example** | `OBS Source Webcam Filter Rainbow on`
 
-_Note: The source must be in the current/active scene for this to trigger._
+_Note: The source does not need to be in current/active scene for this to trigger._
 
 ***
 
@@ -1049,7 +1101,7 @@ _Note: The source must be in the current/active scene for this to trigger._
 **Format** | `OBS Source <source> Text <text>`
 **Example** | `OBS Source RecentFollow Text {user}`
 
-_Note: The text source must be in the current/active scene for this to trigger._
+_Note: The text source does not need to be in current/active scene for this to trigger._
 
 ***
 
@@ -1060,19 +1112,25 @@ _Note: The text source must be in the current/active scene for this to trigger._
 **Format** | `OBS Source <source> URL <url>`
 **Example** | `OBS Source "Browser" URL "https://github.com/Kruiser8/Kruiz-Control"`
 
-_Note: The browser source must be in the current/active scene for this to trigger._
+_Note: The browser source does not need to be in current/active scene for this to trigger._
 
 ***
 
-#### OBS Send
+#### OBS StartStream
 | | |
 ------------ | -------------
-**Info** | Used to send a custom event to through the OBS websocket. `<message>` is the identifier of the message. (Optional) `<data>` is anything to send with the message.
-**Format** | `OBS Send <message> <data>`
-**Example** | `OBS Send PlayShikaka`
-**Example (with data)** | `OBS Send PlayAudio Shikaka`
+**Info** | Used to start the stream in OBS. If the stream is already live, nothing will happen.
+**Format** | `OBS StartStream`
+**Example** | `OBS StartStream`
 
-_Note: Messages are echo'd to all websocket-connected clients. This is useful for connecting other browser sources or triggering other triggers._
+***
+
+#### OBS StopStream
+| | |
+------------ | -------------
+**Info** | Used to stop the stream in OBS. If the stream is already stopped, nothing will happen.
+**Format** | `OBS StartStream`
+**Example** | `OBS StartStream`
 
 ***
 
@@ -1082,8 +1140,6 @@ _Note: Messages are echo'd to all websocket-connected clients. This is useful fo
 **Info** | Used to take a screenshot of an OBS source and save it to a file. `<file>` is the absolute path to a file.
 **Format** | `OBS TakeSourceScreenshot <source> <file>`
 **Example** | `OBS TakeSourceScreenshot Webcam "C:\Users\YOUR_USER_NAME\Documents\Stream\screenshot.png"`
-
-_Note: The source must be in the current/active scene for this to trigger._
 
 ***
 
@@ -1132,6 +1188,22 @@ None at the moment.
 **Format** | `Random Equal <action> <action> ...`
 **Example** | `Random Equal "chat send 'hello world'" "chat send 'did you know tarantulas molt?'"`
 **Example without "Equal"** | `Random "chat send 'a'" "chat send 'b'" "chat send 'c'"`
+
+***
+
+#### Random Number
+| | |
+------------ | -------------
+**Info** | Randomly generates an integer between a min and max value (`[min, max)`). If no input is specified, 0 is used as the min and 100 is used as the max.
+**Format** | `Random Number <optional_min> <optional_max>`
+**Example** | `Random Number 30 75`
+**Example without values** | `Random Number`
+**Example with min only** | `Random Number 20`
+
+##### Parameters
+| | |
+------------ | -------------
+**number** | The number produced by the random generation.
 
 ***
 
@@ -1274,7 +1346,7 @@ Enables the ability to trigger actions based on StreamElement alerts. Note that 
 **user** | The user that cheered.
 **amount** | The amount of the bits. Use this in comparisons.
 **message** | The message included with the bits.
-**data** | The complete json event (for use with [Eval](#eval)).
+**data** | The complete json event (for use with [Eval](#eval) or [Function](#function)).
 
 ***
 
@@ -1290,7 +1362,7 @@ Enables the ability to trigger actions based on StreamElement alerts. Note that 
 ------------ | -------------
 **user** | The user that gifted the subscriptions.
 **amount** | The number of subscriptions the user is gifted.
-**data** | The complete json message (for use with [Eval](#eval)).
+**data** | The complete json message (for use with [Eval](#eval) or [Function](#function)).
 
 ***
 
@@ -1307,7 +1379,7 @@ Enables the ability to trigger actions based on StreamElement alerts. Note that 
 **user** | The user that donated.
 **amount** | The numeric amount of the donation with no currency symbol.
 **message** | The message included with the donation.
-**data** | The complete json message (for use with [Eval](#eval)).
+**data** | The complete json message (for use with [Eval](#eval) or [Function](#function)).
 
 ***
 
@@ -1322,7 +1394,7 @@ Enables the ability to trigger actions based on StreamElement alerts. Note that 
 | | |
 ------------ | -------------
 **user** | The user that followed.
-**data** | The complete json message (for use with [Eval](#eval)).
+**data** | The complete json message (for use with [Eval](#eval) or [Function](#function)).
 
 ***
 
@@ -1339,7 +1411,7 @@ Enables the ability to trigger actions based on StreamElement alerts. Note that 
 **user** | The user that was gifted a subscription.
 **gifter** | The user that gifted the subscription.
 **tier** | The tier of the subscription. Possible values are `Tier 1`, `Tier 2`, `Tier 3`, and `Prime`.
-**data** | The complete json message (for use with [Eval](#eval)).
+**data** | The complete json message (for use with [Eval](#eval) or [Function](#function)).
 
 _Note: months is not included since streamelements does not include it for gift subs (or I just could not find it)._
 
@@ -1357,7 +1429,7 @@ _Note: months is not included since streamelements does not include it for gift 
 ------------ | -------------
 **user** | The user that hosted.
 **viewers** | The number of viewers in the host.
-**data** | The complete json message (for use with [Eval](#eval)).
+**data** | The complete json message (for use with [Eval](#eval) or [Function](#function)).
 
 ***
 
@@ -1373,7 +1445,7 @@ _Note: months is not included since streamelements does not include it for gift 
 ------------ | -------------
 **user** | The user that raided.
 **raiders** | The number of raiders in the raid.
-**data** | The complete json message (for use with [Eval](#eval)).
+**data** | The complete json message (for use with [Eval](#eval) or [Function](#function)).
 
 ***
 
@@ -1391,7 +1463,7 @@ _Note: months is not included since streamelements does not include it for gift 
 **months** | The number of months the user is subscribed.
 **message** | The message included with the subscription.
 **tier** | The tier of the subscription. Possible values are `Tier 1`, `Tier 2`, `Tier 3`, and `Prime`.
-**data** | The complete json message (for use with [Eval](#eval)).
+**data** | The complete json message (for use with [Eval](#eval) or [Function](#function)).
 
 ***
 
@@ -1425,14 +1497,14 @@ Use the `NoSync` version of a trigger if:
 **user** | The user that cheered.
 **amount** | The amount of the bits. Use this in comparisons.
 **message** | The message included with the bits.
-**data** | The complete json message (for use with [Eval](#eval)).
+**data** | The complete json message (for use with [Eval](#eval) or [Function](#function)).
 
 ***
 
 #### OnSLDonation | OnSLDonationNoSync
 | | |
 ------------ | -------------
-**Info** | Used to trigger actions when someone donates through StreamElements.
+**Info** | Used to trigger actions when someone donates through Streamlabs.
 **Format** | `OnSLDonation`
 **Example** | `OnSLDonation`
 
@@ -1443,7 +1515,42 @@ Use the `NoSync` version of a trigger if:
 **amount** | The numeric amount of the donation. Use this in comparisons.
 **formatted** | The formatted amount using the locale's currency format.
 **message** | The message included with the donation.
-**data** | The complete json message (for use with [Eval](#eval)).
+**data** | The complete json message (for use with [Eval](#eval) or [Function](#function)).
+
+***
+
+#### OnSLTiltifyDonation | OnSLTiltifyDonationNoSync
+| | |
+------------ | -------------
+**Info** | Used to trigger actions when someone triggers a tiltify donation through Streamlabs.
+**Format** | `OnSLTiltifyDonation`
+**Example** | `OnSLTiltifyDonation`
+
+##### Parameters
+| | |
+------------ | -------------
+**user** | The user that donated.
+**amount** | The numeric amount of the donation. Use this in comparisons.
+**formatted** | The formatted amount using the locale's currency format.
+**message** | The message included with the donation.
+**data** | The complete json message (for use with [Eval](#eval) or [Function](#function)).
+
+***
+
+#### OnSLPatreonPledge | OnSLPatreonPledgeNoSync
+| | |
+------------ | -------------
+**Info** | Used to trigger actions when someone pledges on Patreon through Streamlabs.
+**Format** | `OnSLPatreonPledge`
+**Example** | `OnSLPatreonPledge`
+
+##### Parameters
+| | |
+------------ | -------------
+**user** | The user that donated.
+**amount** | The numeric amount of the donation. Use this in comparisons.
+**formatted** | The formatted amount using the locale's currency format.
+**data** | The complete json message (for use with [Eval](#eval) or [Function](#function)).
 
 ***
 
@@ -1458,7 +1565,7 @@ Use the `NoSync` version of a trigger if:
 | | |
 ------------ | -------------
 **user** | The user that followed.
-**data** | The complete json message (for use with [Eval](#eval)).
+**data** | The complete json message (for use with [Eval](#eval) or [Function](#function)).
 
 ***
 
@@ -1475,7 +1582,7 @@ Use the `NoSync` version of a trigger if:
 **gifter** | The user that gifted the subscription.
 **amount** | The number of subscriptions gifted by the gifter.
 **tier** | The tier of the subscription. Possible values are `Tier 1`, `Tier 2`, `Tier 3`, and `Prime`.
-**data** | The complete json message (for use with [Eval](#eval)).
+**data** | The complete json message (for use with [Eval](#eval) or [Function](#function)).
 
 ***
 
@@ -1493,7 +1600,7 @@ Use the `NoSync` version of a trigger if:
 **gifter** | The user that gifted the subscription.
 **months** | The number of months the user is subscribed.
 **tier** | The tier of the subscription. Possible values are `Tier 1`, `Tier 2`, `Tier 3`, and `Prime`.
-**data** | The complete json message (for use with [Eval](#eval)).
+**data** | The complete json message (for use with [Eval](#eval) or [Function](#function)).
 
 ***
 
@@ -1509,7 +1616,7 @@ Use the `NoSync` version of a trigger if:
 ------------ | -------------
 **user** | The user that hosted.
 **viewers** | The number of viewers in the host.
-**data** | The complete json message (for use with [Eval](#eval)).
+**data** | The complete json message (for use with [Eval](#eval) or [Function](#function)).
 
 ***
 
@@ -1525,7 +1632,7 @@ Use the `NoSync` version of a trigger if:
 ------------ | -------------
 **user** | The user that raided.
 **raiders** | The number of raiders in the raid.
-**data** | The complete json message (for use with [Eval](#eval)).
+**data** | The complete json message (for use with [Eval](#eval) or [Function](#function)).
 
 ***
 
@@ -1543,7 +1650,7 @@ Use the `NoSync` version of a trigger if:
 **months** | The number of months the user is subscribed.
 **message** | The message included with the subscription.
 **tier** | The tier of the subscription. Possible values are `Tier 1`, `Tier 2`, `Tier 3`, and `Prime`.
-**data** | The complete json message (for use with [Eval](#eval)).
+**data** | The complete json message (for use with [Eval](#eval) or [Function](#function)).
 
 ***
 

@@ -106,21 +106,22 @@ class OBSHandler extends Handler {
    */
   async onSwitchScenes(data) {
     var currentScene = await this.obs.getCurrentScene();
+    var sceneTriggers = [];
     if (currentScene.name === data.sceneName) {
       if (this.onSwitch.indexOf(currentScene.name) !== -1) {
-        this.onSwitchTrigger[data.sceneName].forEach(triggerId => {
-          controller.handleData(triggerId, {
-            scene: currentScene.name
-          });
-        });
+        sceneTriggers.push(...this.onSwitchTrigger[data.sceneName]);
       }
       if (this.onSwitch.indexOf('*') !== -1) {
-        this.onSwitchTrigger['*'].forEach(triggerId => {
-          controller.handleData(triggerId, {
-            scene: currentScene.name
-          });
-        });
+        sceneTriggers.push(...this.onSwitchTrigger['*']);
       }
+    }
+    if (sceneTriggers.length > 0) {
+      sceneTriggers.sort((a,b) => a-b);
+      sceneTriggers.forEach(triggerId => {
+        controller.handleData(triggerId, {
+          scene: currentScene.name
+        });
+      });
     }
   }
 
@@ -129,16 +130,16 @@ class OBSHandler extends Handler {
    * @param {Object} data scene information
    */
   async onTransitionBegin(data) {
+    var sceneTriggers = [];
     if (this.onTransitionTo.indexOf(data.toScene) !== -1) {
-      this.onTransitionToTrigger[data.toScene].forEach(triggerId => {
-        controller.handleData(triggerId, {
-          from: data.fromScene,
-          scene: data.toScene
-        });
-      });
+      sceneTriggers.push(...this.onTransitionToTrigger[data.toScene]);
     }
     if (this.onTransitionTo.indexOf('*') !== -1) {
-      this.onTransitionToTrigger['*'].forEach(triggerId => {
+      sceneTriggers.push(...this.onTransitionToTrigger['*']);
+    }
+    if (sceneTrigger.length > 0) {
+      sceneTriggers.sort((a,b) => a-b);
+      sceneTriggers.forEach(triggerId => {
         controller.handleData(triggerId, {
           from: data.fromScene,
           scene: data.toScene
@@ -174,16 +175,16 @@ class OBSHandler extends Handler {
    * @param {Object} broadcast obs custom message
    */
   onCustomMessage(broadcast) {
+    var customTriggers = [];
     if (broadcast.realm === 'kruiz-control' && typeof(broadcast.data.message) !== 'undefined' && this.onCustom.indexOf(broadcast.data.message) !== -1) {
-      this.onCustomTrigger[broadcast.data.message].forEach(triggerId => {
-        controller.handleData(triggerId, {
-          message: broadcast.data.message,
-          data: broadcast.data.data
-        });
-      });
+      customTriggers.push(...this.onCustomTrigger[broadcast.data.message]);
     }
     if (broadcast.realm === 'kruiz-control' && typeof(broadcast.data.message) !== 'undefined' && this.onCustom.indexOf('*') !== -1) {
-      this.onCustomTrigger['*'].forEach(triggerId => {
+      customTriggers.push(...this.onCustomTrigger['*']);
+    }
+    if (customTriggers.length > 0) {
+      customTriggers.sort((a,b) => a-b);
+      customTriggers.forEach(triggerId => {
         controller.handleData(triggerId, {
           message: broadcast.data.message,
           data: broadcast.data.data
@@ -228,6 +229,12 @@ class OBSHandler extends Handler {
       case 'currentscene':
         var currentScene = await this.obs.getCurrentScene();
         return {current_scene: currentScene.name};
+        break;
+      case 'startstream':
+        await this.obs.startStream();
+        break;
+      case 'stopstream':
+        await this.obs.stopStream();
         break;
       case 'scene':
         var currentScene = await this.obs.getCurrentScene();

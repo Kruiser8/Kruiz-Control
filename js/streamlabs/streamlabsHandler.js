@@ -3,7 +3,7 @@ class StreamlabsHandler extends Handler {
    * Create a new Streamlabs handler.
    */
   constructor() {
-    super('Streamlabs', ['OnSLTwitchBits','OnSLDonation','OnSLTwitchFollow','OnSLTwitchGiftSub','OnSLTwitchCommunityGiftSub','OnSLTwitchHost','OnSLTwitchRaid','OnSLTwitchSub','OnSLTwitchBitsNoSync','OnSLDonationNoSync','OnSLTwitchFollowNoSync','OnSLTwitchGiftSubNoSync','OnSLTwitchCommunityGiftSubNoSync','OnSLTwitchHostNoSync','OnSLTwitchRaidNoSync','OnSLTwitchSubNoSync']);
+    super('Streamlabs', ['OnSLTwitchBits','OnSLDonation','OnSLTiltifyDonation','OnSLPatreonPledge','OnSLTwitchFollow','OnSLTwitchGiftSub','OnSLTwitchCommunityGiftSub','OnSLTwitchHost','OnSLTwitchRaid','OnSLTwitchSub','OnSLTwitchBitsNoSync','OnSLDonationNoSync','OnSLTiltifyDonationNoSync','OnSLPatreonPledgeNoSync','OnSLTwitchFollowNoSync','OnSLTwitchGiftSubNoSync','OnSLTwitchCommunityGiftSubNoSync','OnSLTwitchHostNoSync','OnSLTwitchRaidNoSync','OnSLTwitchSubNoSync']);
     this.alerts = [];
     this.alertsTrigger = {
       'bits': [],
@@ -12,8 +12,10 @@ class StreamlabsHandler extends Handler {
       'gift_sub': [],
       'cgift_sub': [],
       'host': [],
+      'pledge': [],
       'raid': [],
-      'subscription': []
+      'subscription': [],
+      'tiltifydonation': []
     };
     this.alertsNoSync = [];
     this.alertsNoSyncTrigger = {
@@ -23,12 +25,16 @@ class StreamlabsHandler extends Handler {
       'gift_sub': [],
       'cgift_sub': [],
       'host': [],
+      'pledge': [],
       'raid': [],
-      'subscription': []
+      'subscription': [],
+      'tiltifydonation': []
     };
     this.alertMapping = {
       'onsltwitchbits': 'bits',
       'onsldonation': 'donation',
+      'onsltiltifydonation': 'tiltifydonation',
+      'onslpatreonpledge': 'pledge',
       'onsltwitchfollow': 'follow',
       'onsltwitchgiftsub': 'gift_sub',
       'onsltwitchcommunitygiftsub': 'cgift_sub',
@@ -37,6 +43,8 @@ class StreamlabsHandler extends Handler {
       'onsltwitchsub': 'subscription',
       'onsltwitchbitsnosync': 'bits',
       'onsldonationnosync': 'donation',
+      'onsltiltifydonationnosync': 'tiltifydonation',
+      'onslpatreonpledgenosync': 'pledge',
       'onsltwitchfollownosync': 'follow',
       'onsltwitchgiftsubnosync': 'gift_sub',
       'onsltwitchcommunitygiftsubnosync': 'cgift_sub',
@@ -51,8 +59,10 @@ class StreamlabsHandler extends Handler {
       'gift_sub': this.getGiftSubParameters,
       'cgift_sub': this.getCommunityGiftSubParameters,
       'host': this.getHostParameters,
+      'pledge': this.getPatreonPledgeParameters,
       'raid': this.getRaidParameters,
-      'subscription': this.getSubParameters
+      'subscription': this.getSubParameters,
+      'tiltifydonation': this.getTiltifyDonationParameters
     };
     this.alertIds = [];
     this.alertIdsNoSync = [];
@@ -118,7 +128,7 @@ class StreamlabsHandler extends Handler {
       message.message.forEach(alertMessage => {
         if (this.alertIdsNoSync.indexOf(alertMessage['_id']) === -1) {
           this.alertIdsNoSync.push(alertMessage['_id']);
-          var type = alertMessage.type;
+          var type = message.type;
           if (type === 'subscription' && alertMessage.gifter_display_name) {
             type = 'gift_sub';
           } else if (type === 'subMysteryGift') {
@@ -153,10 +163,37 @@ class StreamlabsHandler extends Handler {
   getDonationParameters(message) {
     return {
       'data': message,
-      'amount': message.rawAmount,
-      'formatted': message.payload.formatted_amount,
+      'amount': (message.payload) ? message.payload.amount : message.amount,
+      'formatted': (message.payload) ? message.payload.formatted_amount : message.formatted_amount,
       'message': message.message,
-      'user': message.name
+      'user': message.from
+    }
+  }
+
+  /**
+   * Retrieve the parameters for the tiltify donation event.
+   * @param {Object} message streamlabs event message
+   */
+  getTiltifyDonationParameters(message) {
+    return {
+      'data': message,
+      'amount': (message.payload) ? message.payload.amount : message.amount,
+      'formatted': (message.payload) ? message.payload.formattedAmount : message.formattedAmount,
+      'message': message.message,
+      'user': message.from
+    }
+  }
+
+  /**
+   * Retrieve the parameters for the patreon pledge event.
+   * @param {Object} message streamlabs event message
+   */
+  getPatreonPledgeParameters(message) {
+    return {
+      'data': message,
+      'amount': (message.payload) ? message.payload.amount : message.amount,
+      'formatted': (message.payload) ? message.payload.formatted_amount : message.formatted_amount,
+      'user': message.from
     }
   }
 
@@ -185,7 +222,7 @@ class StreamlabsHandler extends Handler {
       'user': message.name,
       'gifter': gifter,
       'months': message.months,
-      'tier': message.subPlan === 'Prime' ? 'Prime' : 'Tier ' + (parseInt(message.subPlan) / 1000)
+      'tier': message.sub_plan === 'Prime' ? 'Prime' : 'Tier ' + (parseInt(message.sub_plan) / 1000)
     }
   }
 
@@ -202,7 +239,7 @@ class StreamlabsHandler extends Handler {
       'data': message,
       'amount': message.amount,
       'gifter': gifter,
-      'tier': message.subPlan === 'Prime' ? 'Prime' : 'Tier ' + (parseInt(message.subPlan) / 1000)
+      'tier': message.sub_plan === 'Prime' ? 'Prime' : 'Tier ' + (parseInt(message.sub_plan / 1000)
     }
   }
 
@@ -240,7 +277,7 @@ class StreamlabsHandler extends Handler {
       'user': message.name,
       'months': message.months,
       'message': message.message,
-      'tier': message.subPlan === 'Prime' ? 'Prime' : 'Tier ' + (parseInt(message.subPlan) / 1000)
+      'tier': message.sub_plan === 'Prime' ? 'Prime' : 'Tier ' + (parseInt(message.sub_plan) / 1000)
     }
   }
 }

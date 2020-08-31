@@ -58,15 +58,16 @@ class SLOBSHandler extends Handler {
    * @param {Object} data scene information
    */
   async onSwitchScenes(data) {
+    var sceneTriggers = [];
     if (this.onSwitch.indexOf(data.name) !== -1) {
-      this.onSwitchTrigger[data.name].forEach(triggerId => {
-        controller.handleData(triggerId, {
-          scene: data.name
-        });
-      });
+      sceneTriggers.push(...this.onSwitchTrigger[data.name]);
     }
     if (this.onSwitch.indexOf('*') !== -1) {
-      this.onSwitchTrigger['*'].forEach(triggerId => {
+      sceneTriggers.push(...this.onSwitchTrigger['*']);
+    }
+    if (sceneTriggers.length > 0) {
+      sceneTriggers.sort((a,b) => a-b);
+      sceneTriggers.forEach(triggerId => {
         controller.handleData(triggerId, {
           scene: data.name
         });

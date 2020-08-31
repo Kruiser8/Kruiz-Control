@@ -205,23 +205,26 @@ class ChatHandler extends Handler {
     ComfyJS.onCommand = ( user, command, message, flags, extra ) => {
       var combined = '!' + command + ' ' + message;
 
-      this.chatTriggers.forEach(triggerId => {
-        controller.handleData(triggerId, {
+      this.onAllChat(user, {
+        user: user,
+        message: combined,
+        data: {
           user: user,
+          command: command,
           message: combined,
-          data: {
-            user: user,
-            command: command,
-            message: combined,
-            after: message,
-            flags: flags,
-            extra: extra
-          }
-        });
+          after: message,
+          flags: flags,
+          extra: extra
+        }
       });
 
       // Check for matching command and user permission
       if (this.commands.indexOf(command) !== -1) {
+        var args = shlexSplit(message);
+        var chatArgs = {};
+        for (var i = 0; i < args.length; i++) {
+          chatArgs[`arg${i+1}`] = args[i];
+        }
         this.commandsInfo[command].forEach(info => {
           if (this.checkPermissions(user, flags, info.permission, info.info) && this.updateCooldown(info)) {
             controller.handleData(info.trigger, {
@@ -235,7 +238,8 @@ class ChatHandler extends Handler {
                 after: message,
                 flags: flags,
                 extra: extra
-              }
+              },
+              ...chatArgs
             });
           }
         });
@@ -245,6 +249,11 @@ class ChatHandler extends Handler {
         var result = message.match(this.keywordsRegex);
         if (result) {
           var match = result[0].trim().toLowerCase();
+          var args = shlexSplit(message);
+          var chatArgs = {};
+          for (var i = 0; i < args.length; i++) {
+            chatArgs[`arg${i+1}`] = args[i];
+          }
           this.keywordsInfo[match].forEach(info => {
             // Check if user has permission to trigger keyword
             if (this.checkPermissions(user, flags, info.permission, info.info) && this.updateCooldown(info)) {
@@ -257,7 +266,8 @@ class ChatHandler extends Handler {
                   message: message,
                   flags: flags,
                   extra: extra
-                }
+                },
+                ...chatArgs
               });
             }
           });
@@ -266,42 +276,25 @@ class ChatHandler extends Handler {
     }
 
     ComfyJS.onChat = ( user, message, flags, self, extra ) => {
-      // Check for OnSpeak Event
-      var userLower = user.toLowerCase();
-      if (this.speakers[userLower] === undefined && this.speaks.indexOf(userLower) !== -1) {
-        this.speakers[userLower] = true;
-        this.speaksInfo[userLower].forEach(triggerId => {
-          controller.handleData(triggerId, {
-            user: user
-          });
-        });
-      } else if (this.speakers[userLower] === undefined && this.speaks.indexOf('*') !== -1) {
-        this.speakers[userLower] = true;
-        this.speaksInfo['*'].forEach(triggerId => {
-          controller.handleData(triggerId, {
-            user: user
-          });
-        });
-      } else if (this.speakers[userLower] === undefined) {
-        this.speakers[userLower] = true;
-      }
-
-      this.chatTriggers.forEach(triggerId => {
-        controller.handleData(triggerId, {
+      this.onAllChat(user, {
+        user: user,
+        message: message,
+        data: {
           user: user,
           message: message,
-          data: {
-            user: user,
-            message: message,
-            flags: flags,
-            extra: extra
-          }
-        });
+          flags: flags,
+          extra: extra
+        }
       });
 
       // Check for matching command and user permission
       var command = message.split(' ')[0];
       if(this.commandsOther.indexOf(command) != -1) {
+        var args = shlexSplit(message);
+        var chatArgs = {};
+        for (var i = 0; i < args.length; i++) {
+          chatArgs[`arg${i+1}`] = args[i];
+        }
         this.commandsInfo[command].forEach(info => {
           if (this.checkPermissions(user, flags, info.permission, info.info) && this.updateCooldown(info)) {
             var after = message.split(' ').slice(1).join(' ');
@@ -316,7 +309,8 @@ class ChatHandler extends Handler {
                 after: after,
                 flags: flags,
                 extra: extra
-              }
+              },
+              ...chatArgs
             });
           }
         });
@@ -325,6 +319,11 @@ class ChatHandler extends Handler {
       else {
         var result = message.match(this.keywordsRegex);
         if (result) {
+          var args = shlexSplit(message);
+          var chatArgs = {};
+          for (var i = 0; i < args.length; i++) {
+            chatArgs[`arg${i+1}`] = args[i];
+          }
           var match = result[0].trim().toLowerCase();
           this.keywordsInfo[match].forEach(info => {
             // Check if user has permission to trigger keyword
@@ -338,7 +337,8 @@ class ChatHandler extends Handler {
                   message: message,
                   flags: flags,
                   extra: extra
-                }
+                },
+                ...chatArgs
               });
             }
           });
@@ -346,6 +346,39 @@ class ChatHandler extends Handler {
       }
     }
     return;
+  }
+
+  /**
+   * Check if a trigger is on cooldown.
+   * @param {strng} user that sent the message
+   * @param {data} data to send with the OnEveryChatMessage
+   */
+  onAllChat(user, data) {
+	// OnEveryChatMessage
+    this.chatTriggers.forEach(triggerId => {
+      controller.handleData(triggerId, data);
+    });
+
+    // Check for OnSpeak Event
+    var userLower = user.toLowerCase();
+    var onSpeakTriggers = [];
+    if (this.speakers[userLower] === undefined && this.speaks.indexOf(userLower) !== -1) {
+      onSpeakTriggers.push(...this.speaksInfo[userLower]);
+    }
+    if (this.speakers[userLower] === undefined && this.speaks.indexOf('*') !== -1) {
+      onSpeakTriggers.push(...this.speaksInfo['*']);
+    }
+    if (onSpeakTriggers.length > 0) {
+      this.speakers[userLower] = true;
+      onSpeakTriggers.sort((a, b) => a-b);
+      onSpeakTriggers.forEach(triggerId => {
+        controller.handleData(triggerId, {
+          user: user
+        });
+      });
+    } else if (this.speakers[userLower] === undefined) {
+      this.speakers[userLower] = true;
+    }
   }
 }
 
