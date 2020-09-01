@@ -142,7 +142,7 @@ Delay 5
 ```
 
 ### sounds folder
-In order to use a sound with `Play`, add the sound file to the *sounds* folder. The supported audio formats are mp3, wav, and ogg.
+In order to use a sound with [`Play`](https://github.com/Kruiser8/Kruiz-Control/blob/master/js/Documentation.md#play), add the sound file to the *sounds* folder. The supported audio formats are mp3, wav, and ogg.
 
 ***
 
@@ -162,7 +162,7 @@ Potentially if I can find the libraries to implement it. Again, if you know a wa
 ### Will you support X
 Please reach out if you have any ideas or other questions that were not covered in the documentation.
 
-Discord: [Kruiser Scripts Discord](https://discord.gg/wU3ZK3Q)
+Discord: [Kruiz Control Support Discord](https://discord.gg/wU3ZK3Q)
 
 Twitter: [@Kruiser8](https://twitter.com/kruiser8)
 
