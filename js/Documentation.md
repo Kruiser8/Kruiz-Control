@@ -291,6 +291,8 @@ Enables the ability to run actions when channel point rewards are redeemed.
 **Format** | `OnChannelPoint <reward_name>`
 **Example** | `OnChannelPoint "Example Reward"`
 
+_Note: Default channel point rewards are not supported: `Unlock a Random Sub Emote`, `Send a Message in Sub-Only Mode`, `Choose an Emote to Unlock`, `Highlight My Message`, and `Modify a Single Emote`._
+
 ##### Parameters
 | | |
 ------------ | -------------
