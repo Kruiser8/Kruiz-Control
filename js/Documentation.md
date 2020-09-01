@@ -640,7 +640,9 @@ None at the moment.
 ##### Parameters
 | | |
 ------------ | -------------
-**\<list\>** | The list in string form.
+**\<list\>** | The list in string form where **\<list\>** is the name of the list.
+
+_Note: The above example, `List Export MyList`, would return the parameter **MyList**._
 
 ***
 
@@ -786,7 +788,9 @@ A small selection of actions that are included for increased usability.
 ##### Parameters
 | | |
 ------------ | -------------
-**\<name\>** | [True/False] Whether or not the cooldown is active.
+**\<name\>** | [True/False] Whether or not the cooldown is active where **\<name\>** is the name of the cooldown.
+
+_Note: The above example, `Cooldown Check MyCustomTrigger`, would return the parameter **MyCustomTrigger**._
 
 ***
 
@@ -1709,7 +1713,9 @@ None at the moment.
 ##### Parameters
 | | |
 ------------ | -------------
-**\<name\>** | The variable value is assigned to the name of the variable.
+**\<name\>** | The variable value where **\<name\>** is the name of the variable.
+
+_Note: The above example, `Variable Load Recent_Sub`, would return the parameter **Recent_Sub**._
 
 ***
 
@@ -1723,7 +1729,9 @@ None at the moment.
 ##### Parameters
 | | |
 ------------ | -------------
-**\<name\>** | The variable value is assigned to the name of the variable.
+**\<name\>** | The variable value where **\<name\>** is the name of the variable.
+
+_Note: The above example, `Variable Set Recent_Sub Kruiser8`, would return the parameter **Recent_Sub**._
 
 ***
 
@@ -1746,7 +1754,9 @@ None at the moment.
 ##### Parameters
 | | |
 ------------ | -------------
-**\<name\>** | The variable value is assigned name of the variable.
+**\<name\>** | The variable value where **\<name\>** is the name of the variable.
+
+_Note: The above example, `Variable Global Load Recent_Sub`, would return the parameter **Recent_Sub**._
 
 ***
 
@@ -1769,4 +1779,6 @@ None at the moment.
 ##### Parameters
 | | |
 ------------ | -------------
-**\<name\>** | The variable value is assigned name of the variable.
+**\<name\>** | The variable value where **\<name\>** is the name of the variable.
+
+_Note: The above example, `Variable Global Set Recent_Sub Kruiser8`, would return the parameter **Recent_Sub**._
