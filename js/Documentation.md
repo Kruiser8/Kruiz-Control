@@ -1136,8 +1136,8 @@ _Note: The browser source does not need to be in current/active scene for this t
 | | |
 ------------ | -------------
 **Info** | Used to stop the stream in OBS. If the stream is already stopped, nothing will happen.
-**Format** | `OBS StartStream`
-**Example** | `OBS StartStream`
+**Format** | `OBS StopStream`
+**Example** | `OBS StopStream`
 
 ***
 
