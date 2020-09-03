@@ -235,7 +235,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
       'position': {
         'x': x,
         'y': y
-	}
+      }
     }).catch(err => { // Promise convention dictates you have a catch on every chain.
       console.error(JSON.stringify(err));
     });

@@ -137,7 +137,7 @@ class OBSHandler extends Handler {
     if (this.onTransitionTo.indexOf('*') !== -1) {
       sceneTriggers.push(...this.onTransitionToTrigger['*']);
     }
-    if (sceneTrigger.length > 0) {
+    if (sceneTriggers.length > 0) {
       sceneTriggers.sort((a,b) => a-b);
       sceneTriggers.forEach(triggerId => {
         controller.handleData(triggerId, {

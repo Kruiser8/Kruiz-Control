@@ -220,7 +220,13 @@ class ChatHandler extends Handler {
 
       // Check for matching command and user permission
       if (this.commands.indexOf(command) !== -1) {
-        var args = shlexSplit(message);
+        var args = [];
+        try {
+          args = shlexSplit(message);
+        } catch (err) {
+          args = message.split(' ');
+        }
+
         var chatArgs = {};
         for (var i = 0; i < args.length; i++) {
           chatArgs[`arg${i+1}`] = args[i];
@@ -249,7 +255,12 @@ class ChatHandler extends Handler {
         var result = message.match(this.keywordsRegex);
         if (result) {
           var match = result[0].trim().toLowerCase();
-          var args = shlexSplit(message);
+          var args = [];
+          try {
+            args = shlexSplit(message);
+          } catch (err) {
+            args = message.split(' ');
+          }
           var chatArgs = {};
           for (var i = 0; i < args.length; i++) {
             chatArgs[`arg${i+1}`] = args[i];
@@ -290,7 +301,12 @@ class ChatHandler extends Handler {
       // Check for matching command and user permission
       var command = message.split(' ')[0];
       if(this.commandsOther.indexOf(command) != -1) {
-        var args = shlexSplit(message);
+        var args = [];
+        try {
+          args = shlexSplit(message);
+        } catch (err) {
+          args = message.split(' ');
+        }
         var chatArgs = {};
         for (var i = 0; i < args.length; i++) {
           chatArgs[`arg${i+1}`] = args[i];
@@ -319,7 +335,12 @@ class ChatHandler extends Handler {
       else {
         var result = message.match(this.keywordsRegex);
         if (result) {
-          var args = shlexSplit(message);
+          var args = [];
+          try {
+            args = shlexSplit(message);
+          } catch (err) {
+            args = message.split(' ');
+          }
           var chatArgs = {};
           for (var i = 0; i < args.length; i++) {
             chatArgs[`arg${i+1}`] = args[i];
