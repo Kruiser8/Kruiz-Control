@@ -1201,7 +1201,7 @@ None at the moment.
 #### Random Number
 | | |
 ------------ | -------------
-**Info** | Randomly generates an integer between a min and max value (`[min, max)`). If no input is specified, 0 is used as the min and 100 is used as the max.
+**Info** | Randomly generates an integer between a min and max value (`[min, max]`). If no input is specified, 0 is used as the min and 100 is used as the max.
 **Format** | `Random Number <optional_min> <optional_max>`
 **Example** | `Random Number 30 75`
 **Example without values** | `Random Number`

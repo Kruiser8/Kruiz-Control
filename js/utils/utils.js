@@ -27,7 +27,7 @@ async function callAPI(method, url, data, headers) {
       url: url,
       type: method,
       data: data,
-      headers: {},
+      headers: headers,
       success: function(data) {
         response = data;
       },
