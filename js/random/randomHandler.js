@@ -27,7 +27,7 @@ class RandomHandler extends Handler {
           }
         }
       }
-      var value = Math.floor((Math.random() * (max - min)) + min);
+      var value = Math.floor((Math.random() * (max + 1 - min)) + min);
       return { number: value };
     } else if (triggerData[1].toLowerCase() == 'probability') {
       var actions = {};

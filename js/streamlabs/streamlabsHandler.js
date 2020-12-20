@@ -157,45 +157,45 @@ class StreamlabsHandler extends Handler {
   }
 
   /**
-   * Retrieve the parameters for the donation event.
-   * @param {Object} message streamlabs event message
-   */
-  getDonationParameters(message) {
-    return {
-      'data': message,
-      'amount': (message.payload) ? message.payload.amount : message.amount,
-      'formatted': (message.payload) ? message.payload.formatted_amount : message.formatted_amount,
-      'message': message.message,
-      'user': message.from
-    }
-  }
+    * Retrieve the parameters for the donation event.
+    * @param {Object} message streamlabs event message
+    */
+   getDonationParameters(message) {
+     return {
+       'data': message,
+       'amount': (message.payload && message.payload.amount) ? message.payload.amount : message.amount,
+       'formatted': (message.payload && message.payload.formatted_amount) ? message.payload.formatted_amount : message.formatted_amount,
+       'message': message.message,
+       'user': message.from
+     }
+   }
 
-  /**
-   * Retrieve the parameters for the tiltify donation event.
-   * @param {Object} message streamlabs event message
-   */
-  getTiltifyDonationParameters(message) {
-    return {
-      'data': message,
-      'amount': (message.payload) ? message.payload.amount : message.amount,
-      'formatted': (message.payload) ? message.payload.formattedAmount : message.formattedAmount,
-      'message': message.message,
-      'user': message.from
-    }
-  }
+   /**
+    * Retrieve the parameters for the tiltify donation event.
+    * @param {Object} message streamlabs event message
+    */
+   getTiltifyDonationParameters(message) {
+     return {
+       'data': message,
+       'amount': (message.payload && message.payload.amount) ? message.payload.amount : message.amount,
+       'formatted': (message.payload && message.payload.formatted_amount) ? message.payload.formattedAmount : message.formattedAmount,
+       'message': message.message,
+       'user': message.from
+     }
+   }
 
-  /**
-   * Retrieve the parameters for the patreon pledge event.
-   * @param {Object} message streamlabs event message
-   */
-  getPatreonPledgeParameters(message) {
-    return {
-      'data': message,
-      'amount': (message.payload) ? message.payload.amount : message.amount,
-      'formatted': (message.payload) ? message.payload.formatted_amount : message.formatted_amount,
-      'user': message.from
-    }
-  }
+   /**
+    * Retrieve the parameters for the patreon pledge event.
+    * @param {Object} message streamlabs event message
+    */
+   getPatreonPledgeParameters(message) {
+     return {
+       'data': message,
+       'amount': (message.payload && message.payload.amount) ? message.payload.amount : message.amount,
+       'formatted': (message.payload && message.payload.formatted_amount) ? message.payload.formatted_amount : message.formatted_amount,
+       'user': message.from
+     }
+   }
 
   /**
    * Retrieve the parameters for the follow event.

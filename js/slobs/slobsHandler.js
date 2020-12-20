@@ -110,7 +110,7 @@ class SLOBSHandler extends Handler {
         break;
       case 'scene':
         var scene = triggerData.slice(2).join(' ');
-        await this.slobs.setCurrentScene(scene);
+        return await this.slobs.setCurrentScene(scene);
         break;
       case 'source':
         var source = triggerData.slice(2, triggerData.length - 1).join(' ');
