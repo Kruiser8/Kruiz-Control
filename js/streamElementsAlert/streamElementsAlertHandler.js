@@ -145,7 +145,7 @@ class StreamElementsAlertHandler extends Handler {
       'data': event,
       'amount': event.amount,
       'message': event.message,
-      'user': (event.displayName) ? event.displayName : event.name
+      'user': (event.username) ? event.username : event.name
     }
   }
 

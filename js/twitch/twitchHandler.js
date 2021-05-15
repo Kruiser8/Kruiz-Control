@@ -13,7 +13,14 @@ class TwitchHandler extends Handler {
     this.start = [];
     this.startTrigger = {};
     this.hypeTrains = [];
-    this.hypeTrainsTrigger = {};
+    this.hypeTrainsTrigger = {
+     'start': [],
+     'end': [],
+     'level': [],
+     'progress': [],
+     'conductor': [],
+     'cooldown': []
+    };
     this.hypeTrainsMap = {
       'onhypetrainstart': 'start',
       'onhypetrainend': 'end',
@@ -24,7 +31,7 @@ class TwitchHandler extends Handler {
     };
     this.currentConductor = {
       'SUBS': '',
-      'CHEER': ''
+      'BITS': ''
     }
   }
 
@@ -241,7 +248,7 @@ class TwitchHandler extends Handler {
     if (message.type === 'hype-train-start') {
       this.currentConductor = {
         'SUBS': '',
-        'CHEER': ''
+        'BITS': ''
       };
       // Handle triggers
       this.hypeTrainsTrigger['start'].forEach(triggerId => {
@@ -254,7 +261,7 @@ class TwitchHandler extends Handler {
       this.hypeTrainsTrigger['end'].forEach(triggerId => {
         controller.handleData(triggerId, {
           sub_conductor_id: this.currentConductor['SUBS'],
-          cheer_conductor_id: this.currentConductor['CHEER'],
+          cheer_conductor_id: this.currentConductor['BITS'],
           data: message.data
         });
       });
@@ -264,7 +271,7 @@ class TwitchHandler extends Handler {
       this.hypeTrainsTrigger['conductor'].forEach(triggerId => {
         controller.handleData(triggerId, {
           sub_conductor_id: this.currentConductor['SUBS'],
-          cheer_conductor_id: this.currentConductor['CHEER'],
+          cheer_conductor_id: this.currentConductor['BITS'],
           type: message.data.source,
           data: message.data
         });

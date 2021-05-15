@@ -63,7 +63,6 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Cooldown Check](#cooldown-check)
     + [Delay](#delay)
     + [Error](#error)
-    + [Eval](#eval)
     + [Exit](#exit)
     + [Function](#function)
     + [If](#if)
@@ -229,14 +228,9 @@ Chat Send "{user} used the example command!"
 ```
 
 #### [parameter]
-When `[parameter]` is used, the value of the parameter is JSON.stringify'd before replacement. **This is primarily for use with [Eval](#eval) or [Function](#function).** This allows parameters to be easily used and be properly escaped when used in javascript code.
+When `[parameter]` is used, the value of the parameter is JSON.stringify'd before replacement. **This is primarily for use with [Function](#function).** This allows parameters to be easily used and be properly escaped when used in javascript code.
 
-For example, here's the result when used in an [Eval](#eval) action.
-```
-Eval '(function() { var name = [user]; var data = [data]; // rest of code ... }())
-> (function() { var name = "Kruiser8"; var data = {"property": value}; // rest of code ... }())'
-```
-Here's an example in the [Function](#function) action.
+For example, here's the result when used in the [Function](#function) action.
 ```
 Function 'var name = [user]; var data = [data]; // rest of code ... }())
 > (function() { var name = "Kruiser8"; var data = {"property": value}; // rest of code ...'
@@ -299,7 +293,7 @@ _Note: Default channel point rewards are not supported: `Unlock a Random Sub Emo
 **reward** | The name of the channel point reward that was redeemed.
 **user** | The display name of the user that redeemed the channel point reward.
 **message** | The message included with the channel point redemption (if one is provided)
-**data** | The complete json channel point message (for use with [Eval](#eval) or [Function](#function)).
+**data** | The complete json channel point message (for use with [Function](#function)).
 
 ***
 
@@ -319,7 +313,7 @@ _Note: Default channel point rewards are not supported: `Unlock a Random Sub Emo
 **user_total** | The total amount of points contributed by the user.
 **progress** | The current amount of points contributed towards the goal.
 **total** | The amount of points required to complete the goal.
-**data** | The complete json community goal message (for use with [Eval](#eval) or [Function](#function)).
+**data** | The complete json community goal message (for use with [Function](#function)).
 
 #### OnCommunityGoalProgress
 | | |
@@ -337,7 +331,7 @@ _Note: Default channel point rewards are not supported: `Unlock a Random Sub Emo
 **user_total** | The total amount of points contributed by the user.
 **progress** | The current amount of points contributed towards the goal.
 **total** | The amount of points required to complete the goal.
-**data** | The complete json community goal message (for use with [Eval](#eval) or [Function](#function)).
+**data** | The complete json community goal message (for use with [Function](#function)).
 
 ***
 
@@ -352,7 +346,7 @@ _Note: Default channel point rewards are not supported: `Unlock a Random Sub Emo
 | | |
 ------------ | -------------
 **goal** | The title of the community goal.
-**data** | The complete json community goal message (for use with [Eval](#eval) or [Function](#function)).
+**data** | The complete json community goal message (for use with [Function](#function)).
 
 ***
 
@@ -399,7 +393,7 @@ _WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mi
 **user** | The display name of the user that sent the command.
 **after** | The message excluding the command.
 **message** | The entire chat message, including the command.
-**data** | An object with all metadata about the message (for use with [Eval](#eval) or [Function](#function)).
+**data** | An object with all metadata about the message (for use with [Function](#function)).
 **arg#** | The numbered arguments in the message. Replace `#` with a number, starting at 1 and ending at the last argument passed into the command.
 
 ***
@@ -418,7 +412,7 @@ _WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mi
 ------------ | -------------
 **user** | The display name of the user that sent the command.
 **message** | The entire chat message, including the command.
-**data** | An object with all metadata about the message (for use with [Eval](#eval) or [Function](#function)).
+**data** | An object with all metadata about the message (for use with [Function](#function)).
 
 ***
 
@@ -436,7 +430,7 @@ _WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mi
 ------------ | -------------
 **user** | The display name of the user that triggered the keyword.
 **message** | The chat message.
-**data** | An object with all metadata about the message (for use with [Eval](#eval) or [Function](#function)).
+**data** | An object with all metadata about the message (for use with [Function](#function)).
 **arg#** | The numbered arguments in the message. Replace `#` with a number, starting at 1 and ending at the last argument passed into the command.
 
 ***
@@ -814,33 +808,6 @@ _Note: The above example, `Cooldown Check MyCustomTrigger`, would return the par
 
 ***
 
-#### Eval
-**USE [Function](#function) FOR MORE COMPLEX LOGIC**
-
-| | |
------------- | -------------
-**Info** | Used with eval() evaluate a string as a function. This enables custom logic to be used in the script. `<expression_or_function>` is explained below.
-**Format** | `Eval <expression_or_function>`
-**Example** | `Eval ({total: {total} + 1})`
-
-`<expression_or_function>` is a javascript expression or function that returns an Object. Each property of the Object is usable as a parameter in the rest of the trigger.
-
-If you need a _simple_ expression to return parameters, wrap the expression in parenthesis. The example below increments a parameter named _total_ by 1.
-```js
-Eval '({total: {total} + 1})'
-```
-
-If you need a function rather than an expression, use the below format. The below returns a random element from an array in _api_data_.
-```js
-Eval '(function() { var arr = [api_data]; return {random: arr[Math.floor(Math.random() * arr.length)]}}())'
-```
-
-If a `continue` parameter is returned and the value is `false`, the trigger will exit and not continue processing actions.
-
-If an `actions` array parameter is returned, each item of the array will be inserted into the event and processed.
-
-***
-
 #### Exit
 | | |
 ------------ | -------------
@@ -1167,7 +1134,7 @@ _Note: The browser source does not need to be in current/active scene for this t
 #### OBS Volume
 | | |
 ------------ | -------------
-**Info** | Used to change the volume of an audio source. `<volume>` must be a number between 0.0 and 1.0. Note, volume stands for the is not a percentage.
+**Info** | Used to change the volume of an audio source. `<volume>` must be a number between 0.0 and 1.0. Note, volume stands for the amplitude/mul value and is NOT the dB value or a percentage. Please test for the expected result before usage.
 **Format** | `OBS Volume <source> <volume>`
 **Example** | `OBS Volume "Desktop Audio" 0.2`
 
@@ -1201,7 +1168,7 @@ None at the moment.
 #### Random Number
 | | |
 ------------ | -------------
-**Info** | Randomly generates an integer between a min and max value (`[min, max)`). If no input is specified, 0 is used as the min and 100 is used as the max.
+**Info** | Randomly generates an integer between a min and max value (`[min, max]`). If no input is specified, 0 is used as the min and 100 is used as the max.
 **Format** | `Random Number <optional_min> <optional_max>`
 **Example** | `Random Number 30 75`
 **Example without values** | `Random Number`
@@ -1353,7 +1320,7 @@ Enables the ability to trigger actions based on StreamElement alerts. Note that 
 **user** | The user that cheered.
 **amount** | The amount of the bits. Use this in comparisons.
 **message** | The message included with the bits.
-**data** | The complete json event (for use with [Eval](#eval) or [Function](#function)).
+**data** | The complete json event (for use with [Function](#function)).
 
 ***
 
@@ -1369,7 +1336,7 @@ Enables the ability to trigger actions based on StreamElement alerts. Note that 
 ------------ | -------------
 **user** | The user that gifted the subscriptions.
 **amount** | The number of subscriptions the user is gifted.
-**data** | The complete json message (for use with [Eval](#eval) or [Function](#function)).
+**data** | The complete json message (for use with [Function](#function)).
 
 ***
 
@@ -1386,7 +1353,7 @@ Enables the ability to trigger actions based on StreamElement alerts. Note that 
 **user** | The user that donated.
 **amount** | The numeric amount of the donation with no currency symbol.
 **message** | The message included with the donation.
-**data** | The complete json message (for use with [Eval](#eval) or [Function](#function)).
+**data** | The complete json message (for use with [Function](#function)).
 
 ***
 
@@ -1401,7 +1368,7 @@ Enables the ability to trigger actions based on StreamElement alerts. Note that 
 | | |
 ------------ | -------------
 **user** | The user that followed.
-**data** | The complete json message (for use with [Eval](#eval) or [Function](#function)).
+**data** | The complete json message (for use with [Function](#function)).
 
 ***
 
@@ -1418,7 +1385,7 @@ Enables the ability to trigger actions based on StreamElement alerts. Note that 
 **user** | The user that was gifted a subscription.
 **gifter** | The user that gifted the subscription.
 **tier** | The tier of the subscription. Possible values are `Tier 1`, `Tier 2`, `Tier 3`, and `Prime`.
-**data** | The complete json message (for use with [Eval](#eval) or [Function](#function)).
+**data** | The complete json message (for use with [Function](#function)).
 
 _Note: months is not included since streamelements does not include it for gift subs (or I just could not find it)._
 
@@ -1436,7 +1403,7 @@ _Note: months is not included since streamelements does not include it for gift 
 ------------ | -------------
 **user** | The user that hosted.
 **viewers** | The number of viewers in the host.
-**data** | The complete json message (for use with [Eval](#eval) or [Function](#function)).
+**data** | The complete json message (for use with [Function](#function)).
 
 ***
 
@@ -1452,7 +1419,7 @@ _Note: months is not included since streamelements does not include it for gift 
 ------------ | -------------
 **user** | The user that raided.
 **raiders** | The number of raiders in the raid.
-**data** | The complete json message (for use with [Eval](#eval) or [Function](#function)).
+**data** | The complete json message (for use with [Function](#function)).
 
 ***
 
@@ -1470,7 +1437,7 @@ _Note: months is not included since streamelements does not include it for gift 
 **months** | The number of months the user is subscribed.
 **message** | The message included with the subscription.
 **tier** | The tier of the subscription. Possible values are `Tier 1`, `Tier 2`, `Tier 3`, and `Prime`.
-**data** | The complete json message (for use with [Eval](#eval) or [Function](#function)).
+**data** | The complete json message (for use with [Function](#function)).
 
 ***
 
@@ -1504,7 +1471,7 @@ Use the `NoSync` version of a trigger if:
 **user** | The user that cheered.
 **amount** | The amount of the bits. Use this in comparisons.
 **message** | The message included with the bits.
-**data** | The complete json message (for use with [Eval](#eval) or [Function](#function)).
+**data** | The complete json message (for use with [Function](#function)).
 
 ***
 
@@ -1522,7 +1489,7 @@ Use the `NoSync` version of a trigger if:
 **amount** | The numeric amount of the donation. Use this in comparisons.
 **formatted** | The formatted amount using the locale's currency format.
 **message** | The message included with the donation.
-**data** | The complete json message (for use with [Eval](#eval) or [Function](#function)).
+**data** | The complete json message (for use with [Function](#function)).
 
 ***
 
@@ -1540,7 +1507,7 @@ Use the `NoSync` version of a trigger if:
 **amount** | The numeric amount of the donation. Use this in comparisons.
 **formatted** | The formatted amount using the locale's currency format.
 **message** | The message included with the donation.
-**data** | The complete json message (for use with [Eval](#eval) or [Function](#function)).
+**data** | The complete json message (for use with [Function](#function)).
 
 ***
 
@@ -1557,7 +1524,7 @@ Use the `NoSync` version of a trigger if:
 **user** | The user that donated.
 **amount** | The numeric amount of the donation. Use this in comparisons.
 **formatted** | The formatted amount using the locale's currency format.
-**data** | The complete json message (for use with [Eval](#eval) or [Function](#function)).
+**data** | The complete json message (for use with [Function](#function)).
 
 ***
 
@@ -1572,7 +1539,7 @@ Use the `NoSync` version of a trigger if:
 | | |
 ------------ | -------------
 **user** | The user that followed.
-**data** | The complete json message (for use with [Eval](#eval) or [Function](#function)).
+**data** | The complete json message (for use with [Function](#function)).
 
 ***
 
@@ -1589,7 +1556,7 @@ Use the `NoSync` version of a trigger if:
 **gifter** | The user that gifted the subscription.
 **amount** | The number of subscriptions gifted by the gifter.
 **tier** | The tier of the subscription. Possible values are `Tier 1`, `Tier 2`, `Tier 3`, and `Prime`.
-**data** | The complete json message (for use with [Eval](#eval) or [Function](#function)).
+**data** | The complete json message (for use with [Function](#function)).
 
 ***
 
@@ -1607,7 +1574,7 @@ Use the `NoSync` version of a trigger if:
 **gifter** | The user that gifted the subscription.
 **months** | The number of months the user is subscribed.
 **tier** | The tier of the subscription. Possible values are `Tier 1`, `Tier 2`, `Tier 3`, and `Prime`.
-**data** | The complete json message (for use with [Eval](#eval) or [Function](#function)).
+**data** | The complete json message (for use with [Function](#function)).
 
 ***
 
@@ -1623,7 +1590,7 @@ Use the `NoSync` version of a trigger if:
 ------------ | -------------
 **user** | The user that hosted.
 **viewers** | The number of viewers in the host.
-**data** | The complete json message (for use with [Eval](#eval) or [Function](#function)).
+**data** | The complete json message (for use with [Function](#function)).
 
 ***
 
@@ -1639,7 +1606,7 @@ Use the `NoSync` version of a trigger if:
 ------------ | -------------
 **user** | The user that raided.
 **raiders** | The number of raiders in the raid.
-**data** | The complete json message (for use with [Eval](#eval) or [Function](#function)).
+**data** | The complete json message (for use with [Function](#function)).
 
 ***
 
@@ -1657,7 +1624,7 @@ Use the `NoSync` version of a trigger if:
 **months** | The number of months the user is subscribed.
 **message** | The message included with the subscription.
 **tier** | The tier of the subscription. Possible values are `Tier 1`, `Tier 2`, `Tier 3`, and `Prime`.
-**data** | The complete json message (for use with [Eval](#eval) or [Function](#function)).
+**data** | The complete json message (for use with [Function](#function)).
 
 ***
 
