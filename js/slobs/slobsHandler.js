@@ -34,12 +34,14 @@ class SLOBSHandler extends Handler {
     trigger = trigger.toLowerCase();
     switch (trigger) {
       case 'onslobsswitchscenes':
-        var scene = triggerLine.slice(1).join(' ');
-        if (this.onSwitch.indexOf(scene) === -1) {
-          this.onSwitch.push(scene);
-          this.onSwitchTrigger[scene] = [];
+        for (var i = 1; i < triggerLine.length; ++i) {
+          var scene = triggerLine.slice(1).join(' ');
+          if (this.onSwitch.indexOf(scene) === -1) {
+            this.onSwitch.push(scene);
+            this.onSwitchTrigger[scene] = [];
+          }
+          this.onSwitchTrigger[scene].push(triggerId);
         }
-        this.onSwitchTrigger[scene].push(triggerId);
         break;
       case 'onslobsstreamstarted':
         this.onStartTrigger.push(triggerId);
@@ -145,6 +147,39 @@ class SLOBSHandler extends Handler {
         if (!isNaN(degree)) {
           await this.slobs.rotateSource(scene, source, degree);
         }
+        break;
+      case 'position':
+        var scene = triggerData[2];
+        var source = triggerData[3];
+        var x = parseFloat(triggerData[4]);
+        var y = parseFloat(triggerData[5]);
+        if (!isNaN(x) && !isNaN(y)) {
+          await this.slobs.setPosition(scene, source, x, y);
+        }
+        break;
+      case 'mute':
+        var source = triggerData.slice(2, triggerData.length - 1).join(' ');
+        var status = triggerData[triggerData.length - 1].toLowerCase();
+        if (status != 'toggle') {
+          status = status === 'on' ? true : false;
+        }
+        await this.slobs.setAudioMute(source, status);
+        break;
+      case 'togglestream':
+        await this.slobs.toggleStream();
+        break;
+      case 'savereplaybuffer':
+        await this.slobs.saveReplayBuffer();
+        break;
+      case 'startreplaybuffer':
+        await this.slobs.startReplayBuffer();
+        break;
+      case 'stopreplaybuffer':
+        await this.slobs.stopReplayBuffer();
+        break;
+      case 'notification':
+        var message = triggerData.slice(2).join(' ');
+        await this.slobs.pushNotification(message);
         break;
     }
     return;

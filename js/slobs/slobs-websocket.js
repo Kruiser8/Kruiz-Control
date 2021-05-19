@@ -12,7 +12,8 @@
     requestId: 1,
     socket: socket,
     scenes: {},
-    activeScene: ''
+    activeScene: '',
+    responses: {}
   };
 
   socket.onopen = () => {
@@ -47,6 +48,9 @@
         } else if (data.result.data === 'ending') {
           onStreamStopped();
         }
+      } else if (slobsSocket.responses.hasOwnProperty(data.id.toString())) {
+        slobsSocket.responses[data.id][0](data, ...slobsSocket.responses[data.id][1]);
+        delete slobsSocket.responses[data.id];
       }
     }
   };
@@ -63,7 +67,7 @@
     if (slobsSocket.scenes[scene]) {
       var current = slobsSocket.activeScene;
       slobsSocket.sendSLOBS('makeSceneActive', 'ScenesService', [slobsSocket.scenes[scene].id])
-      return {previous_scene: current};
+      return { previous_scene: current };
     } else {
       console.error('No scene found with name', scene);
     }
@@ -138,6 +142,55 @@
     }
   }
 
+  slobsSocket.setAudioMute = function(source, isMuted) {
+    var id = slobsSocket.sendSLOBS("getSourcesForCurrentScene", "AudioService");
+    slobsSocket.responses[id] = [slobsSocket._setAudioMute, [source, isMuted]];
+  }
+
+  slobsSocket._setAudioMute = function(data, source, isMuted) {
+    data.result.forEach((audioSource, i) => {
+      if (audioSource.name === source) {
+        if (isMuted == 'toggle') {
+          isMuted = !audioSource.muted
+        }
+        slobsSocket.sendSLOBS("setMuted", audioSource.resourceId, [isMuted]);
+      }
+    });
+  }
+
+  slobsSocket.setPosition = function(scene, source, x, y) {
+    scene = scene || slobsSocket.activeScene;
+    var sceneInfo = slobsSocket.scenes[scene];
+    if (sceneInfo) {
+      sceneInfo.nodes.forEach(sceneItem => {
+        if (sceneItem.name === source) {
+          var sceneItemId = `SceneItem["${sceneInfo.id}","${sceneItem.id}","${sceneItem.sourceId}"]`;
+          slobsSocket.sendSLOBS("setTransform", sceneItemId, [{position: { x: x, y: y} }]);
+        }
+      });
+    }
+  }
+
+  slobsSocket.toggleStream = function() {
+    slobsSocket.sendSLOBS("toggleStreaming", 'StreamingService');
+  }
+
+  slobsSocket.startReplayBuffer = function() {
+    slobsSocket.sendSLOBS("startReplayBuffer", 'StreamingService');
+  }
+
+  slobsSocket.stopReplayBuffer = function() {
+    slobsSocket.sendSLOBS("stopReplayBuffer", 'StreamingService');
+  }
+
+  slobsSocket.saveReplayBuffer = function() {
+    slobsSocket.sendSLOBS("saveReplay", 'StreamingService');
+  }
+
+  slobsSocket.pushNotification = function(message) {
+    slobsSocket.sendSLOBS("push", 'NotificationsService', [{message: message}]);
+  }
+
   slobsSocket.sendSLOBS = function(method, resource, args) {
     args = args || [];
     var request = {
@@ -150,6 +203,7 @@
       id: slobsSocket.requestId++
     }
     slobsSocket.socket.send(JSON.stringify(request));
+    return request.id;
   }
 
   return slobsSocket;

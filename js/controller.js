@@ -191,7 +191,7 @@ class Controller {
         }
 
         // Execute action
-        var runParams = await this.runTrigger(run_data, triggerParams, triggerRegex);
+        var runParams = await this.runTrigger(run_data, triggerParams);
 
         // Handle parameters returned by action
         if (runParams) {
@@ -213,6 +213,13 @@ class Controller {
             triggerSequence.splice(i+1, 0, ...runParams.actions);
           }
 
+          if (runParams.loops && runParams.lines) {
+            var toLoop = triggerSequence.slice(i + 1, i + runParams.lines + 1);
+            for (var loopLine = 0; loopLine < runParams.loops - 1; loopLine++) {
+              triggerSequence.splice(i+1, 0, ...toLoop);
+            }
+          }
+
           // Recreate regex with new params
           Object.keys(runParams).forEach(attribute => {
             triggerParams[attribute] = runParams[attribute];
@@ -226,8 +233,9 @@ class Controller {
   /**
    * Perform the action content.
    * @param {array} data action to perform
+   * @param {object} parameters current event parameters
    */
-  async runTrigger(data) {
+  async runTrigger(data, parameters) {
     var parserName = data[0].toLowerCase();
     if (parserName === 'delay') {
       // Custom delay handler
@@ -236,6 +244,11 @@ class Controller {
     else if (parserName === 'skip') {
       var lines = parseInt(data[1]);
       return { skip: lines };
+    }
+    else if (parserName === 'loop') {
+      var lines = parseInt(data[1]);
+      var loops = parseInt(data[2]);
+      return { lines: lines, loops: loops };
     }
     else if (parserName === 'exit') {
       return { continue: false };
@@ -294,6 +307,12 @@ class Controller {
     else if (parserName === 'function') {
       var func = data.slice(1).join(' ');
       var fn = new Function(func);
+      var res = fn();
+      return res;
+    }
+    else if (parserName === 'asyncfunction') {
+      var func = data.slice(1).join(' ');
+      var fn = new AsyncFunction(func);
       var res = await fn();
       return res;
     }
@@ -309,7 +328,7 @@ class Controller {
       // Get parser and run trigger content
       var parser = this.getParser(parserName);
       if (parser) {
-        return await parser.handleData(data);
+        return await parser.handleData(data, parameters);
       }
     }
   }

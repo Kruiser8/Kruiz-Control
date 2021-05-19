@@ -52,43 +52,55 @@ class TwitchHandler extends Handler {
     trigger = trigger.toLowerCase();
     switch (trigger.toLowerCase()) {
       case 'onchannelpoint':
-        var reward = triggerLine.slice(1).join(' ');
-        if (this.rewards.indexOf(reward) !== -1) {
-          this.rewardsTrigger[reward].push(triggerId);
-        } else {
-          this.rewardsTrigger[reward] = [];
-          this.rewards.push(reward);
-          this.rewardsTrigger[reward].push(triggerId);
+        // Handles Aliases
+        for (var i = 1; i < triggerLine.length; ++i) {
+          var reward = triggerLine[i];
+          if (this.rewards.indexOf(reward) !== -1) {
+            this.rewardsTrigger[reward].push(triggerId);
+          } else {
+            this.rewardsTrigger[reward] = [];
+            this.rewards.push(reward);
+            this.rewardsTrigger[reward].push(triggerId);
+          }
         }
         break;
       case 'oncommunitygoalprogress':
-        var goal = triggerLine.slice(1).join(' ');
-        if (this.goals.indexOf(goal) !== -1) {
-          this.goalsTrigger[goal].push(triggerId);
-        } else {
-          this.goalsTrigger[goal] = [];
-          this.goals.push(goal);
-          this.goalsTrigger[goal].push(triggerId);
+        // Handles Aliases
+        for (var i = 1; i < triggerLine.length; ++i) {
+          var goal = triggerLine[i];
+          if (this.goals.indexOf(goal) !== -1) {
+            this.goalsTrigger[goal].push(triggerId);
+          } else {
+            this.goalsTrigger[goal] = [];
+            this.goals.push(goal);
+            this.goalsTrigger[goal].push(triggerId);
+          }
         }
         break;
       case 'oncommunitygoalcomplete':
-        var goal = triggerLine.slice(1).join(' ');
-        if (this.complete.indexOf(goal) !== -1) {
-          this.completeTrigger[goal].push(triggerId);
-        } else {
-          this.completeTrigger[goal] = [];
-          this.complete.push(goal);
-          this.completeTrigger[goal].push(triggerId);
+        // Handles Aliases
+        for (var i = 1; i < triggerLine.length; ++i) {
+          var goal = triggerLine[i];
+          if (this.goals.indexOf(goal) !== -1) {
+            this.goalsTrigger[goal].push(triggerId);
+          } else {
+            this.goalsTrigger[goal] = [];
+            this.goals.push(goal);
+            this.goalsTrigger[goal].push(triggerId);
+          }
         }
         break;
       case 'oncommunitygoalstart':
-        var goal = triggerLine.slice(1).join(' ');
-        if (this.start.indexOf(goal) !== -1) {
-          this.startTrigger[goal].push(triggerId);
-        } else {
-          this.startTrigger[goal] = [];
-          this.start.push(goal);
-          this.startTrigger[goal].push(triggerId);
+        // Handles Aliases
+        for (var i = 1; i < triggerLine.length; ++i) {
+          var goal = triggerLine[i];
+          if (this.start.indexOf(goal) !== -1) {
+            this.startTrigger[goal].push(triggerId);
+          } else {
+            this.startTrigger[goal] = [];
+            this.start.push(goal);
+            this.startTrigger[goal].push(triggerId);
+          }
         }
         break;
       case 'onhypetrainstart':

@@ -16,12 +16,15 @@ class MessageHandler extends Handler {
    * @param {number} id of the new trigger
    */
   addTriggerData(trigger, triggerLine, triggerId) {
-    var message = triggerLine.slice(1).join(' ');
-    if (this.messages.indexOf(message) === -1) {
-      this.messages.push(message);
-      this.messagesTriggers[message] = [];
+    // Handles aliases for OnMessage
+    for (var i = 1; i < triggerLine.length; ++i) {
+      var message = triggerLine[i];
+      if (this.messages.indexOf(message) === -1) {
+        this.messages.push(message);
+        this.messagesTriggers[message] = [];
+      }
+      this.messagesTriggers[message].push(triggerId);
     }
-    this.messagesTriggers[message].push(triggerId);
   }
 
   /**

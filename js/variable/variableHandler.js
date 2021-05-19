@@ -45,12 +45,19 @@ class VariableHandler extends Handler {
         var variable = this.variables[varName] || 'No variable found';
         return {[varName]: variable};
       }
-      // Loads a global variable
+      // Sets a variable
       else if (action === 'set') {
         var varName = triggerData[2];
         var variable = triggerData.slice(3).join(' ');
         this.variables[varName] = variable;
         return {[varName]: variable};
+      }
+      // Removes a variable
+      else if (action === 'remove') {
+        var varName = triggerData[2];
+        if (this.variables.hasOwnProperty(varName)) {
+          delete this.variables[varName];
+        }
       }
     }
   }
