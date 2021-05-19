@@ -197,6 +197,27 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
     });
   };
 
+  obs.startReplayBuffer = async function() {
+    await this.send('StartReplayBuffer').catch(err => {
+      // Promise convention dictates you have a catch on every chain.
+      console.error(JSON.stringify(err));
+    });
+  };
+
+  obs.stopReplayBuffer = async function() {
+    await this.send('StopReplayBuffer').catch(err => {
+      // Promise convention dictates you have a catch on every chain.
+      console.error(JSON.stringify(err));
+    });
+  };
+
+  obs.saveReplayBuffer = async function() {
+    await this.send('SaveReplayBuffer').catch(err => {
+      // Promise convention dictates you have a catch on every chain.
+      console.error(JSON.stringify(err));
+    });
+  };
+
   obs.broadcastCustomMessage = async function(message, data) {
     await this.send('BroadcastCustomMessage', {
       'realm': 'kruiz-control',

@@ -38,23 +38,29 @@ class OBSHandler extends Handler {
     trigger = trigger.toLowerCase();
     switch (trigger) {
       case 'onobsswitchscenes':
-        var scene = triggerLine.slice(1).join(' ');
-        if (this.onSwitch.indexOf(scene) !== -1) {
-          this.onSwitchTrigger[scene].push(triggerId);
-        } else {
-          this.onSwitchTrigger[scene] = [];
-          this.onSwitch.push(scene);
-          this.onSwitchTrigger[scene].push(triggerId);
+        // Handle aliases
+        for (var i = 1; i < triggerLine.length; ++i) {
+          var scene = triggerLine[i];
+          if (this.onSwitch.indexOf(scene) !== -1) {
+            this.onSwitchTrigger[scene].push(triggerId);
+          } else {
+            this.onSwitchTrigger[scene] = [];
+            this.onSwitch.push(scene);
+            this.onSwitchTrigger[scene].push(triggerId);
+          }
         }
         break;
       case 'onobstransitionto':
-        var scene = triggerLine.slice(1).join(' ');
-        if (this.onTransitionTo.indexOf(scene) !== -1) {
-          this.onTransitionToTrigger[scene].push(triggerId);
-        } else {
-          this.onTransitionToTrigger[scene] = [];
-          this.onTransitionTo.push(scene);
-          this.onTransitionToTrigger[scene].push(triggerId);
+        // Handle aliases
+        for (var i = 1; i < triggerLine.length; ++i) {
+          var scene = triggerLine[i];
+          if (this.onTransitionTo.indexOf(scene) !== -1) {
+            this.onTransitionToTrigger[scene].push(triggerId);
+          } else {
+            this.onTransitionToTrigger[scene] = [];
+            this.onTransitionTo.push(scene);
+            this.onTransitionToTrigger[scene].push(triggerId);
+          }
         }
         break;
       case 'onobsstreamstarted':
@@ -64,13 +70,16 @@ class OBSHandler extends Handler {
         this.onStopTrigger.push(triggerId);
         break;
       case 'onobscustommessage':
-        var message = triggerLine.slice(1).join(' ');
-        if (this.onCustom.indexOf(message) !== -1) {
-          this.onCustomTrigger[message].push(triggerId);
-        } else {
-          this.onCustomTrigger[message] = [];
-          this.onCustom.push(message);
-          this.onCustomTrigger[message].push(triggerId);
+        // Handle aliases
+        for (var i = 1; i < triggerLine.length; ++i) {
+          var message = triggerLine[i];
+          if (this.onCustom.indexOf(message) !== -1) {
+            this.onCustomTrigger[message].push(triggerId);
+          } else {
+            this.onCustomTrigger[message] = [];
+            this.onCustom.push(message);
+            this.onCustomTrigger[message].push(triggerId);
+          }
         }
         break;
       case 'onobssourcevisibility':
@@ -235,6 +244,15 @@ class OBSHandler extends Handler {
         break;
       case 'stopstream':
         await this.obs.stopStream();
+        break;
+      case 'startreplaybuffer':
+        await this.obs.startReplayBuffer();
+        break;
+      case 'stopreplaybuffer':
+        await this.obs.stopReplayBuffer();
+        break;
+      case 'savereplaybuffer':
+        await this.obs.saveReplayBuffer();
         break;
       case 'scene':
         var currentScene = await this.obs.getCurrentScene();

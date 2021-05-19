@@ -42,7 +42,7 @@ class TimerHandler extends Handler {
   async handleData(triggerData) {
     var trigger = triggerData[1];
     // Timer Reset Name
-    if (trigger.toLowerCase() === 'reset') {
+    if (trigger.toLowerCase() === 'reset' || trigger.toLowerCase() === 'start') {
       var name = triggerData.slice(2).join(' ');
       this.intervals[name].forEach((item, i) => {
         clearInterval(item);
@@ -53,6 +53,11 @@ class TimerHandler extends Handler {
           controller.handleData(triggerId);
         }, interval * 1000);
       }, this);
+    } else if (trigger.toLowerCase() === 'stop') {
+      var name = triggerData.slice(2).join(' ');
+      this.intervals[name].forEach((item, i) => {
+        clearInterval(item);
+      });
     }
   }
 
@@ -67,7 +72,6 @@ class TimerHandler extends Handler {
         var interval = timer[2];
         var offset = timer[3];
         setTimeout(function() {
-          controller.handleData(triggerId)
           this.intervals[name].push(setInterval(function() {
             controller.handleData(triggerId);
           }, interval * 1000));

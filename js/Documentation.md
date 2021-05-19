@@ -8,6 +8,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Quotes](#quotes)
   * [Comments](#comments)
   * [Parameters](#parameters)
+  * [Aliases](#aliases)
 - [Default Parameters](#default-parameters)
 - [API](#api)
   * [Triggers](#api-triggers)
@@ -44,6 +45,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [List Add](#list-add)
     + [List Contains](#list-contains)
     + [List Count](#list-count)
+    + [List Empty](#list-empty)
     + [List Export](#list-export)
     + [List Get](#list-get)
     + [List Import](#list-import)
@@ -59,6 +61,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Triggers](#miscellaneous-triggers)
     + [OnInit](#oninit)
   * [Actions](#miscellaneous-actions)
+    + [AsyncFunction](#asyncfunction)
     + [Cooldown Apply](#cooldown-apply)
     + [Cooldown Check](#cooldown-check)
     + [Delay](#delay)
@@ -67,6 +70,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Function](#function)
     + [If](#if)
     + [Log](#log)
+    + [Loop](#loop)
     + [Play](#play)
     + [Reset](#reset)
     + [Skip](#skip)
@@ -82,6 +86,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OBS CurrentScene](#obs-currentscene)
     + [OBS Mute](#obs-mute)
     + [OBS Position](#obs-position)
+    + [OBS SaveReplayBuffer](#obs-savereplaybuffer)
     + [OBS Scene](#obs-scene)
     + [OBS SceneSource](#obs-scenesource)
     + [OBS Send](#obs-send)
@@ -89,11 +94,24 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OBS Source Filter](#obs-source-filter)
     + [OBS Source Text](#obs-source-text)
     + [OBS Source URL](#obs-source-url)
+    + [OBS StartReplayBuffer](#obs-startreplaybuffer)
     + [OBS StartStream](#obs-startstream)
+    + [OBS StopReplayBuffer](#obs-stopreplaybuffer)
     + [OBS StopStream](#obs-stopstream)
     + [OBS TakeSourceScreenshot](#obs-takesourcescreenshot)
     + [OBS Version](#obs-version)
     + [OBS Volume](#obs-volume)
+- [Param](#Param)
+  * [Triggers](#param-triggers)
+  * [Actions](#param-actions)
+    + [Param Add](#param-add)
+    + [Param Copy](#param-copy)
+    + [Param Exists](#param-exists)
+    + [Param Lower](#param-lower)
+    + [Param Proper](#param-proper)
+    + [Param Replace](#param-replace)
+    + [Param Subtract](#param-subtract)
+    + [Param Upper](#param-upper)
 - [Random](#random)
   * [Triggers](#random-triggers)
   * [Actions](#random-triggers)
@@ -106,12 +124,20 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnSLOBSStreamStopped](#onslobsstreamstopped)
     + [OnSLOBSSwitchScenes](#onslobsswitchscenes)
   * [Actions](#slobs-actions)
+    + [SLOBS CurrentScene](#slobs-currentscene)
     + [SLOBS Flip](#slobs-flip)
+    + [SLOBS Mute](#slobs-mute)
+    + [SLOBS Notification](#slobs-notification)
+    + [SLOBS Position](#slobs-position)
     + [SLOBS Rotate](#slobs-rotate)
+    + [SLOBS SaveReplayBuffer](#slobs-savereplaybuffer)
     + [SLOBS Scene](#slobs-scene)
     + [SLOBS SceneFolder](#slobs-scenefolder)
     + [SLOBS SceneSource](#slobs-scenesource)
     + [SLOBS Source](#slobs-source)
+    + [SLOBS StartReplayBuffer](#slobs-startreplaybuffer)
+    + [SLOBS StopReplayBuffer](#slobs-stopreplaybuffer)
+    + [SLOBS ToggleStream](#slobs-togglestream)
 - [StreamElements](#streamelements)
   * [Triggers](#streamelements-triggers)
     + [OnSETwitchBits](#onsetwitchbits)
@@ -136,15 +162,22 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnSLTwitchRaid | OnSLTwitchRaidNoSync](#onsltwitchraid--onsltwitchraidnosync)
     + [OnSLTwitchSub | OnSLTwitchSubNoSync](#onsltwitchsub--onsltwitchsubnosync)
   * [Actions](#streamlabs-actions)
+- [Text-To-Speech](#text-to-speech)
+  * [Triggers](#text-to-speech-triggers)
+  * [Actions](#text-to-speech-actions)
+    + [TTS](#tts)
 - [Timer](#timer)
   * [Triggers](#timer-triggers)
     + [OnTimer](#ontimer)
   * [Actions](#timer-actions)
     + [Timer Reset](#timer-reset)
+    + [Timer Start](#timer-start)
+    + [Timer Stop](#timer-stop)
 - [Variable](#variable)
   * [Triggers](#variable-triggers)
   * [Actions](#variable-actions)
     + [Variable Load](#variable-load)
+    + [Variable Remove](#variable-remove)
     + [Variable Set](#variable-set)
     + [Variable Global Clear](#variable-global-clear)
     + [Variable Global Load](#variable-global-load)
@@ -238,6 +271,27 @@ Function 'var name = [user]; var data = [data]; // rest of code ... }())
 
 ***
 
+### Aliases
+As of Kruiz Control v1.4, certain triggers now allow for multiple inputs. Consider the following example:
+```
+OnCommand mbv 0 !so !sh !caster !shout
+Chat Send "Go check out {after} at twitch.tv/{after}"
+```
+The commands, `!so`, `!sh`, `!caster`, and `!shout` will all cause the message to be sent, regardless of which one is used. This allows you to easily set up _aliases_ for triggers. The following triggers now support aliases:
+- OnCommand
+- OnKeyword
+- OnMessage
+- OnChannelPoint
+- OnCommunityGoalStart
+- OnCommunityGoalProgress
+- OnCommunityGoalComplete
+- OnOBSSwitchScenes
+- OnOBSTransitionTo
+- OnOBSCustomMessage
+- OnSLOBSSwitchScenes
+
+***
+
 ## Default Parameters
 The following parameters are always available. Use the `_successful_` and `_unsuccessful_` parameters to test that the <a href="https://github.com/Kruiser8/Kruiz-Control/blob/master/settings/Settings.md#kruiz-control-settings">Kruiz Control settings</a> are correct.
 
@@ -283,7 +337,9 @@ Enables the ability to run actions when channel point rewards are redeemed.
 ------------ | -------------
 **Info** | Used to trigger a set of actions when a channel point reward is redeemed. Using `*` as the `<reward_name>` will execute the trigger for all channel point rewards.
 **Format** | `OnChannelPoint <reward_name>`
+**Format w/ Aliases** | `OnChannelPoint <reward_name1> <reward_name2> ...`
 **Example** | `OnChannelPoint "Example Reward"`
+**Example w/ Aliases** | `OnChannelPoint "Resize" "Left View"`
 
 _Note: Default channel point rewards are not supported: `Unlock a Random Sub Emote`, `Send a Message in Sub-Only Mode`, `Choose an Emote to Unlock`, `Highlight My Message`, and `Modify a Single Emote`._
 
@@ -302,7 +358,9 @@ _Note: Default channel point rewards are not supported: `Unlock a Random Sub Emo
 ------------ | -------------
 **Info** | Used to trigger a set of actions when a community goal is completed. Using `*` as the `<goal_title>` will execute the trigger for all channel point rewards.
 **Format** | `OnCommunityGoalComplete <goal_title>`
+**Format w/ Aliases** | `OnCommunityGoalComplete <goal_title1> <goal_title2> ...`
 **Example** | `OnCommunityGoalComplete "Example Goal"`
+**Example w/ Aliases** | `OnCommunityGoalComplete "Example Goal" "Extra Sunday Stream" ...`
 
 ##### Parameters
 | | |
@@ -320,7 +378,9 @@ _Note: Default channel point rewards are not supported: `Unlock a Random Sub Emo
 ------------ | -------------
 **Info** | Used to trigger a set of actions when a user contributes towards a goal. Using `*` as the `<goal_title>` will execute the trigger for all channel point rewards.
 **Format** | `OnCommunityGoalProgress <goal_title>`
+**Format w/ Aliases** | `OnCommunityGoalProgress <goal_title1> <goal_title2> ...`
 **Example** | `OnCommunityGoalProgress "Example Goal"`
+**Example w/ Aliases** | `OnCommunityGoalProgress "Example Goal" "Extra Sunday Stream" ...`
 
 ##### Parameters
 | | |
@@ -340,7 +400,9 @@ _Note: Default channel point rewards are not supported: `Unlock a Random Sub Emo
 ------------ | -------------
 **Info** | Used to trigger a set of actions when the streamer starts a goal. Using `*` as the `<goal_title>` will execute the trigger for all channel point rewards.
 **Format** | `OnCommunityGoalStart <goal_title>`
+**Format w/ Aliases** | `OnCommunityGoalStart <goal_title1> <goal_title2> ...`
 **Example** | `OnCommunityGoalStart "Example Goal"`
+**Example w/ Aliases** | `OnCommunityGoalStart "Example Goal" "Extra Sunday Stream" ...`
 
 ##### Parameters
 | | |
@@ -361,12 +423,13 @@ Enables the ability to take actions on chat message and send messages. Note that
 ### Chat Triggers
 Chat triggers use a `<permission>` parameter to specify who can use a command. The following values can be combined in any order.
 
-- *e* - Everyone
 - *b* - Broadcaster
 - *s* - Subscriber
 - *f* - Founder
 - *v* - VIP
 - *m* - Moderator
+- *n* - Check if a user has _none_ of the permissions above.
+- *e* - Everyone
 
 Additionally, you can use *u* as the permission to specify a specific user that can use a command or keyword. In this case, `<optional_info>` is required to specify the user. The username input is case insensitive.
 
@@ -385,7 +448,9 @@ _WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mi
 ------------ | -------------
 **Info** | Used to trigger a set of actions when a command is used at the beginning of a message.
 **Format** | `OnCommand <permission> <optional_info> <cooldown> <command>`
+**Format w/ Aliases** | `OnCommand <permission> <optional_info> <cooldown> <command1> <command2> <command3> ...`
 **Example** | `OnCommand e 0 !example`
+**Example w/ Aliases** | `OnCommand bvm 0 !so !caster !sh !shout`
 
 ##### Parameters
 | | |
@@ -423,12 +488,15 @@ _WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mi
 ------------ | -------------
 **Info** | Used to trigger a set of actions when a keyword or phrase appears in a message.
 **Format** | `OnKeyword <permission> <optional_info> <cooldown> <command>`
+**Format w/ Aliases** | `OnKeyword <permission> <optional_info> <cooldown> <keyword1> <keyword2> <keyword3> ...`
 **Example** | `OnKeyword smv 10 "music"`
+**Example w/ Aliases** | `OnKeyword e 0 hi hello yo o7`
 
 ##### Parameters
 | | |
 ------------ | -------------
 **user** | The display name of the user that triggered the keyword.
+**keyword** | The keyword matched by the trigger.
 **message** | The chat message.
 **data** | An object with all metadata about the message (for use with [Function](#function)).
 **arg#** | The numbered arguments in the message. Replace `#` with a number, starting at 1 and ending at the last argument passed into the command.
@@ -626,6 +694,15 @@ None at the moment.
 
 ***
 
+#### List Empty
+| | |
+------------ | -------------
+**Info** | Removes all items from a list.
+**Format** | `List Empty <list>`
+**Example** | `List Empty MyList`
+
+***
+
 #### List Export
 | | |
 ------------ | -------------
@@ -728,7 +805,9 @@ A small handler to allow you to trigger events from another event without using 
 ------------ | -------------
 **Info** | Used to fire a set of actions when a message is sent with [`Message Send`](#message-send). Using `*` as the `<message>` will execute the trigger for all messages.
 **Format** | `OnMessage <message>`
+**Format w/ Aliases** | `OnMessage <message1> <message2> ...`
 **Example** | `OnMessage MyCustomMessage`
+**Example w/ Aliases** | `OnMessage MyCustomMessage MyOtherCustomMessage`
 
 ##### Parameters
 | | |
@@ -764,6 +843,17 @@ A small selection of actions that are included for increased usability.
 ***
 
 ### Miscellaneous Actions
+
+#### AsyncFunction
+`AsyncFunction` is an alternate to [`Function`](#function) that allows you to call javascript code using the `await` keyword. This is for advanced use cases that require API calls, promises, etc. For more information, please see this [documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/AsyncFunction).
+
+| | |
+------------ | -------------
+**Info** | Used to create an async javascript function using the input text. For more information see [Function](#function).
+**Format** | `AsyncFunction <function>`
+**Example** | `AsyncFunction 'return {total: {total} + 1}'`
+
+***
 
 #### Cooldown Apply
 | | |
@@ -869,6 +959,15 @@ The `<optional_skip>` value allows you to specify the number of lines to skip if
 
 ***
 
+#### Loop
+| | |
+------------ | -------------
+**Info** | Used to repeat a set of actions a specified number of times. `<lines>` is the number of actions/lines to repeat. `<times>` is the number of times to repeat the actions/lines.
+**Format** | `Loop <lines> <times>`
+**Example** | `Loop 8 10`
+
+***
+
 #### Play
 | | |
 ------------ | -------------
@@ -906,7 +1005,9 @@ Enables the ability to interact with and respond to OBS.
 ------------ | -------------
 **Info** | Used to trigger a set of actions when a custom message is sent. Used to receive triggers from [OBS Send](#obs-send). Using `*` as the `<message>` will execute the trigger for all messages.
 **Format** | `OnOBSCustomMessage <message>`
+**Format w/ Aliases** | `OnOBSCustomMessage <message1> <message2> ...`
 **Example** | `OnOBSCustomMessage "My Custom Message"`
+**Example w/ Aliases** | `OnOBSCustomMessage "WidgetConnection" "WidgetError"`
 
 ##### Parameters
 | | |
@@ -953,7 +1054,9 @@ Enables the ability to interact with and respond to OBS.
 ------------ | -------------
 **Info** | Used to trigger a set of actions when the scene changes in OBS. This is fired once the new scene is loaded. Using `*` as the `<scene>` will execute the trigger for all scenes.
 **Format** | `OnOBSSwitchScenes <scene>`
-**Example** | `OnOBSSwitchScenes BRB`
+**Format w/ Aliases** | `OnOBSSwitchScenes <scene1> <scene2> ...`
+**Example** | `OnOBSSwitchScenes "BRB"`
+**Example w/ Aliases** | `OnOBSSwitchScenes "BRB" "Intermission"`
 
 ##### Parameters
 | | |
@@ -967,7 +1070,9 @@ Enables the ability to interact with and respond to OBS.
 ------------ | -------------
 **Info** | Used to trigger a set of actions when a transition to a scene starts. Allows triggers to occur prior to a scene switch. Using `*` as the `<scene>` will execute the trigger for all scenes.
 **Format** | `OnOBSTransitionTo <scene>`
-**Example** | `OnOBSTransitionTo BRB`
+**Format w/ Aliases** | `OnOBSTransitionTo <scene1> <scene2> ...`
+**Example** | `OnOBSTransitionTo "BRB"`
+**Example w/ Aliases** | `OnOBSTransitionTo "BRB" "Intermission"`
 
 ##### Parameters
 | | |
@@ -1008,6 +1113,15 @@ Enables the ability to interact with and respond to OBS.
 **Info** | Use this to move an OBS source to the specified `<x>` and `<y>` coordinate.
 **Format** | `OBS Position <scene> <source> <x> <y>`
 **Example** | `OBS Position BRB Webcam 240 600`
+
+***
+
+#### OBS SaveReplayBuffer
+| | |
+------------ | -------------
+**Info** | Used to save the current replay buffer.
+**Format** | `OBS SaveReplayBuffer`
+**Example** | `OBS SaveReplayBuffer`
 
 ***
 
@@ -1090,12 +1204,30 @@ _Note: The browser source does not need to be in current/active scene for this t
 
 ***
 
+#### OBS StartReplayBuffer
+| | |
+------------ | -------------
+**Info** | Used to start the replay buffer.
+**Format** | `OBS StartReplayBuffer`
+**Example** | `OBS StartReplayBuffer`
+
+***
+
 #### OBS StartStream
 | | |
 ------------ | -------------
 **Info** | Used to start the stream in OBS. If the stream is already live, nothing will happen.
 **Format** | `OBS StartStream`
 **Example** | `OBS StartStream`
+
+***
+
+#### OBS StopReplayBuffer
+| | |
+------------ | -------------
+**Info** | Used to stop the replay buffer.
+**Format** | `OBS StopReplayBuffer`
+**Example** | `OBS StopReplayBuffer`
 
 ***
 
@@ -1142,6 +1274,128 @@ _Note: The browser source does not need to be in current/active scene for this t
 | | |
 ------------ | -------------
 **previous_volume** | The volume of the source before changing. This allows users to revert the volume to the prior level.
+
+***
+
+## Param
+Adds the ability to easily manipulate parameters through actions.
+
+### Param Triggers
+None at the moment.
+
+***
+
+### Param Actions
+
+#### Param Add
+| | |
+------------ | -------------
+**Info** | Adds the given amount to an existing parameter. `<parameter>` is the name of the existing parameter. `<number>` is the value to add.
+**Format** | `Param Add <parameter> <number>`
+**Example** | `Param Add counter 1`
+
+##### Parameters
+| | |
+------------ | -------------
+**\<name\>** | The updated parameter value where **\<name\>** is the name of the parameter.
+
+***
+
+#### Param Copy
+| | |
+------------ | -------------
+**Info** | Copy the given parameter into a new parameter. `<parameter>` is the name of the existing parameter. `<new>` is the name of the destination parameter to copy the value.
+**Format** | `Param Copy <parameter> <new>`
+**Example** | `Param Copy api_data image`
+
+##### Parameters
+| | |
+------------ | -------------
+**\<new\>** | The new parameter value where **\<new\>** is the name of the parameter.
+
+***
+
+#### Param Exists
+| | |
+------------ | -------------
+**Info** | Use this to check if a given parameter exists. `<parameter>` is the name of the parameter to check.
+**Format** | `Param Exists <parameter>`
+**Example** | `Param Exists after`
+
+##### Parameters
+| | |
+------------ | -------------
+**exists** | [True/False] Whether or not the parameter has a value.
+
+***
+
+#### Param Lower
+| | |
+------------ | -------------
+**Info** | Lowercase the value within a parameter. `<parameter>` is the name of the existing parameter.
+**Format** | `Param Lower <parameter>`
+**Example** | `Param Lower user`
+
+##### Parameters
+| | |
+------------ | -------------
+**\<parameter\>** | The lowercased parameter value where **\<parameter\>** is the name of the parameter.
+
+***
+
+#### Param Proper
+| | |
+------------ | -------------
+**Info** | Proper case the value within a parameter. Proper case is where the first letter of every word is capitalized. `<parameter>` is the name of the existing parameter.
+**Format** | `Param Proper <parameter>`
+**Example** | `Param Proper user`
+
+##### Parameters
+| | |
+------------ | -------------
+**\<parameter\>** | The proper case parameter value where **\<parameter\>** is the name of the parameter.
+
+***
+
+#### Param Replace
+| | |
+------------ | -------------
+**Info** | Replace a substring in a parameter with the specified text. Note that this replaces all occurrences inside of the parameter. `<parameter>` is the name of the existing parameter. `<to_replace>` is the value to be replaced. `<replacement>` is the value to overwrite the `<to_replace>` value.
+**Format** | `Param Replace <to_replace> <replacement>`
+**Example** | `Param Replace after @ ''`
+
+##### Parameters
+| | |
+------------ | -------------
+**\<parameter\>** | The new parameter value where **\<parameter\>** is the name of the parameter.
+
+***
+
+#### Param Subtract
+| | |
+------------ | -------------
+**Info** | Subtracts the given amount to an existing parameter. `<parameter>` is the name of the existing parameter. `<number>` is the value to subtract.
+**Format** | `Param Subtract <parameter> <number>`
+**Example** | `Param Subtract counter 1`
+
+##### Parameters
+| | |
+------------ | -------------
+**\<name\>** | The updated parameter value where **\<name\>** is the name of the parameter.
+
+***
+
+#### Param Upper
+| | |
+------------ | -------------
+**Info** | Uppercase the value within a parameter. `<parameter>` is the name of the existing parameter.
+**Format** | `Param Upper <parameter>`
+**Example** | `Param Upper user`
+
+##### Parameters
+| | |
+------------ | -------------
+**\<parameter\>** | The uppercased parameter value where **\<parameter\>** is the name of the parameter.
 
 ***
 
@@ -1218,7 +1472,9 @@ Enables the ability to interact with and respond to SLOBS.
 ------------ | -------------
 **Info** | Used to trigger a set of actions when the scene changes in SLOBS. Using `*` as the `<scene>` will execute the trigger for all scenes.
 **Format** | `OnSLOBSSwitchScenes <scene>`
-**Example** | `OnSLOBSSwitchScenes BRB`
+**Format w/ Aliases** | `OnSLOBSSwitchScenes <scene1> <scene2> ...`
+**Example** | `OnSLOBSSwitchScenes "BRB"`
+**Example w/ Aliases** | `OnSLOBSSwitchScenes "BRB" "Intermission"`
 
 ##### Parameters
 | | |
@@ -1252,12 +1508,48 @@ Enables the ability to interact with and respond to SLOBS.
 
 ***
 
+#### SLOBS Mute
+| | |
+------------ | -------------
+**Info** | Used to mute or unmute a source in SLOBS.
+**Format** | `SLOBS Mute <source> <on/off/toggle>`
+**Example** | `SLOBS Mute Mic/Aux toggle`
+
+***
+
+#### SLOBS Notification
+| | |
+------------ | -------------
+**Info** | Used to add a notice to the SLOBS notification window. This is the `(i)` icon in the bottom left of SLOBS.
+**Format** | `SLOBS Notification <message>`
+**Example** | `SLOBS Notification "Pay attention to me!"`
+
+***
+
+#### SLOBS Position
+| | |
+------------ | -------------
+**Info** | Used to move a source in SLOBS to the given `x` and `y` location.
+**Format** | `SLOBS Position <scene> <source> <x> <y>`
+**Example** | `SLOBS Position Alerts SLAlerts 100 350`
+
+***
+
 #### SLOBS Rotate
 | | |
 ------------ | -------------
 **Info** | Used to rotate a source in SLOBS. `<degree>` is any number (decimals allowed). This resets the base rotation to 0 before applying the rotation.
 **Format** | `SLOBS Rotate <scene> <source> <degree>`
 **Example** | `SLOBS Rotate Webcam Camera 90`
+
+***
+
+#### SLOBS SaveReplayBuffer
+| | |
+------------ | -------------
+**Info** | Used to save the current replay buffer.
+**Format** | `SLOBS SaveReplayBuffer`
+**Example** | `SLOBS SaveReplayBuffer`
 
 ***
 
@@ -1299,6 +1591,33 @@ Enables the ability to interact with and respond to SLOBS.
 **Info** | Used to toggle the visibility of a source in SLOBS. Defaults to the current scene.
 **Format** | `SLOBS Source <source> <on/off>`
 **Example** | `SLOBS Source Webcam off`
+
+***
+
+#### SLOBS StartReplayBuffer
+| | |
+------------ | -------------
+**Info** | Used to start the replay buffer.
+**Format** | `SLOBS StartReplayBuffer`
+**Example** | `SLOBS StartReplayBuffer`
+
+***
+
+#### SLOBS StopReplayBuffer
+| | |
+------------ | -------------
+**Info** | Used to stop the current replay buffer.
+**Format** | `SLOBS StopReplayBuffer`
+**Example** | `SLOBS StopReplayBuffer`
+
+***
+
+#### SLOBS ToggleStream
+| | |
+------------ | -------------
+**Info** | Used to go live within SLOBSs or stop the given stream. Note, there's no way to specify if you're toggling the stream on or off.
+**Format** | `SLOBS ToggleStream`
+**Example** | `SLOBS ToggleStream`
 
 ***
 
@@ -1633,6 +1952,26 @@ None at the moment.
 
 ***
 
+## Text-To-Speech
+Enables the ability to have input voiced with custom voices. This is powered by [responsivevoice.org](https://responsivevoice.org).
+
+### Text-To-Speech Triggers
+
+None at the moment.
+
+***
+
+### Text-To-Speech Actions
+
+#### TTS
+| | |
+------------ | -------------
+**Info** | Used to read a message with the specified voice. `<voice>` is the name of a voice from [responsivevoice.org](https://responsivevoice.org). `<volume>` is the audio volume. `<wait/nowait>` determines whether or not the script waits until the audio is done playing before completing the next action. `<message>` is the text to read in the audio.
+**Format** | `TTS <voice> <volume> <wait/nowait> <message>`
+**Example** | `TTS "UK English Male" 70 wait "Hey there!"`
+
+***
+
 ## Timer
 Enables the ability to run actions on a time interval.
 
@@ -1655,6 +1994,24 @@ Enables the ability to run actions on a time interval.
 **Info** | Used to reset a timer based on the `<name>`. This can be used to interrupt a timer and restart it.
 **Format** | `Timer Reset <name>`
 **Example** | `Timer Reset MyTimer`
+
+***
+
+#### Timer Start
+| | |
+------------ | -------------
+**Info** | Used to start (or restart) a timer based on the `<name>`. This can be used to start a timer that has been stopped or restart a timer's current countdown.
+**Format** | `Timer Start <name>`
+**Example** | `Timer Start MyTimer`
+
+***
+
+#### Timer Stop
+| | |
+------------ | -------------
+**Info** | Used to stop a timer based on the `<name>`. This can be used to interrupt a timer until it is reset or started.
+**Format** | `Timer Stop <name>`
+**Example** | `Timer Stop MyTimer`
 
 ***
 
@@ -1685,6 +2042,15 @@ None at the moment.
 **\<name\>** | The variable value where **\<name\>** is the name of the variable.
 
 _Note: The above example, `Variable Load Recent_Sub`, would return the parameter **Recent_Sub**._
+
+***
+
+#### Variable Remove
+| | |
+------------ | -------------
+**Info** | Used to delete a previously set variable during the current session. `<name>` is the name assigned to the value.
+**Format** | `Variable Remove <name>`
+**Example** | `Variable Remove Recent_Sub`
 
 ***
 

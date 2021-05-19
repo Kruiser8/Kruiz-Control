@@ -36,6 +36,9 @@ class ListHandler extends Handler {
       case 'export':
         return { [name]: JSON.stringify(this.lists[name]) };
         break;
+      case 'empty':
+        this.lists[name] = [];
+        break;
       case 'import':
         var values = triggerData.slice(3);
         this.lists[name] = JSON.parse(values);

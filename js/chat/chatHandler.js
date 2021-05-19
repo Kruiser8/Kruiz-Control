@@ -58,68 +58,79 @@ class ChatHandler extends Handler {
         var command = '';
         var info = '';
         var cooldown = 0;
+        var i = 3;
         var permission = triggerLine[1].toLowerCase();
         if (permission.includes('u')) {
           info = triggerLine[2].toLowerCase();
           cooldown = triggerLine[3];
-          command = triggerLine[4].toLowerCase();
+          i = 4;
         } else {
           cooldown = triggerLine[2];
-          command = triggerLine[3].toLowerCase();
-        }
-        if (command.charAt(0) === "!") {
-          command = command.substring(1);
-          if (this.commands.indexOf(command) === -1) {
-            this.commands.push(command);
-            this.commandsInfo[command] = [];
-          }
-        } else {
-          if (this.commandsOther.indexOf(command) === -1) {
-            this.commandsOther.push(command);
-            this.commandsInfo[command] = [];
-          }
         }
         cooldown = parseInt(cooldown);
         if (isNaN(cooldown)) {
           cooldown = 0;
         }
-        this.commandsInfo[command].push({
-          permission: permission,
-          info: info,
-          trigger: triggerId,
-          cooldown: cooldown * 1000,
-          lastUse: 0 - (cooldown * 1000)
-        });
+
+        // Allow for command aliases
+        // OnCommand b 0 !shout !so !sh !caster
+        for (i; i < triggerLine.length; ++i) {
+          var command = triggerLine[i].toLowerCase();
+          if (command.charAt(0) === "!") {
+            command = command.substring(1);
+            if (this.commands.indexOf(command) === -1) {
+              this.commands.push(command);
+              this.commandsInfo[command] = [];
+            }
+          } else {
+            if (this.commandsOther.indexOf(command) === -1) {
+              this.commandsOther.push(command);
+              this.commandsInfo[command] = [];
+            }
+          }
+          this.commandsInfo[command].push({
+            permission: permission,
+            info: info,
+            trigger: triggerId,
+            cooldown: cooldown * 1000,
+            lastUse: 0 - (cooldown * 1000)
+          });
+        }
         break;
       case 'onkeyword':
         var keyword = '';
         var info = '';
         var cooldown = 0;
         var permission = triggerLine[1].toLowerCase();
+        var i = 3;
         if (permission.includes('u')) {
           info = triggerLine[2].toLowerCase();
           cooldown = triggerLine[3];
-          keyword = triggerLine.slice(4).join(' ');
+          i = 4;
         } else {
           cooldown = triggerLine[2];
-          keyword = triggerLine.slice(3).join(' ');
         }
-        keyword = keyword.toLowerCase();
         cooldown = parseInt(cooldown);
         if (isNaN(cooldown)) {
           cooldown = 0;
         }
-        if (this.keywords.indexOf(keyword) === -1) {
-          this.keywords.push(keyword);
-          this.keywordsInfo[keyword] = [];
+
+        // Allow for aliases with OnKeyword
+        // OnKeyword b 0 hi hey yo hello o7
+        for (i; i < triggerLine.length; ++i) {
+          keyword = triggerLine[i].toLowerCase();
+          if (this.keywords.indexOf(keyword) === -1) {
+            this.keywords.push(keyword);
+            this.keywordsInfo[keyword] = [];
+          }
+          this.keywordsInfo[keyword].push({
+            permission: permission,
+            info: info,
+            trigger: triggerId,
+            cooldown: cooldown * 1000,
+            lastUse: 0 - (cooldown * 1000)
+          });
         }
-        this.keywordsInfo[keyword].push({
-          permission: permission,
-          info: info,
-          trigger: triggerId,
-          cooldown: cooldown * 1000,
-          lastUse: 0 - (cooldown * 1000)
-        });
         break;
       case 'onspeak':
         var user = triggerLine.slice(1).join(' ').toLowerCase();
@@ -168,6 +179,7 @@ class ChatHandler extends Handler {
       (permissions.includes('f') && flags.founder) ||
       (permissions.includes('m') && flags.mod) ||
       (permissions.includes('b') && this.channel === user) ||
+      (permissions.includes('n') && !flags.founder && !flags.subscriber && !flags.vip && !flags.mod && this.channel !== user) ||
       (permissions.includes('u') && info && user === info)
     ){
       return true;
@@ -270,6 +282,7 @@ class ChatHandler extends Handler {
             if (this.checkPermissions(user, flags, info.permission, info.info) && this.updateCooldown(info)) {
               controller.handleData(info.trigger, {
                 user: user,
+                keyword: match,
                 message: message,
                 data: {
                   user: user,
@@ -351,6 +364,7 @@ class ChatHandler extends Handler {
             if (this.checkPermissions(user, flags, info.permission, info.info) && this.updateCooldown(info)) {
               controller.handleData(info.trigger, {
                 user: user,
+                keyword: match,
                 message: message,
                 data: {
                   user: user,

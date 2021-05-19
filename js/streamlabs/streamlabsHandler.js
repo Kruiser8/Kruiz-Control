@@ -222,7 +222,7 @@ class StreamlabsHandler extends Handler {
       'user': message.name,
       'gifter': gifter,
       'months': message.months,
-      'tier': message.sub_plan === 'Prime' ? 'Prime' : 'Tier ' + (parseInt(message.sub_plan) / 1000)
+      'tier': message.subPlan === 'Prime' ? 'Prime' : 'Tier ' + (parseInt(message.subPlan) / 1000)
     }
   }
 
@@ -239,7 +239,7 @@ class StreamlabsHandler extends Handler {
       'data': message,
       'amount': message.amount,
       'gifter': gifter,
-      'tier': message.sub_plan === 'Prime' ? 'Prime' : 'Tier ' + (parseInt(message.sub_plan) / 1000)
+      'tier': message.subPlan === 'Prime' ? 'Prime' : 'Tier ' + (parseInt(message.subPlan) / 1000)
     }
   }
 
@@ -277,7 +277,7 @@ class StreamlabsHandler extends Handler {
       'user': message.name,
       'months': message.months,
       'message': message.message,
-      'tier': message.sub_plan === 'Prime' ? 'Prime' : 'Tier ' + (parseInt(message.sub_plan) / 1000)
+      'tier': message.subPlan === 'Prime' ? 'Prime' : 'Tier ' + (parseInt(message.subPlan) / 1000)
     }
   }
 }
