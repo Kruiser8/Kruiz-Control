@@ -114,6 +114,9 @@ class OBSHandler extends Handler {
    * @param {Object} data scene information
    */
   async onSwitchScenes(data) {
+    if (Debug.All || Debug.OBS) {
+      console.error("OBS onSwitchScenes: " + JSON.stringify(data));
+    }
     var currentScene = await this.obs.getCurrentScene();
     var sceneTriggers = [];
     if (currentScene.name === data.sceneName) {
@@ -139,6 +142,9 @@ class OBSHandler extends Handler {
    * @param {Object} data scene information
    */
   async onTransitionBegin(data) {
+    if (Debug.All || Debug.OBS) {
+      console.error("OBS onTransitionBegin: " + JSON.stringify(data));
+    }
     var sceneTriggers = [];
     if (this.onTransitionTo.indexOf(data.toScene) !== -1) {
       sceneTriggers.push(...this.onTransitionToTrigger[data.toScene]);
@@ -161,6 +167,9 @@ class OBSHandler extends Handler {
    * Handle stream start messages from obs websocket.
    */
   onStreamStart() {
+    if (Debug.All || Debug.OBS) {
+      console.error("OBS onStreamStart message received");
+    }
     if (this.onStartTrigger.length > 0) {
       this.onStartTrigger.forEach(trigger => {
         controller.handleData(trigger);
@@ -172,6 +181,9 @@ class OBSHandler extends Handler {
    * Handle stream stop messages from obs websocket.
    */
   onStreamStop() {
+    if (Debug.All || Debug.OBS) {
+      console.error("OBS onStreamStop message received");
+    }
     if (this.onStopTrigger.length > 0) {
       this.onStopTrigger.forEach(trigger => {
         controller.handleData(trigger);
@@ -184,6 +196,9 @@ class OBSHandler extends Handler {
    * @param {Object} broadcast obs custom message
    */
   onCustomMessage(broadcast) {
+    if (Debug.All || Debug.OBS) {
+      console.error("OBS onCustomMessage: " + JSON.stringify(broadcast));
+    }
     var customTriggers = [];
     if (broadcast.realm === 'kruiz-control' && typeof(broadcast.data.message) !== 'undefined' && this.onCustom.indexOf(broadcast.data.message) !== -1) {
       customTriggers.push(...this.onCustomTrigger[broadcast.data.message]);
@@ -207,6 +222,9 @@ class OBSHandler extends Handler {
    * @param {Object} data scene item information
    */
   async onSourceVisibility(data) {
+    if (Debug.All || Debug.OBS) {
+      console.error("OBS onSourceVisibility: " + JSON.stringify(data));
+    }
     var scene = data['scene-name'];
     var item = data['item-name'];
     var visibility = data['item-visible'];
@@ -253,6 +271,12 @@ class OBSHandler extends Handler {
         break;
       case 'savereplaybuffer':
         await this.obs.saveReplayBuffer();
+        break;
+      case 'addsceneitem':
+        var sceneName = triggerData[2];
+        var sourceName = triggerData[3];
+        var status = (triggerData[4] && triggerData[4].toLowerCase() === 'off') ? false : true;
+        await this.obs.addSceneItem(sceneName, sourceName, status)
         break;
       case 'scene':
         var currentScene = await this.obs.getCurrentScene();
@@ -331,6 +355,10 @@ class OBSHandler extends Handler {
           await this.obs.setFilterVisibility(source, filter, status);
         }
         break;
+      case 'refresh':
+        var source = triggerData.slice(2).join(' ');
+        await this.obs.refreshBrowser(source);
+        break;
       case 'takesourcescreenshot':
         var source = triggerData.slice(2, triggerData.length - 1).join(' ');
         var filePath = triggerData[triggerData.length - 1];
@@ -358,7 +386,7 @@ class OBSHandler extends Handler {
         var source = triggerData.slice(2, triggerData.length - 1).join(' ');
         var currentAudio = await this.obs.getVolume(source);
         var volume = parseFloat(triggerData[triggerData.length - 1]);
-        if (volume) {
+        if (!isNan(volume)) {
           await this.obs.setVolume(source, volume);
         } else {
           console.error('Unable to parse volume value: ' + triggerData[triggerData.length - 1]);

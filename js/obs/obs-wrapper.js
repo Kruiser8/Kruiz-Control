@@ -231,6 +231,25 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
     });
   };
 
+  obs.refreshBrowser = async function(sourceName) {
+    await this.send('RefreshBrowserSource', {
+      'sourceName': sourceName
+    }).catch(err => {
+      // Promise convention dictates you have a catch on every chain.
+      console.error(JSON.stringify(err));
+    });
+  };
+
+  obs.addSceneItem = async function(scene, source, status) {
+    await this.send('AddSceneItem', {
+      'sceneName': scene,
+      'sourceName': source,
+      'setVisible': status
+    }).catch(err => { // Promise convention dictates you have a catch on every chain.
+      console.error(JSON.stringify(err));
+    });
+  };
+
   obs.getSceneItemProperties = async function(scene, item) {
     var data = await this.send('GetSceneItemProperties', {
       'scene-name': scene,
@@ -252,6 +271,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
 
   obs.setSceneItemPosition = async function(scene, item, x, y) {
     await this.send('SetSceneItemProperties', {
+      'scene-name': scene,
       'item': item,
       'position': {
         'x': x,

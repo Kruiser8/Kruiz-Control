@@ -73,6 +73,9 @@ class StreamElementsAlertHandler extends Handler {
    * @param {Object} message streamelements test event message
    */
   onStreamElementsTestMessage(message) {
+    if (Debug.All || Debug.StreamElements) {
+      console.error('StreamElements Message: ' + JSON.stringify(message));
+    }
     var type = message.listener;
     if (type === 'subscriber-latest') {
       if (message.event.gifted) {
@@ -95,6 +98,9 @@ class StreamElementsAlertHandler extends Handler {
    * @param {Object} message streamelements event message
    */
   onStreamElementsMessage(message) {
+    if (Debug.All || Debug.StreamElements) {
+      console.error('StreamElements Message: ' + JSON.stringify(message));
+    }
     var type = message.type;
     if (type === 'subscriber') {
       if (message.data.gifted) {

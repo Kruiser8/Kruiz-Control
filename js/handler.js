@@ -35,7 +35,7 @@ class Handler {
   /**
    * Handle the input data (take an action).
    * @param {array} triggerData contents of trigger line
-   * @param {object} triggerParams current parameters in the event
+   * @param {array} triggerParams current trigger parameters
    */
   async handleData(triggerData, triggerParams) {
     return;
