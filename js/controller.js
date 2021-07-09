@@ -15,6 +15,7 @@ class Controller {
     this.addParser('controller', this);
     this.addTrigger('OnInit', 'controller');
     this.addSuccess('controller');
+    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
   }
 
   /**
@@ -260,9 +261,14 @@ class Controller {
     else if (parserName === 'play') {
       // Play audio and await the end of the audio
       var audio = new Audio("sounds/" + data.slice(3).join(' ').trim());
+	    var source = this.audioContext.createMediaElementSource(audio);
+	    var gainNode = this.audioContext.createGain();
+	    source.connect(gainNode);
+	    gainNode.connect(this.audioContext.destination);
       var volume = parseInt(data[1]);
       if (!isNaN(volume)) {
-        audio.volume = volume / 100;
+        audio.volume = 1;
+		    gainNode.gain.value = volume / 100;
       }
       if (data[2].toLowerCase() === 'wait') {
         await new Promise((resolve) => {
@@ -279,6 +285,7 @@ class Controller {
         });
       } else {
         audio.play();
+		    audio.onended = () => gainNode.disconnect();
       }
     }
     else if (parserName === 'cooldown') {
