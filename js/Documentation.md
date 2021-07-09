@@ -129,6 +129,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OBS Scene](#obs-scene)
     + [OBS SceneSource](#obs-scenesource)
     + [OBS Send](#obs-send)
+    + [OBS Size](#obs-size)
     + [OBS Source](#obs-source)
     + [OBS Source Filter](#obs-source-filter)
     + [OBS Source Text](#obs-source-text)
@@ -1475,6 +1476,12 @@ Enables the ability to interact with and respond to OBS.
 **Format** | `OBS Position <scene> <source> <x> <y>`
 **Example** | `OBS Position BRB Webcam 240 600`
 
+##### Parameters
+| | |
+------------ | -------------
+**init_x** | The initial value of the x coordinate before moving the source.
+**init_y** | The initial value of the y coordinate before moving the source.
+
 ***
 
 #### OBS SaveReplayBuffer
@@ -1527,6 +1534,21 @@ Enables the ability to interact with and respond to OBS.
 **Example (with data)** | `OBS Send PlayAudio Shikaka`
 
 _Note: Messages are echo'd to all websocket-connected clients. This is useful for connecting other browser sources or triggering other triggers._
+
+***
+
+#### OBS Size
+| | |
+------------ | -------------
+**Info** | Use this to resize an OBS source to the specified `<width>` and `<height>` values.
+**Format** | `OBS Size <scene> <source> <width> <height>`
+**Example** | `OBS Size BRB Webcam 1920 1080`
+
+##### Parameters
+| | |
+------------ | -------------
+**init_width** | The initial width value before resizing the source.
+**init_height** | The initial height value before resizing the source.
 
 ***
 
