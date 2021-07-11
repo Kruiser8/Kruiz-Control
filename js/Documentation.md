@@ -643,7 +643,9 @@ _WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mi
 ##### Parameters
 | | |
 ------------ | -------------
-**user** | The display name of the user that triggered the speak event.
+**user** | The display name of the user that sent the command.
+**message** | The entire chat message, including the command.
+**data** | An object with all metadata about the message (for use with [Function](#function)).
 
 ***
 
