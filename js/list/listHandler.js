@@ -76,8 +76,7 @@ class ListHandler extends Handler {
    * @param {string} index to add the value in the list
    */
   add(name, value, index) {
-    if (!isNaN(index) && index < this.lists[name].length && index > 0) {
-      var index = parseInt(triggerData[4]);
+    if (!isNaN(index) && index < this.lists[name].length && index >= 0) {
       this.lists[name].splice(index, 0, value);
       return { index: index, position: index + 1 }
     } else {
@@ -93,7 +92,7 @@ class ListHandler extends Handler {
    * @param {string} value to add to the list
    */
   set(name, index, value) {
-    if (!isNaN(index) && index < this.lists[name].length && index > 0) {
+    if (!isNaN(index) && index < this.lists[name].length && index >= 0) {
       this.lists[name][index] = value;
       return { index: index, position: index + 1, value: value }
     }
