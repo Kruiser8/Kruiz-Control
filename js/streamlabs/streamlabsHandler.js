@@ -103,6 +103,7 @@ class StreamlabsHandler extends Handler {
     if (Debug.All || Debug.Streamlabs) {
       console.error('Streamlabs Message: ' + JSON.stringify(message));
     }
+    this.onSLMessageQueue.push(message);
   }
 
   /**
