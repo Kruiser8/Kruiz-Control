@@ -10,10 +10,21 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Parameters](#parameters)
   * [Aliases](#aliases)
 - [Default Parameters](#default-parameters)
+- [Actions](#actions)
+  * [Triggers](#actions-triggers)
+    + [OnAction](#onaction)
+  * [Actions](#actions-actions)
 - [API](#api)
   * [Triggers](#api-triggers)
   * [Actions](#api-actions)
+    + [API Clear](#api-clear)
+    + [API Data](#api-data)
     + [API Get](#api-get)
+    + [API Header](#api-header)
+    + [API Method](#api-method)
+    + [API RawData](#api-rawdata)
+    + [API Send](#api-send)
+    + [API Url](#api-url)
 - [Channel Points](#channel-points)
   * [Triggers](#channel-point-triggers)
     + [OnChannelPoint](#onchannelpoint)
@@ -30,6 +41,32 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Actions](#chat-actions)
     + [Chat Send](#chat-send)
     + [Chat Whisper](#chat-whisper)
+- [Debug](#debug)
+  * [Triggers](#debug-triggers)
+  * [Actions](#debug-actions)
+    + [Debug](#debug-1)
+    + [Debug OBS](#debug-obs)
+    + [Debug SLOBS](#debug-slobs)
+    + [Debug StreamElements](#debug-streamelements)
+    + [Debug StreamLabs](#debug-streamLabs)
+    + [Debug Twitch](#debug-twitch)
+- [Discord](#discord)
+  * [Triggers](#discord-triggers)
+  * [Actions](#discord-actions)
+    + [Discord Create](#discord-create)
+    + [Discord Color](#discord-color)
+    + [Discord Delete](#discord-delete)
+    + [Discord Description](#discord-description)
+    + [Discord Field](#discord-field)
+    + [Discord FooterIcon](#discord-footericon)
+    + [Discord FooterText](#discord-footertext)
+    + [Discord Image](#discord-image)
+    + [Discord Message](#discord-message)
+    + [Discord Send](#discord-send)
+    + [Discord Thumbnail](#discord-thumbnail)
+    + [Discord Title](#discord-title)
+    + [Discord Update](#discord-update)
+    + [Discord Url](#discord-url)
 - [Hype Train](#hype-train)
   * [Triggers](#hype-train-triggers)
     + [OnHypeTrainCooldownExpired](#onhypetraincooldownexpired)
@@ -50,6 +87,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [List Get](#list-get)
     + [List Import](#list-import)
     + [List Index](#list-index)
+    + [List Join](#list-join)
     + [List Remove](#list-remove)
     + [List Set](#list-remove)
 - [Message](#message)
@@ -83,13 +121,16 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnOBSSwitchScenes](#onobsswitchscenes)
     + [OnOBSTransitionTo](#onobstransitionto)
   * [Actions](#obs-actions)
+    + [OBS AddSceneItem](#obs-addsceneitem)
     + [OBS CurrentScene](#obs-currentscene)
     + [OBS Mute](#obs-mute)
     + [OBS Position](#obs-position)
+    + [OBS Refresh](#obs-refresh)
     + [OBS SaveReplayBuffer](#obs-savereplaybuffer)
     + [OBS Scene](#obs-scene)
     + [OBS SceneSource](#obs-scenesource)
     + [OBS Send](#obs-send)
+    + [OBS Size](#obs-size)
     + [OBS Source](#obs-source)
     + [OBS Source Filter](#obs-source-filter)
     + [OBS Source Text](#obs-source-text)
@@ -107,6 +148,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Param Add](#param-add)
     + [Param Copy](#param-copy)
     + [Param Exists](#param-exists)
+    + [Param Keyword](#param-keyword)
     + [Param Lower](#param-lower)
     + [Param Proper](#param-proper)
     + [Param Replace](#param-replace)
@@ -300,6 +342,31 @@ The following parameters are always available. Use the `_successful_` and `_unsu
 ------------ | -------------
 **\_successful\_** | A comma delimited list of handlers that initialized correctly.
 **\_unsuccessful\_** | A comma delimited list of handlers that did not initialize correctly.
+**\_kc\_event\_id\_** | A unique id for each event occurrence in Kruiz Control. If you need a unique identifier, use this. The id resets to 0 after 1,000,000,000.
+
+***
+
+## Actions
+Enables the ability to create your own actions within Kruiz Control.
+
+### Actions Triggers
+
+#### OnAction
+| | |
+------------ | -------------
+**Info** | Used to define a list of actions that will get inserted into an event when the provided `<action>` is called.
+**Format** | `OnAction <action>`
+**Example** | `OnAction ReadFile`
+
+##### Parameters
+| | |
+------------ | -------------
+**in#** | The numbered arguments passed to the action. Replace `#` with a number, starting at 1 and ending at the last argument passed into the command.
+
+***
+
+### Actions Actions
+None at the moment.
 
 ***
 
@@ -313,6 +380,24 @@ None at the moment.
 
 ### API Actions
 
+#### API Clear
+| | |
+------------ | -------------
+**Info** | Used to clear an API configuration. `<name>` is the name of the API to clear.
+**Format** | `API Clear <name>`
+**Example** | `API Clear HostLookup`
+
+***
+
+#### API Data
+| | |
+------------ | -------------
+**Info** | Used to add a key-value pair as data to an API configuration. `<name>` is the name of the API to update. `<key>` and `<value>` are the inputs.
+**Format** | `API Data <name> <key> <value>`
+**Example** | `API Data TwitchAPI login {user}`
+
+***
+
 #### API Get
 | | |
 ------------ | -------------
@@ -324,6 +409,51 @@ None at the moment.
 | | |
 ------------ | -------------
 **api_data** | The response from calling the API or 'Error'.
+
+***
+
+#### API Header
+| | |
+------------ | -------------
+**Info** | Used to add a header to an API configuration. `<name>` is the name of the API to update. `<key>` and `<value>` are the input header.
+**Format** | `API Header <name> <key> <value>`
+**Example** | `API Header TwitchAPI "Authorization" "Oauth {token}"`
+
+***
+
+#### API Method
+| | |
+------------ | -------------
+**Info** | Used to set the method of an API configuration. `<name>` is the name of the API to update. `<method>` is the type of API call (i.e. GET, POST, PUT, DELETE, etc.). If this is not called, the default method is `GET`.
+**Format** | `API Method <name> <method>`
+**Example** | `API Method TwitchAPI POST`
+
+***
+
+#### API RawData
+| | |
+------------ | -------------
+**Info** | Used to add raw data to an API configuration. `<name>` is the name of the API to call. `<raw_data>` is the API data. This can be used to add json or other formats to the API body.
+**Format** | `API RawData <name> <raw_data>`
+**Example** | `API RawData DummyAPI "{ user: kruiser8, text: "my custom text" }"`
+
+***
+
+#### API Send
+| | |
+------------ | -------------
+**Info** | Used to send an API configuration. `<name>` is the name of the API to call.
+**Format** | `API Send <name>`
+**Example** | `API Method TwitchAPI`
+
+***
+
+#### API Url
+| | |
+------------ | -------------
+**Info** | Used to set the url of an API configuration. `<name>` is the name of the API to update. `<url>` is the API to call.
+**Format** | `API Url <name> <url>`
+**Example** | `API Url TwitchAPI "https://api.twitch.tv/helix/users/follows"`
 
 ***
 
@@ -513,7 +643,9 @@ _WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mi
 ##### Parameters
 | | |
 ------------ | -------------
-**user** | The display name of the user that triggered the speak event.
+**user** | The display name of the user that sent the command.
+**message** | The entire chat message, including the command.
+**data** | An object with all metadata about the message (for use with [Function](#function)).
 
 ***
 
@@ -534,6 +666,228 @@ _WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mi
 **Info** | Used to send a whisper to a user.
 **Format** | `Chat Whisper <user> <message>`
 **Example** | `Chat Whisper Kruiser8 "Chicken Dinner"`
+
+***
+
+## Debug
+Adds optional logging to Kruiz Control for debugging purposes.
+
+### Debug Triggers
+None at the moment.
+
+***
+
+### Debug Actions
+
+#### Debug
+| | |
+------------ | -------------
+**Info** | Used to enable all debugging.
+**Format** | `Debug`
+**Example** | `Debug`
+
+***
+
+#### Debug OBS
+| | |
+------------ | -------------
+**Info** | Used to enable debugging for OBS events.
+**Format** | `Debug OBS`
+**Example** | `Debug OBS`
+
+***
+
+#### Debug SLOBS
+| | |
+------------ | -------------
+**Info** | Used to enable debugging for SLOBS events.
+**Format** | `Debug SLOBS`
+**Example** | `Debug SLOBS`
+
+***
+
+#### Debug StreamElements
+| | |
+------------ | -------------
+**Info** | Used to enable debugging for StreamElements events.
+**Format** | `Debug StreamElements`
+**Example** | `Debug StreamElements`
+
+***
+
+#### Debug Streamlabs
+| | |
+------------ | -------------
+**Info** | Used to enable debugging for Streamlabs events.
+**Format** | `Debug Streamlabs`
+**Example** | `Debug Streamlabs`
+
+***
+
+#### Debug Twitch
+| | |
+------------ | -------------
+**Info** | Used to enable debugging for Twitch events. This handles channel points, hype trains, and community goals. For alerts, see [`Debug StreamElements`](#debug-streamelements) or [`Debug Streamlabs`](#debug-streamlabs).
+**Format** | `Debug Twitch`
+**Example** | `Debug Twitch`
+
+***
+
+## Discord
+Enables the ability to send messages to discord by creating webhooks and using discord embeds.
+
+In order to create webhooks, follow the `Making a Webhook` section on this page: https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks
+
+Once created and configured, click the `Copy Webhook URL` button and put that into a [`Discord Create`](#discord-create) action.
+
+### Discord Triggers
+None at the moment.
+
+***
+
+### Discord Actions
+
+#### Discord Clear
+| | |
+------------ | -------------
+**Info** | Used to clear a webhook by name, removing all existing message data. `<name>` is the id that will be used to refer to this webhook in other discord actions. This does not remove the webhook URL.
+**Format** | `Discord Clear <name>`
+**Example** | `Discord Clear "GeneralChannel"`
+
+***
+
+#### Discord Color
+| | |
+------------ | -------------
+**Info** | Used to customize the color on the left hand side of a discord embed. `<name>` is the id that was used to register the webhook in a [`Discord Create`](#discord-create). `<color>` is a hex code for a color (`#1a34b6`).
+**Format** | `Discord Color <name> <description>`
+**Example** | `Discord Color "GeneralChannel" "#1a34b6"`
+
+***
+
+#### Discord Create
+| | |
+------------ | -------------
+**Info** | Used to create/register a webhook by name for use in later actions. `<name>` is the id that will be used to refer to this webhook in other discord actions. `<url>` is the url of the discord webhook that you create.
+**Format** | `Discord Create <name> <url>`
+**Example** | `Discord Create "GeneralChannel" https://discord.com/api/webhooks/419746549841564984/769fhue98uywe99ftr8hFEfe878wjfh9wuf988Et`
+
+***
+
+#### Discord Delete
+| | |
+------------ | -------------
+**Info** | Used to delete a message sent via the webhook. `<name>` is the id that was used to register the webhook in a [`Discord Create`](#discord-create). `<message_id>` is optional. This defaults to the last sent message.
+**Format** | `Discord Delete <name>`
+**Example** | `Discord Delete "GeneralChannel"`
+**Example w/ Message Id** | `Discord Delete "GeneralChannel" 810814654`
+
+***
+
+#### Discord Description
+| | |
+------------ | -------------
+**Info** | Used to add a description to a discord embed. `<name>` is the id that was used to register the webhook in a [`Discord Create`](#discord-create). `<description>` is the text to add as the embed text.
+**Format** | `Discord Description <name> <description>`
+**Example** | `Discord Description "GeneralChannel" "Live on Twitch!"`
+
+***
+
+#### Discord Field
+| | |
+------------ | -------------
+**Info** | Used to add a field to a discord embed. `<name>` is the id that was used to register the webhook in a [`Discord Create`](#discord-create). `<field>` is the text to add as the title of the field. `<value>` is the text to put in the field. `<inline_optional>` is an optional true/false value to specify whether or not to put this field inline (horizontally) with other fields.
+**Format** | `Discord Field <name> <field> <value>`
+**Example** | `Discord Field "GeneralChannel" "Game" "The Binding of Isaac: Repentance"`
+
+***
+
+#### Discord FooterIcon
+| | |
+------------ | -------------
+**Info** | Used to add an icon to the discord embed footer. `<name>` is the id that was used to register the webhook in a [`Discord Create`](#discord-create). `<icon>` is the URL of the icon to add.
+**Format** | `Discord FooterIcon <name> <icon>`
+**Example** | `Discord FooterIcon "GeneralChannel" "https://static-cdn.jtvnw.net/jtv_user_pictures/4c5ff382-f697-4357-aebb-ff035a82b60c-profile_image-70x70.png"`
+
+***
+
+#### Discord FooterText
+| | |
+------------ | -------------
+**Info** | Used to add text to a discord embed footer. `<name>` is the id that was used to register the webhook in a [`Discord Create`](#discord-create). `<text>` is the text to add as the footer text.
+**Format** | `Discord FooterText <name> <text>`
+**Example** | `Discord FooterText "GeneralChannel" "Kruiser8"`
+
+***
+
+#### Discord Image
+| | |
+------------ | -------------
+**Info** | Used to add an image to a discord embed. `<name>` is the id that was used to register the webhook in a [`Discord Create`](#discord-create). `<image>` is the URL of the image to add in the body of the embed.
+**Format** | `Discord Image <name> <image>`
+**Example** | `Discord Image "GeneralChannel" "https://static-cdn.jtvnw.net/jtv_user_pictures/12a2c0d2-2be5-45fe-9ff9-46d05007c395-profile_banner-480.png"`
+
+
+***
+
+#### Discord Message
+| | |
+------------ | -------------
+**Info** | Used to add a message to the discord webhook call. `<name>` is the id that was used to register the webhook in a [`Discord Create`](#discord-create). `<message>` is the text of the discord message.
+**Format** | `Discord Message <name> <message>`
+**Example w/ Message** | `Discord Message "GeneralChannel" "Hey folks!"`
+
+***
+
+#### Discord Send
+| | |
+------------ | -------------
+**Info** | Used to send a message to discord, using any embed data currently set. `<name>` is the id that was used to register the webhook in a [`Discord Create`](#discord-create).
+**Format** | `Discord Send <name>`
+**Example** | `Discord Send "GeneralChannel"`
+**Example w/ Message** | `Discord Send "GeneralChannel" "Hey folks!"`
+
+##### Parameters
+| | |
+------------ | -------------
+**discord_msg_id** | The id of the message sent. This can be used with [`Discord Update`](#discord-update) and [`Discord Delete`](#discord-delete).
+
+***
+
+#### Discord Thumbnail
+| | |
+------------ | -------------
+**Info** | Used to set the thumbnail for the next embed. `<name>` is the id that was used to register the webhook in a [`Discord Create`](#discord-create). `<thumbnail>` is the url to a thumbnail image.
+**Format** | `Discord Thumbnail <name> <image>`
+**Example** | `Discord Thumbnail "GeneralChannel" "https://static-cdn.jtvnw.net/jtv_user_pictures/4c5ff382-f697-4357-aebb-ff035a82b60c-profile_image-70x70.png"`
+
+***
+
+#### Discord Title
+| | |
+------------ | -------------
+**Info** | Used to set the title for the next embed. `<name>` is the id that was used to register the webhook in a [`Discord Create`](#discord-create). `<title>` is the text to use as the title.
+**Format** | `Discord Title <name> <image>`
+**Example** | `Discord Title "GeneralChannel" "LIVE ON TWITCH"`
+
+***
+
+#### Discord Update
+| | |
+------------ | -------------
+**Info** | Used to update a message previously sent via the webhook using any embed data currently set. `<name>` is the id that was used to register the webhook in a [`Discord Create`](#discord-create). `<message_id>` is optional. This defaults to the last sent message.
+**Format** | `Discord Update <name> <message_id>`
+**Example** | `Discord Update "GeneralChannel"`
+**Example w/ Id** | `Discord Update "GeneralChannel" 801801891`
+
+***
+
+#### Discord URL
+| | |
+------------ | -------------
+**Info** | Used to add a link to the discord embed title. `<name>` is the id that was used to register the webhook in a [`Discord Create`](#discord-create). `<url>` is the link URL for the embed.
+**Format** | `Discord Url <name> <url>`
+**Example** | `Discord Url "GeneralChannel" "https://twitch.tv/kruiser8"`
 
 ***
 
@@ -761,6 +1115,20 @@ _Note: The above example, `List Export MyList`, would return the parameter **MyL
 
 ***
 
+#### List Join
+| | |
+------------ | -------------
+**Info** | Used to combine all items in a list into a text value with the specified `<delimiter>` as a separator.
+**Format** | `List Join <list> <delimiter>`
+**Example** | `List Join MyList ", "`
+
+##### Parameters
+| | |
+------------ | -------------
+**joined** | The result of combining all of the items in a list.
+
+***
+
 #### List Remove
 | | |
 ------------ | -------------
@@ -875,6 +1243,8 @@ A small selection of actions that are included for increased usability.
 | | |
 ------------ | -------------
 **\<name\>** | [True/False] Whether or not the cooldown is active where **\<name\>** is the name of the cooldown.
+**cooldown** | The number of seconds (rounded to a whole number) left on the cooldown. This is only returned if the cooldown is active (`<name>` is True).
+**cooldown_real** | The decimal number of seconds left on the cooldown. This is only returned if the cooldown is active (`<name>` is True).
 
 _Note: The above example, `Cooldown Check MyCustomTrigger`, would return the parameter **MyCustomTrigger**._
 
@@ -1084,6 +1454,15 @@ Enables the ability to interact with and respond to OBS.
 
 ### OBS Actions
 
+#### OBS AddSceneItem
+| | |
+------------ | -------------
+**Info** | Used to add an existing source to the specified scene. `<scene>` is the scene to add the source. `<source>` is the name of the source to add to the scene. `<on/off>` is an optional visibility that determines if the source is visible when it's added.
+**Format** | `OBS AddSceneItem <scene> <source> <on/off>`
+**Example** | `OBS AddSceneItem BRB Webcam off`
+
+***
+
 #### OBS CurrentScene
 | | |
 ------------ | -------------
@@ -1114,6 +1493,12 @@ Enables the ability to interact with and respond to OBS.
 **Format** | `OBS Position <scene> <source> <x> <y>`
 **Example** | `OBS Position BRB Webcam 240 600`
 
+##### Parameters
+| | |
+------------ | -------------
+**init_x** | The initial value of the x coordinate before moving the source.
+**init_y** | The initial value of the y coordinate before moving the source.
+
 ***
 
 #### OBS SaveReplayBuffer
@@ -1122,6 +1507,15 @@ Enables the ability to interact with and respond to OBS.
 **Info** | Used to save the current replay buffer.
 **Format** | `OBS SaveReplayBuffer`
 **Example** | `OBS SaveReplayBuffer`
+
+***
+
+#### OBS Refresh
+| | |
+------------ | -------------
+**Info** | Used to refresh a browser source in OBS.
+**Format** | `OBS Refresh <source>`
+**Example** | `OBS Refresh "Kruiz Control"`
 
 ***
 
@@ -1157,6 +1551,21 @@ Enables the ability to interact with and respond to OBS.
 **Example (with data)** | `OBS Send PlayAudio Shikaka`
 
 _Note: Messages are echo'd to all websocket-connected clients. This is useful for connecting other browser sources or triggering other triggers._
+
+***
+
+#### OBS Size
+| | |
+------------ | -------------
+**Info** | Use this to resize an OBS source to the specified `<width>` and `<height>` values.
+**Format** | `OBS Size <scene> <source> <width> <height>`
+**Example** | `OBS Size BRB Webcam 1920 1080`
+
+##### Parameters
+| | |
+------------ | -------------
+**init_width** | The initial width value before resizing the source.
+**init_height** | The initial height value before resizing the source.
 
 ***
 
@@ -1326,6 +1735,24 @@ None at the moment.
 | | |
 ------------ | -------------
 **exists** | [True/False] Whether or not the parameter has a value.
+
+***
+
+#### Param Keyword
+| | |
+------------ | -------------
+**Info** | Checks if the specified keyword(s) exist(s) within a parameter. `<parameter>` is the name of the existing parameter. `<keyword>` is the value to look for in the parameter. More than one keyword can be supplied.
+**Format** | `Param Keyword <parameter> <keyword>`
+**Format w/ Multiple Keywords** | `Param Keyword <parameter> <keyword_1> <keyword_2> <keyword_3>`
+**Example** | `Param Keyword after "apple"`
+**Example w/ Multiple Keywords** | `Param Keyword after "apple" "banana" "cookie" "duck"`
+
+##### Parameters
+| | |
+------------ | -------------
+**matched** | [True/False] Whether or not the keyword was found in the parameter.
+**match** | If `matched`, `match` will have the first keyword found in the parameter.
+**keywords** | If `matched`, keywords will have the list of all keywords found in the parameter.
 
 ***
 
@@ -1969,6 +2396,15 @@ None at the moment.
 **Info** | Used to read a message with the specified voice. `<voice>` is the name of a voice from [responsivevoice.org](https://responsivevoice.org). `<volume>` is the audio volume. `<wait/nowait>` determines whether or not the script waits until the audio is done playing before completing the next action. `<message>` is the text to read in the audio.
 **Format** | `TTS <voice> <volume> <wait/nowait> <message>`
 **Example** | `TTS "UK English Male" 70 wait "Hey there!"`
+
+***
+
+#### TTS Stop
+| | |
+------------ | -------------
+**Info** | Used to stop playing text-to-speech audio.
+**Format** | `TTS Stop`
+**Example** | `TTS Stop`
 
 ***
 

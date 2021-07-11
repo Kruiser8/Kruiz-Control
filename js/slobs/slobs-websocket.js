@@ -28,6 +28,9 @@
 
   socket.onmessage = (e) => {
     if (e.type === 'message') {
+      if (Debug.All || Debug.SLOBS) {
+        console.error('SLOBS Message: ' + e.data);
+      }
       var data = JSON.parse(e.data);
       if (data.id === 2) {
         data.result.forEach(scene => {

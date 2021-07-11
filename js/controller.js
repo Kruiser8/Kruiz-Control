@@ -15,7 +15,12 @@ class Controller {
     this.addParser('controller', this);
     this.addTrigger('OnInit', 'controller');
     this.addSuccess('controller');
+<<<<<<< HEAD
     this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+=======
+    this.eventId = 0;
+    this.eventIdQueue = async.queue(this.setupTrigger.bind(this), 1);
+>>>>>>> upstream/develop
   }
 
   /**
@@ -60,7 +65,6 @@ class Controller {
     if (this.parsers[name]) {
       return this.parsers[name];
     } else {
-      console.error('Unable to find parser for input: ' + name);
       return null;
     }
   }
@@ -124,7 +128,21 @@ class Controller {
    * @param {string} triggerId id of the trigger to run
    */
   async handleData(triggerId, triggerParams) {
+    this.eventIdQueue.push({
+      triggerId: triggerId,
+      triggerParams: triggerParams
+    });
+  }
+
+  async setupTrigger(data, callback) {
+    var { triggerId, triggerParams } = data;
     triggerParams = triggerParams || {};
+    triggerParams['_kc_event_id_'] = this.eventId;
+    if (this.eventId === 1000000000) {
+      this.eventId = 0;
+    } else {
+      this.eventId = this.eventId + 1;
+    }
     if (typeof(this.triggerAsyncMap[triggerId]) !== "undefined") {
       var queue = this.triggerAsync[this.triggerAsyncMap[triggerId]];
       queue.push({
@@ -144,90 +162,110 @@ class Controller {
    * @param {Object} triggerInfo id and params of the trigger
    */
   async performTrigger(triggerInfo, callback) {
-    var toSkip = 0;
-    var triggerId = triggerInfo.triggerId;
-    var triggerParams = triggerInfo.triggerParams;
-    triggerParams['_successful_'] = this.successful.join(', ');
-    triggerParams['_unsuccessful_'] = this.getUnsuccessful().join(', ');
+    try {
+      var toSkip = 0;
+      var triggerId = triggerInfo.triggerId;
+      var triggerParams = triggerInfo.triggerParams;
+      triggerParams['_successful_'] = this.successful.join(', ');
+      triggerParams['_unsuccessful_'] = this.getUnsuccessful().join(', ');
 
-    // Get trigger content
-    var triggerSequence = JSON.parse(JSON.stringify(this.triggerData[triggerId]));
+      // Get trigger content
+      var triggerSequence = JSON.parse(JSON.stringify(this.triggerData[triggerId]));
 
-    // Setup regex for any parameters
-    var triggerRegex = null;
-    if (Object.keys(triggerParams).length > 0) {
-      triggerRegex = new RegExp('{' + Object.keys(triggerParams).join('}|{') + '}|\\[' + Object.keys(triggerParams).join('\\]|\\[') + '\\]', 'gi');
-    }
+      // Setup regex for any parameters
+      var triggerRegex = null;
+      if (Object.keys(triggerParams).length > 0) {
+        triggerRegex = new RegExp('{' + Object.keys(triggerParams).join('}|{') + '}|\\[' + Object.keys(triggerParams).join('\\]|\\[') + '\\]', 'gi');
+      }
 
-    // Run through actions
-    for (var i = 0; i < triggerSequence.length; i++) {
-      if (toSkip > 0) {
-        toSkip--;
-      } else {
-        var data = triggerSequence[i];
-        var run_data = [];
-
-        // If need to check for parameters
-        if (triggerRegex) {
-          for (var j = 0; j < data.length; j++) {
-            // Copy data into new array to avoid replacing directly
-            run_data.push(data[j])
-
-            // Find and replace all matches
-            var result = run_data[j].match(triggerRegex);
-            while (result) {
-              result.forEach(match => {
-                if (match.charAt(0) === '[') {
-                  var replacement = JSON.stringify(triggerParams[match.substring(1, match.length - 1)]);
-                  run_data[j] = run_data[j].replace(match, replacement);
-                } else {
-                  run_data[j] = run_data[j].replace(match, triggerParams[match.substring(1, match.length - 1)]);
-                }
-              });
-              result = run_data[j].match(triggerRegex);
-            }
-          }
+      // Run through actions
+      for (var i = 0; i < triggerSequence.length; i++) {
+        if (toSkip > 0) {
+          toSkip--;
         } else {
-          run_data = data;
-        }
+          var data = triggerSequence[i];
+          var run_data = [];
 
-        // Execute action
-        var runParams = await this.runTrigger(run_data, triggerParams);
+          // If need to check for parameters
+          if (triggerRegex) {
+            for (var j = 0; j < data.length; j++) {
+              // Copy data into new array to avoid replacing directly
+              run_data.push(data[j])
 
-        // Handle parameters returned by action
-        if (runParams) {
-          // If continue param set to false, exit trigger
-          if (runParams.continue === false) {
-            return;
-          }
-
-          if (runParams.skip) {
-            toSkip = runParams.skip;
-            delete runParams.skip;
-          }
-
-          if (runParams.actions) {
-            runParams.actions.forEach((item, i) => {
-              runParams.actions[i] = shlexSplit(item);
-            });
-
-            triggerSequence.splice(i+1, 0, ...runParams.actions);
-          }
-
-          if (runParams.loops && runParams.lines) {
-            var toLoop = triggerSequence.slice(i + 1, i + runParams.lines + 1);
-            for (var loopLine = 0; loopLine < runParams.loops - 1; loopLine++) {
-              triggerSequence.splice(i+1, 0, ...toLoop);
+              // Find and replace all matches
+              var result = run_data[j].match(triggerRegex);
+              while (result) {
+                result.forEach(match => {
+                  if (match.charAt(0) === '[') {
+                    var replacement = JSON.stringify(triggerParams[match.substring(1, match.length - 1)]);
+                    run_data[j] = run_data[j].replace(match, replacement);
+                  } else {
+                    run_data[j] = run_data[j].replace(match, triggerParams[match.substring(1, match.length - 1)]);
+                  }
+                });
+                result = run_data[j].match(triggerRegex);
+              }
             }
+          } else {
+            run_data = data;
           }
 
-          // Recreate regex with new params
-          Object.keys(runParams).forEach(attribute => {
-            triggerParams[attribute] = runParams[attribute];
-          });
-          triggerRegex = new RegExp('{' + Object.keys(triggerParams).join('}|{') + '}|\\[' + Object.keys(triggerParams).join('\\]|\\[') + '\\]', 'gi');
+          // Execute action
+          var runParams = await this.runTrigger(run_data, triggerParams);
+
+          // Handle parameters returned by action
+          if (runParams) {
+            // If continue param set to false, exit trigger
+            if (runParams.continue === false) {
+              return;
+            }
+
+            if (runParams["_trigId"]) {
+              var inNum = 1;
+              while (triggerParams[`in${inNum}`]) {
+                delete triggerParams[`in${inNum}`];
+                inNum++;
+              }
+              runParams["_trigId"].forEach(trigId => {
+                var trigSequence = JSON.parse(JSON.stringify(this.triggerData[trigId]));
+                triggerSequence.splice(i+1, 0, ...trigSequence);
+              });
+              delete runParams["_trigId"];
+            }
+
+            if (runParams.skip) {
+              toSkip = runParams.skip;
+              delete runParams.skip;
+            }
+
+            if (runParams.actions) {
+              runParams.actions.forEach((item, i) => {
+                runParams.actions[i] = shlexSplit(item);
+              });
+
+              triggerSequence.splice(i+1, 0, ...runParams.actions);
+              delete runParams.actions;
+            }
+
+            if (runParams.loops && runParams.lines) {
+              var toLoop = triggerSequence.slice(i + 1, i + runParams.lines + 1);
+              for (var loopLine = 0; loopLine < runParams.loops - 1; loopLine++) {
+                triggerSequence.splice(i+1, 0, ...toLoop);
+              }
+              delete runParams.loops;
+              delete runParams.lines;
+            }
+
+            // Recreate regex with new params
+            Object.keys(runParams).forEach(attribute => {
+              triggerParams[attribute] = runParams[attribute];
+            });
+            triggerRegex = new RegExp('{' + Object.keys(triggerParams).join('}|{') + '}|\\[' + Object.keys(triggerParams).join('\\]|\\[') + '\\]', 'gi');
+          }
         }
       }
+    } catch (error) {
+      console.error(error);
     }
   }
 
@@ -338,6 +376,7 @@ class Controller {
     else {
       // Get parser and run trigger content
       var parser = this.getParser(parserName);
+      if (!parser) parser = this.getParser('Actions');
       if (parser) {
         return await parser.handleData(data, parameters);
       }
@@ -356,6 +395,8 @@ class Controller {
     var curTime = new Date().getTime();
     if ( typeof(this.cooldowns[name]) !== 'undefined' && curTime < this.cooldowns[name] ) {
       response[name] = true;
+      response['cooldown_real'] = (this.cooldowns[name] - curTime) / 1000;
+      response['cooldown'] = Math.ceil(response['cooldown_real']);
     }
     return response;
   }
@@ -461,7 +502,7 @@ class Controller {
 
   /**
    * Parse the input text into triggers and actions
-   * @param {array} data action to perform
+   * @param {array} data input text to parse
    * @param {boolean} useAsync create an async handler for the triggers
    */
   parseInput(data, useAsync) {
