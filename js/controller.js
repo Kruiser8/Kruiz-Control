@@ -272,13 +272,17 @@ class Controller {
       }
       if (data[2].toLowerCase() === 'wait') {
         await new Promise((resolve) => {
-          audio.onended = resolve;
+          audio.onended = () => {
+            gainNode.disconnect();
+            resolve();
+          }
           var playPromise = audio.play();
           if (playPromise !== undefined) {
             playPromise.then(function() {
               // Automatic playback started!
             }).catch(function(error) {
               console.error(`[${error.code}] ${error.name}: ${error.message}`);
+              gainNode.disconnect();
               resolve();
             });
           }
