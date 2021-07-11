@@ -66,6 +66,28 @@ class ParamHandler extends Handler {
           return { [name]: parameters[name].replace(new RegExp(escapeRegExp(toReplace), 'g'), replacement) };
         }
         break;
+      case 'keyword':
+        if (parameters.hasOwnProperty(name)) {
+          var keywords = triggerData.slice(3);
+          keywords.forEach((keyword, index) => {
+            keywords[index] = escapeRegExp(keyword.trim());
+          });
+          var regex = new RegExp('(?:^|\\s)' + keywords.join('(?:$|\\s)|(?:^|\\s)') + '(?:$|\\s)', 'gi');
+          var result = parameters[name].match(regex);
+          var matched = false;
+          if (result) {
+            matched = true;
+            var match = result[0].trim();
+            result.forEach((res, index) => {
+              result[index] = res.trim();
+            });
+          }
+          return { matched, match, keywords: result };
+        }
+        break;
+      default:
+        console.error(`Unexpected Param action (${action}). Check your event code.`);
+        break;
     }
   }
 }

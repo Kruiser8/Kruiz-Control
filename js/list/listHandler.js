@@ -24,31 +24,25 @@ class ListHandler extends Handler {
         var value = triggerData[3];
         return this.add(name, value, parseInt(triggerData[4]));
         break;
-      case 'get':
-        return this.get(name, triggerData[3]);
-        break;
-      case 'set':
-        return this.set(name, parseInt(triggerData[3]), triggerData.slice(4).join(' '));
-        break;
-      case 'remove':
-        return this.remove(name, triggerData[3]);
-        break;
-      case 'export':
-        return { [name]: JSON.stringify(this.lists[name]) };
-        break;
-      case 'empty':
-        this.lists[name] = [];
-        break;
-      case 'import':
-        var values = triggerData.slice(3);
-        this.lists[name] = JSON.parse(values);
-        break;
       case 'contains':
         var value = triggerData.slice(3).join(' ');
         return { contains: this.lists[name].indexOf(value) !== -1 };
         break;
       case 'count':
         return { count: this.lists[name].length };
+        break;
+      case 'empty':
+        this.lists[name] = [];
+        break;
+      case 'export':
+        return { [name]: JSON.stringify(this.lists[name]) };
+        break;
+      case 'get':
+        return this.get(name, triggerData[3]);
+        break;
+      case 'import':
+        var values = triggerData.slice(3);
+        this.lists[name] = JSON.parse(values);
         break;
       case 'index':
         var value = triggerData.slice(3).join(' ');
@@ -58,7 +52,17 @@ class ListHandler extends Handler {
           position = -1;
         }
         return { index: index, position: position };
-      break;
+        break;
+      case 'join':
+        var delimiter = triggerData.slice(3).join(' ');
+        return { joined: this.lists[name].join(delimiter) };
+        break;
+      case 'remove':
+        return this.remove(name, triggerData[3]);
+        break;
+      case 'set':
+        return this.set(name, parseInt(triggerData[3]), triggerData.slice(4).join(' '));
+        break;
       default:
         // do nothing
         break;

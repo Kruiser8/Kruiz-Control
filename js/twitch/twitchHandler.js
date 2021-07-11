@@ -14,12 +14,12 @@ class TwitchHandler extends Handler {
     this.startTrigger = {};
     this.hypeTrains = [];
     this.hypeTrainsTrigger = {
-     'start': [],
-     'end': [],
-     'level': [],
-     'progress': [],
-     'conductor': [],
-     'cooldown': []
+      'start': [],
+      'end': [],
+      'level': [],
+      'progress': [],
+      'conductor': [],
+      'cooldown': []
     };
     this.hypeTrainsMap = {
       'onhypetrainstart': 'start',
@@ -108,6 +108,7 @@ class TwitchHandler extends Handler {
       case 'onhypetrainconductor':
       case 'onhypetrainlevel':
       case 'onhypetrainprogress':
+      case 'onhypetraincooldownexpired':
         var key = this.hypeTrainsMap[trigger];
         if (this.hypeTrains.indexOf(key) !== -1) {
           this.hypeTrainsTrigger[key].push(triggerId);
@@ -122,6 +123,9 @@ class TwitchHandler extends Handler {
   }
 
   onMessage(message) {
+    if (Debug.All || Debug.Twitch) {
+      console.error('Twitch Message: ' + JSON.stringify(message));
+    }
     if (message.data) {
       var data = JSON.parse(message.data);
       if (data.type === 'RESPONSE' && data.error === '') {

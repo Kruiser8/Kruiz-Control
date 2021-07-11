@@ -407,9 +407,7 @@ class ChatHandler extends Handler {
       this.speakers[userLower] = true;
       onSpeakTriggers.sort((a, b) => a-b);
       onSpeakTriggers.forEach(triggerId => {
-        controller.handleData(triggerId, {
-          user: user
-        });
+        controller.handleData(triggerId, data);
       });
     } else if (this.speakers[userLower] === undefined) {
       this.speakers[userLower] = true;
