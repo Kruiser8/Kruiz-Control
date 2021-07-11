@@ -87,6 +87,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [List Get](#list-get)
     + [List Import](#list-import)
     + [List Index](#list-index)
+    + [List Join](#list-join)
     + [List Remove](#list-remove)
     + [List Set](#list-remove)
 - [Message](#message)
@@ -1109,6 +1110,20 @@ _Note: The above example, `List Export MyList`, would return the parameter **MyL
 ------------ | -------------
 **position** | The position of the value in the list (starting from 1) or `-1` if not found.
 **index** | The index of the value in the list (starting from 0) or `-1` if not found.
+
+***
+
+#### List Join
+| | |
+------------ | -------------
+**Info** | Used to combine all items in a list into a text value with the specified `<delimiter>` as a separator.
+**Format** | `List Join <list> <delimiter>`
+**Example** | `List Join MyList ", "`
+
+##### Parameters
+| | |
+------------ | -------------
+**joined** | The result of combining all of the items in a list.
 
 ***
 
