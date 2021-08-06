@@ -110,6 +110,12 @@ class SLOBSHandler extends Handler {
         var scene = this.slobs.getCurrentScene();
         return {current_scene: scene};
         break;
+      case 'isscenesourcevisible':
+        var scene = triggerData[2];
+        var source = triggerData.slice(3).join(' ');
+        var data = await this.slobs.getSourceVisibility(scene, source);
+        return { is_visible: data };
+        break;
       case 'scene':
         var scene = triggerData.slice(2).join(' ');
         return await this.slobs.setCurrentScene(scene);
