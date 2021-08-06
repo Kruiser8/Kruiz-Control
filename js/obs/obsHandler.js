@@ -355,6 +355,27 @@ class OBSHandler extends Handler {
           await this.obs.setFilterVisibility(source, filter, status);
         }
         break;
+      case 'issourceactive':
+        var source = triggerData.slice(2).join(' ');
+        var data = await this.obs.getSourceActiveStatus(source);
+        if (data && data.sourceActive) {
+          return { is_active: true };
+        }
+        return { is_active: false };
+        break;
+      case 'isscenesourcevisible':
+        var scene = triggerData[2];
+        if (scene === '{current}') {
+          var currentScene = await this.obs.getCurrentScene();
+          scene = currentScene.name;
+        }
+        var source = triggerData.slice(3).join(' ');
+        var data = await this.obs.getSourceVisibility(scene, source);
+        if (data && data.visible) {
+          return { is_visible: true };
+        }
+        return { is_visible: false };
+        break;
       case 'refresh':
         var source = triggerData.slice(2).join(' ');
         await this.obs.refreshBrowser(source);

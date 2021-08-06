@@ -51,6 +51,29 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
     });
   };
 
+  obs.getSourceVisibility = async function(scene, source) {
+    return await this.send('GetSceneItemProperties', {
+      'item': source,
+      'scene-name': scene
+    }).then(data => {
+      return data;
+    }).catch(err => {
+      // Promise convention dictates you have a catch on every chain.
+      console.error(JSON.stringify(err));
+    });
+  };
+
+  obs.getSourceActiveStatus = async function(source) {
+    return await this.send('GetSourceActive', {
+      'sourceName': source
+    }).then(data => {
+      return data;
+    }).catch(err => {
+      // Promise convention dictates you have a catch on every chain.
+      console.error(JSON.stringify(err));
+    });
+  };
+
   obs.setSourceVisibility = async function(source, enabled, scene) {
     if (scene) {
       await this.send('SetSceneItemProperties', {
