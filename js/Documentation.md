@@ -123,6 +123,8 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Actions](#obs-actions)
     + [OBS AddSceneItem](#obs-addsceneitem)
     + [OBS CurrentScene](#obs-currentscene)
+    + [OBS IsSceneSourceVisible](#obs-isscenesourcevisible)
+    + [OBS IsSourceActive](#obs-issourceactive)
     + [OBS Mute](#obs-mute)
     + [OBS Position](#obs-position)
     + [OBS Refresh](#obs-refresh)
@@ -168,6 +170,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Actions](#slobs-actions)
     + [SLOBS CurrentScene](#slobs-currentscene)
     + [SLOBS Flip](#slobs-flip)
+    + [SLOBS IsSceneSourceVisible](#slobs-isscenesourcevisible)
     + [SLOBS Mute](#slobs-mute)
     + [SLOBS Notification](#slobs-notification)
     + [SLOBS Position](#slobs-position)
@@ -1477,6 +1480,34 @@ Enables the ability to interact with and respond to OBS.
 
 ***
 
+#### OBS IsSceneSourceVisible
+| | |
+------------ | -------------
+**Info** | Used to check if the specified source is turned on within the given scene in OBS.
+**Format** | `OBS IsSceneSourceVisible <scene> <source>`
+**Example** | `OBS IsSceneSourceVisible Alerts TwitchAlerts`
+
+##### Parameters
+| | |
+------------ | -------------
+**is_visible** | [true/false] `true` if the source is visible. Otherwise, `false`.
+
+***
+
+#### OBS IsSourceActive
+| | |
+------------ | -------------
+**Info** | Used to check if the specified source is active in the current scene. A source is active if it could be rendered in the current scene, regardless of visibility status.
+**Format** | `OBS IsSourceActive <source>`
+**Example** | `OBS IsSourceActive TwitchAlerts`
+
+##### Parameters
+| | |
+------------ | -------------
+**is_active** | [true/false] `true` if the source is active. Otherwise, `false`.
+
+***
+
 #### OBS Mute
 | | |
 ------------ | -------------
@@ -1932,6 +1963,20 @@ Enables the ability to interact with and respond to SLOBS.
 **Info** | Used to flip a source in SLOBS.
 **Format** | `SLOBS Flip <scene> <source> <x/y>`
 **Example** | `SLOBS Flip Webcam Camera x`
+
+***
+
+#### SLOBS IsSceneSourceVisible
+| | |
+------------ | -------------
+**Info** | Used to check if the specified source is turned on within the given scene in SLOBS.
+**Format** | `SLOBS IsSceneSourceVisible <scene> <source>`
+**Example** | `SLOBS IsSceneSourceVisible Alerts TwitchAlerts`
+
+##### Parameters
+| | |
+------------ | -------------
+**is_visible** | [true/false] `true` if the source is visible. Otherwise, `false`.
 
 ***
 
