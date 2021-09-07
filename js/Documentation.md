@@ -797,7 +797,7 @@ None at the moment.
 | | |
 ------------ | -------------
 **Info** | Used to add a field to a discord embed. `<name>` is the id that was used to register the webhook in a [`Discord Create`](#discord-create). `<field>` is the text to add as the title of the field. `<value>` is the text to put in the field. `<inline_optional>` is an optional true/false value to specify whether or not to put this field inline (horizontally) with other fields.
-**Format** | `Discord Field <name> <field> <value>`
+**Format** | `Discord Field <name> <field> <value> <inline_optional>`
 **Example** | `Discord Field "GeneralChannel" "Game" "The Binding of Isaac: Repentance"`
 
 ***
