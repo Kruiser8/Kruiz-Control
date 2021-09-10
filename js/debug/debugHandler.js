@@ -18,8 +18,9 @@ class DebugHandler extends Handler {
    * @param {array} triggerData contents of trigger line
    */
   async handleData(triggerData) {
-    if (triggerData.length > 1) {
-      var handler = triggerData[1].toLowerCase();
+    var { handler } = Parser.getInputs(triggerData, ['handler'], false, 1);
+    if (handler) {
+      handler = handler.toLowerCase();
       switch (handler) {
         case 'obs':
           this.OBS = true;

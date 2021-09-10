@@ -236,7 +236,7 @@ class Controller {
 
             if (runParams.actions) {
               runParams.actions.forEach((item, i) => {
-                runParams.actions[i] = shlexSplit(item);
+                runParams.actions[i] = Parser.splitLine(item);
               });
 
               triggerSequence.splice(i+1, 0, ...runParams.actions);
@@ -509,7 +509,7 @@ class Controller {
     for (var i = 0; i < lines.length; i++) {
       var line = lines[i].trim();
       if (!line.startsWith('#')) {
-        var lineData = shlexSplit(line);
+        var lineData = Parser.splitLine(line);
         var dataLength = lineData.length;
 
         // Get new trigger value

@@ -17,12 +17,13 @@ class TimerHandler extends Handler {
    * @param {number} id of the new trigger
    */
   addTriggerData(trigger, triggerLine, triggerId) {
-    var name = triggerLine[1];
-    var interval = parseFloat(triggerLine[2]);
+    var { name, interval, temp } = Parser.getInputs(triggerLine, ['name', 'interval', 'temp'], false, 1);
+
+    interval = parseFloat(interval);
 
     var offset = 0;
-    if (triggerLine.length > 3) {
-      var temp = parseFloat(triggerLine[3]);
+    if (temp !== undefined) {
+      temp = parseFloat(temp);
       if (!isNaN(temp)) {
         offset = temp;
       }

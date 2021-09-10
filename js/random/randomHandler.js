@@ -12,16 +12,18 @@ class RandomHandler extends Handler {
    * @param {array} triggerData contents of trigger line
    */
   async handleData(triggerData) {
-    if (triggerData[1].toLowerCase() == 'number') {
+    var action = Parser.getAction(triggerData, 'Random');
+    if (action == 'number') {
+      var { tmpmin, tmpmax } = Parser.getInputs(triggerData, ['action', 'tmpmin', 'tmpmax'], false, 2);
       var min = 0;
       var max = 100;
-      if (triggerData.length > 2) {
-        var tmpmin = parseFloat(triggerData[2]);
+      if (tmpmin) {
+        tmpmin = parseFloat(tmpmin);
         if (!isNaN(tmpmin)) {
           min = tmpmin;
         }
-        if (triggerData.length > 3) {
-          var tmpmax = parseFloat(triggerData[3]);
+        if (tmpmax) {
+          tmpmax = parseFloat(tmpmax);
           if (!isNaN(tmpmax)) {
             max = tmpmax;
           }
@@ -29,7 +31,7 @@ class RandomHandler extends Handler {
       }
       var value = Math.floor((Math.random() * (max + 1 - min)) + min);
       return { number: value };
-    } else if (triggerData[1].toLowerCase() == 'probability') {
+    } else if (action == 'probability') {
       var actions = {};
       var total = 0;
       for (var i = 2; i + 1 < triggerData.length; i = i + 2) {

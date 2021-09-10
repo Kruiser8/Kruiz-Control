@@ -13,11 +13,12 @@ class VariableHandler extends Handler {
    * @param {array} triggerData contents of trigger line
    */
   async handleData(triggerData) {
-    if (triggerData[1].toLowerCase() === 'global') {
-      var action = triggerData[2].toLowerCase();
+    var action = Parser.getAction(triggerData, 'Variable');
+    if (action === 'global') {
+      action = Parser.getAction(triggerData, 'Variable', 1)
       // Loads a global variable
       if (action === 'load') {
-        var varName = triggerData.slice(3).join(' ');
+        var { varName } = Parser.getInputs(triggerData, ['global', 'action', 'varName']);
         var variable = await idbKeyval.get(varName) || 'No variable found';
         return {[varName]: variable};
       }
@@ -27,34 +28,30 @@ class VariableHandler extends Handler {
       }
       // Remove a global variable
       else if (action === 'remove') {
-        var varName = triggerData.slice(3).join(' ');
+        var { varName } = Parser.getInputs(triggerData, ['global', 'action', 'varName']);
         idbKeyval.del(varName);
       }
       // Set a global variable
       else if (action === 'set') {
-        var varName = triggerData[3];
-        var variable = triggerData.slice(4).join(' ');
+        var { varName, variable } = Parser.getInputs(triggerData, ['global', 'action', 'varName', 'variable']);
         idbKeyval.set(varName, variable);
         return {[varName]: variable};
       }
     } else {
-      // Load a variable
-      var action = triggerData[1].toLowerCase();
       if (action === 'load') {
-        var varName = triggerData.slice(2).join(' ');
+        var { varName } = Parser.getInputs(triggerData, ['action', 'varName']);
         var variable = this.variables[varName] || 'No variable found';
         return {[varName]: variable};
       }
       // Sets a variable
       else if (action === 'set') {
-        var varName = triggerData[2];
-        var variable = triggerData.slice(3).join(' ');
+        var { varName, variable } = Parser.getInputs(triggerData, ['action', 'varName', 'variable']);
         this.variables[varName] = variable;
         return {[varName]: variable};
       }
       // Removes a variable
       else if (action === 'remove') {
-        var varName = triggerData[2];
+        var { varName } = Parser.getInputs(triggerData, ['action', 'varName']);
         if (this.variables.hasOwnProperty(varName)) {
           delete this.variables[varName];
         }
