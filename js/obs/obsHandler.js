@@ -376,12 +376,12 @@ class OBSHandler extends Handler {
         var { source, volume } = Parser.getInputs(triggerData, ['action', 'source', 'volume']);
         var currentAudio = await this.obs.getVolume(source);
         volume = parseFloat(volume);
-        if (!isNan(volume)) {
+        if (!isNaN(volume)) {
           await this.obs.setVolume(source, volume);
         } else {
           console.error('Unable to parse volume value: ' + triggerData[triggerData.length - 1]);
         }
-        return {previous_volume: currentAudio.volume};
+        return { previous_volume: currentAudio.volume };
         break;
       case 'position':
         var { scene, item, x, y } = Parser.getInputs(triggerData, ['action', 'scene', 'item', 'x', 'y']);
