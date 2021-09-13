@@ -309,6 +309,8 @@ class Controller {
         await new Promise((resolve) => {
           audio.onended = () => {
             gainNode.disconnect();
+            source = null;
+            gainNode = null;
             resolve();
           }
           var playPromise = audio.play();
@@ -318,13 +320,19 @@ class Controller {
             }).catch(function(error) {
               console.error(`[${error.code}] ${error.name}: ${error.message}`);
               gainNode.disconnect();
+              source = null;
+              gainNode = null;
               resolve();
             });
           }
         });
       } else {
         audio.play();
-        audio.onended = () => gainNode.disconnect();
+        audio.onended = () => {
+          gainNode.disconnect();
+          source = null;
+          gainNode = null;
+        }
       }
     }
     else if (parserName === 'cooldown') {
