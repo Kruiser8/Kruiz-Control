@@ -601,7 +601,7 @@ _WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mi
 
 | | |
 ------------ | -------------
-**Info** | Used to trigger a set of actions when every chat message is sent. By default, this ignores the broadcaster.
+**Info** | Used to trigger a set of actions when ever a chat message is sent.
 **Format** | `OnEveryChatMessage`
 **Example** | `OnEveryChatMessage`
 
@@ -1344,7 +1344,7 @@ The `<optional_skip>` value allows you to specify the number of lines to skip if
 #### Play
 | | |
 ------------ | -------------
-**Info** | Used to play a sound effect inside of the _sounds_ folder. `<volume>` is a number between 1 and 100. `<wait/nowait>` determines whether or not the script waits until the song is done playing before completing the next action.
+**Info** | Used to play a sound effect inside of the _sounds_ folder. `<volume>` is a number greater than 0 and can be greater than 100. `<wait/nowait>` determines whether or not the script waits until the song is done playing before completing the next action.
 **Format** | `Play <volume> <wait/nowait> <song_file>`
 **Example** | `Play 30 wait MashiahMusic__Kygo-Style-Melody.wav`
 
@@ -1460,7 +1460,7 @@ Enables the ability to interact with and respond to OBS.
 #### OBS AddSceneItem
 | | |
 ------------ | -------------
-**Info** | Used to add an existing source to the specified scene. `<scene>` is the scene to add the source. `<source>` is the name of the source to add to the scene. `<on/off>` is an optional visibility that determines if the source is visible when it's added.
+**Info** | Used to add an existing source to the specified scene. `<scene>` is the scene to add the source. `<source>` is the name of the source to add to the scene. `<on/off>` (default: `on`) is an optional visibility that determines if the source is visible when it's added.
 **Format** | `OBS AddSceneItem <scene> <source> <on/off>`
 **Example** | `OBS AddSceneItem BRB Webcam off`
 
