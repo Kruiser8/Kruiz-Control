@@ -62,6 +62,10 @@ class Parser {
           }
         }
       });
+
+      if (Debug.Parser) {
+        console.error(`Values parsed from ${JSON.stringify(lineData)}: ${JSON.stringify(res)}`);
+      }
       return res;
     }
 

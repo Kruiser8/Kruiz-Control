@@ -7,6 +7,7 @@ class DebugHandler extends Handler {
     this.success();
     this.All = false;
     this.OBS = false;
+    this.Parser = false;
     this.SLOBS = false;
     this.StreamElements = false;
     this.Streamlabs = false;
@@ -24,6 +25,9 @@ class DebugHandler extends Handler {
       switch (handler) {
         case 'obs':
           this.OBS = true;
+          break;
+        case 'parser':
+          this.Parser = true;
           break;
         case 'slobs':
           this.SLOBS = true;

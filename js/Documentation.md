@@ -46,6 +46,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Actions](#debug-actions)
     + [Debug](#debug-1)
     + [Debug OBS](#debug-obs)
+    + [Debug Parser](#debug-parser)
     + [Debug SLOBS](#debug-slobs)
     + [Debug StreamElements](#debug-streamelements)
     + [Debug StreamLabs](#debug-streamLabs)
@@ -697,6 +698,15 @@ None at the moment.
 **Info** | Used to enable debugging for OBS events.
 **Format** | `Debug OBS`
 **Example** | `Debug OBS`
+
+***
+
+#### Debug Parser
+| | |
+------------ | -------------
+**Info** | Used to enable debugging of Kruiz Control's parser to see how Kruiz Control is interpreting event code.
+**Format** | `Debug Parser`
+**Example** | `Debug Parser`
 
 ***
 
