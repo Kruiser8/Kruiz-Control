@@ -275,16 +275,16 @@ class Controller {
     var parserName = data[0].toLowerCase();
     if (parserName === 'delay') {
       // Custom delay handler
-      await timeout(parseFloat(data[1]) * 1000);
+      var { delay } = Parser.getInputs(data, ['delay']);
+      await timeout(parseFloat(delay) * 1000);
     }
     else if (parserName === 'skip') {
-      var lines = parseInt(data[1]);
+      var { lines } = Parser.getInputs(data, ['lines']);
       return { skip: lines };
     }
     else if (parserName === 'loop') {
-      var lines = parseInt(data[1]);
-      var loops = parseInt(data[2]);
-      return { lines: lines, loops: loops };
+      var { lines, loops } = Parser.getInputs(data, ['lines', 'loops']);
+      return { lines: parseInt(lines), loops: parseInt(loops) };
     }
     else if (parserName === 'exit') {
       return { continue: false };
@@ -294,18 +294,19 @@ class Controller {
       location.reload(true);
     }
     else if (parserName === 'play') {
+      var { volume, wait, sound } = Parser.getInputs(data, ['volume', 'wait', 'sound']);
       // Play audio and await the end of the audio
-      var audio = new Audio("sounds/" + data.slice(3).join(' ').trim());
+      var audio = new Audio(`sounds/${sound.trim()}`);
       var source = this.audioContext.createMediaElementSource(audio);
       var gainNode = this.audioContext.createGain();
       source.connect(gainNode);
       gainNode.connect(this.audioContext.destination);
-      var volume = parseInt(data[1]);
+      volume = parseInt(volume);
       if (!isNaN(volume)) {
         audio.volume = 1;
         gainNode.gain.value = volume / 100;
       }
-      if (data[2].toLowerCase() === 'wait') {
+      if (wait.toLowerCase() === 'wait') {
         await new Promise((resolve) => {
           audio.onended = () => {
             gainNode.disconnect();
@@ -336,15 +337,12 @@ class Controller {
       }
     }
     else if (parserName === 'cooldown') {
-      var action = data[1].toLowerCase();
+      var { action, name, duration } = Parser.getInputs(data, ['action', 'name', 'duration'], false, 1);
       var res = {};
-      if (action === 'check') {
-        var name = data[2];
+      if (action.toLowerCase() === 'check') {
         var res = await this.checkCooldown(name);
       } else {
-        var name = data[2];
-        var duration = parseFloat(data[3]);
-        var res = await this.handleCooldown(name, duration);
+        var res = await this.handleCooldown(name, parseFloat(duration));
       }
 
       return res;
