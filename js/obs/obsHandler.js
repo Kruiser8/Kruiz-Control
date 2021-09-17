@@ -295,7 +295,7 @@ class OBSHandler extends Handler {
       case 'source':
         var { source, subaction, info, status } = Parser.getInputs(triggerData, ['action', 'source', 'subaction', 'info', 'status'], false, 2);
 
-        if (!info) {
+        if (info === undefined) {
           status = subaction.toLowerCase();
           if (status === 'toggle') {
             var data = await this.obs.getSceneItemProperties(undefined, source);
@@ -304,12 +304,11 @@ class OBSHandler extends Handler {
             status = status === 'on' ? true : false;
           }
           await this.obs.setSourceVisibility(source, status);
-        } else if (info && subaction.toLowerCase() === 'url') {
+        } else if (info !== undefined && subaction.toLowerCase() === 'url') {
           await this.obs.setBrowserSourceURL(source, info);
-        } else if (info && subaction.toLowerCase() === 'text') {
+        } else if (info !== undefined && subaction.toLowerCase() === 'text') {
           await this.obs.setSourceText(source, info);
-        }
-        else {
+        } else if (status !== undefined) {
           status = status.toLowerCase();
           if (status === 'toggle') {
             var data = await this.obs.getSourceFilters(source);
@@ -320,7 +319,7 @@ class OBSHandler extends Handler {
               }
             });
             if (status === 'toggle') {
-              console.error('Unable to find filter with name: ' + filter);
+              console.error(`Unable to find filter with name: ${info}`);
             }
           } else {
             status = status === 'on' ? true : false;
