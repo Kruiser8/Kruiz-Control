@@ -154,7 +154,7 @@ class StreamlabsHandler extends Handler {
     return {
       'data': message,
       'amount': message.amount,
-      'message': message.message,
+      'message': message.message || "",
       'user': message.name
     }
   }
@@ -168,7 +168,7 @@ class StreamlabsHandler extends Handler {
      'data': message,
      'amount': (message.payload && message.payload.amount) ? message.payload.amount : message.amount,
      'formatted': (message.payload && message.payload.formatted_amount) ? message.payload.formatted_amount : message.formatted_amount,
-     'message': message.message,
+     'message': message.message || "",
      'user': message.from
    }
   }
@@ -182,7 +182,7 @@ class StreamlabsHandler extends Handler {
       'data': message,
       'amount': (message.payload && message.payload.amount) ? message.payload.amount : message.amount,
       'formatted': (message.payload && message.payload.formatted_amount) ? message.payload.formattedAmount : message.formattedAmount,
-      'message': message.message,
+      'message': message.message || "",
       'user': message.from
     }
   }
@@ -306,7 +306,7 @@ class StreamlabsHandler extends Handler {
       'data': message,
       'user': name,
       'months': message.months,
-      'message': message.message,
+      'message': message.message || "",
       'tier': subPlan === 'Prime' ? 'Prime' : 'Tier ' + (parseInt(subPlan) / 1000)
     }
   }
