@@ -34,7 +34,7 @@ class MessageHandler extends Handler {
   async handleData(triggerData) {
     var action = Parser.getAction(triggerData, 'Message');
     if (action === 'send') {
-      var { message, data } = Parser.getInputs(triggerData, ['message', 'data'], false, 1);
+      var { message, data } = Parser.getInputs(triggerData, ['action', 'message', 'data'], false, 1);
       data = data || '';
       if (this.messages.indexOf(message) !== -1) {
         this.messagesTriggers[message].forEach((triggerId) => {
