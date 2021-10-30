@@ -49,13 +49,13 @@ class DiscordHandler extends Handler {
         this.webhooks[name].embed.description = description;
         break;
       case 'field':
-        var { name, header, value } = Parser.getInputs(triggerData, ['action', 'name', 'header', 'value', 'inline'], false, 1);
+        var { name, header, value, inline } = Parser.getInputs(triggerData, ['action', 'name', 'header', 'value', 'inline'], false, 1);
         this.initialize(name);
         var field = {
           name: header,
           value: value
         };
-        if (inline & inline.toLowerCase() === 'true') {
+        if (inline && inline.toLowerCase() === 'true') {
           field['inline'] = true;
         }
         if (!this.webhooks[name].embed.fields) {

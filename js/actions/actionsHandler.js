@@ -16,15 +16,16 @@ class ActionsHandler extends Handler {
    * @param {number} id of the new trigger
    */
   addTriggerData(trigger, triggerLine, triggerId) {
+    var { actions } = Parser.getInputs(triggerLine, ['actions'], true);
     // Allow action aliases
-    for (var i = 1; i < triggerLine.length; ++i) {
-      var action = triggerLine[i].toLowerCase();
+    actions.forEach(action => {
+      action = action.toLowerCase();
       if (this.actions.indexOf(action) === -1) {
         this.actions.push(action);
         this.actionsTriggers[action] = [];
       }
       this.actionsTriggers[action].push(triggerId);
-    }
+    });
   }
 
   /**

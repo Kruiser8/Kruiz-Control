@@ -41,10 +41,10 @@ class TimerHandler extends Handler {
    * @param {array} triggerData contents of trigger line
    */
   async handleData(triggerData) {
-    var trigger = triggerData[1];
+    var action = Parser.getAction(triggerData, 'Timer');
     // Timer Reset Name
-    if (trigger.toLowerCase() === 'reset' || trigger.toLowerCase() === 'start') {
-      var name = triggerData.slice(2).join(' ');
+    if (action === 'reset' || action === 'start') {
+      var { name } = Parser.getInputs(triggerData, ['action', 'name']);
       this.intervals[name].forEach((item, i) => {
         clearInterval(item);
         var info = this.timers[name][i];
@@ -54,8 +54,8 @@ class TimerHandler extends Handler {
           controller.handleData(triggerId);
         }, interval * 1000);
       }, this);
-    } else if (trigger.toLowerCase() === 'stop') {
-      var name = triggerData.slice(2).join(' ');
+    } else if (action === 'stop') {
+      var { name } = Parser.getInputs(triggerData, ['action', 'name']);
       this.intervals[name].forEach((item, i) => {
         clearInterval(item);
       });

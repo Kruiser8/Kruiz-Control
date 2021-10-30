@@ -50,7 +50,7 @@ class TwitchHandler extends Handler {
    */
   addTriggerData(trigger, triggerLine, triggerId) {
     trigger = trigger.toLowerCase();
-    switch (trigger.toLowerCase()) {
+    switch (trigger) {
       case 'onchannelpoint':
         var { rewards } = Parser.getInputs(triggerLine, ['rewards'], true);
         rewards.forEach(reward => {

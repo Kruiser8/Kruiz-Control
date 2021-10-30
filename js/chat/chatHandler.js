@@ -149,10 +149,10 @@ class ChatHandler extends Handler {
   async handleData(triggerData) {
     var action = Parser.getAction(triggerData, 'Chat');
     if (action === 'send') {
-      var {message} = Parser.getInputs(triggerData, ['action', 'message']);
+      var { message } = Parser.getInputs(triggerData, ['action', 'message']);
       ComfyJS.Say(message);
     } else if (trigger === 'whisper') {
-      var {user, message} = Parser.getInputs(triggerData, ['action', 'user', 'message']);
+      var { user, message } = Parser.getInputs(triggerData, ['action', 'user', 'message']);
       ComfyJS.Whisper(message, user);
     }
     return;

@@ -22,7 +22,8 @@ class TTSHandler extends Handler {
    * @param {array} parameters current trigger parameters
    */
   async handleData(triggerData, parameters) {
-    if (triggerData[1].toLowerCase() == 'stop') {
+    var action = Parser.getAction(triggerData, 'TTS');
+    if (action === 'stop') {
       responsiveVoice.cancel();
       Object.keys(this.resolve).forEach(key => {
         this.resolve[key]();
