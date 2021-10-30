@@ -63,6 +63,11 @@ class DiscordHandler extends Handler {
         }
         this.webhooks[name].embed.fields.push(field);
         break;
+      case 'file':
+        var { name, file } = Parser.getInputs(triggerData, ['action', 'name', 'file']);
+        this.initialize(name);
+        this.webhooks[name].file = file;
+        break;
       case 'footericon':
         var { name, icon } = Parser.getInputs(triggerData, ['action', 'name', 'icon']);
         this.initialize(name);
@@ -100,8 +105,26 @@ class DiscordHandler extends Handler {
         if (this.webhooks[name].embed && Object.keys(this.webhooks[name].embed).length > 0) {
           json.embeds = [this.webhooks[name].embed];
         }
-        var data = await callAPI('POST', `${this.webhooks[name].url}?wait=true`, JSON.stringify(json), { "Content-Type": "application/json" });
-        this.webhookMessageIds[triggerData[2]] = data.id;
+
+        var data;
+
+        // Try to get file information and send as form data
+        if (this.webhooks[name].file) {
+          var fd = new FormData();
+          var fileObj = await convertUrlToFileObj(this.webhooks[name].file);
+
+          if (fileObj !== null) {
+            fd.append( 'file', fileObj );
+            fd.append( 'payload_json', JSON.stringify(json) );
+            data = await callAPI('POST', `${this.webhooks[name].url}?wait=true`, fd, {}, { contentType: false, processData: false });
+          }
+        }
+
+        // Otherwise, send message data as JSON
+        if (data == undefined) {
+          data = await callAPI('POST', `${this.webhooks[name].url}?wait=true`, JSON.stringify(json), { "Content-Type": "application/json" });
+        }
+
         this.webhookMessageIds[name] = data.id;
         return { "discord_msg_id": data.id };
         break;

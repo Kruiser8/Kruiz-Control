@@ -59,6 +59,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Discord Delete](#discord-delete)
     + [Discord Description](#discord-description)
     + [Discord Field](#discord-field)
+    + [Discord File](#discord-file)
     + [Discord FooterIcon](#discord-footericon)
     + [Discord FooterText](#discord-footertext)
     + [Discord Image](#discord-image)
@@ -812,6 +813,16 @@ None at the moment.
 **Info** | Used to add a field to a discord embed. `<name>` is the id that was used to register the webhook in a [`Discord Create`](#discord-create). `<field>` is the text to add as the title of the field. `<value>` is the text to put in the field. `<inline_optional>` is an optional true/false value to specify whether or not to put this field inline (horizontally) with other fields.
 **Format** | `Discord Field <name> <field> <value> <inline_optional>`
 **Example** | `Discord Field "GeneralChannel" "Game" "The Binding of Isaac: Repentance"`
+
+***
+
+#### Discord File
+| | |
+------------ | -------------
+**Info** | Used to upload a file attachment with a discord message. `<name>` is the id that was used to register the webhook in a [`Discord Create`](#discord-create). `<file>` is the absolute (full) or relative path to a file to upload. Relative paths start at the Kruiz Control root directory.
+**Format** | `Discord File <name> <file>`
+**Example w/ absolute path** | `Discord File "GeneralChannel" "C:\Users\YOUR_USER_NAME\Documents\Stream\screenshot.png"`
+**Example w/ relative path** | `Discord File "GeneralChannel" "screenshots/screenshot.png"`
 
 ***
 
