@@ -449,7 +449,7 @@ None at the moment.
 ------------ | -------------
 **Info** | Used to send an API configuration. `<name>` is the name of the API to call.
 **Format** | `API Send <name>`
-**Example** | `API Method TwitchAPI`
+**Example** | `API Send TwitchAPI`
 
 ***
 
