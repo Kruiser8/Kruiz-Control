@@ -55,27 +55,23 @@ class ChatHandler extends Handler {
     trigger = trigger.toLowerCase();
     switch (trigger) {
       case 'oncommand':
-        var command = '';
-        var info = '';
-        var cooldown = 0;
-        var i = 3;
-        var permission = triggerLine[1].toLowerCase();
-        if (permission.includes('u')) {
-          info = triggerLine[2].toLowerCase();
-          cooldown = triggerLine[3];
-          i = 4;
-        } else {
-          cooldown = triggerLine[2];
+        var permission = '';
+        var inputs = ['permission', 'cooldown', 'commands'];
+        if (triggerLine.length > 1) {
+          permission = triggerLine[1].toLowerCase();
+          if (permission.includes('u')) {
+            inputs.splice(1, 0, 'info');
+          }
         }
+        var { permission, info, cooldown, commands } = Parser.getInputs(triggerLine, inputs, true);
+
         cooldown = parseInt(cooldown);
         if (isNaN(cooldown)) {
           cooldown = 0;
         }
 
-        // Allow for command aliases
-        // OnCommand b 0 !shout !so !sh !caster
-        for (i; i < triggerLine.length; ++i) {
-          var command = triggerLine[i].toLowerCase();
+        commands.forEach(command => {
+          command = command.toLowerCase();
           if (command.charAt(0) === "!") {
             command = command.substring(1);
             if (this.commands.indexOf(command) === -1) {
@@ -95,30 +91,26 @@ class ChatHandler extends Handler {
             cooldown: cooldown * 1000,
             lastUse: 0 - (cooldown * 1000)
           });
-        }
+        });
         break;
       case 'onkeyword':
-        var keyword = '';
-        var info = '';
-        var cooldown = 0;
-        var permission = triggerLine[1].toLowerCase();
-        var i = 3;
-        if (permission.includes('u')) {
-          info = triggerLine[2].toLowerCase();
-          cooldown = triggerLine[3];
-          i = 4;
-        } else {
-          cooldown = triggerLine[2];
+        var permission = '';
+        var inputs = ['permission', 'cooldown', 'keywords'];
+        if (triggerLine.length > 1) {
+          permission = triggerLine[1].toLowerCase();
+          if (permission.includes('u')) {
+            inputs.splice(1, 0, 'info');
+          }
         }
+        var { permission, info, cooldown, keywords } = Parser.getInputs(triggerLine, inputs, true);
+
         cooldown = parseInt(cooldown);
         if (isNaN(cooldown)) {
           cooldown = 0;
         }
 
-        // Allow for aliases with OnKeyword
-        // OnKeyword b 0 hi hey yo hello o7
-        for (i; i < triggerLine.length; ++i) {
-          keyword = triggerLine[i].toLowerCase();
+        keywords.forEach(keyword => {
+          keyword = keyword.toLowerCase();
           if (this.keywords.indexOf(keyword) === -1) {
             this.keywords.push(keyword);
             this.keywordsInfo[keyword] = [];
@@ -130,10 +122,11 @@ class ChatHandler extends Handler {
             cooldown: cooldown * 1000,
             lastUse: 0 - (cooldown * 1000)
           });
-        }
+        });
         break;
       case 'onspeak':
-        var user = triggerLine.slice(1).join(' ').toLowerCase();
+        var { user } = Parser.getInputs(triggerLine, ['user']);
+        user = user.toLowerCase();
         if (this.speaks.indexOf(user) === -1) {
           this.speaks.push(user);
           this.speaksInfo[user] = [];
@@ -154,11 +147,13 @@ class ChatHandler extends Handler {
    * @param {array} triggerData contents of trigger line
    */
   async handleData(triggerData) {
-    var trigger = triggerData[1].toLowerCase();
-    if (trigger === 'send') {
-      ComfyJS.Say(triggerData.slice(2).join(' '));
+    var action = Parser.getAction(triggerData, 'Chat');
+    if (action === 'send') {
+      var { message } = Parser.getInputs(triggerData, ['action', 'message']);
+      ComfyJS.Say(message);
     } else if (trigger === 'whisper') {
-      ComfyJS.Whisper(triggerData.slice(3).join(' '), triggerData[2]);
+      var { user, message } = Parser.getInputs(triggerData, ['action', 'user', 'message']);
+      ComfyJS.Whisper(message, user);
     }
     return;
   }
@@ -232,12 +227,7 @@ class ChatHandler extends Handler {
 
       // Check for matching command and user permission
       if (this.commands.indexOf(command) !== -1) {
-        var args = [];
-        try {
-          args = shlexSplit(message);
-        } catch (err) {
-          args = message.split(' ');
-        }
+        var args = Parser.splitLine(message);
 
         var chatArgs = {};
         for (var i = 0; i < args.length; i++) {
@@ -267,12 +257,7 @@ class ChatHandler extends Handler {
         var result = message.match(this.keywordsRegex);
         if (result) {
           var match = result[0].trim().toLowerCase();
-          var args = [];
-          try {
-            args = shlexSplit(message);
-          } catch (err) {
-            args = message.split(' ');
-          }
+          var args = Parser.splitLine(message);
           var chatArgs = {};
           for (var i = 0; i < args.length; i++) {
             chatArgs[`arg${i+1}`] = args[i];
@@ -314,12 +299,7 @@ class ChatHandler extends Handler {
       // Check for matching command and user permission
       var command = message.split(' ')[0];
       if(this.commandsOther.indexOf(command) != -1) {
-        var args = [];
-        try {
-          args = shlexSplit(message);
-        } catch (err) {
-          args = message.split(' ');
-        }
+        var args = Parser.splitLine(message);
         var chatArgs = {};
         for (var i = 0; i < args.length; i++) {
           chatArgs[`arg${i+1}`] = args[i];
@@ -348,12 +328,7 @@ class ChatHandler extends Handler {
       else {
         var result = message.match(this.keywordsRegex);
         if (result) {
-          var args = [];
-          try {
-            args = shlexSplit(message);
-          } catch (err) {
-            args = message.split(' ');
-          }
+          var args = Parser.splitLine(message);
           var chatArgs = {};
           for (var i = 0; i < args.length; i++) {
             chatArgs[`arg${i+1}`] = args[i];
@@ -389,7 +364,7 @@ class ChatHandler extends Handler {
    * @param {data} data to send with the OnEveryChatMessage
    */
   onAllChat(user, data) {
-	// OnEveryChatMessage
+    // OnEveryChatMessage
     this.chatTriggers.forEach(triggerId => {
       controller.handleData(triggerId, data);
     });

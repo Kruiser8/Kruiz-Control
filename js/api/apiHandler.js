@@ -13,60 +13,67 @@ class ApiHandler extends Handler {
    * @param {array} triggerData contents of trigger line
    */
   async handleData(triggerData) {
-    if (triggerData[1].toLowerCase() === 'get') {
-      var method = 'GET';
-      var url = triggerData.slice(2).join(' ');
-
-      var response = await this.callAPI(method, url);
+    var action = Parser.getAction(triggerData, 'API');
+    if (action === 'get') {
+      var { url } = Parser.getInputs(triggerData, ['action', 'url']);
+      var response = await this.callAPI('GET', url);
       return { api_data: response };
     } else {
-      var action = triggerData[1].toLowerCase();
-      var name = triggerData[2];
-
-      if (this.apiCall[name] === undefined) {
-        this.apiCall[name] = {
-          method: "GET",
-          headers: {},
-          data: {},
-          url: ""
-        };
-      }
       switch (action) {
         case 'method':
-          this.apiCall[name].method = triggerData[3].toUpperCase();
+          var { name, method } = Parser.getInputs(triggerData, ['action', 'name', 'method']);
+          this.initialize(name);
+          this.apiCall[name].method = method.toUpperCase();
           break;
         case 'header':
-          var headerKey = triggerData[3];
-          var headerValue = triggerData[4];
+          var { name, headerKey, headerValue } = Parser.getInputs(triggerData, ['action', 'name', 'headerKey', 'headerValue']);
+          this.initialize(name);
           this.apiCall[name].headers[headerKey] = headerValue;
           break;
         case 'data':
-          var dataKey = triggerData[3];
-          var dataValue = triggerData[4];
+          var { name, dataKey, dataValue } = Parser.getInputs(triggerData, ['action', 'name', 'dataKey', 'dataValue']);
+          this.initialize(name);
           this.apiCall[name].data[dataKey] = dataValue;
           break;
         case 'rawdata':
-          this.apiCall[name].data = triggerData.slice(3).join(" ");
+          var { name, rawData } = Parser.getInputs(triggerData, ['action', 'name', 'rawdata']);
+          this.initialize(name);
+          this.apiCall[name].data = rawData;
           break;
         case 'url':
-          var apiURL = triggerData[3];
+          var { name, apiURL } = Parser.getInputs(triggerData, ['action', 'name', 'apiURL']);
+          this.initialize(name);
           this.apiCall[name].url = apiURL;
           break;
         case 'send':
-          var method = this.apiCall[name].method;
-          var url = this.apiCall[name].url;
-          var headers = this.apiCall[name].headers;
-          var rawData = this.apiCall[name].data;
-          var response = await this.callAPI(method, url, rawData, headers)
+          var { name } = Parser.getInputs(triggerData, ['action', 'name']);
+          this.initialize(name);
+          var response = await this.callAPI(this.apiCall[name].method, this.apiCall[name].url, this.apiCall[name].headers, this.apiCall[name].data)
           return { api_data: response };
           break;
         case 'clear':
+          var { name } = Parser.getInputs(triggerData, ['action', 'name']);
           delete this.apiCall[name];
           break;
         default:
           console.error(`Unexpected API <action> (${action}). Check your event code.`);
           break;
       }
+    }
+  }
+
+  /**
+   * Initialize the api data if it does not exist.
+   * @param {string} name webhook name
+   */
+  initialize(name) {
+    if (this.apiCall[name] === undefined) {
+      this.apiCall[name] = {
+        method: "GET",
+        headers: {},
+        data: {},
+        url: ""
+      };
     }
   }
 

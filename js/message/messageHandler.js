@@ -16,15 +16,15 @@ class MessageHandler extends Handler {
    * @param {number} id of the new trigger
    */
   addTriggerData(trigger, triggerLine, triggerId) {
+    var { messages } = Parser.getInputs(triggerLine, ['messages'], true);
     // Handles aliases for OnMessage
-    for (var i = 1; i < triggerLine.length; ++i) {
-      var message = triggerLine[i];
+    messages.forEach(message => {
       if (this.messages.indexOf(message) === -1) {
         this.messages.push(message);
         this.messagesTriggers[message] = [];
       }
       this.messagesTriggers[message].push(triggerId);
-    }
+    });
   }
 
   /**
@@ -32,10 +32,10 @@ class MessageHandler extends Handler {
    * @param {array} triggerData contents of trigger line
    */
   async handleData(triggerData) {
-    var trigger = triggerData[1];
-    if (trigger.toLowerCase() === 'send') {
-      var message = triggerData[2];
-      var data = triggerData.slice(3).join(' ');
+    var action = Parser.getAction(triggerData, 'Message');
+    if (action === 'send') {
+      var { message, data } = Parser.getInputs(triggerData, ['action', 'message', 'data'], false, 1);
+      data = data || '';
       if (this.messages.indexOf(message) !== -1) {
         this.messagesTriggers[message].forEach((triggerId) => {
           controller.handleData(triggerId, {

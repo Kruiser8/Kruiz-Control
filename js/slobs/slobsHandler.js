@@ -34,14 +34,14 @@ class SLOBSHandler extends Handler {
     trigger = trigger.toLowerCase();
     switch (trigger) {
       case 'onslobsswitchscenes':
-        for (var i = 1; i < triggerLine.length; ++i) {
-          var scene = triggerLine.slice(1).join(' ');
+        var { scenes } = Parser.getInputs(triggerLine, ['scenes'], true);
+        scenes.forEach(scene => {
           if (this.onSwitch.indexOf(scene) === -1) {
             this.onSwitch.push(scene);
             this.onSwitchTrigger[scene] = [];
           }
           this.onSwitchTrigger[scene].push(triggerId);
-        }
+        });
         break;
       case 'onslobsstreamstarted':
         this.onStartTrigger.push(triggerId);
@@ -104,62 +104,62 @@ class SLOBSHandler extends Handler {
    * @param {array} triggerData contents of trigger line
    */
   async handleData(triggerData) {
-    var trigger = triggerData[1].toLowerCase();
+    var action = Parser.getAction(triggerData, 'SLOBS');
     switch (trigger) {
       case 'currentscene':
         var scene = this.slobs.getCurrentScene();
-        return {current_scene: scene};
+        return { current_scene: scene };
+        break;
+      case 'isscenesourcevisible':
+        var { scene, source } = Parser.getInputs(triggerData, ['action', 'scene', 'source']);
+        var data = await this.slobs.getSourceVisibility(scene, source);
+        return { is_visible: data };
         break;
       case 'scene':
-        var scene = triggerData.slice(2).join(' ');
+        var { scene } = Parser.getInputs(triggerData, ['action', 'scene']);
         return await this.slobs.setCurrentScene(scene);
         break;
       case 'source':
-        var source = triggerData.slice(2, triggerData.length - 1).join(' ');
-        var status = triggerData[triggerData.length - 1].toLowerCase() === 'on' ? true : false;
+        var { source, status } = Parser.getInputs(triggerData, ['action', 'source', 'status']);
+        status = status.toLowerCase() === 'on' ? true : false;
         await this.slobs.setSourceVisibility('', source, status);
         break;
       case 'scenesource':
-        var scene = triggerData[2];
-        var source = triggerData.slice(3, triggerData.length - 1).join(' ');
-        var status = triggerData[triggerData.length - 1].toLowerCase() === 'on' ? true : false;
+        var { scene, source, status } = Parser.getInputs(triggerData, ['action', 'scene', 'source', 'status']);
+        status = status.toLowerCase() === 'on' ? true : false;
         await this.slobs.setSourceVisibility(scene, source, status);
         break;
       case 'scenefolder':
-        var scene = triggerData[2];
-        var folder = triggerData.slice(3, triggerData.length - 1).join(' ');
-        var status = triggerData[triggerData.length - 1].toLowerCase() === 'on' ? true : false;
+        var { scene, folder, status } = Parser.getInputs(triggerData, ['action', 'scene', 'folder', 'status']);
+        status = status.toLowerCase() === 'on' ? true : false;
         await this.slobs.setFolderVisibility(scene, folder, status);
         break;
       case 'flip':
-        var scene = triggerData[2];
-        var source = triggerData.slice(3, triggerData.length - 1).join(' ');
-        if (triggerData[triggerData.length - 1].toLowerCase() === 'y') {
+        var { scene, source, direction } = Parser.getInputs(triggerData, ['action', 'scene', 'source', 'direction']);
+        if (direction.toLowerCase() === 'y') {
           await this.slobs.flipSourceY(scene, source);
         } else {
           await this.slobs.flipSourceX(scene, source);
         }
         break;
       case 'rotate':
-        var scene = triggerData[2];
-        var source = triggerData.slice(3, triggerData.length - 1).join(' ');
-        var degree = parseFloat(triggerData[triggerData.length - 1]);
+        var { scene, source, degree } = Parser.getInputs(triggerData, ['action', 'scene', 'source', 'degree']);
+        degree = parseFloat(degree);
         if (!isNaN(degree)) {
           await this.slobs.rotateSource(scene, source, degree);
         }
         break;
       case 'position':
-        var scene = triggerData[2];
-        var source = triggerData[3];
-        var x = parseFloat(triggerData[4]);
-        var y = parseFloat(triggerData[5]);
+        var { scene, source, x, y } = Parser.getInputs(triggerData, ['action', 'scene', 'source', 'x', 'y']);
+        var x = parseFloat(x);
+        var y = parseFloat(y);
         if (!isNaN(x) && !isNaN(y)) {
           await this.slobs.setPosition(scene, source, x, y);
         }
         break;
       case 'mute':
-        var source = triggerData.slice(2, triggerData.length - 1).join(' ');
-        var status = triggerData[triggerData.length - 1].toLowerCase();
+        var { source, status } = Parser.getInputs(triggerData, ['action', 'source', 'status']);
+        status = status.toLowerCase();
         if (status != 'toggle') {
           status = status === 'on' ? true : false;
         }
@@ -178,7 +178,7 @@ class SLOBSHandler extends Handler {
         await this.slobs.stopReplayBuffer();
         break;
       case 'notification':
-        var message = triggerData.slice(2).join(' ');
+        var { message } = Parser.getInputs(triggerData, ['action', 'message']);
         await this.slobs.pushNotification(message);
         break;
     }

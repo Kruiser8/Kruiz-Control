@@ -50,11 +50,10 @@ class TwitchHandler extends Handler {
    */
   addTriggerData(trigger, triggerLine, triggerId) {
     trigger = trigger.toLowerCase();
-    switch (trigger.toLowerCase()) {
+    switch (trigger) {
       case 'onchannelpoint':
-        // Handles Aliases
-        for (var i = 1; i < triggerLine.length; ++i) {
-          var reward = triggerLine[i];
+        var { rewards } = Parser.getInputs(triggerLine, ['rewards'], true);
+        rewards.forEach(reward => {
           if (this.rewards.indexOf(reward) !== -1) {
             this.rewardsTrigger[reward].push(triggerId);
           } else {
@@ -62,12 +61,11 @@ class TwitchHandler extends Handler {
             this.rewards.push(reward);
             this.rewardsTrigger[reward].push(triggerId);
           }
-        }
+        });
         break;
       case 'oncommunitygoalprogress':
-        // Handles Aliases
-        for (var i = 1; i < triggerLine.length; ++i) {
-          var goal = triggerLine[i];
+        var { goals } = Parser.getInputs(triggerLine, ['goals'], true);
+        goals.forEach(goal => {
           if (this.goals.indexOf(goal) !== -1) {
             this.goalsTrigger[goal].push(triggerId);
           } else {
@@ -75,12 +73,11 @@ class TwitchHandler extends Handler {
             this.goals.push(goal);
             this.goalsTrigger[goal].push(triggerId);
           }
-        }
+        });
         break;
       case 'oncommunitygoalcomplete':
-        // Handles Aliases
-        for (var i = 1; i < triggerLine.length; ++i) {
-          var goal = triggerLine[i];
+        var { goals } = Parser.getInputs(triggerLine, ['goals'], true);
+        goals.forEach(goal => {
           if (this.goals.indexOf(goal) !== -1) {
             this.goalsTrigger[goal].push(triggerId);
           } else {
@@ -88,12 +85,11 @@ class TwitchHandler extends Handler {
             this.goals.push(goal);
             this.goalsTrigger[goal].push(triggerId);
           }
-        }
+        });
         break;
       case 'oncommunitygoalstart':
-        // Handles Aliases
-        for (var i = 1; i < triggerLine.length; ++i) {
-          var goal = triggerLine[i];
+        var { goals } = Parser.getInputs(triggerLine, ['goals'], true);
+        goals.forEach(goal => {
           if (this.start.indexOf(goal) !== -1) {
             this.startTrigger[goal].push(triggerId);
           } else {
@@ -101,7 +97,7 @@ class TwitchHandler extends Handler {
             this.start.push(goal);
             this.startTrigger[goal].push(triggerId);
           }
-        }
+        });
         break;
       case 'onhypetrainstart':
       case 'onhypetrainend':

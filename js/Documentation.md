@@ -46,6 +46,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Actions](#debug-actions)
     + [Debug](#debug-1)
     + [Debug OBS](#debug-obs)
+    + [Debug Parser](#debug-parser)
     + [Debug SLOBS](#debug-slobs)
     + [Debug StreamElements](#debug-streamelements)
     + [Debug StreamLabs](#debug-streamLabs)
@@ -58,6 +59,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Discord Delete](#discord-delete)
     + [Discord Description](#discord-description)
     + [Discord Field](#discord-field)
+    + [Discord File](#discord-file)
     + [Discord FooterIcon](#discord-footericon)
     + [Discord FooterText](#discord-footertext)
     + [Discord Image](#discord-image)
@@ -123,6 +125,8 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Actions](#obs-actions)
     + [OBS AddSceneItem](#obs-addsceneitem)
     + [OBS CurrentScene](#obs-currentscene)
+    + [OBS IsSceneSourceVisible](#obs-isscenesourcevisible)
+    + [OBS IsSourceActive](#obs-issourceactive)
     + [OBS Mute](#obs-mute)
     + [OBS Position](#obs-position)
     + [OBS Refresh](#obs-refresh)
@@ -168,6 +172,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Actions](#slobs-actions)
     + [SLOBS CurrentScene](#slobs-currentscene)
     + [SLOBS Flip](#slobs-flip)
+    + [SLOBS IsSceneSourceVisible](#slobs-isscenesourcevisible)
     + [SLOBS Mute](#slobs-mute)
     + [SLOBS Notification](#slobs-notification)
     + [SLOBS Position](#slobs-position)
@@ -444,7 +449,7 @@ None at the moment.
 ------------ | -------------
 **Info** | Used to send an API configuration. `<name>` is the name of the API to call.
 **Format** | `API Send <name>`
-**Example** | `API Method TwitchAPI`
+**Example** | `API Send TwitchAPI`
 
 ***
 
@@ -598,7 +603,7 @@ _WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mi
 
 | | |
 ------------ | -------------
-**Info** | Used to trigger a set of actions when every chat message is sent. By default, this ignores the broadcaster.
+**Info** | Used to trigger a set of actions when ever a chat message is sent.
 **Format** | `OnEveryChatMessage`
 **Example** | `OnEveryChatMessage`
 
@@ -694,6 +699,15 @@ None at the moment.
 **Info** | Used to enable debugging for OBS events.
 **Format** | `Debug OBS`
 **Example** | `Debug OBS`
+
+***
+
+#### Debug Parser
+| | |
+------------ | -------------
+**Info** | Used to enable debugging of Kruiz Control's parser to see how Kruiz Control is interpreting event code.
+**Format** | `Debug Parser`
+**Example** | `Debug Parser`
 
 ***
 
@@ -799,6 +813,16 @@ None at the moment.
 **Info** | Used to add a field to a discord embed. `<name>` is the id that was used to register the webhook in a [`Discord Create`](#discord-create). `<field>` is the text to add as the title of the field. `<value>` is the text to put in the field. `<inline_optional>` is an optional true/false value to specify whether or not to put this field inline (horizontally) with other fields.
 **Format** | `Discord Field <name> <field> <value> <inline_optional>`
 **Example** | `Discord Field "GeneralChannel" "Game" "The Binding of Isaac: Repentance"`
+
+***
+
+#### Discord File
+| | |
+------------ | -------------
+**Info** | Used to upload a file attachment with a discord message. `<name>` is the id that was used to register the webhook in a [`Discord Create`](#discord-create). `<file>` is the absolute (full) or relative path to a file to upload. Relative paths start at the Kruiz Control root directory.
+**Format** | `Discord File <name> <file>`
+**Example w/ absolute path** | `Discord File "GeneralChannel" "C:\Users\YOUR_USER_NAME\Documents\Stream\screenshot.png"`
+**Example w/ relative path** | `Discord File "GeneralChannel" "screenshots/screenshot.png"`
 
 ***
 
@@ -1341,7 +1365,7 @@ The `<optional_skip>` value allows you to specify the number of lines to skip if
 #### Play
 | | |
 ------------ | -------------
-**Info** | Used to play a sound effect inside of the _sounds_ folder. `<volume>` is a number between 1 and 100. `<wait/nowait>` determines whether or not the script waits until the song is done playing before completing the next action.
+**Info** | Used to play a sound effect inside of the _sounds_ folder. `<volume>` is a number greater than 0 and can be greater than 100. `<wait/nowait>` determines whether or not the script waits until the song is done playing before completing the next action.
 **Format** | `Play <volume> <wait/nowait> <song_file>`
 **Example** | `Play 30 wait MashiahMusic__Kygo-Style-Melody.wav`
 
@@ -1457,7 +1481,7 @@ Enables the ability to interact with and respond to OBS.
 #### OBS AddSceneItem
 | | |
 ------------ | -------------
-**Info** | Used to add an existing source to the specified scene. `<scene>` is the scene to add the source. `<source>` is the name of the source to add to the scene. `<on/off>` is an optional visibility that determines if the source is visible when it's added.
+**Info** | Used to add an existing source to the specified scene. `<scene>` is the scene to add the source. `<source>` is the name of the source to add to the scene. `<on/off>` (default: `on`) is an optional visibility that determines if the source is visible when it's added.
 **Format** | `OBS AddSceneItem <scene> <source> <on/off>`
 **Example** | `OBS AddSceneItem BRB Webcam off`
 
@@ -1474,6 +1498,34 @@ Enables the ability to interact with and respond to OBS.
 | | |
 ------------ | -------------
 **current_scene** | The name of the active scene.
+
+***
+
+#### OBS IsSceneSourceVisible
+| | |
+------------ | -------------
+**Info** | Used to check if the specified source is turned on within the given scene in OBS.
+**Format** | `OBS IsSceneSourceVisible <scene> <source>`
+**Example** | `OBS IsSceneSourceVisible Alerts TwitchAlerts`
+
+##### Parameters
+| | |
+------------ | -------------
+**is_visible** | [true/false] `true` if the source is visible. Otherwise, `false`.
+
+***
+
+#### OBS IsSourceActive
+| | |
+------------ | -------------
+**Info** | Used to check if the specified source is active in the current scene. A source is active if it could be rendered in the current scene, regardless of visibility status.
+**Format** | `OBS IsSourceActive <source>`
+**Example** | `OBS IsSourceActive TwitchAlerts`
+
+##### Parameters
+| | |
+------------ | -------------
+**is_active** | [true/false] `true` if the source is active. Otherwise, `false`.
 
 ***
 
@@ -1932,6 +1984,20 @@ Enables the ability to interact with and respond to SLOBS.
 **Info** | Used to flip a source in SLOBS.
 **Format** | `SLOBS Flip <scene> <source> <x/y>`
 **Example** | `SLOBS Flip Webcam Camera x`
+
+***
+
+#### SLOBS IsSceneSourceVisible
+| | |
+------------ | -------------
+**Info** | Used to check if the specified source is turned on within the given scene in SLOBS.
+**Format** | `SLOBS IsSceneSourceVisible <scene> <source>`
+**Example** | `SLOBS IsSceneSourceVisible Alerts TwitchAlerts`
+
+##### Parameters
+| | |
+------------ | -------------
+**is_visible** | [true/false] `true` if the source is visible. Otherwise, `false`.
 
 ***
 

@@ -89,6 +89,23 @@
     }
   }
 
+  slobsSocket.getSourceVisibility = async function(scene, source) {
+    scene = scene || slobsSocket.activeScene;
+    var sceneInfo = slobsSocket.scenes[scene];
+    return await new Promise((resolve) => {
+      var id = slobsSocket.sendSLOBS("getScene", "ScenesService", [sceneInfo.id]);
+      slobsSocket.responses[id] = [this._getSourceVisibility, [resolve, source]];
+    });
+  }
+
+  slobsSocket._getSourceVisibility = async function(sceneInfo, resolve, source) {
+    sceneInfo.result.nodes.forEach(async sceneItem => {
+      if (sceneItem.name === source) {
+        resolve(sceneItem.visible);
+      }
+    });
+  }
+
   slobsSocket.setFolderVisibility = function(scene, folder, enabled) {
     scene = scene || slobsSocket.activeScene;
     var sceneInfo = slobsSocket.scenes[scene];

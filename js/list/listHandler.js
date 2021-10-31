@@ -13,39 +13,47 @@ class ListHandler extends Handler {
    * @param {array} triggerData contents of trigger line
    */
   async handleData(triggerData) {
-    var action = triggerData[1].toLowerCase();
-    var name = triggerData[2];
-    if (this.lists[name] === undefined) {
-      this.lists[name] = [];
-    }
+    var action = Parser.getAction(triggerData, 'List');
 
     switch (action) {
       case 'add':
-        var value = triggerData[3];
-        return this.add(name, value, parseInt(triggerData[4]));
+        var { name, value, index } = Parser.getInputs(triggerData, ['action', 'name', 'value', 'index'], false, 1);
+        this.initialize(name);
+        return this.add(name, value, parseInt(index));
         break;
       case 'contains':
-        var value = triggerData.slice(3).join(' ');
+        var { name, value } = Parser.getInputs(triggerData, ['action', 'name', 'value']);
+        this.initialize(name);
         return { contains: this.lists[name].indexOf(value) !== -1 };
         break;
       case 'count':
+        var { name } = Parser.getInputs(triggerData, ['action', 'name']);
+        this.initialize(name);
         return { count: this.lists[name].length };
         break;
       case 'empty':
+        var { name } = Parser.getInputs(triggerData, ['action', 'name']);
+        this.initialize(name);
         this.lists[name] = [];
         break;
       case 'export':
+        var { name } = Parser.getInputs(triggerData, ['action', 'name']);
+        this.initialize(name);
         return { [name]: JSON.stringify(this.lists[name]) };
         break;
       case 'get':
-        return this.get(name, triggerData[3]);
+        var { name, index } = Parser.getInputs(triggerData, ['action', 'name', 'index'], false, 1);
+        this.initialize(name);
+        return this.get(name, index);
         break;
       case 'import':
-        var values = triggerData.slice(3);
+        var { name, values } = Parser.getInputs(triggerData, ['action', 'name', 'values']);
+        this.initialize(name);
         this.lists[name] = JSON.parse(values);
         break;
       case 'index':
-        var value = triggerData.slice(3).join(' ');
+        var { name, value } = Parser.getInputs(triggerData, ['action', 'name', 'value']);
+        this.initialize(name);
         var index = this.lists[name].indexOf(value);
         var position = index + 1;
         if (position === 0) {
@@ -54,14 +62,19 @@ class ListHandler extends Handler {
         return { index: index, position: position };
         break;
       case 'join':
-        var delimiter = triggerData.slice(3).join(' ');
+        var { name, delimiter } = Parser.getInputs(triggerData, ['action', 'name', 'delimiter']);
+        this.initialize(name);
         return { joined: this.lists[name].join(delimiter) };
         break;
       case 'remove':
-        return this.remove(name, triggerData[3]);
+        var { name, index } = Parser.getInputs(triggerData, ['action', 'name', 'index'], false, 1);
+        this.initialize(name);
+        return this.remove(name, index);
         break;
       case 'set':
-        return this.set(name, parseInt(triggerData[3]), triggerData.slice(4).join(' '));
+        var { name, index, value } = Parser.getInputs(triggerData, ['action', 'name', 'index', 'value']);
+        this.initialize(name);
+        return this.set(name, parseInt(index), value);
         break;
       default:
         // do nothing
@@ -70,14 +83,23 @@ class ListHandler extends Handler {
   }
 
   /**
+   * Set up the list for the given name (if one doesn't exist).
+   * @param {string} name of the list
+   */
+   initialize(name) {
+     if (this.lists[name] === undefined) {
+       this.lists[name] = [];
+     }
+   }
+
+  /**
    * Add the value to the named list at the given index.
    * @param {string} name of the list
    * @param {string} value to add to the list
    * @param {string} index to add the value in the list
    */
   add(name, value, index) {
-    if (!isNaN(index) && index < this.lists[name].length && index > 0) {
-      var index = parseInt(triggerData[4]);
+    if (!isNaN(index) && index < this.lists[name].length && index >= 0) {
       this.lists[name].splice(index, 0, value);
       return { index: index, position: index + 1 }
     } else {
@@ -93,7 +115,7 @@ class ListHandler extends Handler {
    * @param {string} value to add to the list
    */
   set(name, index, value) {
-    if (!isNaN(index) && index < this.lists[name].length && index > 0) {
+    if (!isNaN(index) && index < this.lists[name].length && index >= 0) {
       this.lists[name][index] = value;
       return { index: index, position: index + 1, value: value }
     }

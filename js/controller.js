@@ -15,6 +15,7 @@ class Controller {
     this.addParser('controller', this);
     this.addTrigger('OnInit', 'controller');
     this.addSuccess('controller');
+    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
     this.eventId = 0;
     this.eventIdQueue = async.queue(this.setupTrigger.bind(this), 1);
   }
@@ -236,7 +237,7 @@ class Controller {
 
             if (runParams.actions) {
               runParams.actions.forEach((item, i) => {
-                runParams.actions[i] = shlexSplit(item);
+                runParams.actions[i] = Parser.splitLine(item);
               });
 
               triggerSequence.splice(i+1, 0, ...runParams.actions);
@@ -274,16 +275,16 @@ class Controller {
     var parserName = data[0].toLowerCase();
     if (parserName === 'delay') {
       // Custom delay handler
-      await timeout(parseFloat(data[1]) * 1000);
+      var { delay } = Parser.getInputs(data, ['delay']);
+      await timeout(parseFloat(delay) * 1000);
     }
     else if (parserName === 'skip') {
-      var lines = parseInt(data[1]);
+      var { lines } = Parser.getInputs(data, ['lines']);
       return { skip: lines };
     }
     else if (parserName === 'loop') {
-      var lines = parseInt(data[1]);
-      var loops = parseInt(data[2]);
-      return { lines: lines, loops: loops };
+      var { lines, loops } = Parser.getInputs(data, ['lines', 'loops']);
+      return { lines: parseInt(lines), loops: parseInt(loops) };
     }
     else if (parserName === 'exit') {
       return { continue: false };
@@ -293,39 +294,55 @@ class Controller {
       location.reload(true);
     }
     else if (parserName === 'play') {
+      var { volume, wait, sound } = Parser.getInputs(data, ['volume', 'wait', 'sound']);
       // Play audio and await the end of the audio
-      var audio = new Audio("sounds/" + data.slice(3).join(' ').trim());
-      var volume = parseInt(data[1]);
+      var audio = new Audio(`sounds/${sound.trim()}`);
+      var source = this.audioContext.createMediaElementSource(audio);
+      var gainNode = this.audioContext.createGain();
+      source.connect(gainNode);
+      gainNode.connect(this.audioContext.destination);
+      volume = parseInt(volume);
       if (!isNaN(volume)) {
-        audio.volume = volume / 100;
+        audio.volume = 1;
+        gainNode.gain.value = volume / 100;
       }
-      if (data[2].toLowerCase() === 'wait') {
+      if (wait.toLowerCase() === 'wait') {
         await new Promise((resolve) => {
-          audio.onended = resolve;
+          audio.onended = () => {
+            gainNode.disconnect();
+            source = null;
+            gainNode = null;
+            resolve();
+          }
           var playPromise = audio.play();
           if (playPromise !== undefined) {
             playPromise.then(function() {
               // Automatic playback started!
             }).catch(function(error) {
               console.error(`[${error.code}] ${error.name}: ${error.message}`);
+              gainNode.disconnect();
+              source = null;
+              gainNode = null;
               resolve();
             });
           }
         });
       } else {
         audio.play();
+        audio.onended = () => {
+          gainNode.disconnect();
+          source = null;
+          gainNode = null;
+        }
       }
     }
     else if (parserName === 'cooldown') {
-      var action = data[1].toLowerCase();
+      var { action, name, duration } = Parser.getInputs(data, ['action', 'name', 'duration'], false, 1);
       var res = {};
-      if (action === 'check') {
-        var name = data[2];
+      if (action.toLowerCase() === 'check') {
         var res = await this.checkCooldown(name);
       } else {
-        var name = data[2];
-        var duration = parseFloat(data[3]);
-        var res = await this.handleCooldown(name, duration);
+        var res = await this.handleCooldown(name, parseFloat(duration));
       }
 
       return res;
@@ -509,7 +526,7 @@ class Controller {
     for (var i = 0; i < lines.length; i++) {
       var line = lines[i].trim();
       if (!line.startsWith('#')) {
-        var lineData = shlexSplit(line);
+        var lineData = Parser.splitLine(line);
         var dataLength = lineData.length;
 
         // Get new trigger value

@@ -154,7 +154,7 @@ class StreamlabsHandler extends Handler {
     return {
       'data': message,
       'amount': message.amount,
-      'message': message.message,
+      'message': message.message || "",
       'user': message.name
     }
   }
@@ -168,7 +168,7 @@ class StreamlabsHandler extends Handler {
      'data': message,
      'amount': (message.payload && message.payload.amount) ? message.payload.amount : message.amount,
      'formatted': (message.payload && message.payload.formatted_amount) ? message.payload.formatted_amount : message.formatted_amount,
-     'message': message.message,
+     'message': message.message || "",
      'user': message.from
    }
   }
@@ -182,7 +182,7 @@ class StreamlabsHandler extends Handler {
       'data': message,
       'amount': (message.payload && message.payload.amount) ? message.payload.amount : message.amount,
       'formatted': (message.payload && message.payload.formatted_amount) ? message.payload.formattedAmount : message.formattedAmount,
-      'message': message.message,
+      'message': message.message || "",
       'user': message.from
     }
   }
@@ -220,12 +220,23 @@ class StreamlabsHandler extends Handler {
     if (!gifter) {
       gifter = message.gifter;
     }
+
+    var name = message.display_name;
+    if (!name) {
+      name = message.name;
+    }
+
+    var subPlan = message.sub_plan;
+    if (!subPlan) {
+      subPlan = message.subPlan;
+    }
+
     return {
       'data': message,
-      'user': message.name,
+      'user': name,
       'gifter': gifter,
       'months': message.months,
-      'tier': message.subPlan === 'Prime' ? 'Prime' : 'Tier ' + (parseInt(message.subPlan) / 1000)
+      'tier': subPlan === 'Prime' ? 'Prime' : 'Tier ' + (parseInt(subPlan) / 1000)
     }
   }
 
@@ -238,11 +249,17 @@ class StreamlabsHandler extends Handler {
     if (!gifter) {
       gifter = message.gifter;
     }
+
+    var subPlan = message.sub_plan;
+    if (!subPlan) {
+      subPlan = message.subPlan;
+    }
+
     return {
       'data': message,
       'amount': message.amount,
       'gifter': gifter,
-      'tier': message.subPlan === 'Prime' ? 'Prime' : 'Tier ' + (parseInt(message.subPlan) / 1000)
+      'tier': subPlan === 'Prime' ? 'Prime' : 'Tier ' + (parseInt(subPlan) / 1000)
     }
   }
 
@@ -275,12 +292,22 @@ class StreamlabsHandler extends Handler {
    * @param {Object} message streamlabs event message
    */
   getSubParameters(message) {
+    var name = message.display_name;
+    if (!name) {
+      name = message.name;
+    }
+
+    var subPlan = message.sub_plan;
+    if (!subPlan) {
+      subPlan = message.subPlan;
+    }
+
     return {
       'data': message,
-      'user': message.name,
+      'user': name,
       'months': message.months,
-      'message': message.message,
-      'tier': message.subPlan === 'Prime' ? 'Prime' : 'Tier ' + (parseInt(message.subPlan) / 1000)
+      'message': message.message || "",
+      'tier': subPlan === 'Prime' ? 'Prime' : 'Tier ' + (parseInt(subPlan) / 1000)
     }
   }
 }

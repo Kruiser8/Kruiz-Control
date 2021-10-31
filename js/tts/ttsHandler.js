@@ -22,22 +22,22 @@ class TTSHandler extends Handler {
    * @param {array} parameters current trigger parameters
    */
   async handleData(triggerData, parameters) {
-    if (triggerData[1].toLowerCase() == 'stop') {
+    var action = Parser.getAction(triggerData, 'TTS');
+    if (action === 'stop') {
       responsiveVoice.cancel();
       Object.keys(this.resolve).forEach(key => {
         this.resolve[key]();
         delete this.resolve[key];
       });
     } else {
-      var voice = triggerData[1];
-      var volume = parseInt(triggerData[2]);
+      var { voice, volume, wait, message } = Parser.getInputs(triggerData, ['voice', 'volume', 'wait', 'message']);
+      volume = parseInt(volume);
       if (isNaN(volume)) {
         volume = 80;
       } else {
         volume = volume / 100;
       }
-      var message = triggerData.slice(4).join(' ');
-      if (triggerData[3] === 'wait') {
+      if (wait === 'wait') {
         await new Promise((resolve) => {
           this.resolve[parameters['_kc_event_id_']] = resolve;
           responsiveVoice.speak(message, voice, {volume: volume, onend: (value) => {

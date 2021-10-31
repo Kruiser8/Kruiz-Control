@@ -7,6 +7,7 @@ class DebugHandler extends Handler {
     this.success();
     this.All = false;
     this.OBS = false;
+    this.Parser = false;
     this.SLOBS = false;
     this.StreamElements = false;
     this.Streamlabs = false;
@@ -18,11 +19,15 @@ class DebugHandler extends Handler {
    * @param {array} triggerData contents of trigger line
    */
   async handleData(triggerData) {
-    if (triggerData.length > 1) {
-      var handler = triggerData[1].toLowerCase();
+    var { handler } = Parser.getInputs(triggerData, ['handler'], false, 1);
+    if (handler) {
+      handler = handler.toLowerCase();
       switch (handler) {
         case 'obs':
           this.OBS = true;
+          break;
+        case 'parser':
+          this.Parser = true;
           break;
         case 'slobs':
           this.SLOBS = true;

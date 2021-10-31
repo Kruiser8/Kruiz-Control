@@ -13,28 +13,31 @@ class ParamHandler extends Handler {
    * @param {array} parameters current trigger parameters
    */
   async handleData(triggerData, parameters) {
-    var action = triggerData[1].toLowerCase();
-    var name = triggerData[2];
+    var action = Parser.getAction(triggerData);
 
     switch (action) {
       case 'lower':
+        var { name } = Parser.getInputs(triggerData, ['action', 'name']);
         if (parameters.hasOwnProperty(name)) {
           return { [name]: parameters[name].toLowerCase() };
         }
         break;
       case 'upper':
+        var { name } = Parser.getInputs(triggerData, ['action', 'name']);
         if (parameters.hasOwnProperty(name)) {
           return { [name]: parameters[name].toUpperCase() };
         }
         break;
       case 'proper':
+        var { name } = Parser.getInputs(triggerData, ['action', 'name']);
         if (parameters.hasOwnProperty(name)) {
           return { [name]: parameters[name].toProperCase() };
         }
         break;
       case 'add':
+        var { name, value } = Parser.getInputs(triggerData, ['action', 'name', 'value']);
         if (parameters.hasOwnProperty(name)) {
-          var value = parseFloat(triggerData[3]);
+          value = parseFloat(value);
           var paramValue = parseFloat(parameters[name]);
           if (!isNaN(value) && !isNaN(paramValue)) {
             return { [name]: paramValue + value };
@@ -42,8 +45,9 @@ class ParamHandler extends Handler {
         }
         break;
       case 'subtract':
+        var { name, value } = Parser.getInputs(triggerData, ['action', 'name', 'value']);
         if (parameters.hasOwnProperty(name)) {
-          var value = parseFloat(triggerData[3]);
+          value = parseFloat(value);
           var paramValue = parseFloat(parameters[name]);
           if (!isNaN(value) && !isNaN(paramValue)) {
             return { [name]: paramValue - value };
@@ -51,24 +55,24 @@ class ParamHandler extends Handler {
         }
         break;
       case 'exists':
+        var { name } = Parser.getInputs(triggerData, ['action', 'name']);
         return { exists: parameters.hasOwnProperty(name) };
         break;
       case 'copy':
-        var toName = triggerData[3];
+        var { name, toName } = Parser.getInputs(triggerData, ['action', 'name', 'toName']);
         if (parameters.hasOwnProperty(name)) {
           return { [toName]: parameters[name] };
         }
         break;
       case 'replace':
+        var { name, toReplace, replacement } = Parser.getInputs(triggerData, ['action', 'name', 'toReplace', 'replacement']);
         if (parameters.hasOwnProperty(name)) {
-          var toReplace = triggerData[3];
-          var replacement = triggerData.slice(4).join(' ');
           return { [name]: parameters[name].replace(new RegExp(escapeRegExp(toReplace), 'g'), replacement) };
         }
         break;
       case 'keyword':
+        var { name, keywords } = Parser.getInputs(triggerData, ['action', 'name', 'keywords'], true);
         if (parameters.hasOwnProperty(name)) {
-          var keywords = triggerData.slice(3);
           keywords.forEach((keyword, index) => {
             keywords[index] = escapeRegExp(keyword.trim());
           });

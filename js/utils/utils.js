@@ -14,15 +14,50 @@ function randomString(length) {
 }
 
 /**
+ * Retrieve the data from a url and convert to a blob.
+ * @param {string} url URL to download data
+ */
+function getBlobFromUrl(url) {
+  return new Promise((resolve, reject) => {
+    let request = new XMLHttpRequest();
+    request.open('GET', url, true);
+    request.responseType = 'blob';
+    request.onload = () => {
+      resolve(request.response);
+    };
+    request.onerror = reject;
+    request.send();
+  })
+}
+
+/**
+ * Convert the URL to a file into a File object.
+ * @param {string} fileUrl contents of trigger line
+ */
+async function convertUrlToFileObj(fileUrl) {
+  try {
+    var fileName = fileUrl.substring(fileUrl.lastIndexOf('/'));
+    var fileBlob = await getBlobFromUrl(fileUrl);
+    var file = new File([fileBlob], fileName);
+    return file;
+  } catch (err) {
+    console.log(err);
+    return null;
+  }
+}
+
+/**
  * Read the file and send the data to the callback.
  * @param {string} method type of API call
  * @param {string} url url to call
  * @param {object} data parameters to send with the call
  * @param {object} headers headers to send with the call
+ * @param {object} ajaxArgs options added to the $.ajax call
  */
-async function callAPI(method, url, data, headers) {
+async function callAPI(method, url, data, headers, ajaxArgs) {
   data = data || {};
   headers = headers || {};
+  ajaxArgs = ajaxArgs || {};
   var response = null;
   try {
     await $.ajax({
@@ -35,7 +70,8 @@ async function callAPI(method, url, data, headers) {
       },
       error: function(data) {
         console.error(`Error calling the ${url} API: ${JSON.stringify(data)}`);
-      }
+      },
+      ...ajaxArgs
     });
   } catch (err) {
     response = 'Error';
