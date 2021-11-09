@@ -36,7 +36,7 @@ class ApiHandler extends Handler {
           this.apiCall[name].data[dataKey] = dataValue;
           break;
         case 'rawdata':
-          var { name, rawData } = Parser.getInputs(triggerData, ['action', 'name', 'rawdata']);
+          var { name, rawData } = Parser.getInputs(triggerData, ['action', 'name', 'rawData']);
           this.initialize(name);
           this.apiCall[name].data = rawData;
           break;
@@ -48,7 +48,7 @@ class ApiHandler extends Handler {
         case 'send':
           var { name } = Parser.getInputs(triggerData, ['action', 'name']);
           this.initialize(name);
-          var response = await this.callAPI(this.apiCall[name].method, this.apiCall[name].url, this.apiCall[name].headers, this.apiCall[name].data)
+          var response = await this.callAPI(this.apiCall[name].method, this.apiCall[name].url, this.apiCall[name].data, this.apiCall[name].headers);
           return { api_data: response };
           break;
         case 'clear':
