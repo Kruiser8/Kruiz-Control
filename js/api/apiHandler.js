@@ -97,7 +97,7 @@ class ApiHandler extends Handler {
         success: function(data) {
           response = data;
            if (data === undefined) {
-             response = 'Sucess';
+             response = 'success';
            }
         },
         error: function(data) {
