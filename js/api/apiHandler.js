@@ -100,12 +100,14 @@ class ApiHandler extends Handler {
              response = 'success';
            }
         },
-        error: function(data) {
-          console.error(`Error calling the ${url} API: ${JSON.stringify(data)}`);
+        error: function(err) {
+          console.error(`Error calling the ${url} API: ${JSON.stringify(err)}`);
+          response = 'error';
         }
       });
     } catch (err) {
-      response = 'Error';
+      console.error(`Unhandled error calling the ${url} API: ${JSON.stringify(err)}`);
+      response = 'error';
     }
 
     return response;
