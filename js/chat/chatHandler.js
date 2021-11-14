@@ -64,6 +64,8 @@ class ChatHandler extends Handler {
           }
         }
         var { permission, info, cooldown, commands } = Parser.getInputs(triggerLine, inputs, true);
+        permission = permission.toLowerCase();
+        info = info ? info.toLowerCase() : "";
 
         cooldown = parseInt(cooldown);
         if (isNaN(cooldown)) {
@@ -103,6 +105,8 @@ class ChatHandler extends Handler {
           }
         }
         var { permission, info, cooldown, keywords } = Parser.getInputs(triggerLine, inputs, true);
+        permission = permission.toLowerCase();
+        info = info ? info.toLowerCase() : "";
 
         cooldown = parseInt(cooldown);
         if (isNaN(cooldown)) {

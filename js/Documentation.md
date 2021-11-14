@@ -413,7 +413,7 @@ None at the moment.
 ##### Parameters
 | | |
 ------------ | -------------
-**api_data** | The response from calling the API or 'Error'.
+**api_data** | The response from calling the API. If the API call succeeds and returns no data, this will be `success`. If the call fails, this will be `error`.
 
 ***
 
@@ -450,6 +450,11 @@ None at the moment.
 **Info** | Used to send an API configuration. `<name>` is the name of the API to call.
 **Format** | `API Send <name>`
 **Example** | `API Send TwitchAPI`
+
+##### Parameters
+| | |
+------------ | -------------
+**api_data** | The response from calling the API. If the API call succeeds and returns no data, this will be `success`. If the call fails, this will be `error`.
 
 ***
 
