@@ -105,7 +105,7 @@ class SLOBSHandler extends Handler {
    */
   async handleData(triggerData) {
     var action = Parser.getAction(triggerData, 'SLOBS');
-    switch (trigger) {
+    switch (action) {
       case 'currentscene':
         var scene = this.slobs.getCurrentScene();
         return { current_scene: scene };
