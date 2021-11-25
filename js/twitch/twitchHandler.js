@@ -33,6 +33,12 @@ class TwitchHandler extends Handler {
       'SUBS': '',
       'BITS': ''
     }
+
+    this.init.bind(this);
+    this.onMessage.bind(this);
+    this.onChannelPointMessage.bind(this);
+    this.onCommunityGoalMessage.bind(this);
+    this.onHypeTrainMessage.bind(this);
   }
 
   /**
@@ -118,6 +124,10 @@ class TwitchHandler extends Handler {
     return;
   }
 
+  /**
+   * Handle a message from the twitch pubsub.
+   * @param {object} message twitch pubsub message
+   */
   onMessage(message) {
     if (Debug.All || Debug.Twitch) {
       console.error('Twitch Message: ' + JSON.stringify(message));

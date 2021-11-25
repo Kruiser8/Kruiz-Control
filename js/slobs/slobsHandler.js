@@ -8,6 +8,11 @@ class SLOBSHandler extends Handler {
     this.onSwitchTrigger = {};
     this.onStartTrigger = [];
     this.onStopTrigger = [];
+
+    this.init.bind(this);
+    this.onSwitchScenes.bind(this);
+    this.onStreamStart.bind(this);
+    this.onStreamStop.bind(this);
   }
 
   /**

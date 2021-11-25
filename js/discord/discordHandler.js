@@ -8,6 +8,8 @@ class DiscordHandler extends Handler {
     this.webhookMessageIds = {};
     this.webhooks = {};
     this.success();
+
+    this.initialize.bind(this);
   }
 
   /**

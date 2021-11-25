@@ -22,6 +22,10 @@ class ChatHandler extends Handler {
 
     /* OnEveryChatMessage */
     this.chatTriggers = [];
+
+    this.init.bind(this);
+    this.checkPermissions.bind(this);
+    this.onAllChat.bind(this);
   }
 
   /**

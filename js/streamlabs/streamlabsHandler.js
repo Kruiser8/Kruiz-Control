@@ -67,6 +67,8 @@ class StreamlabsHandler extends Handler {
     this.alertIds = [];
     this.alertIdsNoSync = [];
     this.onSLMessageQueue = async.queue(this.parseStreamlabsMessage.bind(this), 1);
+
+    this.init.bind(this);
   }
 
   /**

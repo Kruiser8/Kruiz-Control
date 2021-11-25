@@ -6,6 +6,14 @@ class ListHandler extends Handler {
     super('List', []);
     this.success();
     this.lists = {};
+
+    this.initialize.bind(this);
+    this.add.bind(this);
+    this.set.bind(this);
+    this.getIndexValue.bind(this);
+    this.get.bind(this);
+    this.getIndex.bind(this);
+    this.remove.bind(this);
   }
 
   /**

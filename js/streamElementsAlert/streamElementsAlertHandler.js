@@ -45,6 +45,10 @@ class StreamElementsAlertHandler extends Handler {
       'raid-latest': 'raid',
       'subscriber-latest': 'subscriber'
     };
+
+    this.init.bind(this);
+    this.onStreamElementsTestMessage.bind(this);
+    this.onStreamElementsMessage.bind(this);
   }
 
   /**
