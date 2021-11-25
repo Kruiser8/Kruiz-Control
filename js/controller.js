@@ -12,6 +12,7 @@ class Controller {
     this.successful = [];
     this.cooldowns = {};
     this.initTriggers = [];
+    this.playAudio = {};
     this.addParser('controller', this);
     this.addTrigger('OnInit', 'controller');
     this.addSuccess('controller');
@@ -295,45 +296,55 @@ class Controller {
       location.reload(true);
     }
     else if (parserName === 'play') {
-      var { volume, wait, sound } = Parser.getInputs(data, ['volume', 'wait', 'sound']);
-      // Play audio and await the end of the audio
-      var audio = new Audio(`sounds/${sound.trim()}`);
-      var source = this.audioContext.createMediaElementSource(audio);
-      var gainNode = this.audioContext.createGain();
-      source.connect(gainNode);
-      gainNode.connect(this.audioContext.destination);
-      volume = parseInt(volume);
-      if (!isNaN(volume)) {
-        audio.volume = 1;
-        gainNode.gain.value = volume / 100;
+      if (data[1].toLowerCase() === "stop") {
+        Object.keys(this.playAudio).forEach(key => {
+          this.playAudio[key].pause();
+          delete this.playAudio[key];
+        });
       }
-      if (wait.toLowerCase() === 'wait') {
-        await new Promise((resolve) => {
-          audio.onended = () => {
-            gainNode.disconnect();
-            source = null;
-            gainNode = null;
-            resolve();
-          }
-          var playPromise = audio.play();
-          if (playPromise !== undefined) {
-            playPromise.then(function() {
-              // Automatic playback started!
-            }).catch(function(error) {
-              console.error(`[${error.code}] ${error.name}: ${error.message}`);
+      else {
+        var { volume, wait, sound } = Parser.getInputs(data, ['volume', 'wait', 'sound']);
+        // Play audio and await the end of the audio
+        var audio = new Audio(`sounds/${sound.trim()}`);
+        var source = this.audioContext.createMediaElementSource(audio);
+        var gainNode = this.audioContext.createGain();
+        source.connect(gainNode);
+        gainNode.connect(this.audioContext.destination);
+        volume = parseInt(volume);
+        if (!isNaN(volume)) {
+          audio.volume = 1;
+          gainNode.gain.value = volume / 100;
+        }
+
+        this.playAudio[parameters['_kc_event_id_']] = audio;
+        if (wait.toLowerCase() === 'wait') {
+          await new Promise((resolve) => {
+            audio.onended = () => {
               gainNode.disconnect();
               source = null;
               gainNode = null;
               resolve();
-            });
+            }
+            var playPromise = audio.play();
+            if (playPromise !== undefined) {
+              playPromise.then(function() {
+                // Automatic playback started!
+              }).catch(function(error) {
+                console.error(`[${error.code}] ${error.name}: ${error.message}`);
+                gainNode.disconnect();
+                source = null;
+                gainNode = null;
+                resolve();
+              });
+            }
+          });
+        } else {
+          audio.play();
+          audio.onended = () => {
+            gainNode.disconnect();
+            source = null;
+            gainNode = null;
           }
-        });
-      } else {
-        audio.play();
-        audio.onended = () => {
-          gainNode.disconnect();
-          source = null;
-          gainNode = null;
         }
       }
     }

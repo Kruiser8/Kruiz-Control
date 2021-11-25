@@ -112,6 +112,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Log](#log)
     + [Loop](#loop)
     + [Play](#play)
+    + [Play Stop](#play-stop)
     + [Reset](#reset)
     + [Skip](#skip)
 - [OBS](#obs)
@@ -1373,6 +1374,15 @@ The `<optional_skip>` value allows you to specify the number of lines to skip if
 **Info** | Used to play a sound effect inside of the _sounds_ folder. `<volume>` is a number greater than 0 and can be greater than 100. `<wait/nowait>` determines whether or not the script waits until the song is done playing before completing the next action.
 **Format** | `Play <volume> <wait/nowait> <song_file>`
 **Example** | `Play 30 wait MashiahMusic__Kygo-Style-Melody.wav`
+
+***
+
+#### Play Stop
+| | |
+------------ | -------------
+**Info** | Used to stop all sounds that ar currently playing in Kruiz Control.
+**Format** | `Play Stop`
+**Example** | `Play Stop`
 
 ***
 
