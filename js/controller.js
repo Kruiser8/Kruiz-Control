@@ -263,6 +263,7 @@ class Controller {
       }
     } catch (error) {
       console.error(error);
+      console.error(error.stack);
     }
   }
 
@@ -358,15 +359,25 @@ class Controller {
     }
     else if (parserName === 'function') {
       var func = data.slice(1).join(' ');
-      var fn = new Function(func);
-      var res = fn();
-      return res;
+      try {
+        var fn = new Function(func);
+        var res = fn();
+        return res;
+      } catch (error) {
+        console.error(`Unable to run custom Function: ${func}`);
+        throw error;
+      }
     }
     else if (parserName === 'asyncfunction') {
       var func = data.slice(1).join(' ');
-      var fn = new AsyncFunction(func);
-      var res = await fn();
-      return res;
+      try {
+        var fn = new AsyncFunction(func);
+        var res = await fn();
+        return res;
+      } catch (error) {
+        console.error(`Unable to run custom AsyncFunction: ${func}`);
+        throw error;
+      }
     }
     else if (parserName === 'error') {
       var message = data.slice(1).join(' ');
