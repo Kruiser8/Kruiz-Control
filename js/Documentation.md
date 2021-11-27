@@ -155,6 +155,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Param Exists](#param-exists)
     + [Param Keyword](#param-keyword)
     + [Param Lower](#param-lower)
+    + [Param Negate](#param-negate)
     + [Param Proper](#param-proper)
     + [Param Replace](#param-replace)
     + [Param Subtract](#param-subtract)
@@ -1834,6 +1835,20 @@ None at the moment.
 | | |
 ------------ | -------------
 **\<parameter\>** | The lowercased parameter value where **\<parameter\>** is the name of the parameter.
+
+***
+
+#### Param Negate
+| | |
+------------ | -------------
+**Info** | Negates the value within the parameter. The parameter value is converted into a string and lowercased. `"false"`, `"0"`, `"no"`, and `""` are interpreted as `false`. Everything else is interpreted as `true`. `<parameter>` is the name of the existing parameter.
+**Format** | `Param Negate <parameter>`
+**Example** | `Param MyToggle MyToggle`
+
+##### Parameters
+| | |
+------------ | -------------
+**\<parameter\>** | The negated parameter value where **\<parameter\>** is the name of the parameter.
 
 ***
 

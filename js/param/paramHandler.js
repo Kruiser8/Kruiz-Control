@@ -54,6 +54,20 @@ class ParamHandler extends Handler {
           }
         }
         break;
+      case 'negate':
+        var { name } = Parser.getInputs(triggerData, ['action', 'name']);
+        if (parameters.hasOwnProperty(name)) {
+          switch(String(parameters[name]).toLowerCase()) {
+            case "false":
+            case "no":
+            case "0":
+            case "":
+              return { [name]: true };
+            default:
+              return { [name]: false };
+          }
+        }
+        break;
       case 'exists':
         var { name } = Parser.getInputs(triggerData, ['action', 'name']);
         return { exists: parameters.hasOwnProperty(name) };
