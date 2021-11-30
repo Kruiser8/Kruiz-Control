@@ -87,6 +87,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [List Empty](#list-empty)
     + [List Export](#list-export)
     + [List Get](#list-get)
+    + [List Global](#list-global)
     + [List Import](#list-import)
     + [List Index](#list-index)
     + [List Join](#list-join)
@@ -1122,6 +1123,15 @@ _Note: The above example, `List Export MyList`, would return the parameter **MyL
 
 ***
 
+#### List Global
+| | |
+------------ | -------------
+**Info** | Designates a list as global so that it will persist between sessions (i.e. the list remains after a reset). `<on/off>` determines whether to make the list global (`on`) or remove it as a global list (`off`).
+**Format** | `List Global <list> <on/off>`
+**Example** | `List Global MyList on`
+
+***
+
 #### List Import
 | | |
 ------------ | -------------
@@ -1381,7 +1391,7 @@ The `<optional_skip>` value allows you to specify the number of lines to skip if
 #### Play Stop
 | | |
 ------------ | -------------
-**Info** | Used to stop all sounds that ar currently playing in Kruiz Control.
+**Info** | Used to stop all sounds that are currently playing in Kruiz Control with `Play`.
 **Format** | `Play Stop`
 **Example** | `Play Stop`
 
@@ -1843,7 +1853,7 @@ None at the moment.
 ------------ | -------------
 **Info** | Negates the value within the parameter. The parameter value is converted into a string and lowercased. `"false"`, `"0"`, `"no"`, and `""` are interpreted as `false`. Everything else is interpreted as `true`. `<parameter>` is the name of the existing parameter.
 **Format** | `Param Negate <parameter>`
-**Example** | `Param MyToggle MyToggle`
+**Example** | `Param Negate MyToggle`
 
 ##### Parameters
 | | |

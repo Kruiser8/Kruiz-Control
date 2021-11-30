@@ -19,22 +19,22 @@ class VariableHandler extends Handler {
       // Loads a global variable
       if (action === 'load') {
         var { varName } = Parser.getInputs(triggerData, ['global', 'action', 'varName']);
-        var variable = await idbKeyval.get(varName) || 'No variable found';
+        var variable = await IDBService.get(varName) || 'No variable found';
         return {[varName]: variable};
       }
       // Clears all global variables
       else if (action === 'clear') {
-        idbKeyval.clear();
+        IDBService.clear();
       }
       // Remove a global variable
       else if (action === 'remove') {
         var { varName } = Parser.getInputs(triggerData, ['global', 'action', 'varName']);
-        idbKeyval.del(varName);
+        IDBService.del(varName);
       }
       // Set a global variable
       else if (action === 'set') {
         var { varName, variable } = Parser.getInputs(triggerData, ['global', 'action', 'varName', 'variable']);
-        idbKeyval.set(varName, variable);
+        IDBService.set(varName, variable);
         return {[varName]: variable};
       }
     } else {
