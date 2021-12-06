@@ -16,6 +16,10 @@ class ParamHandler extends Handler {
     var action = Parser.getAction(triggerData);
 
     switch (action) {
+      case 'create':
+        var { name, value } = Parser.getInputs(triggerData, ['action', 'name', 'value']);
+        return { [name]: value };
+        break;
       case 'lower':
         var { name } = Parser.getInputs(triggerData, ['action', 'name']);
         if (parameters.hasOwnProperty(name)) {

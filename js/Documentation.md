@@ -153,6 +153,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Actions](#param-actions)
     + [Param Add](#param-add)
     + [Param Copy](#param-copy)
+    + [Param Create](#param-create)
     + [Param Exists](#param-exists)
     + [Param Keyword](#param-keyword)
     + [Param Lower](#param-lower)
@@ -1784,7 +1785,7 @@ None at the moment.
 ##### Parameters
 | | |
 ------------ | -------------
-**\<name\>** | The updated parameter value where **\<name\>** is the name of the parameter.
+**\<parameter\>** | The lowercased parameter value where **\<parameter\>** is the name of the parameter.
 
 ***
 
@@ -1799,6 +1800,20 @@ None at the moment.
 | | |
 ------------ | -------------
 **\<new\>** | The new parameter value where **\<new\>** is the name of the parameter.
+
+***
+
+#### Param Create
+| | |
+------------ | -------------
+**Info** | Create a new parameter. `<parameter>` is the name of the new parameter to create. `<value>` is the initial value for the parameter.
+**Format** | `Param Create <parameter> <value>`
+**Example** | `Param Create Counter 0`
+
+##### Parameters
+| | |
+------------ | -------------
+**\<parameter\>** | The new parameter value where **\<parameter\>** is the name of the parameter.
 
 ***
 
