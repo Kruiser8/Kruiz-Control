@@ -14,6 +14,8 @@ class OBSHandler extends Handler {
     this.onCustomTrigger = {};
     this.onSourceVis = {};
     this.onSourceVisTrigger = {};
+
+    this.init.bind(this);
   }
 
   /**

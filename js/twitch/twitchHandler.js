@@ -33,6 +33,12 @@ class TwitchHandler extends Handler {
       'SUBS': '',
       'BITS': ''
     }
+
+    this.init.bind(this);
+    this.onMessage.bind(this);
+    this.onChannelPointMessage.bind(this);
+    this.onCommunityGoalMessage.bind(this);
+    this.onHypeTrainMessage.bind(this);
   }
 
   /**
@@ -78,12 +84,12 @@ class TwitchHandler extends Handler {
       case 'oncommunitygoalcomplete':
         var { goals } = Parser.getInputs(triggerLine, ['goals'], true);
         goals.forEach(goal => {
-          if (this.goals.indexOf(goal) !== -1) {
-            this.goalsTrigger[goal].push(triggerId);
+          if (this.complete.indexOf(goal) !== -1) {
+            this.completeTrigger[goal].push(triggerId);
           } else {
-            this.goalsTrigger[goal] = [];
-            this.goals.push(goal);
-            this.goalsTrigger[goal].push(triggerId);
+            this.completeTrigger[goal] = [];
+            this.complete.push(goal);
+            this.completeTrigger[goal].push(triggerId);
           }
         });
         break;
@@ -118,6 +124,10 @@ class TwitchHandler extends Handler {
     return;
   }
 
+  /**
+   * Handle a message from the twitch pubsub.
+   * @param {object} message twitch pubsub message
+   */
   onMessage(message) {
     if (Debug.All || Debug.Twitch) {
       console.error('Twitch Message: ' + JSON.stringify(message));

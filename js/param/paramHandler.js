@@ -16,6 +16,10 @@ class ParamHandler extends Handler {
     var action = Parser.getAction(triggerData);
 
     switch (action) {
+      case 'create':
+        var { name, value } = Parser.getInputs(triggerData, ['action', 'name', 'value']);
+        return { [name]: value };
+        break;
       case 'lower':
         var { name } = Parser.getInputs(triggerData, ['action', 'name']);
         if (parameters.hasOwnProperty(name)) {
@@ -51,6 +55,20 @@ class ParamHandler extends Handler {
           var paramValue = parseFloat(parameters[name]);
           if (!isNaN(value) && !isNaN(paramValue)) {
             return { [name]: paramValue - value };
+          }
+        }
+        break;
+      case 'negate':
+        var { name } = Parser.getInputs(triggerData, ['action', 'name']);
+        if (parameters.hasOwnProperty(name)) {
+          switch(String(parameters[name]).toLowerCase()) {
+            case "false":
+            case "no":
+            case "0":
+            case "":
+              return { [name]: true };
+            default:
+              return { [name]: false };
           }
         }
         break;

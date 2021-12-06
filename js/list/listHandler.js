@@ -1,4 +1,7 @@
 class ListHandler extends Handler {
+  GLOBAL_LIST_KEY = '__kc_list_global_lists';
+  GLOBAL_LIST_KEY_PREFIX = '__kc_list_global_list_';
+
   /**
    * Create a new List handler.
    */
@@ -6,6 +9,25 @@ class ListHandler extends Handler {
     super('List', []);
     this.success();
     this.lists = {};
+
+    this.initialize.bind(this);
+    this.add.bind(this);
+    this.set.bind(this);
+    this.getIndexValue.bind(this);
+    this.get.bind(this);
+    this.getIndex.bind(this);
+    this.remove.bind(this);
+  }
+
+  /**
+   * Called after parsing all user input.
+   */
+  async postParse() {
+    this.global_lists = await IDBService.get(this.GLOBAL_LIST_KEY) || [];
+    const resp = await IDBService.get(this.GLOBAL_LIST_KEY);
+    for (const list_id of this.global_lists) {
+      this.lists[list_id] = await IDBService.get(`${this.GLOBAL_LIST_KEY_PREFIX}${list_id}`) || [];
+    };
   }
 
   /**
@@ -45,6 +67,22 @@ class ListHandler extends Handler {
         var { name, index } = Parser.getInputs(triggerData, ['action', 'name', 'index'], false, 1);
         this.initialize(name);
         return this.get(name, index);
+        break;
+      case 'global':
+        var { name, status } = Parser.getInputs(triggerData, ['action', 'name', 'status']);
+        status = status.toLowerCase();
+        this.initialize(name);
+
+        var nameIndex = this.global_lists.indexOf(name);
+        if (status === 'on' && nameIndex === -1) {
+          this.global_lists.push(name);
+          IDBService.set(this.GLOBAL_LIST_KEY, this.global_lists);
+          IDBService.set(`${this.GLOBAL_LIST_KEY_PREFIX}${name}`, this.lists[name]);
+        } else if (status === 'off' && nameIndex !== -1) {
+          this.global_lists.splice(nameIndex, 1);
+          IDBService.set(this.GLOBAL_LIST_KEY, this.global_lists);
+          IDBService.delete(`${this.GLOBAL_LIST_KEY_PREFIX}${name}`);
+        }
         break;
       case 'import':
         var { name, values } = Parser.getInputs(triggerData, ['action', 'name', 'values']);
@@ -101,9 +139,15 @@ class ListHandler extends Handler {
   add(name, value, index) {
     if (!isNaN(index) && index < this.lists[name].length && index >= 0) {
       this.lists[name].splice(index, 0, value);
+      if (this.global_lists.indexOf(name) !== -1) {
+        IDBService.set(`${this.GLOBAL_LIST_KEY_PREFIX}${name}`, this.lists[name])
+      }
       return { index: index, position: index + 1 }
     } else {
       this.lists[name].push(value);
+      if (this.global_lists.indexOf(name) !== -1) {
+        IDBService.set(`${this.GLOBAL_LIST_KEY_PREFIX}${name}`, this.lists[name])
+      }
       return { index: this.lists[name].length - 1, position: this.lists[name].length }
     }
   }
@@ -117,6 +161,9 @@ class ListHandler extends Handler {
   set(name, index, value) {
     if (!isNaN(index) && index < this.lists[name].length && index >= 0) {
       this.lists[name][index] = value;
+      if (this.global_lists.indexOf(name) !== -1) {
+        IDBService.set(`${this.GLOBAL_LIST_KEY_PREFIX}${name}`, this.lists[name])
+      }
       return { index: index, position: index + 1, value: value }
     }
   }
@@ -177,6 +224,9 @@ class ListHandler extends Handler {
     var response = this.getIndex(name, intIndex);
     if (intIndex != -1) {
       this.lists[name].splice(intIndex, 1);
+      if (this.global_lists.indexOf(name) !== -1) {
+        IDBService.set(`${this.GLOBAL_LIST_KEY_PREFIX}${name}`, this.lists[name])
+      }
     }
     return response;
   }

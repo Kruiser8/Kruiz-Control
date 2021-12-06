@@ -45,6 +45,10 @@ class StreamElementsAlertHandler extends Handler {
       'raid-latest': 'raid',
       'subscriber-latest': 'subscriber'
     };
+
+    this.init.bind(this);
+    this.onStreamElementsTestMessage.bind(this);
+    this.onStreamElementsMessage.bind(this);
   }
 
   /**
@@ -125,7 +129,7 @@ class StreamElementsAlertHandler extends Handler {
     return {
       'data': event,
       'amount': event.amount,
-      'message': event.message,
+      'message': htmlDecode(event.message),
       'user': (event.displayName) ? event.displayName : event.name
     }
   }
@@ -150,7 +154,7 @@ class StreamElementsAlertHandler extends Handler {
     return {
       'data': event,
       'amount': event.amount,
-      'message': event.message,
+      'message': htmlDecode(event.message),
       'user': (event.username) ? event.username : event.name
     }
   }
@@ -212,7 +216,7 @@ class StreamElementsAlertHandler extends Handler {
       'data': event,
       'user': (event.displayName) ? event.displayName : event.name,
       'months': event.amount,
-      'message': event.message,
+      'message': htmlDecode(event.message),
       'tier': event.tier === 'prime' ? 'Prime' : 'Tier ' + (parseInt(event.tier) / 1000)
     }
   }

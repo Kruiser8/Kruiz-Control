@@ -87,6 +87,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [List Empty](#list-empty)
     + [List Export](#list-export)
     + [List Get](#list-get)
+    + [List Global](#list-global)
     + [List Import](#list-import)
     + [List Index](#list-index)
     + [List Join](#list-join)
@@ -112,6 +113,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Log](#log)
     + [Loop](#loop)
     + [Play](#play)
+    + [Play Stop](#play-stop)
     + [Reset](#reset)
     + [Skip](#skip)
 - [OBS](#obs)
@@ -151,9 +153,11 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Actions](#param-actions)
     + [Param Add](#param-add)
     + [Param Copy](#param-copy)
+    + [Param Create](#param-create)
     + [Param Exists](#param-exists)
     + [Param Keyword](#param-keyword)
     + [Param Lower](#param-lower)
+    + [Param Negate](#param-negate)
     + [Param Proper](#param-proper)
     + [Param Replace](#param-replace)
     + [Param Subtract](#param-subtract)
@@ -1120,6 +1124,15 @@ _Note: The above example, `List Export MyList`, would return the parameter **MyL
 
 ***
 
+#### List Global
+| | |
+------------ | -------------
+**Info** | Designates a list as global so that it will persist between sessions (i.e. the list remains after a reset). `<on/off>` determines whether to make the list global (`on`) or remove it as a global list (`off`).
+**Format** | `List Global <list> <on/off>`
+**Example** | `List Global MyList on`
+
+***
+
 #### List Import
 | | |
 ------------ | -------------
@@ -1373,6 +1386,15 @@ The `<optional_skip>` value allows you to specify the number of lines to skip if
 **Info** | Used to play a sound effect inside of the _sounds_ folder. `<volume>` is a number greater than 0 and can be greater than 100. `<wait/nowait>` determines whether or not the script waits until the song is done playing before completing the next action.
 **Format** | `Play <volume> <wait/nowait> <song_file>`
 **Example** | `Play 30 wait MashiahMusic__Kygo-Style-Melody.wav`
+
+***
+
+#### Play Stop
+| | |
+------------ | -------------
+**Info** | Used to stop all sounds that are currently playing in Kruiz Control with `Play`.
+**Format** | `Play Stop`
+**Example** | `Play Stop`
 
 ***
 
@@ -1763,7 +1785,7 @@ None at the moment.
 ##### Parameters
 | | |
 ------------ | -------------
-**\<name\>** | The updated parameter value where **\<name\>** is the name of the parameter.
+**\<parameter\>** | The lowercased parameter value where **\<parameter\>** is the name of the parameter.
 
 ***
 
@@ -1778,6 +1800,20 @@ None at the moment.
 | | |
 ------------ | -------------
 **\<new\>** | The new parameter value where **\<new\>** is the name of the parameter.
+
+***
+
+#### Param Create
+| | |
+------------ | -------------
+**Info** | Create a new parameter. `<parameter>` is the name of the new parameter to create. `<value>` is the initial value for the parameter.
+**Format** | `Param Create <parameter> <value>`
+**Example** | `Param Create Counter 0`
+
+##### Parameters
+| | |
+------------ | -------------
+**\<parameter\>** | The new parameter value where **\<parameter\>** is the name of the parameter.
 
 ***
 
@@ -1824,6 +1860,20 @@ None at the moment.
 | | |
 ------------ | -------------
 **\<parameter\>** | The lowercased parameter value where **\<parameter\>** is the name of the parameter.
+
+***
+
+#### Param Negate
+| | |
+------------ | -------------
+**Info** | Negates the value within the parameter. The parameter value is converted into a string and lowercased. `"false"`, `"0"`, `"no"`, and `""` are interpreted as `false`. Everything else is interpreted as `true`. `<parameter>` is the name of the existing parameter.
+**Format** | `Param Negate <parameter>`
+**Example** | `Param Negate MyToggle`
+
+##### Parameters
+| | |
+------------ | -------------
+**\<parameter\>** | The negated parameter value where **\<parameter\>** is the name of the parameter.
 
 ***
 

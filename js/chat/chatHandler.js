@@ -22,6 +22,10 @@ class ChatHandler extends Handler {
 
     /* OnEveryChatMessage */
     this.chatTriggers = [];
+
+    this.init.bind(this);
+    this.checkPermissions.bind(this);
+    this.onAllChat.bind(this);
   }
 
   /**
@@ -155,7 +159,7 @@ class ChatHandler extends Handler {
     if (action === 'send') {
       var { message } = Parser.getInputs(triggerData, ['action', 'message']);
       ComfyJS.Say(message);
-    } else if (trigger === 'whisper') {
+    } else if (action === 'whisper') {
       var { user, message } = Parser.getInputs(triggerData, ['action', 'user', 'message']);
       ComfyJS.Whisper(message, user);
     }

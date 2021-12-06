@@ -8,6 +8,11 @@ class SLOBSHandler extends Handler {
     this.onSwitchTrigger = {};
     this.onStartTrigger = [];
     this.onStopTrigger = [];
+
+    this.init.bind(this);
+    this.onSwitchScenes.bind(this);
+    this.onStreamStart.bind(this);
+    this.onStreamStop.bind(this);
   }
 
   /**
@@ -105,7 +110,7 @@ class SLOBSHandler extends Handler {
    */
   async handleData(triggerData) {
     var action = Parser.getAction(triggerData, 'SLOBS');
-    switch (trigger) {
+    switch (action) {
       case 'currentscene':
         var scene = this.slobs.getCurrentScene();
         return { current_scene: scene };

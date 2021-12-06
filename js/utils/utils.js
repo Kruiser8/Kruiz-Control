@@ -123,9 +123,10 @@ async function getIdFromUser(user) {
 
 /**
  * Escape a string for use in a RegExp
+ * @param {string} value input string to escape
  */
-function escapeRegExp(string) {
-  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
 }
 
 /**
@@ -134,6 +135,14 @@ function escapeRegExp(string) {
  */
 function isNumeric(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+/**
+ * Decode any html encoded values in the input
+ * @param {string} value input string to decode
+ */
+function htmlDecode(value) {
+  return new DOMParser().parseFromString(value,'text/html').querySelector('html').textContent;
 }
 
 /**
