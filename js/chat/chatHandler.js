@@ -305,7 +305,7 @@ class ChatHandler extends Handler {
       });
 
       // Check for matching command and user permission
-      var command = message.split(' ')[0];
+      var command = message.split(' ')[0].toLowerCase();
       if(this.commandsOther.indexOf(command) != -1) {
         var args = Parser.splitLine(message);
         var chatArgs = {};
