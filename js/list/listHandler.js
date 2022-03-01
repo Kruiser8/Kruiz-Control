@@ -57,6 +57,9 @@ class ListHandler extends Handler {
         var { name } = Parser.getInputs(triggerData, ['action', 'name']);
         this.initialize(name);
         this.lists[name] = [];
+        if (this.global_lists.indexOf(name) !== -1) {
+          IDBService.set(`${this.GLOBAL_LIST_KEY_PREFIX}${name}`, this.lists[name])
+        }
         break;
       case 'export':
         var { name } = Parser.getInputs(triggerData, ['action', 'name']);
@@ -88,6 +91,9 @@ class ListHandler extends Handler {
         var { name, values } = Parser.getInputs(triggerData, ['action', 'name', 'values']);
         this.initialize(name);
         this.lists[name] = JSON.parse(values);
+        if (this.global_lists.indexOf(name) !== -1) {
+          IDBService.set(`${this.GLOBAL_LIST_KEY_PREFIX}${name}`, this.lists[name])
+        }
         break;
       case 'index':
         var { name, value } = Parser.getInputs(triggerData, ['action', 'name', 'value']);
