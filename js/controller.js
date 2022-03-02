@@ -10,7 +10,6 @@ class Controller {
     this.triggerAsyncMap = {};
     this.triggerAsync = [];
     this.successful = [];
-    this.cooldowns = {};
     this.initTriggers = [];
     this.playAudio = {};
     this.addParser('controller', this);
@@ -335,17 +334,6 @@ class Controller {
           }
         }
       }
-    }
-    else if (parserName === 'cooldown') {
-      var { action, name, duration } = Parser.getInputs(data, ['action', 'name', 'duration'], false, 1);
-      var res = {};
-      if (action.toLowerCase() === 'check') {
-        var res = await this.checkCooldown(name);
-      } else {
-        var res = await this.handleCooldown(name, parseFloat(duration));
-      }
-
-      return res;
     }
     else if (parserName === 'if') {
       var res = await this.handleIf(data);

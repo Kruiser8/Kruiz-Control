@@ -42,6 +42,15 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Actions](#chat-actions)
     + [Chat Send](#chat-send)
     + [Chat Whisper](#chat-whisper)
+- [Cooldown](#cooldown)
+  * [Triggers](#cooldown-triggers)
+  * [Actions](#cooldown-actions)
+    + [Cooldown Apply](#cooldown-apply)
+    + [Cooldown Check](#cooldown-check)
+    + [Cooldown Clear](#cooldown-clear)
+    + [Cooldown Global Apply](#cooldown-global-apply)
+    + [Cooldown Global Check](#cooldown-global-check)
+    + [Cooldown Global Clear](#cooldown-global-clear)
 - [Debug](#debug)
   * [Triggers](#debug-triggers)
   * [Actions](#debug-actions)
@@ -104,8 +113,6 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnInit](#oninit)
   * [Actions](#miscellaneous-actions)
     + [AsyncFunction](#asyncfunction)
-    + [Cooldown Apply](#cooldown-apply)
-    + [Cooldown Check](#cooldown-check)
     + [Delay](#delay)
     + [Error](#error)
     + [Exit](#exit)
@@ -690,6 +697,88 @@ _WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mi
 
 ***
 
+## Cooldown
+Adds the ability to give events a cooldown so that they cannot be repeated within a period of time.
+
+### Cooldown Triggers
+None at the moment.
+
+***
+
+### Cooldown Actions
+
+#### Cooldown Apply
+| | |
+------------ | -------------
+**Info** | Used to apply a cooldown to triggers. `<name>` is the identifier for the cooldown. `<seconds>` is the number of seconds before the trigger can fire again.
+**Format** | `Cooldown Apply <name> <seconds>`
+**Example** | `Cooldown Apply MyCustomTrigger 30`
+
+***
+
+#### Cooldown Check
+| | |
+------------ | -------------
+**Info** | Used to check if a cooldown is active. `<name>` is the identifier for the cooldown.
+**Format** | `Cooldown Check <name>`
+**Example** | `Cooldown Check MyCustomTrigger`
+
+##### Parameters
+| | |
+------------ | -------------
+**\<name\>** | [True/False] Whether or not the cooldown is active where **\<name\>** is the name of the cooldown.
+**cooldown** | The number of seconds (rounded to a whole number) left on the cooldown. This is only returned if the cooldown is active (`<name>` is True).
+**cooldown_real** | The decimal number of seconds left on the cooldown. This is only returned if the cooldown is active (`<name>` is True).
+
+_Note: The above example, `Cooldown Check MyCustomTrigger`, would return the parameter **MyCustomTrigger**._
+
+***
+
+#### Cooldown Clear
+| | |
+------------ | -------------
+**Info** | Used to clear (remove) an existing cooldown. `<name>` is the identifier for the cooldown.
+**Format** | `Cooldown Clear <name>`
+**Example** | `Cooldown Clear MyCustomTrigger`
+
+***
+
+#### Cooldown Global Apply
+| | |
+------------ | -------------
+**Info** | Used to apply a global cooldown to triggers. Global cooldowns persist between sessions (i.e. the cooldown remains after a reset). `<name>` is the identifier for the cooldown. `<seconds>` is the number of seconds before the trigger can fire again.
+**Format** | `Cooldown Global Apply <name> <seconds>`
+**Example** | `Cooldown Global Apply MyCustomTrigger 30`
+
+***
+
+#### Cooldown Global Check
+| | |
+------------ | -------------
+**Info** | Used to check if a global cooldown is active. Global cooldowns persist between sessions (i.e. the cooldown remains after a reset). `<name>` is the identifier for the cooldown.
+**Format** | `Cooldown Global Check <name>`
+**Example** | `Cooldown Global Check MyCustomTrigger`
+
+##### Parameters
+| | |
+------------ | -------------
+**\<name\>** | [True/False] Whether or not the cooldown is active where **\<name\>** is the name of the cooldown.
+**cooldown** | The number of seconds (rounded to a whole number) left on the cooldown. This is only returned if the cooldown is active (`<name>` is True).
+**cooldown_real** | The decimal number of seconds left on the cooldown. This is only returned if the cooldown is active (`<name>` is True).
+
+_Note: The above example, `Cooldown Global Check MyCustomTrigger`, would return the parameter **MyCustomTrigger**._
+
+***
+
+#### Cooldown Global Clear
+| | |
+------------ | -------------
+**Info** | Used to clear (remove) an existing global cooldown. Global cooldowns persist between sessions (i.e. the cooldown remains after a reset). `<name>` is the identifier for the cooldown.
+**Format** | `Cooldown Global Clear <name>`
+**Example** | `Cooldown Global Clear MyCustomTrigger`
+
+***
+
 ## Debug
 Adds optional logging to Kruiz Control for debugging purposes.
 
@@ -1269,33 +1358,6 @@ A small selection of actions that are included for increased usability.
 **Info** | Used to create an async javascript function using the input text. For more information see [Function](#function).
 **Format** | `AsyncFunction <function>`
 **Example** | `AsyncFunction 'return {total: {total} + 1}'`
-
-***
-
-#### Cooldown Apply
-| | |
------------- | -------------
-**Info** | Used to apply a cooldown to triggers. `<name>` is the identifier for the cooldown. `<seconds>` is the number of seconds before the trigger can fire again.
-**Format** | `Cooldown Apply <name> <seconds>`
-**Example** | `Cooldown Apply MyCustomTrigger 30`
-
-***
-
-#### Cooldown Check
-| | |
------------- | -------------
-**Info** | Used to check if a cooldown is active. `<name>` is the identifier for the cooldown.
-**Format** | `Cooldown Check <name>`
-**Example** | `Cooldown Check MyCustomTrigger`
-
-##### Parameters
-| | |
------------- | -------------
-**\<name\>** | [True/False] Whether or not the cooldown is active where **\<name\>** is the name of the cooldown.
-**cooldown** | The number of seconds (rounded to a whole number) left on the cooldown. This is only returned if the cooldown is active (`<name>` is True).
-**cooldown_real** | The decimal number of seconds left on the cooldown. This is only returned if the cooldown is active (`<name>` is True).
-
-_Note: The above example, `Cooldown Check MyCustomTrigger`, would return the parameter **MyCustomTrigger**._
 
 ***
 

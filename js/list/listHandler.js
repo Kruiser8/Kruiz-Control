@@ -24,7 +24,6 @@ class ListHandler extends Handler {
    */
   async postParse() {
     this.global_lists = await IDBService.get(this.GLOBAL_LIST_KEY) || [];
-    const resp = await IDBService.get(this.GLOBAL_LIST_KEY);
     for (const list_id of this.global_lists) {
       this.lists[list_id] = await IDBService.get(`${this.GLOBAL_LIST_KEY_PREFIX}${list_id}`) || [];
     };
