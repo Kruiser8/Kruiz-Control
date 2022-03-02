@@ -253,29 +253,94 @@ class OBSHandler extends Handler {
   async handleData(triggerData) {
     var action = Parser.getAction(triggerData, 'OBS');
     switch (action) {
-      case 'currentscene':
-        var currentScene = await this.obs.getCurrentScene();
-        return {current_scene: currentScene.name};
-        break;
-      case 'startstream':
-        await this.obs.startStream();
-        break;
-      case 'stopstream':
-        await this.obs.stopStream();
-        break;
-      case 'startreplaybuffer':
-        await this.obs.startReplayBuffer();
-        break;
-      case 'stopreplaybuffer':
-        await this.obs.stopReplayBuffer();
-        break;
-      case 'savereplaybuffer':
-        await this.obs.saveReplayBuffer();
-        break;
       case 'addsceneitem':
         var { sceneName, sourceName, status } = Parser.getInputs(triggerData, ['action', 'sceneName', 'sourceName', 'status'], false, 1);
         status = (status && status.toLowerCase() === 'off') ? false : true;
         await this.obs.addSceneItem(sceneName, sourceName, status)
+        break;
+      case 'currentscene':
+        var currentScene = await this.obs.getCurrentScene();
+        return {current_scene: currentScene.name};
+        break;
+      case 'isscenesourcevisible':
+        var { scene, source } = Parser.getInputs(triggerData, ['action', 'scene', 'source']);
+        if (scene === '{current}') {
+          var currentScene = await this.obs.getCurrentScene();
+          scene = currentScene.name;
+        }
+        var data = await this.obs.getSourceVisibility(scene, source);
+        if (data && data.visible) {
+          return { is_visible: true };
+        }
+        return { is_visible: false };
+        break;
+      case 'issourceactive':
+        var { source } = Parser.getInputs(triggerData, ['action', 'source']);
+        var data = await this.obs.getSourceActiveStatus(source);
+        if (data && data.sourceActive) {
+          return { is_active: true };
+        }
+        return { is_active: false };
+        break;
+      case 'media':
+        var { media, source, path } = Parser.getInputs(triggerData, ['action', 'media', 'source', 'path'], false, 1);
+        media = media.toLowerCase();
+        switch (media) {
+          case 'duration':
+            var data = await this.obs.getMediaDuration(source);
+            return {duration: data.mediaDuration / 1000}
+            break;
+          case 'path':
+            await this.obs.setMediaSourcePath(source, path);
+            break;
+          case 'pause':
+            var playPause = true;
+            await this.obs.playPauseMedia(source, playPause)
+            break;
+          case 'play':
+            var playPause = false;
+            await this.obs.playPauseMedia(source, playPause);
+            break;
+          case 'restart':
+            await this.obs.restartMedia(source);
+            break;
+          case 'stop':
+            await this.obs.stopMedia(source);
+            break;
+        }
+        break;
+      case 'mute':
+        var { source, status } = Parser.getInputs(triggerData, ['action', 'source', 'status']);
+        status = status.toLowerCase();
+        if (status === 'toggle') {
+          await this.obs.toggleMute(source);
+        } else {
+          status = status === 'on' ? true : false;
+          await this.obs.setMute(source, status);
+        }
+        break;
+      case 'position':
+        var { scene, item, x, y } = Parser.getInputs(triggerData, ['action', 'scene', 'item', 'x', 'y']);
+        if (scene === '{current}') {
+          var currentScene = await this.obs.getCurrentScene();
+          scene = currentScene.name;
+        }
+        var data = await this.obs.getSceneItemProperties(scene, item);
+        x = parseFloat(x);
+        y = parseFloat(y);
+        await this.obs.setSceneItemPosition(scene, item, x, y);
+        return {
+          init_x: data.position.x,
+          init_y: data.position.y
+        }
+        break;
+      case 'refresh':
+        var { source } = Parser.getInputs(triggerData, ['action', 'source']);
+        var source = triggerData.slice(2).join(' ');
+        await this.obs.refreshBrowser(source);
+        break;
+      case 'savereplaybuffer':
+        await this.obs.saveReplayBuffer();
         break;
       case 'scene':
         var { scene } = Parser.getInputs(triggerData, ['action', 'scene']);
@@ -293,6 +358,26 @@ class OBSHandler extends Handler {
           status = status === 'on' ? true : false;
         }
         await this.obs.setSourceVisibility(source, status, scene);
+        break;
+      case 'send':
+        var { message, data } = Parser.getInputs(triggerData, ['action', 'message', 'data'], false, 1);
+        data = data || '';
+        await this.obs.broadcastCustomMessage(message, data);
+        break;
+      case 'size':
+        var { scene, item, width, height } = Parser.getInputs(triggerData, ['action', 'scene', 'item', 'width', 'height']);
+        if (scene === '{current}') {
+          var currentScene = await this.obs.getCurrentScene();
+          scene = currentScene.name;
+        }
+        var data = await this.obs.getSceneItemProperties(scene, item);
+        var scaleX = parseFloat(width) / parseFloat(data.sourceWidth);
+        var scaleY = parseFloat(height) / parseFloat(data.sourceHeight);
+        await this.obs.setSceneItemSize(scene, item, scaleX, scaleY);
+        return {
+          init_width: data.width,
+          init_height: data.height
+        }
         break;
       case 'source':
         var { source, subaction, info, status } = Parser.getInputs(triggerData, ['action', 'source', 'subaction', 'info', 'status'], false, 2);
@@ -329,49 +414,25 @@ class OBSHandler extends Handler {
           await this.obs.setFilterVisibility(source, info, status);
         }
         break;
-      case 'issourceactive':
-        var { source } = Parser.getInputs(triggerData, ['action', 'source']);
-        var data = await this.obs.getSourceActiveStatus(source);
-        if (data && data.sourceActive) {
-          return { is_active: true };
-        }
-        return { is_active: false };
+      case 'startreplaybuffer':
+        await this.obs.startReplayBuffer();
         break;
-      case 'isscenesourcevisible':
-        var { scene, source } = Parser.getInputs(triggerData, ['action', 'scene', 'source']);
-        if (scene === '{current}') {
-          var currentScene = await this.obs.getCurrentScene();
-          scene = currentScene.name;
-        }
-        var data = await this.obs.getSourceVisibility(scene, source);
-        if (data && data.visible) {
-          return { is_visible: true };
-        }
-        return { is_visible: false };
+      case 'startstream':
+        await this.obs.startStream();
         break;
-      case 'refresh':
-        var { source } = Parser.getInputs(triggerData, ['action', 'source']);
-        var source = triggerData.slice(2).join(' ');
-        await this.obs.refreshBrowser(source);
+      case 'stopreplaybuffer':
+        await this.obs.stopReplayBuffer();
+        break;
+      case 'stopstream':
+        await this.obs.stopStream();
         break;
       case 'takesourcescreenshot':
         var { source, filePath } = Parser.getInputs(triggerData, ['action', 'source', 'filePath']);
         await this.obs.takeSourceScreenshot(source, filePath);
         break;
-      case 'send':
-        var { message, data } = Parser.getInputs(triggerData, ['action', 'message', 'data'], false, 1);
-        data = data || '';
-        await this.obs.broadcastCustomMessage(message, data);
-        break;
-      case 'mute':
-        var { source, status } = Parser.getInputs(triggerData, ['action', 'source', 'status']);
-        status = status.toLowerCase();
-        if (status === 'toggle') {
-          await this.obs.toggleMute(source);
-        } else {
-          status = status === 'on' ? true : false;
-          await this.obs.setMute(source, status);
-        }
+      case 'version':
+        var data = await this.obs.getVersion();
+        return { version: data.obsWebsocketVersion };
         break;
       case 'volume':
         var { source, volume } = Parser.getInputs(triggerData, ['action', 'source', 'volume']);
@@ -384,39 +445,6 @@ class OBSHandler extends Handler {
         }
         return { previous_volume: currentAudio.volume };
         break;
-      case 'position':
-        var { scene, item, x, y } = Parser.getInputs(triggerData, ['action', 'scene', 'item', 'x', 'y']);
-        if (scene === '{current}') {
-          var currentScene = await this.obs.getCurrentScene();
-          scene = currentScene.name;
-        }
-        var data = await this.obs.getSceneItemProperties(scene, item);
-        x = parseFloat(x);
-        y = parseFloat(y);
-        await this.obs.setSceneItemPosition(scene, item, x, y);
-        return {
-          init_x: data.position.x,
-          init_y: data.position.y
-        }
-        break;
-      case 'size':
-        var { scene, item, width, height } = Parser.getInputs(triggerData, ['action', 'scene', 'item', 'width', 'height']);
-        if (scene === '{current}') {
-          var currentScene = await this.obs.getCurrentScene();
-          scene = currentScene.name;
-        }
-        var data = await this.obs.getSceneItemProperties(scene, item);
-        var scaleX = parseFloat(width) / parseFloat(data.sourceWidth);
-        var scaleY = parseFloat(height) / parseFloat(data.sourceHeight);
-        await this.obs.setSceneItemSize(scene, item, scaleX, scaleY);
-        return {
-          init_width: data.width,
-          init_height: data.height
-        }
-        break;
-      case 'version':
-        var data = await this.obs.getVersion();
-        return { version: data.obsWebsocketVersion };
       default:
         break;
     }
