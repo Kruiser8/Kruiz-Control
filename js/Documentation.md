@@ -192,7 +192,6 @@ Each handler provides its own triggers and actions that can be used in a trigger
 - [StreamElements](#streamelements)
   * [Triggers](#streamelements-triggers)
     + [OnSETwitchBits](#onsetwitchbits)
-    + [OnSETwitchBulkGiftSub](#onsetwitchbulkgiftsub)
     + [OnSEDonation](#onsedonation)
     + [OnSETwitchFollow](#onsetwitchfollow)
     + [OnSETwitchGiftSub](#onsetwitchgiftsub)
@@ -2190,13 +2189,6 @@ Enables the ability to trigger actions based on StreamElement alerts. Note that 
 **data** | The complete json event (for use with [Function](#function)).
 
 ***
-
-#### OnSETwitchBulkGiftSub
-| | |
------------- | -------------
-**Info** | Used to trigger actions when someone gifts multiple subscriptions to the community.
-**Format** | `OnSETwitchBulkGiftSub`
-**Example** | `OnSETwitchBulkGiftSub`
 
 ##### Parameters
 | | |

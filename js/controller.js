@@ -126,11 +126,6 @@ class Controller {
   async handleData(triggerId, triggerParams) {
     triggerParams = triggerParams || {};
     triggerParams['_kc_event_id_'] = uuidv4();
-    if (this.eventId === 1000000000) {
-      this.eventId = 0;
-    } else {
-      this.eventId = this.eventId + 1;
-    }
 
     if (typeof(this.triggerAsyncMap[triggerId]) !== "undefined") {
       var queue = this.triggerAsync[this.triggerAsyncMap[triggerId]];
