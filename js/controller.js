@@ -224,7 +224,9 @@ class Controller {
 
             if (runParams.actions) {
               runParams.actions.forEach((item, i) => {
-                runParams.actions[i] = Parser.splitLine(item);
+                if (typeof item === 'string' || item instanceof String) {
+                  runParams.actions[i] = Parser.splitLine(item);
+                }
               });
 
               triggerSequence.splice(i+1, 0, ...runParams.actions);

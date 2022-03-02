@@ -1,9 +1,9 @@
-class ActionsHandler extends Handler {
+class ActionHandler extends Handler {
   /**
    * Create a new Actions handler.
    */
   constructor() {
-    super('Actions', ['OnAction']);
+    super('Action', ['OnAction']);
     this.actions = [];
     this.actionsTriggers = {};
     this.success();
@@ -33,12 +33,22 @@ class ActionsHandler extends Handler {
    * @param {array} triggerData contents of trigger line
    */
   async handleData(triggerData) {
-    var action = triggerData[0].toLowerCase();
-    var inputs = {};
-    for (var i = 1; i < triggerData.length; i++) {
-      inputs[`in${i}`] = triggerData[i];
-    }
-    if (this.actions.indexOf(action) != -1) {0
+    var action = Parser.getAction(triggerData, 'Action', -1);
+
+    if (action === "action") {
+      if (triggerData.length > 2) {
+        triggerData.shift();
+        return { actions: [triggerData] };
+      } else if (triggerData.length === 2) {
+        return { actions: [triggerData[1]] };
+      } else {
+        console.error('No action provided to the Action handler: ' + JSON.stringify(triggerData));
+      }
+    } else if (this.actions.indexOf(action) != -1) {
+      var inputs = {};
+      for (var i = 1; i < triggerData.length; i++) {
+        inputs[`in${i}`] = triggerData[i];
+      }
       return { "_trigId": this.actionsTriggers[action], ...inputs };
     } else {
       console.error('Unable to find parser for input: ' + action);
@@ -49,7 +59,7 @@ class ActionsHandler extends Handler {
 /**
  * Create a handler
  */
-function actionsHandlerExport() {
-  var actions = new ActionsHandler();
+function actionHandlerExport() {
+  var actionHandler = new ActionHandler();
 }
-actionsHandlerExport();
+actionHandlerExport();

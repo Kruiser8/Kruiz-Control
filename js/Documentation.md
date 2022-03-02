@@ -10,10 +10,11 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Parameters](#parameters)
   * [Aliases](#aliases)
 - [Default Parameters](#default-parameters)
-- [Actions](#actions)
-  * [Triggers](#actions-triggers)
+- [Action](#action)
+  * [Triggers](#action-triggers)
     + [OnAction](#onaction)
-  * [Actions](#actions-actions)
+  * [Actions](#action-actions)
+    + [Action](#action-1)
 - [API](#api)
   * [Triggers](#api-triggers)
   * [Actions](#api-actions)
@@ -354,10 +355,10 @@ The following parameters are always available. Use the `_successful_` and `_unsu
 
 ***
 
-## Actions
+## Action
 Enables the ability to create your own actions within Kruiz Control.
 
-### Actions Triggers
+### Action Triggers
 
 #### OnAction
 | | |
@@ -373,8 +374,15 @@ Enables the ability to create your own actions within Kruiz Control.
 
 ***
 
-### Actions Actions
-None at the moment.
+### Action Actions
+
+#### Action
+| | |
+------------ | -------------
+**Info** | Used to run an action by passing it through. This allows actions to be fired dynamically within an event. `<action>` is the full action that you want to complete. The action can be provided as a single argument (inside of quotes) or written out normally.
+**Format** | `Action <action>`
+**Example** | `Action Chat Send "Hello world"`
+**Example w/ single argument** | `Action "Chat Send 'Hello world'"`
 
 ***
 
