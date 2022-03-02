@@ -17,8 +17,6 @@ class Controller {
     this.addTrigger('OnInit', 'controller');
     this.addSuccess('controller');
     this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    this.eventId = 0;
-    this.eventIdQueue = async.queue(this.setupTrigger.bind(this), 1);
   }
 
   /**
@@ -126,21 +124,14 @@ class Controller {
    * @param {string} triggerId id of the trigger to run
    */
   async handleData(triggerId, triggerParams) {
-    this.eventIdQueue.push({
-      triggerId: triggerId,
-      triggerParams: triggerParams
-    });
-  }
-
-  async setupTrigger(data, callback) {
-    var { triggerId, triggerParams } = data;
     triggerParams = triggerParams || {};
-    triggerParams['_kc_event_id_'] = this.eventId;
+    triggerParams['_kc_event_id_'] = uuidv4();
     if (this.eventId === 1000000000) {
       this.eventId = 0;
     } else {
       this.eventId = this.eventId + 1;
     }
+
     if (typeof(this.triggerAsyncMap[triggerId]) !== "undefined") {
       var queue = this.triggerAsync[this.triggerAsyncMap[triggerId]];
       queue.push({
