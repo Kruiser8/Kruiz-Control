@@ -930,9 +930,8 @@ None at the moment.
 #### Discord File
 | | |
 ------------ | -------------
-**Info** | Used to upload a file attachment with a discord message. `<name>` is the id that was used to register the webhook in a [`Discord Create`](#discord-create). `<file>` is the absolute (full) or relative path to a file to upload. Relative paths start at the Kruiz Control root directory.
+**Info** | Used to upload a file attachment with a discord message. `<name>` is the id that was used to register the webhook in a [`Discord Create`](#discord-create). `<file>` is the relative path to a file to upload. Relative paths start at the Kruiz Control root directory.
 **Format** | `Discord File <name> <file>`
-**Example w/ absolute path** | `Discord File "GeneralChannel" "C:\Users\YOUR_USER_NAME\Documents\Stream\screenshot.png"`
 **Example w/ relative path** | `Discord File "GeneralChannel" "screenshots/screenshot.png"`
 
 ***
