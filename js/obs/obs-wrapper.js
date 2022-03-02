@@ -175,6 +175,64 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
     });
   };
 
+  obs.playPauseMedia = async function(sourceName, playPause) {
+    await this.send('PlayPauseMedia', {
+      'sourceName': sourceName,
+      'playPause': playPause
+    }).catch(err => {
+      // Promise convention dictates you have a catch on every chain.
+      console.error(JSON.stringify(err));
+    });
+  };
+
+  obs.restartMedia = async function(sourceName) {
+    await this.send('RestartMedia', {
+      'sourceName': sourceName
+    }).catch(err => {
+      // Promise convention dictates you have a catch on every chain.
+      console.error(JSON.stringify(err));
+    });
+  };
+
+  obs.stopMedia = async function(sourceName) {
+    await this.send('StopMedia', {
+      'sourceName': sourceName
+    }).catch(err => {
+      // Promise convention dictates you have a catch on every chain.
+      console.error(JSON.stringify(err));
+    });
+  };
+
+  obs.getMediaDuration = async function(sourceName) {
+    return await this.send('GetMediaDuration', {
+      'sourceName': sourceName
+    }).then(data => {
+      return data;
+    }).catch(err => {
+      // Promise convention dictates you have a catch on every chain.
+      console.error(JSON.stringify(err));
+    });
+  };
+
+  /**
+   * Set the path of a media source.
+   * @param {string} source
+   * @param {string} path
+   * @return {Promise<void>}
+   */
+  obs.setMediaSourcePath = async function(source, path) {
+    await this.send('SetSourceSettings', {
+      'sourceName': source,
+      'sourceType': 'ffmpeg_source',
+      'sourceSettings': {
+        'local_file': path
+      }
+    }).catch(err => {
+      // Promise convention dictates you have a catch on every chain.
+      console.error(JSON.stringify(err));
+    });
+  };
+
   /**
    * Set the URL of a browser source.
    * @param {string} source

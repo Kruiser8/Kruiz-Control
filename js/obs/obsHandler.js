@@ -282,6 +282,33 @@ class OBSHandler extends Handler {
         }
         return { is_active: false };
         break;
+      case 'media':
+        var { media, source, path } = Parser.getInputs(triggerData, ['action', 'media', 'source', 'path'], false, 1);
+        media = media.toLowerCase();
+        switch (media) {
+          case 'duration':
+            var data = await this.obs.getMediaDuration(source);
+            return {duration: data.mediaDuration / 1000}
+            break;
+          case 'path':
+            await this.obs.setMediaSourcePath(source, path);
+            break;
+          case 'pause':
+            var playPause = true;
+            await this.obs.playPauseMedia(source, playPause)
+            break;
+          case 'play':
+            var playPause = false;
+            await this.obs.playPauseMedia(source, playPause);
+            break;
+          case 'restart':
+            await this.obs.restartMedia(source);
+            break;
+          case 'stop':
+            await this.obs.stopMedia(source);
+            break;
+        }
+        break;
       case 'mute':
         var { source, status } = Parser.getInputs(triggerData, ['action', 'source', 'status']);
         status = status.toLowerCase();
