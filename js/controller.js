@@ -389,47 +389,11 @@ class Controller {
     else {
       // Get parser and run trigger content
       var parser = this.getParser(parserName);
-      if (!parser) parser = this.getParser('Actions');
+      if (!parser) parser = this.getParser('Action');
       if (parser) {
         return await parser.handleData(data, parameters);
       }
     }
-  }
-
-  /**
-   * Check the named cooldown.
-   *
-   * @param {string} name name of the cooldown
-   * @return {Object} whether or not to continue the trigger.
-   */
-  checkCooldown(name) {
-    var response = {};
-    response[name] = false;
-    var curTime = new Date().getTime();
-    if ( typeof(this.cooldowns[name]) !== 'undefined' && curTime < this.cooldowns[name] ) {
-      response[name] = true;
-      response['cooldown_real'] = (this.cooldowns[name] - curTime) / 1000;
-      response['cooldown'] = Math.ceil(response['cooldown_real']);
-    }
-    return response;
-  }
-
-  /**
-   * Handle the named cooldown.
-   *
-   * @param {string} name name of the cooldown
-   * @param {numeric} duration duration of the cooldown
-   * @return {Object} whether or not to continue the trigger.
-   */
-  handleCooldown(name, duration) {
-    var response = {"continue": false};
-    duration = duration * 1000; // convert to milliseconds
-    var curTime = new Date().getTime();
-    if ( typeof(this.cooldowns[name]) === 'undefined' || curTime >= this.cooldowns[name] ) {
-      this.cooldowns[name] = curTime + duration;
-      response["continue"] = true;
-    }
-    return response;
   }
 
   /**
