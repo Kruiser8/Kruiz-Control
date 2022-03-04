@@ -59,7 +59,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Debug Parser](#debug-parser)
     + [Debug SLOBS](#debug-slobs)
     + [Debug StreamElements](#debug-streamelements)
-    + [Debug StreamLabs](#debug-streamLabs)
+    + [Debug StreamLabs](#debug-streamlabs)
     + [Debug Twitch](#debug-twitch)
 - [Discord](#discord)
   * [Triggers](#discord-triggers)
@@ -163,7 +163,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OBS TakeSourceScreenshot](#obs-takesourcescreenshot)
     + [OBS Version](#obs-version)
     + [OBS Volume](#obs-volume)
-- [Param](#Param)
+- [Param](#param)
   * [Triggers](#param-triggers)
   * [Actions](#param-actions)
     + [Param Add](#param-add)
@@ -686,7 +686,7 @@ _WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mi
 
 ***
 
-### Actions
+### Chat Actions
 
 #### Chat Send
 | | |
