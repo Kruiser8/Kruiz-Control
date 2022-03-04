@@ -235,6 +235,18 @@ class ListHandler extends Handler {
     }
     return response;
   }
+
+  /**
+   * Create a named list from the provided items.
+   * @param {string} name of the list
+   * @param {array} items to add to the named list
+   */
+  createList(name, items) {
+    this.initialize(name);
+    items.forEach(item => {
+      this.add(name, item);
+    });
+  }
 }
 
 /**

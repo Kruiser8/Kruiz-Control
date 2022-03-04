@@ -230,6 +230,8 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Triggers](#text-to-speech-triggers)
   * [Actions](#text-to-speech-actions)
     + [TTS](#tts)
+    + [TTS Stop](#tts-stop)
+    + [TTS Voices](#tts-voices)
 - [Timer](#timer)
   * [Triggers](#timer-triggers)
     + [OnTimer](#ontimer)
@@ -2627,7 +2629,7 @@ None at the moment.
 ***
 
 ## Text-To-Speech
-Enables the ability to have input voiced with custom voices. This is powered by [responsivevoice.org](https://responsivevoice.org).
+Enables the ability to have input voiced with custom voices. This is powered by the text-to-speech (narration/speech) component on your computer.
 
 ### Text-To-Speech Triggers
 
@@ -2652,6 +2654,38 @@ None at the moment.
 **Info** | Used to stop playing text-to-speech audio.
 **Format** | `TTS Stop`
 **Example** | `TTS Stop`
+
+***
+
+#### TTS Voices
+Use this to determine the available voices on your computer.
+| | |
+------------ | -------------
+**Info** | Used to create a list of all available voices for text-to-speech based on what is installed on your computer. `<name>` is the name of the [`List`](#List) to create.
+**Format** | `TTS Voices <name>`
+**Example** | `TTS Voices MyVoices`
+
+<table>
+<tr>
+<td>Example Usage: Sends all voice options to chat</td>
+</tr>
+<tr>
+<td>
+
+```m
+OnInit
+TTS Voices MyVoices
+List Count MyVoices
+Param Create index 0
+Loop 3 {count}
+List Get MyVoices {index}
+Chat Send {value}
+Param Add index 1
+```
+
+</td>
+</tr>
+</table>
 
 ***
 
