@@ -117,6 +117,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Error](#error)
     + [Exit](#exit)
     + [Function](#function)
+    + [Globals](#globals)
     + [If](#if)
     + [Log](#log)
     + [Loop](#loop)
@@ -1412,6 +1413,38 @@ Function 'var arr = [api_data]; return {random: arr[Math.floor(Math.random() * a
 If a `continue` parameter is returned and the value is `false`, the trigger will exit and not continue processing actions.
 
 If an `actions` array parameter is returned, each item of the array will be inserted into the event and processed.
+
+***
+
+#### Globals
+Use this to determine all global variables in Kruiz Control.
+| | |
+------------ | -------------
+**Info** | Used to create a list of all current global variable names. `<name>` is the name of the [`List`](#List) to create.
+**Format** | `Globals <name>`
+**Example** | `Globals MyGlobals`
+
+<table>
+<tr>
+<td>Example Usage: Sends all global variable names chat</td>
+</tr>
+<tr>
+<td>
+
+```m
+OnInit
+Globals MyGlobals
+List Count MyGlobals
+Param Create index 0
+Loop 3 {count}
+List Get MyGlobals {index}
+Chat Send {value}
+Param Add index 1
+```
+
+</td>
+</tr>
+</table>
 
 ***
 

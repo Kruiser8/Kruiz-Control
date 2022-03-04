@@ -374,6 +374,12 @@ class Controller {
       var message = data.slice(1).join(' ');
       console.log(message);
     }
+    else if (parserName === 'globals') {
+      var { name } = Parser.getInputs(data, ['name']);
+      var keys = await IDBService.keys();
+      var parser = this.getParser("list");
+      parser.createList(name, keys);
+    }
     else {
       // Get parser and run trigger content
       var parser = this.getParser(parserName);
