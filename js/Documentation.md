@@ -1446,6 +1446,33 @@ Param Add index 1
 </tr>
 </table>
 
+<table>
+<tr>
+<td>Example Usage: Sends all global variable names and values to an example API</td>
+</tr>
+<tr>
+<td>
+
+```m
+OnInit
+Globals MyGlobals
+List Count MyGlobals
+Param Create index 0
+Loop 8 {count}
+List Get MyGlobals {index}
+Variable Global Load {value}
+API Method GlobalVariable Post
+API Url GlobalVariable "http://localhost/api/variable"
+API Data GlobalVariable name {value}
+API Data GlobalVariable value [{value}]
+API Send GlobalVariable
+Param Add index 1
+```
+
+</td>
+</tr>
+</table>
+
 ***
 
 #### If
