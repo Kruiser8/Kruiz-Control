@@ -1435,11 +1435,9 @@ Use this to determine all global variables in Kruiz Control.
 OnInit
 Globals MyGlobals
 List Count MyGlobals
-Param Create index 0
-Loop 3 {count}
-List Get MyGlobals {index}
+Loop 2 {count}
+List Remove MyGlobals
 Chat Send {value}
-Param Add index 1
 ```
 
 </td>
@@ -1457,16 +1455,14 @@ Param Add index 1
 OnInit
 Globals MyGlobals
 List Count MyGlobals
-Param Create index 0
-Loop 8 {count}
-List Get MyGlobals {index}
+Loop 7 {count}
+List Remove MyGlobals
 Variable Global Load {value}
 API Method GlobalVariable Post
 API Url GlobalVariable "http://localhost/api/variable"
 API Data GlobalVariable name {value}
 API Data GlobalVariable value [{value}]
 API Send GlobalVariable
-Param Add index 1
 ```
 
 </td>
@@ -2736,11 +2732,9 @@ Use this to determine the available voices on your computer.
 OnInit
 TTS Voices MyVoices
 List Count MyVoices
-Param Create index 0
-Loop 3 {count}
-List Get MyVoices {index}
+Loop 2 {count}
+List Remove MyVoices
 Chat Send {value}
-Param Add index 1
 ```
 
 </td>
