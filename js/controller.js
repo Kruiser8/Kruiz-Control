@@ -285,7 +285,11 @@ class Controller {
     else if (parserName === 'play') {
       if (data[1].toLowerCase() === "stop") {
         Object.keys(this.playAudio).forEach(key => {
-          this.playAudio[key].pause();
+
+          this.playAudio[key][0].pause();
+          if (this.playAudio[key].length > 1) {
+            this.playAudio[key][1]();
+          }
           delete this.playAudio[key];
         });
       }
@@ -303,9 +307,10 @@ class Controller {
           gainNode.gain.value = volume / 100;
         }
 
-        this.playAudio[parameters['_kc_event_id_']] = audio;
+        this.playAudio[parameters['_kc_event_id_']] = [audio];
         if (wait.toLowerCase() === 'wait') {
           await new Promise((resolve) => {
+            this.playAudio[parameters['_kc_event_id_']].push(resolve);
             audio.onended = () => {
               gainNode.disconnect();
               source = null;
