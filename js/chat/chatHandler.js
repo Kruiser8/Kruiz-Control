@@ -244,6 +244,7 @@ class ChatHandler extends Handler {
         this.commandsInfo[command].forEach(info => {
           if (this.checkPermissions(user, flags, info.permission, info.info) && this.updateCooldown(info)) {
             controller.handleData(info.trigger, {
+              command: command,
               user: user,
               message: combined,
               after: message,
@@ -316,6 +317,7 @@ class ChatHandler extends Handler {
           if (this.checkPermissions(user, flags, info.permission, info.info) && this.updateCooldown(info)) {
             var after = message.split(' ').slice(1).join(' ');
             controller.handleData(info.trigger, {
+              command: command,
               user: user,
               message: message,
               after: after,

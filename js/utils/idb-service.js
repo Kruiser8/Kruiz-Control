@@ -11,6 +11,13 @@
   }
 
   /**
+   * Retrieve all entries from IndexedDB.
+   */
+  static async keys() {
+    return await idbKeyval.keys();
+  }
+
+  /**
    * Set a key-value pair in IndexedDB.
    * @param {string} key id of the entry to store
    * @param {object} value object to store in the entry

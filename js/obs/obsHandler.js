@@ -3,7 +3,7 @@ class OBSHandler extends Handler {
    * Create a new OBS handler.
    */
   constructor() {
-    super('OBS', ['OnOBSSwitchScenes', 'OnOBSTransitionTo', 'OnOBSStreamStarted', 'OnOBSStreamStopped', 'OnOBSCustomMessage', 'OnOBSSourceVisibility']);
+    super('OBS', ['OnOBSSwitchScenes', 'OnOBSTransitionTo', 'OnOBSStreamStarted', 'OnOBSStreamStopped', 'OnOBSCustomMessage', 'OnOBSSourceVisibility', 'OnOBSSourceFilterVisibility']);
     this.onSwitch = [];
     this.onSwitchTrigger = {};
     this.onTransitionTo = [];
@@ -14,6 +14,8 @@ class OBSHandler extends Handler {
     this.onCustomTrigger = {};
     this.onSourceVis = {};
     this.onSourceVisTrigger = {};
+    this.onSourceFilterVis = {};
+    this.onSourceFilterVisTrigger = {};
 
     this.init.bind(this);
   }
@@ -26,7 +28,7 @@ class OBSHandler extends Handler {
   init(address, password) {
     this.obs = connectOBSWebsocket(
       address, password, this, this.onSwitchScenes.bind(this), this.onTransitionBegin.bind(this), this.onStreamStart.bind(this),
-      this.onStreamStop.bind(this), this.onCustomMessage.bind(this), this.onSourceVisibility.bind(this)
+      this.onStreamStop.bind(this), this.onCustomMessage.bind(this), this.onSourceVisibility.bind(this), this.onSourceFilterVisibility.bind(this)
     );
   }
 
@@ -103,6 +105,27 @@ class OBSHandler extends Handler {
           this.onSourceVisTrigger[`${scene}|${item}|${String(visibility)}`] = [];
         }
         this.onSourceVisTrigger[`${scene}|${item}|${String(visibility)}`].push(triggerId);
+        break;
+      case 'onobssourcefiltervisibility':
+        var { source, filter, status } = Parser.getInputs(triggerLine, ['source', 'filter', 'status']);
+        var visibility = 'toggle';
+        if (status && status.toLowerCase() === 'on') {
+          visibility = true;
+        } else if (status && status.toLowerCase() === 'off') {
+          visibility = false;
+        }
+        if (!(source in this.onSourceFilterVis)) {
+          this.onSourceFilterVis[source] = {};
+        }
+        if (!(filter in this.onSourceFilterVis[source])) {
+          this.onSourceFilterVis[source][filter] = [];
+        }
+        this.onSourceFilterVis[source][filter].push(visibility);
+        if (!(`${source}|${filter}|${String(visibility)}` in this.onSourceFilterVisTrigger)) {
+          this.onSourceFilterVisTrigger[`${source}|${filter}|${String(visibility)}`] = [];
+        }
+        this.onSourceFilterVisTrigger[`${source}|${filter}|${String(visibility)}`].push(triggerId);
+        break;
       default:
         // do nothing
     }
@@ -228,21 +251,52 @@ class OBSHandler extends Handler {
     var scene = data['scene-name'];
     var item = data['item-name'];
     var visibility = data['item-visible'];
+    var sourceTriggers = [];
     if (scene in this.onSourceVis && item in this.onSourceVis[scene]) {
       if (this.onSourceVis[scene][item].indexOf(visibility) !== -1) {
-        this.onSourceVisTrigger[`${scene}|${item}|${String(visibility)}`].forEach(triggerId => {
-          controller.handleData(triggerId, {
-            visible: visibility
-          });
-        });
+        sourceTriggers.push(...this.onSourceVisTrigger[`${scene}|${item}|${String(visibility)}`]);
       }
       if (this.onSourceVis[scene][item].indexOf('toggle') !== -1) {
-        this.onSourceVisTrigger[`${scene}|${item}|toggle`].forEach(triggerId => {
-          controller.handleData(triggerId, {
-            visible: visibility
-          });
-        });
+        sourceTriggers.push(...this.onSourceVisTrigger[`${scene}|${item}|toggle`]);
       }
+    }
+    if (sourceTriggers.length > 0) {
+      sourceTriggers.sort((a,b) => a-b);
+      sourceTriggers.forEach(triggerId => {
+        controller.handleData(triggerId, {
+          visible: visibility
+        });
+      });
+    }
+  }
+
+  /**
+   * Handle source filter visibility messages from obs websocket.
+   * @param {Object} data source filter information
+   */
+  async onSourceFilterVisibility(data) {
+    if (Debug.All || Debug.OBS) {
+      console.error("OBS onSourceFilterVisibility: " + JSON.stringify(data));
+    }
+    var source = data['sourceName'];
+    var filter = data['filterName'];
+    var visibility = data['filterEnabled'];
+    var sourceTriggers = [];
+    if (source in this.onSourceFilterVis && filter in this.onSourceFilterVis[source]) {
+      if (this.onSourceFilterVis[source][filter].indexOf(visibility) !== -1) {
+        sourceTriggers.push(...this.onSourceFilterVisTrigger[`${source}|${filter}|${String(visibility)}`]);
+      }
+      if (this.onSourceFilterVis[source][filter].indexOf('toggle') !== -1) {
+        sourceTriggers.push(...this.onSourceFilterVisTrigger[`${source}|${filter}|toggle`]);
+      }
+    }
+    if (sourceTriggers.length > 0) {
+      sourceTriggers.sort((a,b) => a-b);
+      sourceTriggers.forEach(triggerId => {
+        controller.handleData(triggerId, {
+          visible: visibility
+        });
+      });
     }
   }
 
@@ -429,6 +483,13 @@ class OBSHandler extends Handler {
       case 'takesourcescreenshot':
         var { source, filePath } = Parser.getInputs(triggerData, ['action', 'source', 'filePath']);
         await this.obs.takeSourceScreenshot(source, filePath);
+        break;
+      case 'transition':
+        var transitionData = await this.obs.getCurrentTransition();
+        var currentTransition = transitionData.name;
+        var { transition } = Parser.getInputs(triggerData, ['action', 'transition']);
+        await this.obs.setCurrentTransition(transition);
+        return { previous_transition: currentTransition };
         break;
       case 'version':
         var data = await this.obs.getVersion();

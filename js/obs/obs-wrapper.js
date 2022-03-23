@@ -9,8 +9,9 @@
 * @param {function} onStreamStop handle stream stop messages
 * @param {function} onCustomMessage handle custom messages
 * @param {function} onOBSSourceVisibility handle scene item visibility changes
+* @param {function} onOBSSourceFilterVisibility handle source filter visibility changes
 */
-function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTransitionBegin, onStreamStarted, onStreamStopped, onCustomMessage, onOBSSourceVisibility) {
+function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTransitionBegin, onStreamStarted, onStreamStopped, onCustomMessage, onOBSSourceVisibility, onOBSSourceFilterVisibility) {
   var obs = new OBSWebSocket();
   obs.connect({ address: address, password: password }).then(() => {
     obsHandler.success();
@@ -40,6 +41,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
   obs.on('StreamStopped', onStreamStopped);
   obs.on('BroadcastCustomMessage', onCustomMessage);
   obs.on('SceneItemVisibilityChanged', onOBSSourceVisibility);
+  obs.on('SourceFilterVisibilityChanged', onOBSSourceFilterVisibility);
 
   obs.getCurrentScene = async function() {
     return await this.send('GetCurrentScene')
@@ -372,6 +374,25 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
         'y': scaleY
 	     }
     }).catch(err => { // Promise convention dictates you have a catch on every chain.
+      console.error(JSON.stringify(err));
+    });
+  };
+
+  obs.getCurrentTransition = async function() {
+    return await this.send('GetCurrentTransition')
+    .then(data => {
+      return data;
+    }).catch(err => {
+      // Promise convention dictates you have a catch on every chain.
+      console.error(JSON.stringify(err));
+    });
+  };
+
+  obs.setCurrentTransition = async function(transition) {
+    await this.send('SetCurrentTransition', {
+      'transition-name': transition
+    }).catch(err => {
+      // Promise convention dictates you have a catch on every chain.
       console.error(JSON.stringify(err));
     });
   };

@@ -59,7 +59,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Debug Parser](#debug-parser)
     + [Debug SLOBS](#debug-slobs)
     + [Debug StreamElements](#debug-streamelements)
-    + [Debug StreamLabs](#debug-streamLabs)
+    + [Debug StreamLabs](#debug-streamlabs)
     + [Debug Twitch](#debug-twitch)
 - [Discord](#discord)
   * [Triggers](#discord-triggers)
@@ -117,6 +117,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Error](#error)
     + [Exit](#exit)
     + [Function](#function)
+    + [Globals](#globals)
     + [If](#if)
     + [Log](#log)
     + [Loop](#loop)
@@ -128,6 +129,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Triggers](#obs-triggers)
     + [OnOBSCustomMessage](#onobscustommessage)
     + [OnOBSSourceVisibility](#onobssourcevisibility)
+    + [OnOBSSourceFilterVisibility](#onobssourcefiltervisibility)
     + [OnOBSStreamStarted](#onobsstreamstarted)
     + [OnOBSStreamStopped](#onobsstreamstopped)
     + [OnOBSSwitchScenes](#onobsswitchscenes)
@@ -160,9 +162,10 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OBS StopReplayBuffer](#obs-stopreplaybuffer)
     + [OBS StopStream](#obs-stopstream)
     + [OBS TakeSourceScreenshot](#obs-takesourcescreenshot)
+    + [OBS Transition](#obs-transition)
     + [OBS Version](#obs-version)
     + [OBS Volume](#obs-volume)
-- [Param](#Param)
+- [Param](#param)
   * [Triggers](#param-triggers)
   * [Actions](#param-actions)
     + [Param Add](#param-add)
@@ -230,6 +233,8 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Triggers](#text-to-speech-triggers)
   * [Actions](#text-to-speech-actions)
     + [TTS](#tts)
+    + [TTS Stop](#tts-stop)
+    + [TTS Voices](#tts-voices)
 - [Timer](#timer)
   * [Triggers](#timer-triggers)
     + [OnTimer](#ontimer)
@@ -342,6 +347,7 @@ OnCommand mbv 0 !so !sh !caster !shout
 Chat Send "Go check out {after} at twitch.tv/{after}"
 ```
 The commands, `!so`, `!sh`, `!caster`, and `!shout` will all cause the message to be sent, regardless of which one is used. This allows you to easily set up _aliases_ for triggers. The following triggers now support aliases:
+- OnAction
 - OnCommand
 - OnKeyword
 - OnMessage
@@ -378,11 +384,14 @@ Enables the ability to create your own actions within Kruiz Control.
 ------------ | -------------
 **Info** | Used to define a list of actions that will get inserted into an event when the provided `<action>` is called.
 **Format** | `OnAction <action>`
+**Format w/ Aliases** | `OnAction <action1> <action2> ...`
 **Example** | `OnAction ReadFile`
+**Example w/ Aliases** | `OnAction ReadFile rf`
 
 ##### Parameters
 | | |
 ------------ | -------------
+**action** | The `<action>` performed that triggered this event.
 **in#** | The numbered arguments passed to the action. Replace `#` with a number, starting at 1 and ending at the last argument passed into the command.
 
 ***
@@ -619,6 +628,7 @@ _WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mi
 ##### Parameters
 | | |
 ------------ | -------------
+**command** | The command that triggered the event.
 **user** | The display name of the user that sent the command.
 **after** | The message excluding the command.
 **message** | The entire chat message, including the command.
@@ -683,7 +693,7 @@ _WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mi
 
 ***
 
-### Actions
+### Chat Actions
 
 #### Chat Send
 | | |
@@ -1413,6 +1423,61 @@ If an `actions` array parameter is returned, each item of the array will be inse
 
 ***
 
+#### Globals
+Use this to determine all global variables in Kruiz Control.
+| | |
+------------ | -------------
+**Info** | Used to create a list of all current global variable names. `<name>` is the name of the [`List`](#List) to create.
+**Format** | `Globals <name>`
+**Example** | `Globals MyGlobals`
+
+<table>
+<tr>
+<td>Example Usage: Sends all global variable names chat</td>
+</tr>
+<tr>
+<td>
+
+```m
+OnInit
+Globals MyGlobals
+List Count MyGlobals
+Loop 2 {count}
+List Remove MyGlobals
+Chat Send {value}
+```
+
+</td>
+</tr>
+</table>
+
+<table>
+<tr>
+<td>Example Usage: Sends all global variable names and values to an example API</td>
+</tr>
+<tr>
+<td>
+
+```m
+OnInit
+Globals MyGlobals
+List Count MyGlobals
+Loop 7 {count}
+List Remove MyGlobals
+Variable Global Load {value}
+API Method GlobalVariable Post
+API Url GlobalVariable "http://localhost/api/variable"
+API Data GlobalVariable name {value}
+API Data GlobalVariable value [{value}]
+API Send GlobalVariable
+```
+
+</td>
+</tr>
+</table>
+
+***
+
 #### If
 The **If** action lets you exit out of a trigger if a specific criteria isn't met by comparing two values.
 
@@ -1509,6 +1574,20 @@ Enables the ability to interact with and respond to OBS.
 ------------ | -------------
 **message** | The name of the custom message.
 **data** | The data included with the message (or an empty string).
+
+***
+
+#### OnOBSSourceFilterVisibility
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when a source filter's visibility is changed.
+**Format** | `OnOBSSourceFilterVisibility <source> <filter> <on/off/toggle>`
+**Example** | `OnOBSSourceFilterVisibility Webcam Rainbow on`
+
+##### Parameters
+| | |
+------------ | -------------
+**visible** | The current visibility setting.
 
 ***
 
@@ -1867,6 +1946,20 @@ _Note: The browser source does not need to be in current/active scene for this t
 **Info** | Used to take a screenshot of an OBS source and save it to a file. `<file>` is the absolute path to a file.
 **Format** | `OBS TakeSourceScreenshot <source> <file>`
 **Example** | `OBS TakeSourceScreenshot Webcam "C:\Users\YOUR_USER_NAME\Documents\Stream\screenshot.png"`
+
+***
+
+#### OBS Transition
+| | |
+------------ | -------------
+**Info** | Used to change the scene transition. `<transition>` is the name of the scene transition that you want active.
+**Format** | `OBS Transition <transition>`
+**Example** | `OBS Transition Fade`
+
+##### Parameters
+| | |
+------------ | -------------
+**previous_transition** | The name of the transition prior to changing it.
 
 ***
 
@@ -2627,7 +2720,7 @@ None at the moment.
 ***
 
 ## Text-To-Speech
-Enables the ability to have input voiced with custom voices. This is powered by [responsivevoice.org](https://responsivevoice.org).
+Enables the ability to have input voiced with custom voices. This is powered by the text-to-speech (narration/speech) component on your computer.
 
 ### Text-To-Speech Triggers
 
@@ -2652,6 +2745,36 @@ None at the moment.
 **Info** | Used to stop playing text-to-speech audio.
 **Format** | `TTS Stop`
 **Example** | `TTS Stop`
+
+***
+
+#### TTS Voices
+Use this to determine the available voices on your computer.
+| | |
+------------ | -------------
+**Info** | Used to create a list of all available voices for text-to-speech based on what is installed on your computer. `<name>` is the name of the [`List`](#List) to create.
+**Format** | `TTS Voices <name>`
+**Example** | `TTS Voices MyVoices`
+
+<table>
+<tr>
+<td>Example Usage: Sends all voice options to chat</td>
+</tr>
+<tr>
+<td>
+
+```m
+OnInit
+TTS Voices MyVoices
+List Count MyVoices
+Loop 2 {count}
+List Remove MyVoices
+Chat Send {value}
+```
+
+</td>
+</tr>
+</table>
 
 ***
 
