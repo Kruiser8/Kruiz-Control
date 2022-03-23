@@ -345,6 +345,7 @@ OnCommand mbv 0 !so !sh !caster !shout
 Chat Send "Go check out {after} at twitch.tv/{after}"
 ```
 The commands, `!so`, `!sh`, `!caster`, and `!shout` will all cause the message to be sent, regardless of which one is used. This allows you to easily set up _aliases_ for triggers. The following triggers now support aliases:
+- OnAction
 - OnCommand
 - OnKeyword
 - OnMessage
@@ -381,11 +382,14 @@ Enables the ability to create your own actions within Kruiz Control.
 ------------ | -------------
 **Info** | Used to define a list of actions that will get inserted into an event when the provided `<action>` is called.
 **Format** | `OnAction <action>`
+**Format w/ Aliases** | `OnAction <action1> <action2> ...`
 **Example** | `OnAction ReadFile`
+**Example w/ Aliases** | `OnAction ReadFile rf`
 
 ##### Parameters
 | | |
 ------------ | -------------
+**action** | The `<action>` performed that triggered this event.
 **in#** | The numbered arguments passed to the action. Replace `#` with a number, starting at 1 and ending at the last argument passed into the command.
 
 ***
@@ -622,6 +626,7 @@ _WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mi
 ##### Parameters
 | | |
 ------------ | -------------
+**command** | The command that triggered the event.
 **user** | The display name of the user that sent the command.
 **after** | The message excluding the command.
 **message** | The entire chat message, including the command.

@@ -49,7 +49,7 @@ class ActionHandler extends Handler {
       for (var i = 1; i < triggerData.length; i++) {
         inputs[`in${i}`] = triggerData[i];
       }
-      return { "_trigId": this.actionsTriggers[action], ...inputs };
+      return { "_trigId": this.actionsTriggers[action], action: action, ...inputs };
     } else {
       console.error('Unable to find parser for input: ' + action);
     }
