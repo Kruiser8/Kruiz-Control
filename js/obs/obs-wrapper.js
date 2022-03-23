@@ -376,5 +376,24 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
     });
   };
 
+  obs.getCurrentTransition = async function() {
+    return await this.send('GetCurrentTransition')
+    .then(data => {
+      return data;
+    }).catch(err => {
+      // Promise convention dictates you have a catch on every chain.
+      console.error(JSON.stringify(err));
+    });
+  };
+
+  obs.setCurrentTransition = async function(transition) {
+    await this.send('SetCurrentTransition', {
+      'transition-name': transition
+    }).catch(err => {
+      // Promise convention dictates you have a catch on every chain.
+      console.error(JSON.stringify(err));
+    });
+  };
+
   return obs;
 }

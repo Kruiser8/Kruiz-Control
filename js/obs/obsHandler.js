@@ -430,6 +430,13 @@ class OBSHandler extends Handler {
         var { source, filePath } = Parser.getInputs(triggerData, ['action', 'source', 'filePath']);
         await this.obs.takeSourceScreenshot(source, filePath);
         break;
+      case 'transition':
+        var transitionData = await this.obs.getCurrentTransition();
+        var currentTransition = transitionData.name;
+        var { transition } = Parser.getInputs(triggerData, ['action', 'transition']);
+        await this.obs.setCurrentTransition(transition);
+        return { previous_transition: currentTransition };
+        break;
       case 'version':
         var data = await this.obs.getVersion();
         return { version: data.obsWebsocketVersion };

@@ -1933,6 +1933,20 @@ _Note: The browser source does not need to be in current/active scene for this t
 
 ***
 
+#### OBS Transition
+| | |
+------------ | -------------
+**Info** | Used to change the scene transition. `<transition>` is the name of the scene transition that you want active.
+**Format** | `OBS Transition <transition>`
+**Example** | `OBS Transition Fade`
+
+##### Parameters
+| | |
+------------ | -------------
+**previous_transition** | The name of the transition prior to changing it.
+
+***
+
 #### OBS Version
 | | |
 ------------ | -------------
