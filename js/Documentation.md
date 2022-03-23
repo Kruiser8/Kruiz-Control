@@ -1575,6 +1575,20 @@ Enables the ability to interact with and respond to OBS.
 
 ***
 
+#### OnOBSSourceFilterVisibility
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when a source filter's visibility is changed.
+**Format** | `OnOBSSourceFilterVisibility <source> <filter> <on/off/toggle>`
+**Example** | `OnOBSSourceFilterVisibility Webcam Rainbow on`
+
+##### Parameters
+| | |
+------------ | -------------
+**visible** | The current visibility setting.
+
+***
+
 #### OnOBSSourceVisibility
 | | |
 ------------ | -------------
