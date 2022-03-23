@@ -24,6 +24,7 @@
     slobsSocket.sendSLOBS("sceneSwitched", "ScenesService");
     slobsSocket.sendSLOBS("sceneAdded", "ScenesService");
     slobsSocket.sendSLOBS("sceneRemoved", "ScenesService");
+    slobsSocket.sendSLOBS("streamingStatusChange", "StreamingService");
   };
 
   socket.onmessage = (e) => {
