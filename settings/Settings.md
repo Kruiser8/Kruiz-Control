@@ -13,7 +13,6 @@ This script uses text files to improve the average user experience.
 - [SLOBS](#slobs)
 - [StreamElements](#streamelements)
 - [Streamlabs](#streamlabs)
-- [Text-To-Speech](#text-to-speech)
 - [Twitch](#twitch)
 
 ***
@@ -116,22 +115,6 @@ To capture alerts through [Streamlabs](https://streamlabs.com/), you'll need you
 
 ```
 eyJhaoiuh798a99h7HBN879DHF98A789aigfba8790gfh987Fb78987BgUYF4SD56gI9Uh98786rf7tVBg97Gf56dxCilbh8OYf6r5SDX6cuyoIB97768FD76d546SD6iGVBUIb9i980YH897676f8FiUB9OIu8g78D6d5BiIU
-```
-
-***
-
-## Text-To-Speech
-
-### tag.txt
-**Location:** `settings/tts/tag.txt`
-
-Specify the `responsivevoice` html script tag assigned to your account.
-- Go to [responsivevoice.org](https://responsivevoice.org)
-- Create an account and go to your [app dashboard](https://app.responsivevoice.org/)
-- If prompted with a pop-up, copy the value and paste it into the file.
-- If not prompted (or the prompt was closed), scroll down to the bottom of the page and copy the code labeled `Insert this code in your web page before the end </body> tag:` into the text file.
-```
-<script src="https://code.responsivevoice.org/responsivevoice.js?key=XXXXXXXX"></script>
 ```
 
 ***
