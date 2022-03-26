@@ -4,6 +4,7 @@ class TTSHandler extends Handler {
    */
   constructor() {
     super('TTS', []);
+    this.voices = {};
     this.success();
   }
 
@@ -24,6 +25,7 @@ class TTSHandler extends Handler {
         await timeout(1000);
         voices = window.speechSynthesis.getVoices();
       }
+      this.updateVoices(voices);
       listParser.createList(name, voices.map(voice => voice.name));
     } else {
       var { voice, volume, wait, message } = Parser.getInputs(triggerData, ['voice', 'volume', 'wait', 'message']);
@@ -36,6 +38,15 @@ class TTSHandler extends Handler {
       var msg = new SpeechSynthesisUtterance();
       msg.text = message;
       msg.volume = volume;
+
+      // Load voices if not loaded yet
+      if (Object.keys(this.voices).length === 0) {
+        await this.initializeVoices();
+      }
+
+      if (this.voices[voice]) {
+        msg.voice = this.voices[voice];
+      }
 
       if (wait === 'wait') {
         await new Promise((resolve) => {
@@ -50,6 +61,30 @@ class TTSHandler extends Handler {
     }
 
     return;
+  }
+
+  /**
+   *  Initialize the internal list of voices
+   */
+  async initializeVoices() {
+    var voices = window.speechSynthesis.getVoices();
+    if (voices.length === 0) {
+      await timeout(1000);
+      voices = window.speechSynthesis.getVoices();
+    }
+    this.updateVoices(voices);
+  }
+
+  /**
+   * Update the internal voice dictionary.
+   * @param {array} voices list of SpeechSynthesisVoice objects
+   */
+  updateVoices(voices) {
+    this.voices = {};
+    voices.forEach(voice => {
+      this.voices[voice.name] = voice;
+    });
+
   }
 }
 
