@@ -29,7 +29,7 @@ class VariableHandler extends Handler {
       // Remove a global variable
       else if (action === 'remove') {
         var { varName } = Parser.getInputs(triggerData, ['global', 'action', 'varName']);
-        IDBService.del(varName);
+        IDBService.delete(varName);
       }
       // Set a global variable
       else if (action === 'set') {
