@@ -1980,14 +1980,15 @@ _Note: The browser source does not need to be in current/active scene for this t
 #### OBS Volume
 | | |
 ------------ | -------------
-**Info** | Used to change the volume of an audio source. `<volume>` must be a number between 0.0 and 1.0. Note, volume stands for the amplitude/mul value and is NOT the dB value or a percentage. Please test for the expected result before usage.
-**Format** | `OBS Volume <source> <volume>`
+**Info** | Used to change the volume of an audio source. `<useDecibel>` is an optional true/false value (defaults to false) to specify whether `<volume>` should be interpreted as decibels/dB (true) or amplitude/mul (false). If using decibels/dB, `<volume>` must be a number less than or equal to 0.0; note that OBS will interpret dB values below -100.0 as -Inf. If using amplitude/mul, `<volume>` must be a number between 0.0 and 1.0; note that the amplitude/mul value is NOT a percentage, please test for the expected result before usage.
+**Format** | `OBS Volume <source> <volume> <useDecibel>`
 **Example** | `OBS Volume "Desktop Audio" 0.2`
+**Example (using decibels/dB)** | `OBS Volume "Desktop Audio" -3.6 true`
 
 ##### Parameters
 | | |
 ------------ | -------------
-**previous_volume** | The volume of the source before changing. This allows users to revert the volume to the prior level.
+**previous_volume** | The volume of the source before changing. This allows users to revert the volume to the prior level. The value will be returned as decibels/dB if `<useDecibel>` was true, and as amplitude/mul otherwise.
 
 ***
 
