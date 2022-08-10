@@ -206,6 +206,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [SLOBS StartReplayBuffer](#slobs-startreplaybuffer)
     + [SLOBS StopReplayBuffer](#slobs-stopreplaybuffer)
     + [SLOBS ToggleStream](#slobs-togglestream)
+    + [SLOBS Volume](#slobs-volume)
 - [StreamElements](#streamelements)
   * [Triggers](#streamelements-triggers)
     + [OnSETwitchBits](#onsetwitchbits)
@@ -2393,6 +2394,20 @@ Enables the ability to interact with and respond to SLOBS.
 **Info** | Used to go live within SLOBSs or stop the given stream. Note, there's no way to specify if you're toggling the stream on or off.
 **Format** | `SLOBS ToggleStream`
 **Example** | `SLOBS ToggleStream`
+
+***
+
+#### SLOBS Volume
+| | |
+------------ | -------------
+**Info** | Used to change the volume of an audio source. `<source>` is the name of the audio source in the mixer. `<volume>` is a number between 0 and 1.0. Unlike [`OBS Volume`](#obs-volume), the SLOBS `<volume>` value indicates a percentage.
+**Format** | `SLOBS Volume <source> <volume>`
+**Example** | `SLOBS Volume "Desktop Audio" 0.2`
+
+##### Parameters
+| | |
+------------ | -------------
+**previous_volume** | The volume of the source before changing. This allows users to revert the volume to the prior level.
 
 ***
 

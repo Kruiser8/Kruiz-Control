@@ -147,12 +147,17 @@ class SLOBSHandler extends Handler {
           await this.slobs.flipSourceX(scene, source);
         }
         break;
-      case 'rotate':
-        var { scene, source, degree } = Parser.getInputs(triggerData, ['action', 'scene', 'source', 'degree']);
-        degree = parseFloat(degree);
-        if (!isNaN(degree)) {
-          await this.slobs.rotateSource(scene, source, degree);
+      case 'mute':
+        var { source, status } = Parser.getInputs(triggerData, ['action', 'source', 'status']);
+        status = status.toLowerCase();
+        if (status != 'toggle') {
+          status = status === 'on' ? true : false;
         }
+        await this.slobs.setAudioMute(source, status);
+        break;
+      case 'notification':
+        var { message } = Parser.getInputs(triggerData, ['action', 'message']);
+        await this.slobs.pushNotification(message);
         break;
       case 'position':
         var { scene, source, x, y } = Parser.getInputs(triggerData, ['action', 'scene', 'source', 'x', 'y']);
@@ -162,16 +167,12 @@ class SLOBSHandler extends Handler {
           await this.slobs.setPosition(scene, source, x, y);
         }
         break;
-      case 'mute':
-        var { source, status } = Parser.getInputs(triggerData, ['action', 'source', 'status']);
-        status = status.toLowerCase();
-        if (status != 'toggle') {
-          status = status === 'on' ? true : false;
+      case 'rotate':
+        var { scene, source, degree } = Parser.getInputs(triggerData, ['action', 'scene', 'source', 'degree']);
+        degree = parseFloat(degree);
+        if (!isNaN(degree)) {
+          await this.slobs.rotateSource(scene, source, degree);
         }
-        await this.slobs.setAudioMute(source, status);
-        break;
-      case 'togglestream':
-        await this.slobs.toggleStream();
         break;
       case 'savereplaybuffer':
         await this.slobs.saveReplayBuffer();
@@ -182,9 +183,18 @@ class SLOBSHandler extends Handler {
       case 'stopreplaybuffer':
         await this.slobs.stopReplayBuffer();
         break;
-      case 'notification':
-        var { message } = Parser.getInputs(triggerData, ['action', 'message']);
-        await this.slobs.pushNotification(message);
+      case 'togglestream':
+        await this.slobs.toggleStream();
+        break;
+      case 'volume':
+        var { source, volume } = Parser.getInputs(triggerData, ['action', 'source', 'volume']);
+        volume = parseFloat(volume);
+        if (!isNaN(volume)) {
+          var currentVolume = await this.slobs.setVolume(source, volume);
+          return { previous_volume: currentVolume };
+        } else {
+          console.error('Unable to parse volume value: ' + triggerData[triggerData.length - 1]);
+        }
         break;
     }
     return;
