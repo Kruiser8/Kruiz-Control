@@ -168,12 +168,13 @@ class ChatHandler extends Handler {
 
   /**
    * Register trigger from user input.
-   * @param {string} user twich username that sent message
+   * @param {string} user twitch display name that sent the message
    * @param {object} flags permission flags for the user
    * @param {string} permissions usability of the command or keyword
+   * @param {string} username twitch username that sent the message
    * @param {string} info extra information for the usability
    */
-  checkPermissions(user, flags, permissions, info) {
+  checkPermissions(user, flags, permissions, username, info) {
     user = user.toLowerCase();
     if (
       (permissions.includes('e')) ||
@@ -181,7 +182,7 @@ class ChatHandler extends Handler {
       (permissions.includes('v') && flags.vip) ||
       (permissions.includes('f') && flags.founder) ||
       (permissions.includes('m') && flags.mod) ||
-      (permissions.includes('b') && this.channel === user) ||
+      (permissions.includes('b') && this.channel === username) ||
       (permissions.includes('n') && !flags.founder && !flags.subscriber && !flags.vip && !flags.mod && this.channel !== user) ||
       (permissions.includes('u') && info && user === info)
     ){
@@ -242,7 +243,7 @@ class ChatHandler extends Handler {
           chatArgs[`arg${i+1}`] = args[i];
         }
         this.commandsInfo[command].forEach(info => {
-          if (this.checkPermissions(user, flags, info.permission, info.info) && this.updateCooldown(info)) {
+          if (this.checkPermissions(user, flags, info.permission, extra.username, info.info) && this.updateCooldown(info)) {
             controller.handleData(info.trigger, {
               command: command,
               user: user,
@@ -273,7 +274,7 @@ class ChatHandler extends Handler {
           }
           this.keywordsInfo[match].forEach(info => {
             // Check if user has permission to trigger keyword
-            if (this.checkPermissions(user, flags, info.permission, info.info) && this.updateCooldown(info)) {
+            if (this.checkPermissions(user, flags, info.permission, extra.username, info.info) && this.updateCooldown(info)) {
               controller.handleData(info.trigger, {
                 user: user,
                 keyword: match,
@@ -308,14 +309,14 @@ class ChatHandler extends Handler {
       // Check for matching command and user permission
       var command = message.split(' ')[0].toLowerCase();
       if(this.commandsOther.indexOf(command) != -1) {
-        var args = Parser.splitLine(message);
+        var args = Parser.splitLine(message).slice(1);
         var chatArgs = {};
         for (var i = 0; i < args.length; i++) {
           chatArgs[`arg${i+1}`] = args[i];
         }
         this.commandsInfo[command].forEach(info => {
-          if (this.checkPermissions(user, flags, info.permission, info.info) && this.updateCooldown(info)) {
-            var after = message.split(' ').slice(1).join(' ');
+          if (this.checkPermissions(user, flags, info.permission, extra.username, info.info) && this.updateCooldown(info)) {
+            var after = args.join(' ');
             controller.handleData(info.trigger, {
               command: command,
               user: user,
@@ -346,7 +347,7 @@ class ChatHandler extends Handler {
           var match = result[0].trim().toLowerCase();
           this.keywordsInfo[match].forEach(info => {
             // Check if user has permission to trigger keyword
-            if (this.checkPermissions(user, flags, info.permission, info.info) && this.updateCooldown(info)) {
+            if (this.checkPermissions(user, flags, info.permission, extra.username, info.info) && this.updateCooldown(info)) {
               controller.handleData(info.trigger, {
                 user: user,
                 keyword: match,
