@@ -496,11 +496,12 @@ class OBSHandler extends Handler {
         return { version: data.obsWebsocketVersion };
         break;
       case 'volume':
-        var { source, volume } = Parser.getInputs(triggerData, ['action', 'source', 'volume']);
-        var currentAudio = await this.obs.getVolume(source);
+        var { source, volume, useDecibel } = Parser.getInputs(triggerData, ['action', 'source', 'volume', 'useDecibel'], false, 1);
+        useDecibel = (useDecibel && useDecibel.toLowerCase() === 'true') ? true : false;
+        var currentAudio = await this.obs.getVolume(source, useDecibel);
         volume = parseFloat(volume);
         if (!isNaN(volume)) {
-          await this.obs.setVolume(source, volume);
+          await this.obs.setVolume(source, volume, useDecibel);
         } else {
           console.error('Unable to parse volume value: ' + triggerData[triggerData.length - 1]);
         }

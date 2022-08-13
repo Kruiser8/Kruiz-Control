@@ -146,9 +146,10 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
     });
   };
 
-  obs.getVolume = async function(source) {
+  obs.getVolume = async function(source, useDecibel) {
     return await this.send('GetVolume', {
-      'source': source
+      'source': source,
+      'useDecibel': useDecibel
     }).then(data => {
       return data;
     }).catch(err => {
@@ -157,10 +158,11 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
     });
   };
 
-  obs.setVolume = async function(source, volume) {
+  obs.setVolume = async function(source, volume, useDecibel) {
     await this.send('SetVolume', {
       'source': source,
-      'volume': volume
+      'volume': volume,
+      'useDecibel': useDecibel
     }).catch(err => {
       // Promise convention dictates you have a catch on every chain.
       console.error(JSON.stringify(err));
