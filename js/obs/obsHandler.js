@@ -142,8 +142,8 @@ class OBSHandler extends Handler {
     }
     var currentScene = await this.obs.getCurrentScene();
     var sceneTriggers = [];
-    if (currentScene.name === data.sceneName) {
-      if (this.onSwitch.indexOf(currentScene.name) !== -1) {
+    if (currentScene === data.sceneName) {
+      if (this.onSwitch.indexOf(currentScene) !== -1) {
         sceneTriggers.push(...this.onSwitchTrigger[data.sceneName]);
       }
       if (this.onSwitch.indexOf('*') !== -1) {
@@ -154,7 +154,7 @@ class OBSHandler extends Handler {
       sceneTriggers.sort((a,b) => a-b);
       sceneTriggers.forEach(triggerId => {
         controller.handleData(triggerId, {
-          scene: currentScene.name
+          scene: currentScene
         });
       });
     }
@@ -314,27 +314,21 @@ class OBSHandler extends Handler {
         break;
       case 'currentscene':
         var currentScene = await this.obs.getCurrentScene();
-        return {current_scene: currentScene.name};
+        return {current_scene: currentScene};
         break;
       case 'isscenesourcevisible':
         var { scene, source } = Parser.getInputs(triggerData, ['action', 'scene', 'source']);
         if (scene === '{current}') {
           var currentScene = await this.obs.getCurrentScene();
-          scene = currentScene.name;
+          scene = currentScene;
         }
-        var data = await this.obs.getSourceVisibility(scene, source);
-        if (data && data.visible) {
-          return { is_visible: true };
-        }
-        return { is_visible: false };
+        var visible = await this.obs.getSourceVisibility(scene, source);
+        return { is_visible: !!visible };
         break;
       case 'issourceactive':
         var { source } = Parser.getInputs(triggerData, ['action', 'source']);
-        var data = await this.obs.getSourceActiveStatus(source);
-        if (data && data.sourceActive) {
-          return { is_active: true };
-        }
-        return { is_active: false };
+        var is_active = await this.obs.getSourceActiveStatus(source);
+        return { is_active };
         break;
       case 'media':
         var { media, source, path } = Parser.getInputs(triggerData, ['action', 'media', 'source', 'path'], false, 1);
@@ -377,7 +371,7 @@ class OBSHandler extends Handler {
         var { scene, item, x, y } = Parser.getInputs(triggerData, ['action', 'scene', 'item', 'x', 'y']);
         if (scene === '{current}') {
           var currentScene = await this.obs.getCurrentScene();
-          scene = currentScene.name;
+          scene = currentScene;
         }
         var data = await this.obs.getSceneItemProperties(scene, item);
         x = parseFloat(x);
@@ -400,7 +394,7 @@ class OBSHandler extends Handler {
         var { scene } = Parser.getInputs(triggerData, ['action', 'scene']);
         var currentScene = await this.obs.getCurrentScene();
         await this.obs.setCurrentScene(scene);
-        return {previous_scene: currentScene.name};
+        return {previous_scene: currentScene};
         break;
       case 'scenesource':
         var { scene, source, status } = Parser.getInputs(triggerData, ['action', 'scene', 'source', 'status']);
@@ -421,8 +415,7 @@ class OBSHandler extends Handler {
       case 'size':
         var { scene, item, width, height } = Parser.getInputs(triggerData, ['action', 'scene', 'item', 'width', 'height']);
         if (scene === '{current}') {
-          var currentScene = await this.obs.getCurrentScene();
-          scene = currentScene.name;
+          scene = await this.obs.getCurrentScene();
         }
         var data = await this.obs.getSceneItemProperties(scene, item);
         var scaleX = parseFloat(width) / parseFloat(data.sourceWidth);

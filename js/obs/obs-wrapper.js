@@ -13,7 +13,7 @@
 */
 function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTransitionBegin, onStreamStarted, onStreamStopped, onCustomMessage, onOBSSourceVisibility, onOBSSourceFilterVisibility) {
   var obs = new OBSWebSocket();
-  obs.connect({ address: address, password: password }).then(() => {
+  obs.connect(address, password).then(() => {
     obsHandler.success();
   }).catch(err => { // Promise convention dictates you have a catch on every chain.
     console.error(JSON.stringify(err));
@@ -43,10 +43,15 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
   obs.on('SceneItemVisibilityChanged', onOBSSourceVisibility);
   obs.on('SourceFilterVisibilityChanged', onOBSSourceFilterVisibility);
 
+  obs._getSceneItemId = async function(scene, source) {
+    const { sceneItemId } = await obs.call('GetSceneItemId', { sceneName: scene, sourceName: source });
+    return sceneItemId;
+  }
+
   obs.getCurrentScene = async function() {
-    return await this.send('GetCurrentScene')
+    return await this.call('GetCurrentProgramScene')
     .then(data => {
-      return data;
+      return data.currentProgramSceneName;
     }).catch(err => {
       // Promise convention dictates you have a catch on every chain.
       console.error(JSON.stringify(err));
@@ -54,11 +59,11 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
   };
 
   obs.getSourceVisibility = async function(scene, source) {
-    return await this.send('GetSceneItemProperties', {
-      'item': source,
-      'scene-name': scene
+    return await this.call('GetSceneItemEnabled', {
+      sceneName: scene,
+      sceneItemId: await this._getSceneItemId(scene, source)
     }).then(data => {
-      return data;
+      return data.sceneItemEnabled;
     }).catch(err => {
       // Promise convention dictates you have a catch on every chain.
       console.error(JSON.stringify(err));
@@ -66,10 +71,10 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
   };
 
   obs.getSourceActiveStatus = async function(source) {
-    return await this.send('GetSourceActive', {
+    return await this.call('GetSourceActive', {
       'sourceName': source
     }).then(data => {
-      return data;
+      return data.videoActive;
     }).catch(err => {
       // Promise convention dictates you have a catch on every chain.
       console.error(JSON.stringify(err));
@@ -78,7 +83,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
 
   obs.setSourceVisibility = async function(source, enabled, scene) {
     if (scene) {
-      await this.send('SetSceneItemProperties', {
+      await this.call('SetSceneItemProperties', {
         'item': source,
         'visible': enabled,
         'scene-name': scene
@@ -87,7 +92,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
         console.error(JSON.stringify(err));
       });
     } else {
-      await this.send('SetSceneItemProperties', {
+      await this.call('SetSceneItemProperties', {
         'item': source,
         'visible': enabled
       }).catch(err => {
@@ -98,7 +103,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
   };
 
   obs.setFilterVisibility = async function(source, filter, enabled) {
-    await this.send('SetSourceFilterVisibility', {
+    await this.call('SetSourceFilterVisibility', {
       'sourceName': source,
       'filterName': filter,
       'filterEnabled': enabled
@@ -109,7 +114,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
   };
 
   obs.setCurrentScene = async function(scene) {
-    await this.send('SetCurrentScene', {
+    await this.call('SetCurrentScene', {
       'scene-name': scene
     }).catch(err => {
       // Promise convention dictates you have a catch on every chain.
@@ -118,7 +123,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
   };
 
   obs.setMute = async function(source, enabled) {
-    await this.send('SetMute', {
+    await this.call('SetMute', {
       'source': source,
       'mute': enabled
     }).catch(err => {
@@ -128,7 +133,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
   };
 
   obs.toggleMute = async function(source) {
-    await this.send('ToggleMute', {
+    await this.call('ToggleMute', {
       'source': source,
     }).catch(err => {
       // Promise convention dictates you have a catch on every chain.
@@ -137,7 +142,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
   };
 
   obs.getVersion = async function() {
-    return await this.send('GetVersion')
+    return await this.call('GetVersion')
     .then(data => {
       return data;
     }).catch(err => {
@@ -147,7 +152,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
   };
 
   obs.getVolume = async function(source, useDecibel) {
-    return await this.send('GetVolume', {
+    return await this.call('GetVolume', {
       'source': source,
       'useDecibel': useDecibel
     }).then(data => {
@@ -159,7 +164,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
   };
 
   obs.setVolume = async function(source, volume, useDecibel) {
-    await this.send('SetVolume', {
+    await this.call('SetVolume', {
       'source': source,
       'volume': volume,
       'useDecibel': useDecibel
@@ -170,7 +175,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
   };
 
   obs.takeSourceScreenshot = async function(source, filePath) {
-    await this.send('TakeSourceScreenshot', {
+    await this.call('TakeSourceScreenshot', {
       sourceName: source,
       saveToFilePath: filePath
     }).catch(err => {
@@ -180,7 +185,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
   };
 
   obs.playPauseMedia = async function(sourceName, playPause) {
-    await this.send('PlayPauseMedia', {
+    await this.call('PlayPauseMedia', {
       'sourceName': sourceName,
       'playPause': playPause
     }).catch(err => {
@@ -190,7 +195,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
   };
 
   obs.restartMedia = async function(sourceName) {
-    await this.send('RestartMedia', {
+    await this.call('RestartMedia', {
       'sourceName': sourceName
     }).catch(err => {
       // Promise convention dictates you have a catch on every chain.
@@ -199,7 +204,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
   };
 
   obs.stopMedia = async function(sourceName) {
-    await this.send('StopMedia', {
+    await this.call('StopMedia', {
       'sourceName': sourceName
     }).catch(err => {
       // Promise convention dictates you have a catch on every chain.
@@ -208,7 +213,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
   };
 
   obs.getMediaDuration = async function(sourceName) {
-    return await this.send('GetMediaDuration', {
+    return await this.call('GetMediaDuration', {
       'sourceName': sourceName
     }).then(data => {
       return data;
@@ -225,7 +230,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
    * @return {Promise<void>}
    */
   obs.setMediaSourcePath = async function(source, path) {
-    await this.send('SetSourceSettings', {
+    await this.call('SetSourceSettings', {
       'sourceName': source,
       'sourceType': 'ffmpeg_source',
       'sourceSettings': {
@@ -244,7 +249,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
    * @return {Promise<void>}
    */
   obs.setBrowserSourceURL = async function(source, url) {
-    await this.send('SetSourceSettings', {
+    await this.call('SetSourceSettings', {
       'sourceName': source,
       'sourceType': 'browser_source',
       'sourceSettings': {
@@ -257,7 +262,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
   };
 
   obs.setSourceText = async function(source, text) {
-    await this.send('SetSourceSettings', {
+    await this.call('SetSourceSettings', {
       'sourceName': source,
       'sourceSettings': {
         'text': text
@@ -269,42 +274,42 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
   };
 
   obs.startStream = async function() {
-    await this.send('StartStreaming').catch(err => {
+    await this.call('StartStreaming').catch(err => {
       // Promise convention dictates you have a catch on every chain.
       console.error(JSON.stringify(err));
     });
   };
 
   obs.stopStream = async function() {
-    await this.send('StopStreaming').catch(err => {
+    await this.call('StopStreaming').catch(err => {
       // Promise convention dictates you have a catch on every chain.
       console.error(JSON.stringify(err));
     });
   };
 
   obs.startReplayBuffer = async function() {
-    await this.send('StartReplayBuffer').catch(err => {
+    await this.call('StartReplayBuffer').catch(err => {
       // Promise convention dictates you have a catch on every chain.
       console.error(JSON.stringify(err));
     });
   };
 
   obs.stopReplayBuffer = async function() {
-    await this.send('StopReplayBuffer').catch(err => {
+    await this.call('StopReplayBuffer').catch(err => {
       // Promise convention dictates you have a catch on every chain.
       console.error(JSON.stringify(err));
     });
   };
 
   obs.saveReplayBuffer = async function() {
-    await this.send('SaveReplayBuffer').catch(err => {
+    await this.call('SaveReplayBuffer').catch(err => {
       // Promise convention dictates you have a catch on every chain.
       console.error(JSON.stringify(err));
     });
   };
 
   obs.broadcastCustomMessage = async function(message, data) {
-    await this.send('BroadcastCustomMessage', {
+    await this.call('BroadcastCustomMessage', {
       'realm': 'kruiz-control',
       'data': {
         'message': message,
@@ -317,7 +322,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
   };
 
   obs.refreshBrowser = async function(sourceName) {
-    await this.send('RefreshBrowserSource', {
+    await this.call('RefreshBrowserSource', {
       'sourceName': sourceName
     }).catch(err => {
       // Promise convention dictates you have a catch on every chain.
@@ -326,7 +331,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
   };
 
   obs.addSceneItem = async function(scene, source, status) {
-    await this.send('AddSceneItem', {
+    await this.call('AddSceneItem', {
       'sceneName': scene,
       'sourceName': source,
       'setVisible': status
@@ -336,7 +341,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
   };
 
   obs.getSceneItemProperties = async function(scene, item) {
-    var data = await this.send('GetSceneItemProperties', {
+    var data = await this.call('GetSceneItemProperties', {
       'scene-name': scene,
       'item': item
     }).catch(err => { // Promise convention dictates you have a catch on every chain.
@@ -346,7 +351,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
   }
 
   obs.getSourceFilters = async function(source) {
-    var data = await this.send('GetSourceFilters', {
+    var data = await this.call('GetSourceFilters', {
       'sourceName': source
     }).catch(err => { // Promise convention dictates you have a catch on every chain.
       console.error(JSON.stringify(err));
@@ -355,7 +360,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
   }
 
   obs.setSceneItemPosition = async function(scene, item, x, y) {
-    await this.send('SetSceneItemProperties', {
+    await this.call('SetSceneItemProperties', {
       'scene-name': scene,
       'item': item,
       'position': {
@@ -368,7 +373,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
   };
 
   obs.setSceneItemSize = async function(scene, item, scaleX, scaleY) {
-    await this.send('SetSceneItemProperties', {
+    await this.call('SetSceneItemProperties', {
       'scene-name': scene,
       'item': item,
       'scale': {
@@ -381,7 +386,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
   };
 
   obs.getCurrentTransition = async function() {
-    return await this.send('GetCurrentTransition')
+    return await this.call('GetCurrentTransition')
     .then(data => {
       return data;
     }).catch(err => {
@@ -391,7 +396,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
   };
 
   obs.setCurrentTransition = async function(transition) {
-    await this.send('SetCurrentTransition', {
+    await this.call('SetCurrentTransition', {
       'transition-name': transition
     }).catch(err => {
       // Promise convention dictates you have a catch on every chain.
