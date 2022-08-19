@@ -332,28 +332,34 @@ class OBSHandler extends Handler {
         break;
       case 'media':
         var { media, source, path } = Parser.getInputs(triggerData, ['action', 'media', 'source', 'path'], false, 1);
+        let mediaAction = '';
+        let mediaSettings = {};
         media = media.toLowerCase();
         switch (media) {
           case 'duration':
-            var data = await this.obs.getMediaDuration(source);
-            return {duration: data.mediaDuration / 1000}
+            // THIS IS NOT GETTING THE DURATION. THIS IS GETTING THE ENTIRE STATUS. MAKE SURE YOU FINISH THIS, TIMB.
+            var data = await this.obs.getMediaInputStatus(source);
+            return {mediaStatus: data}
             break;
           case 'path':
-            await this.obs.setMediaSourcePath(source, path);
+            mediaSettings = {local_file: path};
+            await this.obs.setInputSettings(source, mediaSettings)
             break;
           case 'pause':
-            var playPause = true;
-            await this.obs.playPauseMedia(source, playPause)
+            mediaAction = 'OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PAUSE';
+            await this.obs.triggerMediaInputAction(source, mediaAction);
             break;
           case 'play':
-            var playPause = false;
-            await this.obs.playPauseMedia(source, playPause);
+            mediaAction = 'OBS_WEBSOCKET_MEDIA_INPUT_ACTION_PLAY';
+            await this.obs.triggerMediaInputAction(source, mediaAction);
             break;
           case 'restart':
-            await this.obs.restartMedia(source);
+            mediaAction = 'OBS_WEBSOCKET_MEDIA_INPUT_ACTION_RESTART';
+            await this.obs.triggerMediaInputAction(source, mediaAction);
             break;
           case 'stop':
-            await this.obs.stopMedia(source);
+            mediaAction = 'OBS_WEBSOCKET_MEDIA_INPUT_ACTION_STOP';
+            await this.obs.triggerMediaInputAction(source, mediaAction);
             break;
         }
         break;
@@ -412,6 +418,10 @@ class OBSHandler extends Handler {
         data = data || '';
         await this.obs.broadcastCustomMessage(message, data);
         break;
+      case 'settings':
+        var { source } = Parser.getInputs(triggerData, ['action', 'source'], false, 1);
+        let settings = await this.obs._getInputSettings(source);
+        return { settings: settings };
       case 'size':
         var { scene, item, width, height } = Parser.getInputs(triggerData, ['action', 'scene', 'item', 'width', 'height']);
         if (scene === '{current}') {
@@ -428,7 +438,7 @@ class OBSHandler extends Handler {
         break;
       case 'source':
         var { source, subaction, info, status } = Parser.getInputs(triggerData, ['action', 'source', 'subaction', 'info', 'status'], false, 2);
-
+        var sourceSettings = {};
         if (info === undefined) {
           status = subaction.toLowerCase();
           if (status === 'toggle') {
@@ -439,9 +449,11 @@ class OBSHandler extends Handler {
           }
           await this.obs.setSourceVisibility(source, status);
         } else if (info !== undefined && subaction.toLowerCase() === 'url') {
-          await this.obs.setBrowserSourceURL(source, info);
+          sourceSettings = {url: info};
+          await this.obs.setInputSettings(source, sourceSettings);
         } else if (info !== undefined && subaction.toLowerCase() === 'text') {
-          await this.obs.setSourceText(source, info);
+          sourceSettings = {text: info};
+          await this.obs.setInputSettings(source, sourceSettings);
         } else if (status !== undefined) {
           status = status.toLowerCase();
           if (status === 'toggle') {
@@ -486,19 +498,33 @@ class OBSHandler extends Handler {
         break;
       case 'version':
         var data = await this.obs.getVersion();
-        return { version: data.obsWebsocketVersion };
+        return { version: data.obsWebSocketVersion };
         break;
       case 'volume':
         var { source, volume, useDecibel } = Parser.getInputs(triggerData, ['action', 'source', 'volume', 'useDecibel'], false, 1);
         useDecibel = (useDecibel && useDecibel.toLowerCase() === 'true') ? true : false;
-        var currentAudio = await this.obs.getVolume(source, useDecibel);
+        var currentAudio = await this.obs.getVolume(source);
         volume = parseFloat(volume);
         if (!isNaN(volume)) {
+         //Limit volume to constraints to prevent error returns.
+          if (useDecibel === true) {
+            if (volume < -100) {
+              volume = -100;
+            } else if (volume > 26) {
+              volume = 26;
+            }
+          } else {
+            if (volume < 0) {
+              volume = 0;
+            } else if (volume > 20) {
+              volume = 20;
+            }
+          }
           await this.obs.setVolume(source, volume, useDecibel);
         } else {
           console.error('Unable to parse volume value: ' + triggerData[triggerData.length - 1]);
         }
-        return { previous_volume: currentAudio.volume };
+        return { previous_volume: (useDecibel === true) ? currentAudio.inputVolumeDb : currentAudio.inputVolumeMul };
         break;
       default:
         break;
