@@ -5,15 +5,15 @@
 * @param {Handler} obsHandler handler to mark successful initialization
 * @param {function} onSwitchScenes handle switch scene messages
 * @param {function} onTransitionBegin handle transition starts
-* @param {function} onStreamStart handle stream start messages
-* @param {function} onStreamStop handle stream stop messages
+* @param {function} onStreamStateChange handle stream state change messages
 * @param {function} onCustomMessage handle custom messages
 * @param {function} onOBSSourceVisibility handle scene item visibility changes
 * @param {function} onOBSSourceFilterVisibility handle source filter visibility changes
 */
-function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTransitionBegin, onStreamStarted, onStreamStopped, onCustomMessage, onOBSSourceVisibility, onOBSSourceFilterVisibility) {
+function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTransitionBegin, onStreamStateChange, onCustomMessage, onOBSSourceVisibility, onOBSSourceFilterVisibility) {
   var obs = new OBSWebSocket();
-  obs.connect(address, password).then(() => {
+  obs.connect(address, password).then(async () => {
+    obsHandler.setCurrentScene(await obs.getCurrentScene());
     obsHandler.success();
   }).catch(err => { // Promise convention dictates you have a catch on every chain.
     console.error(JSON.stringify(err));
@@ -35,16 +35,14 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
     obs.disconnect();
   });
 
-  obs.on('SwitchScenes', onSwitchScenes);
-  obs.on('TransitionBegin', onTransitionBegin);
-  obs.on('StreamStarted', onStreamStarted);
-  obs.on('StreamStopped', onStreamStopped);
-  obs.on('BroadcastCustomMessage', onCustomMessage);
-  obs.on('SceneItemVisibilityChanged', onOBSSourceVisibility);
-  obs.on('SourceFilterVisibilityChanged', onOBSSourceFilterVisibility);
+  obs.on('CurrentProgramSceneChanged', onSwitchScenes);
+  obs.on('SceneTransitionStarted', onTransitionBegin);
+  obs.on('StreamStateChanged', onStreamStateChange);
+  obs.on('CustomEvent', onCustomMessage);
+  obs.on('SceneItemEnableStateChanged', onOBSSourceVisibility);
+  obs.on('SourceFilterEnableStateChanged', onOBSSourceFilterVisibility);
 
-  //Timb Updated
-  obs._getInputSettings = async function(source) {
+  obs.getInputSettings = async function(source) {
     return await this.call('GetInputSettings', {
       'inputName': source
     }).then(data => {
@@ -52,25 +50,56 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
     })
   }
 
-  obs._getSceneItemId = async function(scene, source) {
-    const { sceneItemId } = await obs.call('GetSceneItemId', { sceneName: scene, sourceName: source });
-    return sceneItemId;
+  obs.getSceneItemId = async function(scene, source) {
+    return await obs.call('GetSceneItemId', {
+      sceneName: scene,
+      sourceName: source
+    }).then(data => {
+      return data.sceneItemId;
+    }).catch(err => {
+      console.error(JSON.stringify(err));
+    });
   }
 
-  //Timb Updated
+  obs.getSceneItemName = async function(scene, sceneItemId) {
+    return await this.call('GetSceneItemList', {
+      sceneName: scene
+    }).then(data => {
+      for (var item of data.sceneItems) {
+        if (item.sceneItemId === sceneItemId) {
+          return item.sourceName;
+        }
+      };
+    }).catch(err => {
+      console.error(JSON.stringify(err));
+    });
+  }
+
   obs.setInputSettings = async function(source, inputSettings) {
     await this.call('SetInputSettings', {
       'inputName': source,
       'inputSettings': inputSettings
+    }).catch(err => {
+      console.error(JSON.stringify(err));
     });
   }
 
-  //Timb Updated
   obs.getMediaInputStatus = async function(source) {
     return await this.call('GetMediaInputStatus', {
       'inputName': source
     }).then(data => {
       return data;
+    }).catch(err => {
+      console.error(JSON.stringify(err));
+    });
+  }
+
+  obs.getMediaDuration = async function(source) {
+    return await this.getMediaInputStatus(source)
+    .then(data => {
+      return data.mediaDuration;
+    }).catch(err => {
+      console.error(JSON.stringify(err));
     });
   }
 
@@ -79,7 +108,6 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
     .then(data => {
       return data.currentProgramSceneName;
     }).catch(err => {
-      // Promise convention dictates you have a catch on every chain.
       console.error(JSON.stringify(err));
     });
   };
@@ -87,11 +115,10 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
   obs.getSourceVisibility = async function(scene, source) {
     return await this.call('GetSceneItemEnabled', {
       sceneName: scene,
-      sceneItemId: await this._getSceneItemId(scene, source)
+      sceneItemId: await this.getSceneItemId(scene, source)
     }).then(data => {
       return data.sceneItemEnabled;
     }).catch(err => {
-      // Promise convention dictates you have a catch on every chain.
       console.error(JSON.stringify(err));
     });
   };
@@ -102,16 +129,14 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
     }).then(data => {
       return data.videoActive;
     }).catch(err => {
-      // Promise convention dictates you have a catch on every chain.
       console.error(JSON.stringify(err));
     });
   };
 
-  //Timb Updated
   obs.setSourceVisibility = async function(source, enabled, scene) {
     if (scene) {
       await this.call('SetSceneItemEnabled', {
-        'sceneItemId': await this._getSceneItemId(scene, source),
+        'sceneItemId': await this.getSceneItemId(scene, source),
         'sceneName': scene,
         'sceneItemEnabled': enabled
       }).catch(err => {
@@ -121,7 +146,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
       let scene = await this.getCurrentScene();
       await this.call('SetSceneItemEnabled', {
         'sceneName': scene,
-        'sceneItemId': await this._getSceneItemId(scene, source),
+        'sceneItemId': await this.getSceneItemId(scene, source),
         'sceneItemEnabled': enabled
       }).catch(err => {
         console.error(JSON.stringify(err));
@@ -129,7 +154,6 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
     };
   };
 
-  //Timb Updated
   obs.setFilterVisibility = async function(source, filter, enabled) {
     await this.call('SetSourceFilterEnabled', {
       'sourceName': source,
@@ -140,7 +164,6 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
     });
   };
 
-  //Timb Updated
   obs.setCurrentScene = async function(scene) {
     await this.call('SetCurrentProgramScene', {
       'sceneName': scene
@@ -149,7 +172,6 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
     });
   };
 
-  //Timb Updated
   obs.setMute = async function(source, enabled) {
     await this.call('SetInputMute', {
       'inputName': source,
@@ -159,54 +181,45 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
     });
   };
 
-  //Timb Updated
   obs.toggleMute = async function(source) {
     return await this.call('ToggleInputMute', {
       'inputName': source,
     }).then(data => {
       return data.inputMuted;
     }).catch(err => {
-      // Promise convention dictates you have a catch on every chain.
       console.error(JSON.stringify(err));
     });
   };
 
-  //Timb Updated
   obs.getVersion = async function() {
     return await this.call('GetVersion')
     .then(data => {
       return data;
     }).catch(err => {
-      // Promise convention dictates you have a catch on every chain.
       console.error(JSON.stringify(err));
     });
   };
 
-  //Timb Updated
   obs.getVolume = async function(source) {
     return await this.call('GetInputVolume', {
       'inputName': source
     }).then(data => {
       return data;
     }).catch(err => {
-      // Promise convention dictates you have a catch on every chain.
       console.error(JSON.stringify(err));
     });
   };
 
-  //Timb Updated
   obs.setVolume = async function(source, volume, useDecibel) {
-    let inputVolumeType = (useDecibel === true) ? 'inputVolumeDb' : 'inputVolumeMul';
+    const inputVolumeType = (useDecibel === true) ? 'inputVolumeDb' : 'inputVolumeMul';
     await this.call('SetInputVolume', {
       'inputName': source,
       [inputVolumeType]: volume,
     }).catch(err => {
-      // Promise convention dictates you have a catch on every chain.
       console.error(JSON.stringify(err));
     });
   };
 
-  //Timb Updated
   obs.takeSourceScreenshot = async function(source, filePath) {
     let imageFormat = filePath.split('.').pop();
     await this.call('SaveSourceScreenshot', {
@@ -214,158 +227,164 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
       'imageFilePath': filePath,
       'imageFormat': imageFormat
     }).catch(err => {
-      // Promise convention dictates you have a catch on every chain.
       console.error(JSON.stringify(err));
     });
   };
 
-  //Timb Updated
   obs.triggerMediaInputAction = async function(sourceName, mediaAction) {
     await this.call('TriggerMediaInputAction', {
       'inputName': sourceName,
       'mediaAction': mediaAction
     }).catch(err => {
-      // Promise convention dictates you have a catch on every chain.
       console.error(JSON.stringify(err));
     });
   };
 
-  //Timb Updated
   obs.startStream = async function() {
     await this.call('StartStream').catch(err => {
-      // Promise convention dictates you have a catch on every chain.
       console.error(JSON.stringify(err));
     });
   };
 
-  //Timb Updated
   obs.stopStream = async function() {
     await this.call('StopStream').catch(err => {
-      // Promise convention dictates you have a catch on every chain.
       console.error(JSON.stringify(err));
     });
   };
 
-  //Timb Updated
   obs.startReplayBuffer = async function() {
     await this.call('StartReplayBuffer').catch(err => {
-      // Promise convention dictates you have a catch on every chain.
       console.error(JSON.stringify(err));
     });
   };
 
-  //Timb Updated
   obs.stopReplayBuffer = async function() {
     await this.call('StopReplayBuffer').catch(err => {
-      // Promise convention dictates you have a catch on every chain.
       console.error(JSON.stringify(err));
     });
   };
 
-  //Timb Updated
   obs.saveReplayBuffer = async function() {
     await this.call('SaveReplayBuffer').catch(err => {
-      // Promise convention dictates you have a catch on every chain.
       console.error(JSON.stringify(err));
     });
   };
 
-  //LET KRUISER MIGRATE THIS. TIMB TOO STUPID.
   obs.broadcastCustomMessage = async function(message, data) {
-    await this.call('BroadcastCustomMessage', {
-      'realm': 'kruiz-control',
-      'data': {
-        'message': message,
-        'data': data
+    await this.call('BroadcastCustomEvent', {
+      'eventData': {
+        'realm': 'kruiz-control',
+        'data': {
+          'message': message,
+          'data': data
+        }
       }
     }).catch(err => {
-      // Promise convention dictates you have a catch on every chain.
       console.error(JSON.stringify(err));
     });
   };
 
-  //Timb Updated
   obs.refreshBrowser = async function(sourceName) {
     await this.call('PressInputPropertiesButton', {
       'inputName': sourceName,
       'propertyName': 'refreshnocache'
     }).catch(err => {
-      // Promise convention dictates you have a catch on every chain.
       console.error(JSON.stringify(err));
     });
   };
 
-  //Timb Updated
   obs.addSceneItem = async function(scene, source, status) {
     await this.call('CreateSceneItem', {
       'sceneName': scene,
       'sourceName': source,
       'sceneItemEnabled': status
-    }).catch(err => { // Promise convention dictates you have a catch on every chain.
+    }).catch(err => {
       console.error(JSON.stringify(err));
     });
   };
 
-  obs.getSceneItemProperties = async function(scene, item) {
-    var data = await this.call('GetSceneItemProperties', {
-      'scene-name': scene,
-      'item': item
-    }).catch(err => { // Promise convention dictates you have a catch on every chain.
+  obs.getSceneItemTransform = async function(scene, source) {
+    var data = await this.call('GetSceneItemTransform', {
+      'sceneName': scene,
+      'sceneItemId': await this.getSceneItemId(scene, source)
+    }).catch(err => {
       console.error(JSON.stringify(err));
     });
     return data;
   }
 
-  obs.getSourceFilters = async function(source) {
-    var data = await this.call('GetSourceFilters', {
-      'sourceName': source
-    }).catch(err => { // Promise convention dictates you have a catch on every chain.
-      console.error(JSON.stringify(err));
+  obs.getSceneItemPosition = async function(scene, source) {
+    return await this.getSceneItemTransform(scene, source)
+    .then(data => {
+      return {
+        x: data.sceneItemTransform.positionX,
+        y: data.sceneItemTransform.positionY
+      };
     });
-    return data;
   }
 
-  obs.setSceneItemPosition = async function(scene, item, x, y) {
-    await this.call('SetSceneItemProperties', {
-      'scene-name': scene,
-      'item': item,
-      'position': {
-        'x': x,
-        'y': y
+  obs.setSceneItemPosition = async function(scene, source, x, y) {
+    await this.call('SetSceneItemTransform', {
+      'sceneName': scene,
+      'sceneItemId': await this.getSceneItemId(scene, source),
+      'sceneItemTransform': {
+        'positionX': x,
+        'positionY': y
       }
-    }).catch(err => { // Promise convention dictates you have a catch on every chain.
+    }).catch(err => {
       console.error(JSON.stringify(err));
     });
   };
 
-  obs.setSceneItemSize = async function(scene, item, scaleX, scaleY) {
-    await this.call('SetSceneItemProperties', {
-      'scene-name': scene,
-      'item': item,
-      'scale': {
-        'x': scaleX,
-        'y': scaleY
-	     }
-    }).catch(err => { // Promise convention dictates you have a catch on every chain.
+  obs.getSourceFilter = async function(source, filter) {
+    return await this.call('GetSourceFilter', {
+      'sourceName': source,
+      'filterName': filter
+    }).catch(err => {
+      console.error(JSON.stringify(err));
+    });
+  }
+
+  obs.getSceneItemSize = async function(scene, source) {
+    return await this.getSceneItemTransform(scene, source)
+    .then(data => {
+      return {
+        height: data.sceneItemTransform.height,
+        sourceHeight: data.sceneItemTransform.sourceHeight,
+        sourceWidth: data.sceneItemTransform.sourceWidth,
+        width: data.sceneItemTransform.width
+      };
+    }).catch(err => {
+      console.error(JSON.stringify(err));
+    });
+  }
+
+  obs.setSceneItemSize = async function(scene, source, scaleX, scaleY) {
+    await this.call('SetSceneItemTransform', {
+      'sceneName': scene,
+      'sceneItemId': await this.getSceneItemId(scene, source),
+      'sceneItemTransform': {
+        'scaleX': scaleX,
+        'scaleY': scaleY
+      }
+    }).catch(err => {
       console.error(JSON.stringify(err));
     });
   };
 
   obs.getCurrentTransition = async function() {
-    return await this.call('GetCurrentTransition')
+    return await this.call('GetCurrentSceneTransition')
     .then(data => {
-      return data;
+      return data.transitionName;
     }).catch(err => {
-      // Promise convention dictates you have a catch on every chain.
       console.error(JSON.stringify(err));
     });
   };
 
   obs.setCurrentTransition = async function(transition) {
-    await this.call('SetCurrentTransition', {
-      'transition-name': transition
+    await this.call('SetCurrentSceneTransition', {
+      'transitionName': transition
     }).catch(err => {
-      // Promise convention dictates you have a catch on every chain.
       console.error(JSON.stringify(err));
     });
   };

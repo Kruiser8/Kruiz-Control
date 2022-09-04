@@ -17,6 +17,10 @@ class OBSHandler extends Handler {
     this.onSourceFilterVis = {};
     this.onSourceFilterVisTrigger = {};
 
+    // track current scene for use with OnOBSTransitionTo
+    this.currentScene = "unset";
+
+    this.setCurrentScene.bind(this);
     this.init.bind(this);
   }
 
@@ -27,9 +31,17 @@ class OBSHandler extends Handler {
    */
   init(address, password) {
     this.obs = connectOBSWebsocket(
-      address, password, this, this.onSwitchScenes.bind(this), this.onTransitionBegin.bind(this), this.onStreamStart.bind(this),
-      this.onStreamStop.bind(this), this.onCustomMessage.bind(this), this.onSourceVisibility.bind(this), this.onSourceFilterVisibility.bind(this)
+      address, password, this, this.onSwitchScenes.bind(this), this.onTransitionBegin.bind(this), this.onStreamStateChange.bind(this),
+      this.onCustomMessage.bind(this), this.onSourceVisibility.bind(this), this.onSourceFilterVisibility.bind(this)
     );
+  }
+
+  /**
+   * Set the current OBS scene name.
+   * @param {string} scene obs scene name
+   */
+  setCurrentScene(scene) {
+    this.currentScene = scene;
   }
 
   /**
@@ -168,9 +180,12 @@ class OBSHandler extends Handler {
     if (Debug.All || Debug.OBS) {
       console.error("OBS onTransitionBegin: " + JSON.stringify(data));
     }
+
+    var toScene = await this.obs.getCurrentScene();
+
     var sceneTriggers = [];
-    if (this.onTransitionTo.indexOf(data.toScene) !== -1) {
-      sceneTriggers.push(...this.onTransitionToTrigger[data.toScene]);
+    if (this.onTransitionTo.indexOf(toScene) !== -1) {
+      sceneTriggers.push(...this.onTransitionToTrigger[toScene]);
     }
     if (this.onTransitionTo.indexOf('*') !== -1) {
       sceneTriggers.push(...this.onTransitionToTrigger['*']);
@@ -179,35 +194,29 @@ class OBSHandler extends Handler {
       sceneTriggers.sort((a,b) => a-b);
       sceneTriggers.forEach(triggerId => {
         controller.handleData(triggerId, {
-          from: data.fromScene,
-          scene: data.toScene
+          from: this.currentScene,
+          scene: toScene
         });
       });
     }
+
+    this.setCurrentScene(toScene);
   }
 
   /**
-   * Handle stream start messages from obs websocket.
+   * Handle stream status change messages from obs websocket.
    */
-  onStreamStart() {
+  onStreamStateChange(data) {
     if (Debug.All || Debug.OBS) {
-      console.error("OBS onStreamStart message received");
+      console.error("OBS onStreamStateChange: " + JSON.stringify(data));
     }
-    if (this.onStartTrigger.length > 0) {
+    if (data.outputState === "OBS_WEBSOCKET_OUTPUT_STARTED" && this.onStartTrigger.length > 0) {
       this.onStartTrigger.forEach(trigger => {
         controller.handleData(trigger);
       })
     }
-  }
 
-  /**
-   * Handle stream stop messages from obs websocket.
-   */
-  onStreamStop() {
-    if (Debug.All || Debug.OBS) {
-      console.error("OBS onStreamStop message received");
-    }
-    if (this.onStopTrigger.length > 0) {
+    if (data.outputState === "OBS_WEBSOCKET_OUTPUT_STOPPED" && this.onStopTrigger.length > 0) {
       this.onStopTrigger.forEach(trigger => {
         controller.handleData(trigger);
       })
@@ -248,9 +257,11 @@ class OBSHandler extends Handler {
     if (Debug.All || Debug.OBS) {
       console.error("OBS onSourceVisibility: " + JSON.stringify(data));
     }
-    var scene = data['scene-name'];
-    var item = data['item-name'];
-    var visibility = data['item-visible'];
+
+    var scene = data['sceneName'];
+    var item = await this.obs.getSceneItemName(scene, data['sceneItemId']);
+    var visibility = data['sceneItemEnabled'];
+
     var sourceTriggers = [];
     if (scene in this.onSourceVis && item in this.onSourceVis[scene]) {
       if (this.onSourceVis[scene][item].indexOf(visibility) !== -1) {
@@ -281,6 +292,7 @@ class OBSHandler extends Handler {
     var source = data['sourceName'];
     var filter = data['filterName'];
     var visibility = data['filterEnabled'];
+
     var sourceTriggers = [];
     if (source in this.onSourceFilterVis && filter in this.onSourceFilterVis[source]) {
       if (this.onSourceFilterVis[source][filter].indexOf(visibility) !== -1) {
@@ -337,12 +349,14 @@ class OBSHandler extends Handler {
         media = media.toLowerCase();
         switch (media) {
           case 'duration':
-            // THIS IS NOT GETTING THE DURATION. THIS IS GETTING THE ENTIRE STATUS. MAKE SURE YOU FINISH THIS, TIMB.
-            var data = await this.obs.getMediaInputStatus(source);
-            return {mediaStatus: data}
+            var duration = await this.obs.getMediaDuration(source);
+            if (duration && duration !== null) {
+              return { duration: duration / 1000 };
+            }
+            return { duration: 0 };
             break;
           case 'path':
-            mediaSettings = {local_file: path};
+            mediaSettings = { local_file: path };
             await this.obs.setInputSettings(source, mediaSettings)
             break;
           case 'pause':
@@ -376,16 +390,15 @@ class OBSHandler extends Handler {
       case 'position':
         var { scene, item, x, y } = Parser.getInputs(triggerData, ['action', 'scene', 'item', 'x', 'y']);
         if (scene === '{current}') {
-          var currentScene = await this.obs.getCurrentScene();
-          scene = currentScene;
+          scene = await this.obs.getCurrentScene();
         }
-        var data = await this.obs.getSceneItemProperties(scene, item);
+        var data = await this.obs.getSceneItemPosition(scene, item);
         x = parseFloat(x);
         y = parseFloat(y);
         await this.obs.setSceneItemPosition(scene, item, x, y);
         return {
-          init_x: data.position.x,
-          init_y: data.position.y
+          init_x: data.x,
+          init_y: data.y
         }
         break;
       case 'refresh':
@@ -406,8 +419,7 @@ class OBSHandler extends Handler {
         var { scene, source, status } = Parser.getInputs(triggerData, ['action', 'scene', 'source', 'status']);
         status = status.toLowerCase();
         if (status === 'toggle') {
-          var data = await this.obs.getSceneItemProperties(scene, source);
-          status = ! data.visible;
+          status = !(await this.obs.getSourceVisibility(scene, source));
         } else {
           status = status === 'on' ? true : false;
         }
@@ -420,14 +432,14 @@ class OBSHandler extends Handler {
         break;
       case 'settings':
         var { source } = Parser.getInputs(triggerData, ['action', 'source'], false, 1);
-        let settings = await this.obs._getInputSettings(source);
+        let settings = await this.obs.getInputSettings(source);
         return { settings: settings };
       case 'size':
         var { scene, item, width, height } = Parser.getInputs(triggerData, ['action', 'scene', 'item', 'width', 'height']);
         if (scene === '{current}') {
           scene = await this.obs.getCurrentScene();
         }
-        var data = await this.obs.getSceneItemProperties(scene, item);
+        var data = await this.obs.getSceneItemSize(scene, item);
         var scaleX = parseFloat(width) / parseFloat(data.sourceWidth);
         var scaleY = parseFloat(height) / parseFloat(data.sourceHeight);
         await this.obs.setSceneItemSize(scene, item, scaleX, scaleY);
@@ -442,8 +454,7 @@ class OBSHandler extends Handler {
         if (info === undefined) {
           status = subaction.toLowerCase();
           if (status === 'toggle') {
-            var data = await this.obs.getSceneItemProperties(undefined, source);
-            status = ! data.visible;
+            status = !(await this.obs.getSourceVisibility(this.currentScene, source));
           } else {
             status = status === 'on' ? true : false;
           }
@@ -457,13 +468,8 @@ class OBSHandler extends Handler {
         } else if (status !== undefined) {
           status = status.toLowerCase();
           if (status === 'toggle') {
-            var data = await this.obs.getSourceFilters(source);
-            var filters = data.filters;
-            filters.forEach((item, i) => {
-              if (item.name === info) {
-                status = !item.enabled;
-              }
-            });
+            var data = await this.obs.getSourceFilter(source, info);
+            status = !data.filterEnabled;
             if (status === 'toggle') {
               console.error(`Unable to find filter with name: ${info}`);
             }
@@ -490,8 +496,7 @@ class OBSHandler extends Handler {
         await this.obs.takeSourceScreenshot(source, filePath);
         break;
       case 'transition':
-        var transitionData = await this.obs.getCurrentTransition();
-        var currentTransition = transitionData.name;
+        var currentTransition = await this.obs.getCurrentTransition();
         var { transition } = Parser.getInputs(triggerData, ['action', 'transition']);
         await this.obs.setCurrentTransition(transition);
         return { previous_transition: currentTransition };
@@ -506,7 +511,7 @@ class OBSHandler extends Handler {
         var currentAudio = await this.obs.getVolume(source);
         volume = parseFloat(volume);
         if (!isNaN(volume)) {
-         //Limit volume to constraints to prevent error returns.
+          // Limit volume to constraints to prevent error returns.
           if (useDecibel === true) {
             if (volume < -100) {
               volume = -100;
@@ -527,6 +532,7 @@ class OBSHandler extends Handler {
         return { previous_volume: (useDecibel === true) ? currentAudio.inputVolumeDb : currentAudio.inputVolumeMul };
         break;
       default:
+        console.error(`Unable to determine the OBS <action> to be taken. Found: "${action}" within ${JSON.stringify(triggerData)}.`);
         break;
     }
     return;
