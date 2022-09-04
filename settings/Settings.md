@@ -53,7 +53,7 @@ These settings can be found after installing the [OBS websocket plugin](https://
 
 Specify the IP + port to use for the OBS websocket.
 ```
-localhost:4444
+ws://127.0.0.1:4455
 ```
 
 ***
