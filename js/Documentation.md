@@ -1713,14 +1713,14 @@ Enables the ability to interact with and respond to OBS.
 #### OBS Media Duration
 | | |
 ------------ | -------------
-**Info** | Used to retrieve the duration of a media source. `<source>` is the name of the source.
+**Info** | Used to retrieve the duration of a media source. `<source>` is the name of the source. The `<source>` must be active to retrieve the duration.
 **Format** | `OBS Media Duration <source>`
 **Example** | `OBS Media Duration AlertVideo`
 
 ##### Parameters
 | | |
 ------------ | -------------
-**duration** | The duration of the file in seconds.
+**duration** | The duration of the file in seconds. If the duration could not be retrieved, `0` is returned.
 
 ***
 
@@ -1944,7 +1944,7 @@ _Note: The browser source does not need to be in current/active scene for this t
 #### OBS TakeSourceScreenshot
 | | |
 ------------ | -------------
-**Info** | Used to take a screenshot of an OBS source and save it to a file. `<file>` is the absolute path to a file.
+**Info** | Used to take a screenshot of an OBS source and save it to a file. `<file>` is the absolute path to a file. The extension put on the file is used to determine the type of file generate. For most users, these are the acceptable extensions: `bmp`, `jpeg`, `jpg`, `pbm`, `pgm`, `png`, `ppm`, `xbm`, `xpm`.
 **Format** | `OBS TakeSourceScreenshot <source> <file>`
 **Example** | `OBS TakeSourceScreenshot Webcam "C:\Users\YOUR_USER_NAME\Documents\Stream\screenshot.png"`
 
