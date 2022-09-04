@@ -46,7 +46,7 @@ kruiser8
 ***
 
 ## OBS
-These settings can be found after installing the [OBS websocket plugin](https://github.com/Palakis/obs-websocket/releases/latest) (version 4.9.x or below) through **Tools** > **WebSockets Server Settings**.
+These settings can be found after installing the [OBS websocket plugin](https://github.com/Palakis/obs-websocket/releases/latest) (version 5.0.0 or above) through **Tools** > **WebSockets Server Settings**.
 
 ### address.txt
 **Location:** `settings/obs/address.txt`

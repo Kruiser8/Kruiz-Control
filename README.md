@@ -48,7 +48,7 @@ Kruiz Control enables a pseudo code approach to manage and automatically handle 
 
 ## Setup Guide
 
-- (If using OBS) Install the [OBS Websocket Plugin](https://github.com/Palakis/obs-websocket/releases/latest) (version 4.9.x or below). Reopen OBS after installing.
+- (If using OBS) Install the [OBS Websocket Plugin](https://github.com/Palakis/obs-websocket/releases/latest) (version 5.0.0 or above). Reopen OBS after installing.
 - Fill out [the settings files](https://github.com/Kruiser8/Kruiz-Control/blob/master/settings/Settings.md) in the settings folder.
 - Add the **index.html** to OBS/SLOBS as a browser source.
 - Type `!example` in your twitch chat. If your user responds with `Success! It worked!`, you're good to go!
@@ -81,7 +81,7 @@ OBS.Live should also be supported but is untested.
 ## Installation
 
 ### OBS Websocket (if using OBS)
-To use this script with OBS, install the [obs-websocket](https://github.com/Palakis/obs-websocket/releases/latest) plugin (version 4.9.x or below). Reopen OBS after installing.
+To use this script with OBS, install the [obs-websocket](https://github.com/Palakis/obs-websocket/releases/latest) plugin (version 5.0.0 or above). Reopen OBS after installing.
 
 In OBS, click **Tools** > **WebSockets Server Settings** and enable the websocket server.
 
