@@ -430,10 +430,6 @@ class OBSHandler extends Handler {
         data = data || '';
         await this.obs.broadcastCustomMessage(message, data);
         break;
-      case 'settings':
-        var { source } = Parser.getInputs(triggerData, ['action', 'source'], false, 1);
-        let settings = await this.obs.getInputSettings(source);
-        return { settings: settings };
       case 'size':
         var { scene, item, width, height } = Parser.getInputs(triggerData, ['action', 'scene', 'item', 'width', 'height']);
         if (scene === '{current}') {
