@@ -70,8 +70,22 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
           return item.sourceName;
         }
       };
-    }).catch(err => {
-      console.error(JSON.stringify(err));
+    }).catch(async err => {
+      if (err.code === 602) {
+        return await this.call('GetGroupSceneItemList', {
+          sceneName: scene
+        }).then(data => {
+          for (var item of data.sceneItems) {
+            if (item.sceneItemId === sceneItemId) {
+              return item.sourceName;
+            }
+          };
+        }).catch(groupError => {
+          console.error(JSON.stringify(groupError));
+        });
+      } else {
+        console.error(JSON.stringify(err));
+      }
     });
   }
 
