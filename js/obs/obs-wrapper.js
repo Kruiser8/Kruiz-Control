@@ -56,7 +56,13 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
       sourceName: source
     }).then(data => {
       return data.sceneItemId;
-    }).catch(err => {
+    }).catch(async err => {
+      if (err.code === 600) {
+        var group = await this.getSourceGroupName(scene, source);
+        if (group) {
+          return await this.getSceneItemId(group, source);
+        }
+      }
       console.error(JSON.stringify(err));
     });
   }
@@ -86,6 +92,62 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
       } else {
         console.error(JSON.stringify(err));
       }
+    });
+  }
+
+  obs.getScenesForGroup = async function(group) {
+    return await this.call('GetSceneList').then(async data => {
+      var scenes = data.scenes.map(item => item.sceneName)
+      if (scenes.indexOf(group) !== -1) {
+        return [group];
+      }
+      var groupScenes = [];
+      for (var item of scenes) {
+        await this.call('GetSceneItemList', {
+          sceneName: item
+        }).then(sceneItems => {
+          for (var subitem of sceneItems.sceneItems) {
+            if (subitem.sourceName === group) {
+              groupScenes.push(item);
+            }
+          };
+        }).catch(sceneItemsError => {
+          console.error(JSON.stringify(sceneItemsError));
+        });
+      };
+      return groupScenes;
+    }).catch(groupError => {
+      console.error(JSON.stringify(groupError));
+    });
+  }
+
+  // Get the group the contains the provided source within the given scene
+  obs.getSourceGroupName = async function(scene, source) {
+    return await this.call('GetSceneItemList', {
+      sceneName: scene
+    }).then(async data => {
+      // Identify groups
+      for (var item of data.sceneItems) {
+        if (item.isGroup) {
+          // Get sources within group until match is found
+          var result = await this.call('GetGroupSceneItemList', {
+            sceneName: item.sourceName
+          }).then(data => {
+            for (var subitem of data.sceneItems) {
+              if (subitem.sourceName === source) {
+                return item.sourceName;
+              }
+            };
+          }).catch(groupError => {
+            console.error(JSON.stringify(groupError));
+          });
+          if (result) {
+            return result;
+          }
+        }
+      }
+    }).catch(async err => {
+      console.error(JSON.stringify(err));
     });
   }
 
@@ -132,7 +194,13 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
       sceneItemId: await this.getSceneItemId(scene, source)
     }).then(data => {
       return data.sceneItemEnabled;
-    }).catch(err => {
+    }).catch(async err => {
+      if (err.code === 600) {
+        var group = await this.getSourceGroupName(scene, source);
+        if (group) {
+          return await this.getSourceVisibility(group, source);
+        }
+      }
       console.error(JSON.stringify(err));
     });
   };
@@ -148,24 +216,23 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
   };
 
   obs.setSourceVisibility = async function(source, enabled, scene) {
-    if (scene) {
-      await this.call('SetSceneItemEnabled', {
-        'sceneItemId': await this.getSceneItemId(scene, source),
-        'sceneName': scene,
-        'sceneItemEnabled': enabled
-      }).catch(err => {
-        console.error(JSON.stringify(err));
-      });
-    } else {
-      let scene = await this.getCurrentScene();
-      await this.call('SetSceneItemEnabled', {
-        'sceneName': scene,
-        'sceneItemId': await this.getSceneItemId(scene, source),
-        'sceneItemEnabled': enabled
-      }).catch(err => {
-        console.error(JSON.stringify(err));
-      });
-    };
+    if (!scene) {
+      scene = await this.getCurrentScene();
+    }
+    await this.call('SetSceneItemEnabled', {
+      'sceneItemId': await this.getSceneItemId(scene, source),
+      'sceneName': scene,
+      'sceneItemEnabled': enabled
+    }).catch(async err => {
+      if (err.code === 600) {
+        var group = await this.getSourceGroupName(scene, source);
+        if (group) {
+          await this.setSourceVisibility(source, enabled, group);
+          return;
+        }
+      }
+      console.error(JSON.stringify(err));
+    });
   };
 
   obs.setFilterVisibility = async function(source, filter, enabled) {

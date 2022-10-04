@@ -258,19 +258,22 @@ class OBSHandler extends Handler {
       console.error("OBS onSourceVisibility: " + JSON.stringify(data));
     }
 
-    var scene = data['sceneName'];
-    var item = await this.obs.getSceneItemName(scene, data['sceneItemId']);
+    var scenes = await this.obs.getScenesForGroup(data['sceneName']);
+    var item = await this.obs.getSceneItemName(data['sceneName'], data['sceneItemId']);
     var visibility = data['sceneItemEnabled'];
 
     var sourceTriggers = [];
-    if (scene in this.onSourceVis && item in this.onSourceVis[scene]) {
-      if (this.onSourceVis[scene][item].indexOf(visibility) !== -1) {
-        sourceTriggers.push(...this.onSourceVisTrigger[`${scene}|${item}|${String(visibility)}`]);
-      }
-      if (this.onSourceVis[scene][item].indexOf('toggle') !== -1) {
-        sourceTriggers.push(...this.onSourceVisTrigger[`${scene}|${item}|toggle`]);
+    for (var scene of scenes) {
+      if (scene in this.onSourceVis && item in this.onSourceVis[scene]) {
+        if (this.onSourceVis[scene][item].indexOf(visibility) !== -1) {
+          sourceTriggers.push(...this.onSourceVisTrigger[`${scene}|${item}|${String(visibility)}`]);
+        }
+        if (this.onSourceVis[scene][item].indexOf('toggle') !== -1) {
+          sourceTriggers.push(...this.onSourceVisTrigger[`${scene}|${item}|toggle`]);
+        }
       }
     }
+
     if (sourceTriggers.length > 0) {
       sourceTriggers.sort((a,b) => a-b);
       sourceTriggers.forEach(triggerId => {
