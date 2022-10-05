@@ -388,7 +388,13 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
     var data = await this.call('GetSceneItemTransform', {
       'sceneName': scene,
       'sceneItemId': await this.getSceneItemId(scene, source)
-    }).catch(err => {
+    }).catch(async err => {
+      if (err.code === 600) {
+        var group = await this.getSourceGroupName(scene, source);
+        if (group) {
+          return await this.getSceneItemTransform(group, source);
+        }
+      }
       console.error(JSON.stringify(err));
     });
     return data;
@@ -412,7 +418,14 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
         'positionX': x,
         'positionY': y
       }
-    }).catch(err => {
+    }).catch(async err => {
+      if (err.code === 600) {
+        var group = await this.getSourceGroupName(scene, source);
+        if (group) {
+          await this.setSceneItemPosition(group, source, x, y);
+          return;
+        }
+      }
       console.error(JSON.stringify(err));
     });
   };
@@ -448,7 +461,14 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
         'scaleX': scaleX,
         'scaleY': scaleY
       }
-    }).catch(err => {
+    }).catch(async err => {
+      if (err.code === 600) {
+        var group = await this.getSourceGroupName(scene, source);
+        if (group) {
+          await this.setSceneItemSize(group, source, scaleX, scaleY);
+          return;
+        }
+      }
       console.error(JSON.stringify(err));
     });
   };
