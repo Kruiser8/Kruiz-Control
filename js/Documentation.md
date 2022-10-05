@@ -1853,6 +1853,8 @@ _Note: Messages are echo'd to all websocket-connected clients. This is useful fo
 **Format** | `OBS Size <scene> <source> <width> <height>`
 **Example** | `OBS Size BRB Webcam 1920 1080`
 
+_Note: `OBS Position` is not recommended for repositioning sources within groups. Sources in a group are positioned relative to the group, not the scene. Repositioning a source within a group may cause the size of the group to change, changing the source's relative position, and leading to unexpected results._
+
 ##### Parameters
 | | |
 ------------ | -------------
