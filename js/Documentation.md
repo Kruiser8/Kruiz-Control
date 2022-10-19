@@ -2125,7 +2125,7 @@ None at the moment.
 | | |
 ------------ | -------------
 **Info** | Replace a substring in a parameter with the specified text. Note that this replaces all occurrences inside of the parameter. `<parameter>` is the name of the existing parameter. `<to_replace>` is the value to be replaced. `<replacement>` is the value to overwrite the `<to_replace>` value.
-**Format** | `Param Replace <to_replace> <replacement>`
+**Format** | `Param Replace <parameter> <to_replace> <replacement>`
 **Example** | `Param Replace after @ ''`
 
 ##### Parameters
