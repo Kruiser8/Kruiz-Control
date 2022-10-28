@@ -51,10 +51,12 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
   }
 
   obs.getSceneItemId = async function(scene, source) {
+    console.error(`Getting Scene Item Id: (${scene}, ${source})`);
     return await obs.call('GetSceneItemId', {
       sceneName: scene,
       sourceName: source
     }).then(data => {
+      console.error(`Got Scene Item Id (${scene}, ${source}): ${data.sceneItemId}`);
       return data.sceneItemId;
     }).catch(async err => {
       if (err.code === 600) {
@@ -123,18 +125,26 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
 
   // Get the group the contains the provided source within the given scene
   obs.getSourceGroupName = async function(scene, source) {
+    console.error(`Getting Source Group Name: (${scene}, ${source})`);
     return await this.call('GetSceneItemList', {
       sceneName: scene
     }).then(async data => {
+      console.error(`Got SceneItemList (${scene}, ${source}): ${JSON.stringify(data)}`);
       // Identify groups
       for (var item of data.sceneItems) {
+        console.error(`Got SceneItemList Item (${scene}, ${source}): ${JSON.stringify(item)}`);
+
         if (item.isGroup) {
+          console.error(`Getting GroupSceneItemList: (${item.sourceName})`);
           // Get sources within group until match is found
           var result = await this.call('GetGroupSceneItemList', {
             sceneName: item.sourceName
           }).then(data => {
+            console.error(`Got GroupSceneItemList (${item.sourceName}): ${JSON.stringify(data)}`);
             for (var subitem of data.sceneItems) {
+              console.error(`Got GroupSceneItemList Subitem (${item.sourceName}): ${JSON.stringify(subitem)}`);
               if (subitem.sourceName === source) {
+                console.error(`Got GroupSceneItemList Match (${item.sourceName}): ${JSON.stringify(subitem.sourceName)}`);
                 return item.sourceName;
               }
             };
@@ -219,13 +229,16 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
     if (!scene) {
       scene = await this.getCurrentScene();
     }
+    console.error(`Setting Source Visibility: (${scene}, ${source}, ${enabled})`);
     await this.call('SetSceneItemEnabled', {
       'sceneItemId': await this.getSceneItemId(scene, source),
       'sceneName': scene,
       'sceneItemEnabled': enabled
     }).catch(async err => {
+      console.error(`Got Source Vis Error (${scene}, ${source}): ${JSON.stringify(err)}`);
       if (err.code === 600) {
         var group = await this.getSourceGroupName(scene, source);
+        console.error(`Got Source Vis Group (${scene}, ${source}): ${JSON.stringify(group)}`);
         if (group) {
           await this.setSourceVisibility(source, enabled, group);
           return;
