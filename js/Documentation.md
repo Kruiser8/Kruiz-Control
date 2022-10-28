@@ -2751,9 +2751,9 @@ None at the moment.
 #### TTS
 | | |
 ------------ | -------------
-**Info** | Used to read a message with the specified voice. `<voice>` is the name of a voice from [responsivevoice.org](https://responsivevoice.org). `<volume>` is the audio volume. `<wait/nowait>` determines whether or not the script waits until the audio is done playing before completing the next action. `<message>` is the text to read in the audio.
+**Info** | Used to read a message with the specified voice. `<voice>` is the name of a voice from your computer's narration system. You can check the available voices by using [`TTS Voices`](#tts-voices). `<volume>` is the audio volume. `<wait/nowait>` determines whether or not the script waits until the audio is done playing before completing the next action. `<message>` is the text to read in the audio.
 **Format** | `TTS <voice> <volume> <wait/nowait> <message>`
-**Example** | `TTS "UK English Male" 70 wait "Hey there!"`
+**Example** | `TTS "Microsoft David - English (United States)" 70 wait "Hey there!"`
 
 ***
 
