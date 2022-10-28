@@ -2125,7 +2125,7 @@ None at the moment.
 | | |
 ------------ | -------------
 **Info** | Replace a substring in a parameter with the specified text. Note that this replaces all occurrences inside of the parameter. `<parameter>` is the name of the existing parameter. `<to_replace>` is the value to be replaced. `<replacement>` is the value to overwrite the `<to_replace>` value.
-**Format** | `Param Replace <to_replace> <replacement>`
+**Format** | `Param Replace <parameter> <to_replace> <replacement>`
 **Example** | `Param Replace after @ ''`
 
 ##### Parameters
@@ -2751,9 +2751,9 @@ None at the moment.
 #### TTS
 | | |
 ------------ | -------------
-**Info** | Used to read a message with the specified voice. `<voice>` is the name of a voice from [responsivevoice.org](https://responsivevoice.org). `<volume>` is the audio volume. `<wait/nowait>` determines whether or not the script waits until the audio is done playing before completing the next action. `<message>` is the text to read in the audio.
+**Info** | Used to read a message with the specified voice. `<voice>` is the name of a voice from your computer's narration system. You can check the available voices by using [`TTS Voices`](#tts-voices). `<volume>` is the audio volume. `<wait/nowait>` determines whether or not the script waits until the audio is done playing before completing the next action. `<message>` is the text to read in the audio.
 **Format** | `TTS <voice> <volume> <wait/nowait> <message>`
-**Example** | `TTS "UK English Male" 70 wait "Hey there!"`
+**Example** | `TTS "Microsoft David - English (United States)" 70 wait "Hey there!"`
 
 ***
 
