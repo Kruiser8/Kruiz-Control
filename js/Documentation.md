@@ -2773,9 +2773,12 @@ None at the moment.
 #### TTS
 | | |
 ------------ | -------------
-**Info** | Used to read a message with the specified voice. `<voice>` is the name of a voice from your computer's narration system. You can check the available voices by using [`TTS Voices`](#tts-voices). `<volume>` is the audio volume. `<wait/nowait>` determines whether or not the script waits until the audio is done playing before completing the next action. `<message>` is the text to read in the audio.
-**Format** | `TTS <voice> <volume> <wait/nowait> <message>`
-**Example** | `TTS "Microsoft David - English (United States)" 70 wait "Hey there!"`
+**Info** | Used to read a message with the specified voice. `<voice>` is the name of a voice from your computer's narration system. You can check the available voices by using [`TTS Voices`](#tts-voices). `<volume>`, `<pitch>`, and `<rate>` are all numbers between 0 and 100. If a non-numerical value is provided, the default is used. `<wait/nowait>` determines whether or not the script waits until the audio is done playing before completing the next action. `<message>` is the text to read in the audio.
+**Format** | `TTS <voice> <volume> <pitch> <rate> <wait/nowait> <message>`
+**Example** | `TTS "Microsoft David - English (United States)" 70 50 20 wait "Hey there!"`
+**Example w/ default pitch & rate** | `TTS "Microsoft David - English (United States)" 70 - - wait "Hey there!"`
+
+_Note: For backwards compatibility, the `<pitch>` and `<rate>` inputs are optional, but they are both required if one of them is provided._
 
 ***
 
