@@ -1,5 +1,7 @@
 // Do stuff if the document is fully loaded
 $(document).ready(async function() {
+  var version = await readFile("version.txt");
+  console.error(`Kruiz Control ${version.trim()} Initialized`);
   var data = await readFile("triggers.txt");
   await readTriggerFile(data);
 });
