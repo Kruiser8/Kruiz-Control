@@ -137,6 +137,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Actions](#obs-actions)
     + [OBS AddSceneItem](#obs-addsceneitem)
     + [OBS CurrentScene](#obs-currentscene)
+    + [OBS Flip](#obs-flip)
     + [OBS IsSceneSourceVisible](#obs-isscenesourcevisible)
     + [OBS IsSourceActive](#obs-issourceactive)
     + [OBS Media Duration](#obs-media-duration)
@@ -148,6 +149,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OBS Mute](#obs-mute)
     + [OBS Position](#obs-position)
     + [OBS Refresh](#obs-refresh)
+    + [OBS Rotate](#obs-rotate)
     + [OBS SaveReplayBuffer](#obs-savereplaybuffer)
     + [OBS Scene](#obs-scene)
     + [OBS SceneSource](#obs-scenesource)
@@ -1682,6 +1684,15 @@ Enables the ability to interact with and respond to OBS.
 
 ***
 
+#### OBS Flip
+| | |
+------------ | -------------
+**Info** | Used to flip a source in OBS.
+**Format** | `OBS Flip <scene> <source> <x/y>`
+**Example** | `OBS Flip Webcam Camera x`
+
+***
+
 #### OBS IsSceneSourceVisible
 | | |
 ------------ | -------------
@@ -1808,6 +1819,17 @@ Enables the ability to interact with and respond to OBS.
 **Info** | Used to refresh a browser source in OBS.
 **Format** | `OBS Refresh <source>`
 **Example** | `OBS Refresh "Kruiz Control"`
+
+***
+
+#### OBS Rotate
+| | |
+------------ | -------------
+**Info** | Used to rotate a source in SLOBS. `<degree>` is any number (decimals allowed). This resets the base rotation to 0 before applying the rotation.
+**Format** | `SLOBS Rotate <scene> <source> <degree>`
+**Example** | `SLOBS Rotate Webcam Camera 90`
+
+_Note: If you want the source to spin in place, right-click the source and select `Transform` > `Edit Transform`. Change the `Positional Alignment` to `Center`._
 
 ***
 

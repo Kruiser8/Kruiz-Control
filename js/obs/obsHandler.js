@@ -331,6 +331,15 @@ class OBSHandler extends Handler {
         var currentScene = await this.obs.getCurrentScene();
         return {current_scene: currentScene};
         break;
+      case 'flip':
+        var { scene, source, direction } = Parser.getInputs(triggerData, ['action', 'scene', 'source', 'direction']);
+        var { sceneItemTransform } = await this.obs.getSceneItemTransform(scene, source);
+        if (direction.toLowerCase() === 'y') {
+          await this.obs.setSceneItemSize(scene, source, sceneItemTransform.scaleX, -1 * sceneItemTransform.scaleY);
+        } else {
+          await this.obs.setSceneItemSize(scene, source, -1 * sceneItemTransform.scaleX, sceneItemTransform.scaleY);
+        }
+        break;
       case 'isscenesourcevisible':
         var { scene, source } = Parser.getInputs(triggerData, ['action', 'scene', 'source']);
         if (scene === '{current}') {
@@ -408,6 +417,14 @@ class OBSHandler extends Handler {
         var { source } = Parser.getInputs(triggerData, ['action', 'source']);
         var source = triggerData.slice(2).join(' ');
         await this.obs.refreshBrowser(source);
+        break;
+      case 'rotate':
+        var { scene, source, degree } = Parser.getInputs(triggerData, ['action', 'scene', 'source', 'degree']);
+        degree = parseFloat(degree);
+        degree = degree % 360;
+        if (!isNaN(degree)) {
+          await this.obs.setSceneItemRotation(scene, source, degree);
+        }
         break;
       case 'savereplaybuffer':
         await this.obs.saveReplayBuffer();

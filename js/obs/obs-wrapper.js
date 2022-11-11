@@ -473,6 +473,25 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
     });
   };
 
+  obs.setSceneItemRotation = async function(scene, source, rotation) {
+    await this.call('SetSceneItemTransform', {
+      'sceneName': scene,
+      'sceneItemId': await this.getSceneItemId(scene, source),
+      'sceneItemTransform': {
+        'rotation': rotation
+      }
+    }).catch(async err => {
+      if (err.code === 600) {
+        var group = await this.getSourceGroupName(scene, source);
+        if (group) {
+          await this.setSceneItemRotation(group, source, rotation);
+          return;
+        }
+      }
+      console.error(JSON.stringify(err));
+    });
+  };
+
   obs.getCurrentTransition = async function() {
     return await this.call('GetCurrentSceneTransition')
     .then(data => {
