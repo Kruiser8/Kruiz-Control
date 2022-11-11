@@ -27,8 +27,12 @@ async function readFileTriggers(data) {
   for (var i = 0; i < lines.length; i++) {
     var line = lines[i];
     if (!line.startsWith('#') && line.trim().length > 0) {
-      var input = await readFile('triggers/' + line);
-      controller.parseInput(input, true);
+      try {
+        var input = await readFile('triggers/' + line);
+        controller.parseInput(input, true);
+      } catch (error) {
+        console.error(`Check that the ${line} file exists in the triggers folder`);
+      }
     }
   }
 
