@@ -331,6 +331,15 @@ class OBSHandler extends Handler {
         var currentScene = await this.obs.getCurrentScene();
         return {current_scene: currentScene};
         break;
+      case 'flip':
+        var { scene, source, direction } = Parser.getInputs(triggerData, ['action', 'scene', 'source', 'direction']);
+        var { sceneItemTransform } = await this.obs.getSceneItemTransform(scene, source);
+        if (direction.toLowerCase() === 'y') {
+          await this.obs.setSceneItemSize(scene, source, sceneItemTransform.scaleX, -1 * sceneItemTransform.scaleY);
+        } else {
+          await this.obs.setSceneItemSize(scene, source, -1 * sceneItemTransform.scaleX, sceneItemTransform.scaleY);
+        }
+        break;
       case 'isscenesourcevisible':
         var { scene, source } = Parser.getInputs(triggerData, ['action', 'scene', 'source']);
         if (scene === '{current}') {
@@ -409,6 +418,14 @@ class OBSHandler extends Handler {
         var source = triggerData.slice(2).join(' ');
         await this.obs.refreshBrowser(source);
         break;
+      case 'rotate':
+        var { scene, source, degree } = Parser.getInputs(triggerData, ['action', 'scene', 'source', 'degree']);
+        degree = parseFloat(degree);
+        degree = degree % 360;
+        if (!isNaN(degree)) {
+          await this.obs.setSceneItemRotation(scene, source, degree);
+        }
+        break;
       case 'savereplaybuffer':
         await this.obs.saveReplayBuffer();
         break;
@@ -483,6 +500,19 @@ class OBSHandler extends Handler {
         break;
       case 'startstream':
         await this.obs.startStream();
+        break;
+      case 'stats':
+        var data = await this.obs.getStats();
+        return {
+          cpu: Math.round((data.cpuUsage + Number.EPSILON) * 100) / 100,
+          memory: Math.round((data.memoryUsage + Number.EPSILON) * 100) / 100,
+          disk_space: Math.round((data.availableDiskSpace + Number.EPSILON) * 100) / 100,
+          fps: Math.round(data.activeFps),
+          average_render_time: Math.round((data.averageFrameRenderTime + Number.EPSILON) * 100) / 100,
+          render_skipped_frames: data.renderSkippedFrames,
+          output_skipped_frames: data.outputSkippedFrames,
+          data: data
+        }
         break;
       case 'stopreplaybuffer':
         await this.obs.stopReplayBuffer();

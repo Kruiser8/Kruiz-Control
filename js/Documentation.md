@@ -137,6 +137,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Actions](#obs-actions)
     + [OBS AddSceneItem](#obs-addsceneitem)
     + [OBS CurrentScene](#obs-currentscene)
+    + [OBS Flip](#obs-flip)
     + [OBS IsSceneSourceVisible](#obs-isscenesourcevisible)
     + [OBS IsSourceActive](#obs-issourceactive)
     + [OBS Media Duration](#obs-media-duration)
@@ -148,6 +149,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OBS Mute](#obs-mute)
     + [OBS Position](#obs-position)
     + [OBS Refresh](#obs-refresh)
+    + [OBS Rotate](#obs-rotate)
     + [OBS SaveReplayBuffer](#obs-savereplaybuffer)
     + [OBS Scene](#obs-scene)
     + [OBS SceneSource](#obs-scenesource)
@@ -159,6 +161,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OBS Source URL](#obs-source-url)
     + [OBS StartReplayBuffer](#obs-startreplaybuffer)
     + [OBS StartStream](#obs-startstream)
+    + [OBS Stats](#obs-stats)
     + [OBS StopReplayBuffer](#obs-stopreplaybuffer)
     + [OBS StopStream](#obs-stopstream)
     + [OBS TakeSourceScreenshot](#obs-takesourcescreenshot)
@@ -1432,9 +1435,11 @@ Use this to determine all global variables in Kruiz Control.
 **Format** | `Globals <name>`
 **Example** | `Globals MyGlobals`
 
+##### Example Usage
+
 <table>
 <tr>
-<td>Example Usage: Sends all global variable names chat</td>
+<td>Sends all global variable names chat</td>
 </tr>
 <tr>
 <td>
@@ -1454,7 +1459,7 @@ Chat Send {value}
 
 <table>
 <tr>
-<td>Example Usage: Sends all global variable names and values to an example API</td>
+<td>Sends all global variable names and values to an example API</td>
 </tr>
 <tr>
 <td>
@@ -1682,6 +1687,15 @@ Enables the ability to interact with and respond to OBS.
 
 ***
 
+#### OBS Flip
+| | |
+------------ | -------------
+**Info** | Used to flip a source in OBS.
+**Format** | `OBS Flip <scene> <source> <x/y>`
+**Example** | `OBS Flip Webcam Camera x`
+
+***
+
 #### OBS IsSceneSourceVisible
 | | |
 ------------ | -------------
@@ -1811,6 +1825,17 @@ Enables the ability to interact with and respond to OBS.
 
 ***
 
+#### OBS Rotate
+| | |
+------------ | -------------
+**Info** | Used to rotate a source in SLOBS. `<degree>` is any number (decimals allowed). This resets the base rotation to 0 before applying the rotation.
+**Format** | `SLOBS Rotate <scene> <source> <degree>`
+**Example** | `SLOBS Rotate Webcam Camera 90`
+
+_Note: If you want the source to spin in place, right-click the source and select `Transform` > `Edit Transform`. Change the `Positional Alignment` to `Center`._
+
+***
+
 #### OBS Scene
 | | |
 ------------ | -------------
@@ -1922,6 +1947,48 @@ _Note: The browser source does not need to be in current/active scene for this t
 **Info** | Used to start the stream in OBS. If the stream is already live, nothing will happen.
 **Format** | `OBS StartStream`
 **Example** | `OBS StartStream`
+
+***
+
+#### OBS Stats
+| | |
+------------ | -------------
+**Info** | Used to retrieve OBS statistics.
+**Format** | `OBS Stats`
+**Example** | `OBS Stats`
+
+##### Parameters
+| | |
+------------ | -------------
+**cpu** | Percent CPU in use by OBS.
+**memory** | Amount of memory in MB currently being used by OBS.
+**disk_space** | Available disk space on the device being used for recording storage.
+**fps** | Current FPS being rendered.
+**average_render_time** | Average time in milliseconds that OBS is taking to render a frame.
+**render_skipped_frames** | Number of rendered frames skipped by OBS (render frames are frames produced even when not recording or streaming).
+**output_skipped_frames** | Number of output frames skipped by OBS (the frames being recorded or streamed).
+**data** | The entire [OBS Websocket GetStats output](https://github.com/obsproject/obs-websocket/blob/master/docs/generated/protocol.md#getstats).
+
+##### Example Usage
+
+<table>
+<tr>
+<td>Sends OBS statistics to chat</td>
+</tr>
+<tr>
+<td>
+
+```m
+OnInit
+OBS Stats
+Error "OBS is using {cpu}% CPU and {memory}MB RAM."
+Error "OBS is rendering {fps} FPS, skipping {render_skipped_frames} frames total ({output_skipped_frames} skipped during output). Each frames takes an average of {average_render_time}ms to render."
+```
+
+</td>
+</tr>
+</table>
+
 
 ***
 
@@ -2751,9 +2818,12 @@ None at the moment.
 #### TTS
 | | |
 ------------ | -------------
-**Info** | Used to read a message with the specified voice. `<voice>` is the name of a voice from your computer's narration system. You can check the available voices by using [`TTS Voices`](#tts-voices). `<volume>` is the audio volume. `<wait/nowait>` determines whether or not the script waits until the audio is done playing before completing the next action. `<message>` is the text to read in the audio.
-**Format** | `TTS <voice> <volume> <wait/nowait> <message>`
-**Example** | `TTS "Microsoft David - English (United States)" 70 wait "Hey there!"`
+**Info** | Used to read a message with the specified voice. `<voice>` is the name of a voice from your computer's narration system. You can check the available voices by using [`TTS Voices`](#tts-voices). `<volume>`, `<pitch>`, and `<rate>` are all numbers between 0 and 100. If a non-numerical value is provided, the default is used. `<wait/nowait>` determines whether or not the script waits until the audio is done playing before completing the next action. `<message>` is the text to read in the audio.
+**Format** | `TTS <voice> <volume> <pitch> <rate> <wait/nowait> <message>`
+**Example** | `TTS "Microsoft David - English (United States)" 70 50 20 wait "Hey there!"`
+**Example w/ default pitch & rate** | `TTS "Microsoft David - English (United States)" 70 - - wait "Hey there!"`
+
+_Note: For backwards compatibility, the `<pitch>` and `<rate>` inputs are optional, but they are both required if one of them is provided._
 
 ***
 
@@ -2774,9 +2844,11 @@ Use this to determine the available voices on your computer.
 **Format** | `TTS Voices <name>`
 **Example** | `TTS Voices MyVoices`
 
+##### Example Usage
+
 <table>
 <tr>
-<td>Example Usage: Sends all voice options to chat</td>
+<td>Sends all voice options to chat</td>
 </tr>
 <tr>
 <td>

@@ -13,6 +13,9 @@
 function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTransitionBegin, onStreamStateChange, onCustomMessage, onOBSSourceVisibility, onOBSSourceFilterVisibility) {
   var obs = new OBSWebSocket();
   obs.connect(address, password).then(async () => {
+    obs.getVersion().then(data => {
+      console.error(`Kruiz Control connected to the OBS Websocket v${data.obsWebSocketVersion}`);
+    });
     obsHandler.setCurrentScene(await obs.getCurrentScene());
     obsHandler.success();
   }).catch(err => { // Promise convention dictates you have a catch on every chain.
@@ -473,6 +476,25 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
     });
   };
 
+  obs.setSceneItemRotation = async function(scene, source, rotation) {
+    await this.call('SetSceneItemTransform', {
+      'sceneName': scene,
+      'sceneItemId': await this.getSceneItemId(scene, source),
+      'sceneItemTransform': {
+        'rotation': rotation
+      }
+    }).catch(async err => {
+      if (err.code === 600) {
+        var group = await this.getSourceGroupName(scene, source);
+        if (group) {
+          await this.setSceneItemRotation(group, source, rotation);
+          return;
+        }
+      }
+      console.error(JSON.stringify(err));
+    });
+  };
+
   obs.getCurrentTransition = async function() {
     return await this.call('GetCurrentSceneTransition')
     .then(data => {
@@ -489,6 +511,14 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
       console.error(JSON.stringify(err));
     });
   };
+
+  obs.getStats = async function() {
+    return await this.call('GetStats').then(data => {
+      return data;
+    }).catch(err => {
+      console.error(JSON.stringify(err));
+    });
+  }
 
   return obs;
 }

@@ -28,16 +28,38 @@ class TTSHandler extends Handler {
       this.updateVoices(voices);
       listParser.createList(name, voices.map(voice => voice.name));
     } else {
-      var { voice, volume, wait, message } = Parser.getInputs(triggerData, ['voice', 'volume', 'wait', 'message']);
+      var inputs = Parser.getInputs(triggerData, ['voice', 'volume', 'pitch', 'rate', 'wait', 'message']);
+      if (Object.keys(inputs).length === 0) {
+        inputs = Parser.getInputs(triggerData, ['voice', 'volume', 'wait', 'message']);
+      }
+      var { voice, volume, pitch, rate, wait, message } = inputs;
+
       volume = parseInt(volume);
       if (isNaN(volume)) {
         volume = 0.8;
       } else {
         volume = volume / 100;
       }
+
+      pitch = parseInt(pitch);
+      if (isNaN(pitch)) {
+        pitch = 1;
+      } else {
+        pitch = pitch / 100 * 2;
+      }
+
+      rate = parseInt(rate);
+      if (isNaN(rate)) {
+        rate = 1;
+      } else {
+        rate = (rate / 100 * 9.9) + 0.1;
+      }
+
       var msg = new SpeechSynthesisUtterance();
       msg.text = message;
       msg.volume = volume;
+      msg.pitch = pitch;
+      msg.rate = rate;
 
       // Load voices if not loaded yet
       if (Object.keys(this.voices).length === 0) {
