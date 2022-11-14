@@ -512,5 +512,13 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
     });
   };
 
+  obs.getStats = async function() {
+    return await this.call('GetStats').then(data => {
+      return data;
+    }).catch(err => {
+      console.error(JSON.stringify(err));
+    });
+  }
+
   return obs;
 }

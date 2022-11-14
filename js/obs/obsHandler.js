@@ -501,6 +501,19 @@ class OBSHandler extends Handler {
       case 'startstream':
         await this.obs.startStream();
         break;
+      case 'stats':
+        var data = await this.obs.getStats();
+        return {
+          cpu: Math.round((data.cpuUsage + Number.EPSILON) * 100) / 100,
+          memory: Math.round((data.memoryUsage + Number.EPSILON) * 100) / 100,
+          disk_space: Math.round((data.availableDiskSpace + Number.EPSILON) * 100) / 100,
+          fps: Math.round(data.activeFps),
+          average_render_time: Math.round((data.averageFrameRenderTime + Number.EPSILON) * 100) / 100,
+          render_skipped_frames: data.renderSkippedFrames,
+          output_skipped_frames: data.outputSkippedFrames,
+          data: data
+        }
+        break;
       case 'stopreplaybuffer':
         await this.obs.stopReplayBuffer();
         break;

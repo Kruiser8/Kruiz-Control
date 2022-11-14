@@ -161,6 +161,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OBS Source URL](#obs-source-url)
     + [OBS StartReplayBuffer](#obs-startreplaybuffer)
     + [OBS StartStream](#obs-startstream)
+    + [OBS Stats](#obs-stats)
     + [OBS StopReplayBuffer](#obs-stopreplaybuffer)
     + [OBS StopStream](#obs-stopstream)
     + [OBS TakeSourceScreenshot](#obs-takesourcescreenshot)
@@ -1434,9 +1435,11 @@ Use this to determine all global variables in Kruiz Control.
 **Format** | `Globals <name>`
 **Example** | `Globals MyGlobals`
 
+##### Example Usage
+
 <table>
 <tr>
-<td>Example Usage: Sends all global variable names chat</td>
+<td>Sends all global variable names chat</td>
 </tr>
 <tr>
 <td>
@@ -1456,7 +1459,7 @@ Chat Send {value}
 
 <table>
 <tr>
-<td>Example Usage: Sends all global variable names and values to an example API</td>
+<td>Sends all global variable names and values to an example API</td>
 </tr>
 <tr>
 <td>
@@ -1944,6 +1947,48 @@ _Note: The browser source does not need to be in current/active scene for this t
 **Info** | Used to start the stream in OBS. If the stream is already live, nothing will happen.
 **Format** | `OBS StartStream`
 **Example** | `OBS StartStream`
+
+***
+
+#### OBS Stats
+| | |
+------------ | -------------
+**Info** | Used to retrieve OBS statistics.
+**Format** | `OBS Stats`
+**Example** | `OBS Stats`
+
+##### Parameters
+| | |
+------------ | -------------
+**cpu** | Percent CPU in use by OBS.
+**memory** | Amount of memory in MB currently being used by OBS.
+**disk_space** | Available disk space on the device being used for recording storage.
+**fps** | Current FPS being rendered.
+**average_render_time** | Average time in milliseconds that OBS is taking to render a frame.
+**render_skipped_frames** | Number of rendered frames skipped by OBS (render frames are frames produced even when not recording or streaming).
+**output_skipped_frames** | Number of output frames skipped by OBS (the frames being recorded or streamed).
+**data** | The entire [OBS Websocket GetStats output](https://github.com/obsproject/obs-websocket/blob/master/docs/generated/protocol.md#getstats).
+
+##### Example Usage
+
+<table>
+<tr>
+<td>Sends OBS statistics to chat</td>
+</tr>
+<tr>
+<td>
+
+```m
+OnInit
+OBS Stats
+Error "OBS is using {cpu}% CPU and {memory}MB RAM."
+Error "OBS is rendering {fps} FPS, skipping {render_skipped_frames} frames total ({output_skipped_frames} skipped during output). Each frames takes an average of {average_render_time}ms to render."
+```
+
+</td>
+</tr>
+</table>
+
 
 ***
 
@@ -2799,9 +2844,11 @@ Use this to determine the available voices on your computer.
 **Format** | `TTS Voices <name>`
 **Example** | `TTS Voices MyVoices`
 
+##### Example Usage
+
 <table>
 <tr>
-<td>Example Usage: Sends all voice options to chat</td>
+<td>Sends all voice options to chat</td>
 </tr>
 <tr>
 <td>
