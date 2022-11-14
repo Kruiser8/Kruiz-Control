@@ -13,6 +13,9 @@
 function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTransitionBegin, onStreamStateChange, onCustomMessage, onOBSSourceVisibility, onOBSSourceFilterVisibility) {
   var obs = new OBSWebSocket();
   obs.connect(address, password).then(async () => {
+    obs.getVersion().then(data => {
+      console.error(`Kruiz Control connected to the OBS Websocket v${data.obsWebSocketVersion}`);
+    });
     obsHandler.setCurrentScene(await obs.getCurrentScene());
     obsHandler.success();
   }).catch(err => { // Promise convention dictates you have a catch on every chain.
