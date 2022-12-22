@@ -2043,7 +2043,7 @@ Error "OBS is rendering {fps} FPS, skipping {render_skipped_frames} frames total
 ##### Parameters
 | | |
 ------------ | -------------
-**version** | The version of the websocket.
+**version** | The version of the websocket. If OBS is not connected, `Disconnected` will be returned.
 
 ***
 

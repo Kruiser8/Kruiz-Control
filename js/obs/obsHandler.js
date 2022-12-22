@@ -532,7 +532,11 @@ class OBSHandler extends Handler {
         break;
       case 'version':
         var data = await this.obs.getVersion();
-        return { version: data.obsWebSocketVersion };
+        var version = "Disconnected";
+        if (data && data.obsWebSocketVersion) {
+          version = data.obsWebSocketVersion
+        }
+        return { version };
         break;
       case 'volume':
         var { source, volume, useDecibel } = Parser.getInputs(triggerData, ['action', 'source', 'volume', 'useDecibel'], false, 1);
