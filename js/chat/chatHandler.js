@@ -133,13 +133,15 @@ class ChatHandler extends Handler {
         });
         break;
       case 'onspeak':
-        var { user } = Parser.getInputs(triggerLine, ['user']);
-        user = user.toLowerCase();
-        if (this.speaks.indexOf(user) === -1) {
-          this.speaks.push(user);
-          this.speaksInfo[user] = [];
-        }
-        this.speaksInfo[user].push(triggerId);
+        var { users } = Parser.getInputs(triggerLine, ['users'], true);
+        users.forEach(user => {
+          user = user.toLowerCase();
+          if (this.speaks.indexOf(user) === -1) {
+            this.speaks.push(user);
+            this.speaksInfo[user] = [];
+          }
+          this.speaksInfo[user].push(triggerId);
+        });
         break;
       case 'oneverychatmessage':
         this.chatTriggers.push(triggerId);

@@ -354,6 +354,7 @@ The commands, `!so`, `!sh`, `!caster`, and `!shout` will all cause the message t
 - OnAction
 - OnCommand
 - OnKeyword
+- OnSpeak
 - OnMessage
 - OnChannelPoint
 - OnCommunityGoalStart
@@ -686,6 +687,7 @@ _WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mi
 ------------ | -------------
 **Info** | Used to trigger a set of actions when a user speaks in chat for the first time. Using `*` as the `<name>` will execute the trigger for all users.
 **Format** | `OnSpeak <name>`
+**Format w/ Aliases** | `OnSpeak <name1> <name2> <name3>`
 **Example** | `OnSpeak Kruiser8`
 
 ##### Parameters
