@@ -259,6 +259,7 @@ class ChatHandler extends Handler {
                 flags: flags,
                 extra: extra
               },
+              arg_count: args.length,
               ...chatArgs
             });
           }
@@ -288,6 +289,7 @@ class ChatHandler extends Handler {
                   flags: flags,
                   extra: extra
                 },
+                arg_count: args.length,
                 ...chatArgs
               });
             }
@@ -332,6 +334,7 @@ class ChatHandler extends Handler {
                 flags: flags,
                 extra: extra
               },
+              arg_count: args.length,
               ...chatArgs
             });
           }
@@ -361,6 +364,7 @@ class ChatHandler extends Handler {
                   flags: flags,
                   extra: extra
                 },
+                arg_count: args.length,
                 ...chatArgs
               });
             }

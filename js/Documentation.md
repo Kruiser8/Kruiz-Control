@@ -639,6 +639,7 @@ _WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mi
 **message** | The entire chat message, including the command.
 **data** | An object with all metadata about the message (for use with [Function](#function)).
 **arg#** | The numbered arguments in the message. Replace `#` with a number, starting at 1 and ending at the last argument passed into the command.
+**arg_count** | The number of arguments in the message. This indicates the number of `arg#` parameters returned.
 
 ***
 
@@ -679,6 +680,7 @@ _WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mi
 **message** | The chat message.
 **data** | An object with all metadata about the message (for use with [Function](#function)).
 **arg#** | The numbered arguments in the message. Replace `#` with a number, starting at 1 and ending at the last argument passed into the command.
+**arg_count** | The number of arguments in the message. This indicates the number of `arg#` parameters returned.
 
 ***
 
