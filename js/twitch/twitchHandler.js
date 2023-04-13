@@ -44,8 +44,34 @@ class TwitchHandler extends Handler {
   /**
    * Initialize the oauth tokens
    */
-  async init(channelId) {
+  async init(user, clientId, clientSecret, code, channelId) {
     connectPubSubWebsocket(channelId, this.onMessage.bind(this));
+    this.user = user;
+    this.channelId = channelId;
+    var prevAccessToken = await IDBService.get('CUTWAT');
+    var prevRefreshToken = await IDBService.get('CUTWRT');
+
+    this.api = new TwitchAPI(clientId, clientSecret, code, prevAccessToken, prevRefreshToken, this.updateTokens);
+    var initClientId = await IDBService.get('INTWC');
+    var initClientSecret = await IDBService.get('INTWCS');
+    var initCode = await IDBService.get('INTWCD');
+    if (clientId != initClientId || clientSecret != initClientSecret || code != initCode) {
+      var { accessToken, refreshToken } = await this.api.requestAuthToken();
+      this.updateTokens(clientId, clientSecret, code, accessToken, refreshToken, true);
+    }
+  }
+
+  updateTokens(clientId, clientSecret, code, accessToken, refreshToken, updateInitial) {
+    if (updateInitial) {
+      IDBService.set('INTWC', clientId);
+      IDBService.set('INTWCS', clientSecret);
+      IDBService.set('INTWCD', code);
+    }
+    IDBService.set('CUTWC', clientId);
+    IDBService.set('CUTWCS', clientSecret);
+    IDBService.set('CUTWCD', code);
+    IDBService.set('CUTWAT', accessToken);
+    IDBService.set('CUTWRT', refreshToken);
   }
 
   /**
@@ -327,15 +353,483 @@ class TwitchHandler extends Handler {
       });
     }
   }
+
+  /**
+   * Handle the input data (take an action).
+   * @param {array} triggerData contents of trigger line
+   * @param {array} parameters current trigger parameters
+   */
+  async handleData(triggerData, parameters) {
+    var action = Parser.getAction(triggerData, 'Twitch');
+    switch (action) {
+      case 'addblockedterm':
+        var { term } = Parser.getInputs(triggerData, ['action', 'term']);
+        await this.api.addBlockedTerm(this.channelId, this.channelId, term);
+        break;
+      case 'announcement':
+        var { message, color = 'primary' } = Parser.getInputs(triggerData, ['action', 'message', 'color'], false, 1);
+        color = color.toLowerCase();
+
+        colors = ['blue', 'green', 'orange', 'purple', 'primary'];
+        if (colors.indexOf(color) === -1) {
+          console.error(`Invalid color value for Twitch Announcement. Found "${color}", expected one of "${colors.join('", "')}".`)
+          color = 'primary';
+        }
+        await this.api.sendChatAnnouncement(this.channelId, this.channelId, { message, color });
+        break;
+      case 'authenticate':
+        return {
+          auth_url: this.api.getAuthUrl()
+        };
+        break;
+      case 'ban':
+        var { user, duration = '', reason = '' } = Parser.getInputs(triggerData, ['action', 'user', 'duration', 'reason'], false, 2);
+
+        var user_id = await getIdFromUser(user);
+
+        var data = { user_id };
+        if (isNumeric(duration)) {
+          data['duration'] = clamp(parseInt(duration), 1, 1209600);
+        }
+        if (reason) {
+          data['reason'] = reason;
+        }
+
+        await this.api.banUser(this.channelId, this.channelId, data);
+        break;
+      case 'bitsleaderboard':
+        var { count = 10, period = 'all' } = Parser.getInputs(triggerData, ['action', 'count', 'period'], false, 2);
+        period = period.toLowerCase();
+
+        var periods = [
+          'day',
+          'week',
+          'month',
+          'year',
+          'all'
+        ];
+        if (periods.indexOf(period) === -1) {
+          console.error(`Invalid period value for Twitch BitsLeaderboard. Found "${period}", expected one of "${periods.join('", "')}".`)
+          period = 'all';
+        }
+
+        var response = await this.api.getBitsLeaderboard(count, period);
+        var userArgs = {};
+        for (var i = 0; i < response.data.length; i++) {
+          userArgs[`user${i+1}`] = response.data[i]['user_name'];
+          userArgs[`bits${i+1}`] = response.data[i]['score'];
+        }
+        return {
+          data: response,
+          ...userArgs
+        };
+        break;
+      case 'block':
+        var { user } = Parser.getInputs(triggerData, ['action', 'user']);
+
+        var user_id = await getIdFromUser(user);
+
+        await this.api.blockUser(user_id);
+        break;
+      case 'channelinfo':
+        var { user = this.user } = Parser.getInputs(triggerData, ['action', 'user' ], false, 1);
+
+        var channelId = this.channelId;
+        if (user !== this.user) {
+          channelId = await getIdFromUser(user);
+        }
+
+        var response = await this.api.getChannelInformation(channelId);
+        if (response?.data) {
+          var tagArgs = {};
+          for (var i = 0; i < response.data[0].tags.length; i++) {
+            chatArgs[`tag${i+1}`] = response.data[0].tags[i];
+          }
+          return {
+            data: response,
+            name: response.data[0].game_name,
+            title: response.data[0].title,
+            ...tagArgs
+          };
+        }
+        break;
+      case 'chatters':
+        var { game, first = 100, cursor = '' } = Parser.getInputs(triggerData, ['action', 'game', 'first', 'cursor'], false, 2);
+        var response = await this.api.getChatters(this.channelId, this.channelId, first, cursor);
+        var userArgs = {};
+        for (var i = 0; i < response.data.length; i++) {
+          userArgs[`user${i+1}`] = response.data[i].user_name;
+        }
+
+        return {
+          data: response,
+          chatter_count: response.data.length,
+          cursor: response.pagination.cursor || '',
+          ...userArgs
+        }
+        break;
+      case 'clipbyid':
+        var { id } = Parser.getInputs(triggerData, ['action', 'id']);
+
+        var response = await this.api.getClipsById(id);
+        if (response?.data) {
+          var clipArgs = {};
+          for (var i = 0; i < response.data.length; i++) {
+            clipArgs[`clip${i+1}`] = response.data[i].url;
+            clipArgs[`name${i+1}`] = response.data[i].title;
+            clipArgs[`duration${i+1}`] = response.data[i].duration;
+          }
+          return {
+            data: response,
+            clip: response.data[i].url,
+            name: response.data[i].title,
+            duration: response.data[i].duration
+          }
+        }
+        break;
+      case 'clipsbyuser':
+        var { user, limit = 20 } = Parser.getInputs(triggerData, ['action', 'user', 'limit' ], false, 2);
+
+        var first = 20;
+        if (isNumeric(limit)) {
+          first = clamp(parseInt(limit), 1, 100);
+        }
+
+        var channelId = this.channelId;
+        if (user !== this.user) {
+          channelId = await getIdFromUser(user);
+        }
+
+        var response = await this.api.getClipsByBroadcasterId(channelId, first);
+        if (response?.data) {
+          var clipArgs = {};
+          for (var i = 0; i < response.data.length; i++) {
+            clipArgs[`clip${i+1}`] = response.data[i].url;
+            clipArgs[`name${i+1}`] = response.data[i].title;
+            clipArgs[`duration${i+1}`] = response.data[i].duration;
+          }
+          return {
+            data: response,
+            ...clipArgs
+          }
+        }
+        break;
+      case 'color':
+        var { color } = Parser.getInputs(triggerData, ['action', 'color']);
+
+        colors = ['blue', 'blue_violet', 'cadet_blue', 'chocolate', 'coral', 'dodger_blue', 'firebrick', 'golden_rod', 'green', 'hot_pink', 'orange_red', 'red', 'sea_green', 'spring_green', 'yellow_green'];
+        if (!(/^#[0-9A-F]{6}$/i.test(color)) && colors.indexOf(color) === -1) {
+          console.error(`Invalid color value for Twitch Announcement. Found "${color}", expected a hex code or one of "${colors.join('", "')}".`)
+          return;
+        }
+        await this.api.updateUserChatColor(user_id, color);
+        break;
+      case 'createclip':
+        var { delay = false } = Parser.getInputs(triggerData, ['action', 'delay' ], false, 1);
+        await this.api.createClip(this.channelId, delay);
+        break;
+      case 'delete':
+        var { message_id } = Parser.getInputs(triggerData, ['action', 'message_id']);
+        await this.api.deleteChatMessages(this.channelId, this.channelId, message_id);
+        break;
+      case 'emoteonly':
+        await this.api.updateChatSettings(channelId, channelId, {
+          emote_mode: true
+        });
+        break;
+      case 'emoteonlyoff':
+        await this.api.updateChatSettings(channelId, channelId, {
+          emote_mode: false
+        });
+        break;
+      case 'emotes':
+        var { user = this.user } = Parser.getInputs(triggerData, ['action', 'user'], false, 1);
+        var channelId = this.channelId;
+        if (user !== this.user) {
+          channelId = await getIdFromUser(user);
+        }
+
+        var response = await this.api.getChannelEmotes(channelId);
+        var emoteArgs = {};
+        for (var i = 0; i < response.data.length; i++) {
+          emoteArgs[`emote${i+1}`] = response.data[i].name;
+        }
+
+        return {
+          data: response,
+          emote_count: response.data.length,
+          ...emoteArgs
+        }
+        break;
+      case 'followers':
+        var { duration = 0 } = Parser.getInputs(triggerData, ['action', 'duration'], false, 1);
+
+        var follower_mode_duration = 0;
+        if (isNumeric(duration)) {
+          follower_mode_duration = parseInt(duration);
+        }
+        follower_mode_duration = clamp(follower_mode_duration, 0, 129600);
+
+        await this.api.updateChatSettings(channelId, channelId, {
+          follower_mode: true,
+          follower_mode_duration
+        });
+        break;
+      case 'followersoff':
+        await this.api.updateChatSettings(channelId, channelId, {
+          follower_mode: false
+        });
+        break;
+      case 'game':
+        var { game } = Parser.getInputs(triggerData, ['action', 'game']);
+        var game_id = await this.api.getGameId(game);
+        await this.api.modifyChannelInformation(this.channelId, { game_id });
+        break;
+      case 'goals':
+        var response = await this.api.getCreatorGoals(this.channelId);
+
+        if (response?.data) {
+          var goalArgs = {};
+          for (var i = 0; i < response.data.length; i++) {
+            goalArgs[`goal${i+1}`] = response.data[i].description;
+            goalArgs[`type${i+1}`] = response.data[i].type;
+            goalArgs[`current${i+1}`] = response.data[i].current_amount;
+            goalArgs[`target${i+1}`] = response.data[i].target_amount;
+            goalArgs[`perc${i+1}`] = Math.floor(response.data[i].current_amount * 100 / response.data[i].target_amount);
+          }
+          return {
+            data: response,
+            goal_count: response.data.length,
+            ...goalArgs
+          };
+        }
+        break;
+      case 'marker':
+        var { description = '' } = Parser.getInputs(triggerData, ['action', 'description'], false, 1);
+        await this.api.createStreamMarker(this.channelId, description);
+        break;
+      case 'mod':
+        var { user } = Parser.getInputs(triggerData, ['action', 'user']);
+
+        var user_id = await getIdFromUser(user);
+
+        await this.api.addChannelModerator(this.channelId, user_id);
+        break;
+      case 'mods':
+        var moderators = await this.api.getAllModerators(this.channelId);
+        var modArgs = {};
+        for (var i = 0; i < moderators.length; i++) {
+          modArgs[`id${i+1}`] = moderators[i].user_login;
+          modArgs[`mod${i+1}`] = moderators[i].user_name;
+        }
+        return {
+          mod_count: moderators.length,
+          ...modArgs
+        };
+        break;
+      case 'raid':
+        var { user } = Parser.getInputs(triggerData, ['action', 'user']);
+
+        var user_id = await getIdFromUser(user);
+
+        await this.api.startARaid(this.channelId, user_id);
+        break;
+      case 'redemption':
+        var { reward_id, redemption_id, status } = Parser.getInputs(triggerData, ['action', 'reward_id', 'redemption_id', status]);
+        status = status.toUpperCase();
+
+        statuses = ['CANCELED', 'FULFILLED'];
+        if (statuses.indexOf(status) === -1) {
+          console.error(`Invalid status value for Twitch Redemption. Found "${status}", expected one of "${statuses.join('", "')}".`)
+          return;
+        }
+
+        await this.api.updateRedemptionStatus(this.channelId, reward_id, redemption_id, status);
+        break;
+      case 'removeblockedterm':
+        var { term } = Parser.getInputs(triggerData, ['action', 'term']);
+
+        var term_id = await this.api.getBlockedTermId(this.channelId, this.channelId, term);
+        if (term_id === undefined) {
+          console.error(`Unable to find blocked term: ${term}`);
+          return;
+        }
+
+        await this.api.removeBlockedTerm(this.channelId, this.channelId, term_id);
+        break;
+      case 'shield':
+        var { status } = Parser.getInputs(triggerData, ['action', 'status']);
+        status = status.toLowerCase();
+
+        var statuses = [
+          'on',
+          'off',
+          'toggle'
+        ];
+        if (statuses.indexOf(status) === -1) {
+          console.error(`Invalid status value for Twitch Shield. Found "${status}", expected one of "${statuses.join('", "')}".`)
+          status = 'toggle';
+        }
+
+        if (status === 'toggle') {
+          var response = await this.api.getShieldModeStatus(this.channelId, this.channelId);
+          if (response?.data) {
+            status = response.data[0].is_active ? 'off' : 'on';
+          }
+        } else {
+          status = status === 'on' ? true : false;
+        }
+
+        await this.api.updateShieldModeStatus(this.channelId, this.channelId, status);
+        break;
+      case 'shoutout':
+        var { user } = Parser.getInputs(triggerData, ['action', 'user']);
+        var user_id = await getIdFromUser(user);
+        await this.api.sendShoutout(channelId, user_id, channelId);
+        break;
+      case 'slow':
+        var { duration = 30 } = Parser.getInputs(triggerData, ['action', 'duration'], false, 1);
+
+        var slow_mode_wait_time = 30;
+        if (isNumeric(duration)) {
+          slow_mode_wait_time = parseInt(duration);
+        }
+        slow_mode_wait_time = clamp(slow_mode_wait_time, 3, 120);
+
+        await this.api.updateChatSettings(channelId, channelId, {
+          slow_mode: true,
+          slow_mode_wait_time
+        });
+        break;
+      case 'slowoff':
+        await this.api.updateChatSettings(channelId, channelId, {
+          slow_mode: false
+        });
+        break;
+      case 'soundtrack':
+        var response = await this.api.getSoundtrackCurrentTrack(this.channelId);
+        if (response?.data?.track) {
+          var artists = response.data[0].track.artists.map(artist => artist.name).join(', ');
+          return {
+            data: response,
+            artist: artists,
+            title: response.data[0].track.title
+          };
+        }
+        break;
+      case 'subscribers':
+        await this.api.updateChatSettings(channelId, channelId, {
+          subscriber_mode: true
+        });
+        break;
+      case 'subscribersoff':
+        await this.api.updateChatSettings(channelId, channelId, {
+          subscriber_mode: false
+        });
+        break;
+      case 'tags':
+        var { tags } = Parser.getInputs(triggerData, ['action', 'tags'], true);
+        await this.api.modifyChannelInformation(this.channelId, { tags });
+        break;
+      case 'teams':
+        var response = await this.api.getChannelTeams(this.channelId);
+
+        if (response?.data) {
+          var teamArgs = {};
+          for (var i = 0; i < response.data.length; i++) {
+            teamArgs[`team${i+1}`] = response.data[i].team_display_name;
+            teamArgs[`partner${i+1}`] = response.data[i].broadcaster_name;
+          }
+          return {
+            team_count: response.data.length,
+            ...teamArgs
+          };
+        }
+        break;
+      case 'title':
+        var { title } = Parser.getInputs(triggerData, ['action', 'title']);
+        await this.api.modifyChannelInformation(this.channelId, { title });
+        break;
+      case 'unban':
+        var { user } = Parser.getInputs(triggerData, ['action', 'user']);
+        var user_id = await getIdFromUser(user);
+        await this.api.unbanUser(this.channelId, this.channelId, user_id);
+        break;
+      case 'unblock':
+        var { user } = Parser.getInputs(triggerData, ['action', 'user']);
+
+        var user_id = await getIdFromUser(user);
+
+        await this.api.unblockUser(user_id);
+        break;
+      case 'uniquechat':
+        await this.api.updateChatSettings(channelId, channelId, {
+          unique_chat_mode: true
+        });
+        break;
+      case 'uniquechatoff':
+        await this.api.updateChatSettings(channelId, channelId, {
+          unique_chat_mode: false
+        });
+        break;
+      case 'unmod':
+        var { user } = Parser.getInputs(triggerData, ['action', 'user']);
+
+        var user_id = await getIdFromUser(user);
+
+        await this.api.removeChannelModerator(this.channelId, user_id);
+        break;
+      case 'unraid':
+        var { user } = Parser.getInputs(triggerData, ['action', 'user']);
+
+        var user_id = await getIdFromUser(user);
+
+        await this.api.cancelARaid(this.channelId, user_id);
+        break;
+      case 'unvip':
+        var { user } = Parser.getInputs(triggerData, ['action', 'user']);
+
+        var user_id = await getIdFromUser(user);
+
+        await this.api.removeChannelVIP(this.channelId, user_id);
+        break;
+      case 'vip':
+        var { user } = Parser.getInputs(triggerData, ['action', 'user']);
+
+        var user_id = await getIdFromUser(user);
+
+        await this.api.addChannelVIP(this.channelId, user_id);
+        break;
+      case 'vips':
+        var vips = await this.api.getAllVIPs(this.channelId);
+        var vipArgs = {};
+        for (var i = 0; i < vips.length; i++) {
+          vipArgs[`id${i+1}`] = vips[i].user_login;
+          vipArgs[`vip${i+1}`] = vips[i].user_name;
+        }
+        return {
+          vip_count: vips.length,
+          ...vipArgs
+        };
+        break;
+    }
+  }
+
+  isErrorResponse(response) {
+    return response === 'Error with Twitch API';
+  }
 }
 
 /**
  * Create a handler
  */
 async function twitchHandlerExport() {
-  var twitch = new TwitchHandler();
-  var user = await readFile('settings/twitch/user.txt');
-  var id = await getIdFromUser(user.trim());
-  twitch.init(id.trim());
+ var twitch = new TwitchHandler();
+ var clientId = await readFile('settings/twitch/clientId.txt');
+ var clientSecret = await readFile('settings/twitch/clientSecret.txt');
+ var code = await readFile('settings/twitch/code.txt');
+ var user = await readFile('settings/twitch/user.txt');
+ var id = await getIdFromUser(user.trim());
+ twitch.init(user.trim(), clientId.trim(), clientSecret.trim(), code.trim(), id.trim());
 }
 twitchHandlerExport();
