@@ -246,6 +246,48 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnCommunityGoalProgress](#oncommunitygoalprogress)
     + [OnCommunityGoalStart](#oncommunitygoalstart)
   * [Actions](#twitch-actions)
+    + [Twitch AddBlockedTerm](#twitch-addblockedterm)
+    + [Twitch Announcement](#twitch-announcement)
+    + [Twitch Authenticate](#twitch-authenticate)
+    + [Twitch Ban](#twitch-ban)
+    + [Twitch BitsLeaderboard](#twitch-bitsleaderboard)
+    + [Twitch Block](#twitch-block)
+    + [Twitch ChannelInfo](#twitch-channelinfo)
+    + [Twitch Chatters](#twitch-chatters)
+    + [Twitch ChattersPaginated](#twitch-chatterspaginated)
+    + [Twitch ClipById](#twitch-clipbyid)
+    + [Twitch ClipsByUser](#twitch-clipsbyuser)
+    + [Twitch Color](#twitch-color)
+    + [Twitch EmoteOnly](#twitch-emoteonly)
+    + [Twitch EmoteOnlyOff](#twitch-emoteonlyoff)
+    + [Twitch Emotes](#twitch-emotes)
+    + [Twitch Followers](#twitch-followers)
+    + [Twitch FollowersOff](#twitch-followersoff)
+    + [Twitch Game](#twitch-game)
+    + [Twitch Goals](#twitch-goals)
+    + [Twitch Mod](#twitch-mod)
+    + [Twitch Mods](#twitch-mods)
+    + [Twitch Raid](#twitch-raid)
+    + [Twitch RemoveBlockedTerm](#twitch-removeblockedterm)
+    + [Twitch Shield](#twitch-shield)
+    + [Twitch Slow](#twitch-slow)
+    + [Twitch SlowOff](#twitch-slowoff)
+    + [Twitch Soundtrack](#twitch-soundtrack)
+    + [Twitch Subscribers](#twitch-subscribers)
+    + [Twitch SubscribersOff](#twitch-subscribersoff)
+    + [Twitch Tags](#twitch-tags)
+    + [Twitch Teams](#twitch-teams)
+    + [Twitch Timeout](#twitch-timeout)
+    + [Twitch Title](#twitch-title)
+    + [Twitch Unban](#twitch-unban)
+    + [Twitch Unblock](#twitch-unblock)
+    + [Twitch UniqueChat](#twitch-uniquechat)
+    + [Twitch UniqueChatOff](#twitch-uniquechatoff)
+    + [Twitch Unmod](#twitch-unmod)
+    + [Twitch Unraid](#twitch-unraid)
+    + [Twitch UnVIP](#twitch-unvip)
+    + [Twitch VIP](#twitch-vip)
+    + [Twitch VIPs](#twitch-vips)
 - [Variable](#variable)
   * [Triggers](#variable-triggers)
   * [Actions](#variable-actions)
@@ -2915,7 +2957,7 @@ _Note: Default channel point rewards are not supported: `Unlock a Random Sub Emo
 #### Twitch AddBlockedTerm
 | | |
 ------------ | -------------
-**Info** | Used to add a word or phrase to the broadcaster’s list of blocked terms. These are the terms that the broadcaster doesn’t want used in their chat room. `<name>` is the name assigned to the value.
+**Info** | Used to add a word or phrase to the broadcaster's list of blocked terms. These are the terms that the broadcaster doesn't want used in their chat room. `<term>` is the term or phrase to remove.
 **Format** | `Twitch AddBlockedTerm <term>`
 **Example** | `Twitch AddBlockedTerm "bad word"`
 **Example w/ Aliases** | `Twitch AddBlockedTerm "phrase to block" "bad term"`
@@ -2925,7 +2967,7 @@ _Note: Default channel point rewards are not supported: `Unlock a Random Sub Emo
 #### Twitch Announcement
 | | |
 ------------ | -------------
-**Info** | Sends an announcement to the broadcaster’s chat room. `<message>` is the announcement to make (500 characters or less). `<optional_color>` is an optional color used to highlight the announcement. The color must be one of `blue`, `green`, `orange`, `purple`, `primary` (the default).
+**Info** | Sends an announcement to the broadcaster's chat room. `<message>` is the announcement to make (500 characters or less). `<optional_color>` is an optional color used to highlight the announcement. The color must be one of `blue`, `green`, `orange`, `purple`, `primary` (the default).
 **Format** | `Twitch Announcement <message> <optional_color>`
 **Example** | `Twitch Announcement "Check out this announcement!"`
 **Example w/ Color** | `Twitch Announcement "Check out this announcement!" blue`
@@ -2949,7 +2991,7 @@ _Note: Default channel point rewards are not supported: `Unlock a Random Sub Emo
 #### Twitch Ban
 | | |
 ------------ | -------------
-**Info** | Ban a user from participating in the specified broadcaster’s chat room. `<user>` is the Twitch user to ban.
+**Info** | Ban a user from participating in the specified broadcaster's chat room. `<user>` is the Twitch user to ban.
 **Format** | `Twitch Ban <user>`
 **Example** | `Twitch Ban testUser`
 
@@ -3031,20 +3073,304 @@ Param Add i 1
 #### Twitch Chatters
 | | |
 ------------ | -------------
-**Info** | Retrieves basic information about the specified channel. `<optional_user>` is the name of the twitch channel to retrieve. If no user is given, the `settings/twitch/user.txt` value is used.
-**Format** | `Twitch ChannelInfo <optional_user>`
-**Example** | `Twitch ChannelInfo`
-**Example w/ User** | `Twitch ChannelInfo Kruiser8`
+**Info** | Gets the list of all users that are connected to the broadcaster's chat session.
+**Format** | `Twitch Chatters`
+**Example** | `Twitch Chatters`
 
 ##### Parameters
 | | |
 ------------ | -------------
-**data** | The complete response from the Twitch Channel Information API.
-**name** | The specified Twitch stream's display name.
-**game** | The game (or category) of the Twitch stream.
-**title** | The title of the specified Twitch stream.
-**tag_count** | The number of tags retrieved for the channel.
-**tag#** | The tags on the specified channel. Replace `#` with a number, starting at 1 and ending at `tag_count`.
+**data** | The complete response from the Twitch Chatters API.
+**chatter_count** | The number of chatters in the channel.
+**user#** | The users in the specified channel. Replace `#` with a number, starting at 1 and ending at `chatter_count`.
+
+***
+
+#### Twitch ChattersPaginated
+| | |
+------------ | -------------
+**Info** | Gets a paginated list of users that are connected to the broadcaster's chat session. `<first>` is the number of chatters to get on this page between 1 and 1000. `<optional_cursor>` is the pagination cursor to use when retrieving the next page. On the first page, the cursor should not be supplied.
+**Format** | `Twitch Chatters <first> <optional_cursor>`
+**Example** | `Twitch Chatters 1000`
+**Example w/ Cursor** | `Twitch Chatters 1000 eyJiIjpudWxsLCJhIjp7Ik9mZnNldCI6NX19`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Chatters API.
+**chatter_count** | The number of chatters in the channel.
+**cursor** | The pagination value to retrieve the next page of results.
+**user#** | The users in the specified channel. Replace `#` with a number, starting at 1 and ending at `chatter_count`.
+
+***
+
+#### Twitch ClipById
+| | |
+------------ | -------------
+**Info** | Retrieves the information for the specified clip id.
+**Format** | `Twitch ClipById <id>`
+**Example** | `Twitch ClipById AltruisticWiseNewtNomNom`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Clip API.
+**clip** | The URL for the clip.
+**name** | The name of the Twitch clip.
+**duration** | The duration of the Twitch clip in seconds.
+
+***
+
+#### Twitch ClipsByUser
+| | |
+------------ | -------------
+**Info** | Returns the top clips that were captured for the specified user. `<user>` is the channel to retrieve clips for. `<optional_count>` is the number of clips to retrieve (20 by default).
+**Format** | `Twitch ClipsByUser <user> <optional_count>`
+**Example** | `Twitch ClipsByUser Kruiser8`
+**Example w/ Count** | `Twitch ClipsByUser Kruiser8 1`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Clip API.
+**clip_count** | The number of clips retrieved.
+**clip#** | The URL of the clip from the specified channel. Replace `#` with a number, starting at 1 and ending at `clip_count`.
+**name#** | The name of the clip from the specified channel. Replace `#` with a number, starting at 1 and ending at `clip_count`.
+**duration#** | The duration of the clip from the specified channel. Replace `#` with a number, starting at 1 and ending at `clip_count`.
+
+***
+
+#### Twitch Color
+| | |
+------------ | -------------
+**Info** | Updates the color used for the user's name in chat. `<color>` is the color to use for the user's name in chat. Turbo and Prime users may specify a named color or a Hex color code like `#9146FF`. Otherwise, the color must be one of `blue`, `blue_violet`, `cadet_blue`, `chocolate`, `coral`, `dodger_blue`, `firebrick`, `golden_rod`, `green`, `hot_pink`, `orange_red`, `red`, `sea_green`, `spring_green`, `yellow_green`.
+**Format** | `Twitch Color <color>`
+**Example** | `Twitch Color green`
+**Example w/ Hex** | `Twitch Color #9146FF`
+
+***
+
+#### Twitch EmoteOnly
+| | |
+------------ | -------------
+**Info** | Turn on emote only mode where chat messages must contain only emotes.
+**Format** | `Twitch EmoteOnly`
+**Example** | `Twitch EmoteOnly`
+
+***
+
+#### Twitch EmoteOnlyOff
+| | |
+------------ | -------------
+**Info** | Turn off emote only mode where chat messages must contain only emotes.
+**Format** | `Twitch EmoteOnlyOff`
+**Example** | `Twitch EmoteOnlyOff`
+
+***
+
+#### Twitch Emotes
+| | |
+------------ | -------------
+**Info** | Gets the channel's list of custom emotes. `<optional_user>` is the channel to query (Default is the `settings/twitch/user.txt` value).
+**Format** | `Twitch Emotes <optional_user>`
+**Example** | `Twitch Emotes`
+**Example w/ User** | `Twitch Emotes Kruiser8`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Channel Emotes API.
+**emote_count** | The number of emotes retrieved.
+**emote#** | An emote from the specified channel. Replace `#` with a number, starting at 1 and ending at `emote_count`.
+
+***
+
+#### Twitch Followers
+| | |
+------------ | -------------
+**Info** | Restricts the broadcaster's chat room to followers only. `<optional_duration>` is the number of minutes to be in follower mode. The default duration is 0 (no restriction) and the maximum is 129,600 (3 months).
+**Format** | `Twitch Followers <optional_duration>`
+**Example** | `Twitch Followers`
+**Example w/ Duration** | `Twitch Followers 60`
+
+***
+
+#### Twitch FollowersOff
+| | |
+------------ | -------------
+**Info** | Disable follower only mode in the broadcaster's chat.
+**Format** | `Twitch FollowersOff`
+**Example** | `Twitch FollowersOff`
+
+***
+
+#### Twitch Game
+| | |
+------------ | -------------
+**Info** | Updates a channel's game (or category). `<game>` is the game to set for the channel. The `<game>` value must match a Twitch category exactly.
+**Format** | `Twitch Game <game>`
+**Example** | `Twitch Game "Rocket League"`
+
+***
+
+#### Twitch Goals
+| | |
+------------ | -------------
+**Info** | Gets the broadcaster's list of active goals.
+**Format** | `Twitch Goals`
+**Example** | `Twitch Goals`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Creator Goals API.
+**goal_count** | The number of goals retrieved.
+**goal#** | The name (description) of the goal. Replace `#` with a number, starting at 1 and ending at `goal_count`.
+**type#** | The type of the goal (follower, subscriber, etc.). Replace `#` with a number, starting at 1 and ending at `goal_count`.
+**current#** | The current value of the goal. Replace `#` with a number, starting at 1 and ending at `goal_count`.
+**target#** | The target value of the goal. Replace `#` with a number, starting at 1 and ending at `goal_count`.
+**perc#** | The current progress percentage of the goal (between 0 and 100). Replace `#` with a number, starting at 1 and ending at `goal_count`.
+
+***
+
+#### Twitch Mod
+| | |
+------------ | -------------
+**Info** | Adds a moderator to the broadcaster's chat room. `<user>` is the Twitch user to mod.
+**Format** | `Twitch Mod <user>`
+**Example** | `Twitch Mod testUser`
+
+***
+
+#### Twitch Mods
+| | |
+------------ | -------------
+**Info** | Gets the broadcaster's list of moderators.
+**Format** | `Twitch Mods`
+**Example** | `Twitch Mods`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Moderators API.
+**mod_count** | The number of moderators retrieved.
+**mod#** | The name of the moderator. Replace `#` with a number, starting at 1 and ending at `mod_count`.
+**id#** | The user id (login) of the moderator. Replace `#` with a number, starting at 1 and ending at `mod_count`.
+
+***
+
+#### Twitch Raid
+| | |
+------------ | -------------
+**Info** | Raid another channel by sending the broadcaster's viewers to the targeted channel. `<user>` is the Twitch channel to raid.
+**Format** | `Twitch Raid <user>`
+**Example** | `Twitch Raid testUser`
+
+***
+
+#### Twitch RemoveBlockedTerm
+| | |
+------------ | -------------
+**Info** | Used to remove a word or phrase from the broadcaster's list of blocked terms. These are the terms that the broadcaster doesn't want used in their chat room. `<term>` is the term or phrase to remove.
+**Format** | `Twitch RemoveBlockedTerm <term>`
+**Example** | `Twitch RemoveBlockedTerm "bad word"`
+**Example w/ Aliases** | `Twitch RemoveBlockedTerm "phrase to block" "bad term"`
+
+***
+
+#### Twitch Shield
+| | |
+------------ | -------------
+**Info** | Activates or deactivates the broadcaster's Shield Mode.
+**Format** | `Twitch Shield <on/off/toggle>`
+**Example** | `Twitch Shield toggle`
+
+***
+
+#### Twitch Shoutout
+| | |
+------------ | -------------
+**Info** | Raid another channel by sending the broadcaster's viewers to the targeted channel. `<user>` is the Twitch channel to raid.
+**Format** | `Twitch Raid <user>`
+**Example** | `Twitch Raid testUser`
+
+***
+
+#### Twitch Slow
+| | |
+------------ | -------------
+**Info** | Limit how often users in the chat room are allowed to send messages. `<optional_duration>` is the number of seconds that users must wait between sending messages (default 30). The minimum duration is 3 seconds and the maximum is 120 (2 minutes).
+**Format** | `Twitch Slow <optional_duration>`
+**Example** | `Twitch Slow`
+**Example w/ Duration** | `Twitch Slow 60`
+
+***
+
+#### Twitch SlowOff
+| | |
+------------ | -------------
+**Info** | Disable slow mode in the broadcaster's chat.
+**Format** | `Twitch SlowOff`
+**Example** | `Twitch SlowOff`
+
+***
+
+#### Twitch Soundtrack
+| | |
+------------ | -------------
+**Info** | Gets the Twitch Soundtrack track that the broadcaster is playing.
+**Format** | `Twitch Soundtrack`
+**Example** | `Twitch Soundtrack`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Soundtrack API.
+**artist** | The artist(s) included on the current track.
+**title** | The title of the current track.
+
+***
+
+#### Twitch Subscribers
+| | |
+------------ | -------------
+**Info** | Restricts the broadcaster's chat room to subscribers only.
+**Format** | `Twitch Subscribers`
+**Example** | `Twitch Subscribers`
+
+***
+
+#### Twitch SubscribersOff
+| | |
+------------ | -------------
+**Info** | Disable subscriber only mode in the broadcaster's chat.
+**Format** | `Twitch SubscribersOff`
+**Example** | `Twitch SubscribersOff`
+
+***
+
+#### Twitch Tags
+| | |
+------------ | -------------
+**Info** | Update the channel-defined tags on the channel. `<tag>` is the tag to add. Up to 10 tags may be provided. Each tag is limited to a maximum of 25 characters and may not be an empty string or contain spaces or special characters. Tags are case insensitive.
+**Format** | `Twitch Tags <tag1> <tag2> ... <tag10>`
+**Example** | `Twitch Tags "Rocket League" "Champion" "Ranked"`
+
+***
+
+#### Twitch Teams
+| | |
+------------ | -------------
+**Info** | Gets the list of Twitch teams that the broadcaster is a member of.
+**Format** | `Twitch Teams`
+**Example** | `Twitch Teams`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Teams API.
+**team_count** | The number of teams retrieved.
+**team#** | The name of the team. Replace `#` with a number, starting at 1 and ending at `team_count`.
 
 ***
 
@@ -3056,6 +3382,95 @@ Param Add i 1
 **Example** | `Twitch Timeout testUser`
 **Example w/ Duration** | `Twitch Timeout testUser 1`
 **Example w/ Duration and Reason** | `Twitch Timeout testUser 1209600 "Inappropriate behavior, come back in two weeks!"`
+
+***
+
+#### Twitch Title
+| | |
+------------ | -------------
+**Info** | Updates a channel's title. `<title>` is the title to set for the channel.
+**Format** | `Twitch Title <title>`
+**Example** | `Twitch Title "Rocket League with viewers!"`
+
+***
+
+#### Twitch Unban
+| | |
+------------ | -------------
+**Info** | Unban a user from the specified broadcaster's chat room. `<user>` is the Twitch user to unban.
+**Format** | `Twitch Unban <user>`
+**Example** | `Twitch Unban testUser`
+
+***
+
+#### Twitch Unblock
+| | |
+------------ | -------------
+**Info** | Unblock the specified user from interacting with or having contact with the broadcaster. `<user>` is the Twitch user to unblock.
+**Format** | `Twitch Unblock <user>`
+**Example** | `Twitch Unblock testUser`
+
+***
+
+#### Twitch UniqueChat
+| | |
+------------ | -------------
+**Info** | Restricts the broadcaster's chat room to require users to post only unique messages in the chat room.
+**Format** | `Twitch UniqueChat`
+**Example** | `Twitch UniqueChat`
+
+***
+
+#### Twitch UniqueChatOff
+| | |
+------------ | -------------
+**Info** | Disable unique chat mode in the broadcaster's chat.
+**Format** | `Twitch UniqueChatOff`
+**Example** | `Twitch UniqueChatOff`
+
+***
+
+#### Twitch Unmod
+| | |
+------------ | -------------
+**Info** | Remove moderator status from a user in the broadcaster's chat room. `<user>` is the Twitch user to update.
+**Format** | `Twitch Unmod <user>`
+**Example** | `Twitch Unmod testUser`
+
+***
+
+#### Twitch UnVIP
+| | |
+------------ | -------------
+**Info** | Remove VIP status from a user in the broadcaster's chat room. `<user>` is the Twitch user to update.
+**Format** | `Twitch UnVIP <user>`
+**Example** | `Twitch UnVIP testUser`
+
+***
+
+#### Twitch VIP
+| | |
+------------ | -------------
+**Info** | Adds a VIP to the broadcaster's chat room. `<user>` is the Twitch user to give VIP status.
+**Format** | `Twitch VIP <user>`
+**Example** | `Twitch VIP testUser`
+
+***
+
+#### Twitch VIPs
+| | |
+------------ | -------------
+**Info** | Gets the broadcaster's list of VIPs.
+**Format** | `Twitch VIPs`
+**Example** | `Twitch VIPs`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Moderators API.
+**vip_count** | The number of moderators retrieved.
+**vip#** | The name of the VIP. Replace `#` with a number, starting at 1 and ending at `vip_count`.
+**id#** | The user id (login) of the VIP. Replace `#` with a number, starting at 1 and ending at `vip_count`.
 
 ***
 

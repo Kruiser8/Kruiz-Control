@@ -473,7 +473,29 @@ class TwitchHandler extends Handler {
         }
         break;
       case 'chatters':
-        var { game, first = 100, cursor = '' } = Parser.getInputs(triggerData, ['action', 'game', 'first', 'cursor'], false, 2);
+      case 'viewers':
+        var chatters = await this.api.getAllChatters(this.channelId, this.channelId);
+
+        var userArgs = {};
+        for (var i = 0; i < chatters.length; i++) {
+          userArgs[`user${i+1}`] = chatters[i].user_name;
+        }
+
+        return {
+          data: response,
+          chatter_count: chatters.length,
+          ...userArgs
+        }
+        break;
+      case 'chatterspaginated':
+        var { first, cursor = '' } = Parser.getInputs(triggerData, ['action', 'first', 'cursor'], false, 1);
+
+        if (isNumeric(first)) {
+          first = clamp(parseInt(first), 1, 1000);
+        } else {
+          first = 100;
+        }
+
         var response = await this.api.getChatters(this.channelId, this.channelId, first, cursor);
         var userArgs = {};
         for (var i = 0; i < response.data.length; i++) {
@@ -492,17 +514,11 @@ class TwitchHandler extends Handler {
 
         var response = await this.api.getClipsById(id);
         if (response?.data) {
-          var clipArgs = {};
-          for (var i = 0; i < response.data.length; i++) {
-            clipArgs[`clip${i+1}`] = response.data[i].url;
-            clipArgs[`name${i+1}`] = response.data[i].title;
-            clipArgs[`duration${i+1}`] = response.data[i].duration;
-          }
           return {
             data: response,
-            clip: response.data[i].url,
-            name: response.data[i].title,
-            duration: response.data[i].duration
+            clip: response.data[0].url,
+            name: response.data[0].title,
+            duration: response.data[0].duration
           }
         }
         break;
@@ -529,6 +545,7 @@ class TwitchHandler extends Handler {
           }
           return {
             data: response,
+            clip_count: response.data.length,
             ...clipArgs
           }
         }
@@ -541,7 +558,7 @@ class TwitchHandler extends Handler {
           console.error(`Invalid color value for Twitch Announcement. Found "${color}", expected a hex code or one of "${colors.join('", "')}".`)
           return;
         }
-        await this.api.updateUserChatColor(user_id, color);
+        await this.api.updateUserChatColor(this.channelId, color);
         break;
       case 'createclip':
         var { delay = false } = Parser.getInputs(triggerData, ['action', 'delay' ], false, 1);
@@ -552,12 +569,12 @@ class TwitchHandler extends Handler {
         await this.api.deleteChatMessages(this.channelId, this.channelId, message_id);
         break;
       case 'emoteonly':
-        await this.api.updateChatSettings(channelId, channelId, {
+        await this.api.updateChatSettings(this.channelId, this.channelId, {
           emote_mode: true
         });
         break;
       case 'emoteonlyoff':
-        await this.api.updateChatSettings(channelId, channelId, {
+        await this.api.updateChatSettings(this.channelId, this.channelId, {
           emote_mode: false
         });
         break;
@@ -589,13 +606,13 @@ class TwitchHandler extends Handler {
         }
         follower_mode_duration = clamp(follower_mode_duration, 0, 129600);
 
-        await this.api.updateChatSettings(channelId, channelId, {
+        await this.api.updateChatSettings(this.channelId, this.channelId, {
           follower_mode: true,
           follower_mode_duration
         });
         break;
       case 'followersoff':
-        await this.api.updateChatSettings(channelId, channelId, {
+        await this.api.updateChatSettings(this.channelId, this.channelId, {
           follower_mode: false
         });
         break;
@@ -666,15 +683,17 @@ class TwitchHandler extends Handler {
         await this.api.updateRedemptionStatus(this.channelId, reward_id, redemption_id, status);
         break;
       case 'removeblockedterm':
-        var { term } = Parser.getInputs(triggerData, ['action', 'term']);
+        var { terms } = Parser.getInputs(triggerData, ['action', 'terms'], true);
 
-        var term_id = await this.api.getBlockedTermId(this.channelId, this.channelId, term);
-        if (term_id === undefined) {
-          console.error(`Unable to find blocked term: ${term}`);
-          return;
+        for (var i = 0; i < terms.length; i++) {
+          var term_id = await this.api.getBlockedTermId(this.channelId, this.channelId, terms[i]);
+          if (term_id === undefined) {
+            console.error(`Unable to find blocked term: ${terms[i]}`);
+            continue;
+          }
+
+          await this.api.removeBlockedTerm(this.channelId, this.channelId, term_id);
         }
-
-        await this.api.removeBlockedTerm(this.channelId, this.channelId, term_id);
         break;
       case 'shield':
         var { status } = Parser.getInputs(triggerData, ['action', 'status']);
@@ -693,7 +712,7 @@ class TwitchHandler extends Handler {
         if (status === 'toggle') {
           var response = await this.api.getShieldModeStatus(this.channelId, this.channelId);
           if (response?.data) {
-            status = response.data[0].is_active ? 'off' : 'on';
+            status = response.data[0].is_active ? false : true;
           }
         } else {
           status = status === 'on' ? true : false;
@@ -704,7 +723,7 @@ class TwitchHandler extends Handler {
       case 'shoutout':
         var { user } = Parser.getInputs(triggerData, ['action', 'user']);
         var user_id = await getIdFromUser(user);
-        await this.api.sendShoutout(channelId, user_id, channelId);
+        await this.api.sendShoutout(this.channelId, user_id, this.channelId);
         break;
       case 'slow':
         var { duration = 30 } = Parser.getInputs(triggerData, ['action', 'duration'], false, 1);
@@ -715,19 +734,19 @@ class TwitchHandler extends Handler {
         }
         slow_mode_wait_time = clamp(slow_mode_wait_time, 3, 120);
 
-        await this.api.updateChatSettings(channelId, channelId, {
+        await this.api.updateChatSettings(this.channelId, this.channelId, {
           slow_mode: true,
           slow_mode_wait_time
         });
         break;
       case 'slowoff':
-        await this.api.updateChatSettings(channelId, channelId, {
+        await this.api.updateChatSettings(this.channelId, this.channelId, {
           slow_mode: false
         });
         break;
       case 'soundtrack':
         var response = await this.api.getSoundtrackCurrentTrack(this.channelId);
-        if (response?.data?.track) {
+        if (response?.data[0]?.track) {
           var artists = response.data[0].track.artists.map(artist => artist.name).join(', ');
           return {
             data: response,
@@ -737,12 +756,12 @@ class TwitchHandler extends Handler {
         }
         break;
       case 'subscribers':
-        await this.api.updateChatSettings(channelId, channelId, {
+        await this.api.updateChatSettings(this.channelId, this.channelId, {
           subscriber_mode: true
         });
         break;
       case 'subscribersoff':
-        await this.api.updateChatSettings(channelId, channelId, {
+        await this.api.updateChatSettings(this.channelId, this.channelId, {
           subscriber_mode: false
         });
         break;
@@ -757,7 +776,6 @@ class TwitchHandler extends Handler {
           var teamArgs = {};
           for (var i = 0; i < response.data.length; i++) {
             teamArgs[`team${i+1}`] = response.data[i].team_display_name;
-            teamArgs[`partner${i+1}`] = response.data[i].broadcaster_name;
           }
           return {
             team_count: response.data.length,
@@ -796,12 +814,12 @@ class TwitchHandler extends Handler {
         await this.api.unblockUser(user_id);
         break;
       case 'uniquechat':
-        await this.api.updateChatSettings(channelId, channelId, {
+        await this.api.updateChatSettings(this.channelId, this.channelId, {
           unique_chat_mode: true
         });
         break;
       case 'uniquechatoff':
-        await this.api.updateChatSettings(channelId, channelId, {
+        await this.api.updateChatSettings(this.channelId, this.channelId, {
           unique_chat_mode: false
         });
         break;
@@ -813,11 +831,7 @@ class TwitchHandler extends Handler {
         await this.api.removeChannelModerator(this.channelId, user_id);
         break;
       case 'unraid':
-        var { user } = Parser.getInputs(triggerData, ['action', 'user']);
-
-        var user_id = await getIdFromUser(user);
-
-        await this.api.cancelARaid(this.channelId, user_id);
+        await this.api.cancelARaid(this.channelId);
         break;
       case 'unvip':
         var { user } = Parser.getInputs(triggerData, ['action', 'user']);

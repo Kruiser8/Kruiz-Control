@@ -180,8 +180,8 @@ class TwitchAPI {
           if (data.access_token && data.refresh_token) {
             console.error('Successfully refreshed your twitch token.')
             this.updateTokens(this.clientId, this.clientSecret, this.code, data.access_token, data.refresh_token);
-            this.oauth = data.access_token;
-            this.refresh = data.refresh_token;
+            this.accessToken = data.access_token;
+            this.refreshToken = data.refresh_token;
             var result = await this.callTwitchApi({ method, endpoint, headers, params, data });
             resolve(result);
           }
@@ -266,6 +266,29 @@ class TwitchAPI {
       endpoint: 'https://api.twitch.tv/helix/chat/chatters',
       params
     });
+  }
+
+  async getAllChatters(broadcaster_id, moderator_id) {
+    var first = 100;
+    var cursor = '';
+    var isComplete = false;
+
+    var result = [];
+    while (!isComplete) {
+      var response = await this.getChatters(broadcaster_id, moderator_id, first, cursor);
+      if (!response?.data) {
+        return result;
+      }
+
+      result = result.concat(response.data);
+
+      if (response.pagination.cursor) {
+        cursor = response.pagination.cursor;
+      } else {
+        isComplete = true;
+      }
+    }
+    return result;
   }
 
   async getChannelEmotes(broadcaster_id) {
@@ -371,7 +394,7 @@ class TwitchAPI {
       }
     });
 
-    if (response?.data) {
+    if (response?.data && response.data.length > 0) {
       return response.data[0].id;
     }
 
@@ -402,7 +425,7 @@ class TwitchAPI {
     });
   }
 
-  async unbanUser(broadcaster_id, moderator_id, data) {
+  async unbanUser(broadcaster_id, moderator_id, user_id) {
     await this.callTwitchApi({
       method: 'DELETE',
       endpoint: 'https://api.twitch.tv/helix/moderation/bans',
@@ -424,7 +447,7 @@ class TwitchAPI {
       params["after"] = after;
     }
 
-    await this.callTwitchApi({
+    return await this.callTwitchApi({
       method: 'GET',
       endpoint: 'https://api.twitch.tv/helix/moderation/blocked_terms',
       params: params
@@ -443,7 +466,7 @@ class TwitchAPI {
       }
 
       var matches = response.data.filter(blocked => blocked.text === term);
-      if (matches.length > 1) {
+      if (matches.length > 0) {
         return matches[0].id;
       }
 
@@ -502,7 +525,7 @@ class TwitchAPI {
       params["after"] = after;
     }
 
-    await this.callTwitchApi({
+    return await this.callTwitchApi({
       method: 'GET',
       endpoint: 'https://api.twitch.tv/helix/moderation/moderators',
       params: params
@@ -564,7 +587,7 @@ class TwitchAPI {
       params["after"] = after;
     }
 
-    await this.callTwitchApi({
+    return await this.callTwitchApi({
       method: 'GET',
       endpoint: 'https://api.twitch.tv/helix/channels/vips',
       params: params
@@ -704,7 +727,7 @@ class TwitchAPI {
     });
   }
 
-  async unblockUser(broadcaster_id) {
+  async unblockUser(target_user_id) {
     await this.callTwitchApi({
       method: 'DELETE',
       endpoint: 'https://api.twitch.tv/helix/users/blocks',
