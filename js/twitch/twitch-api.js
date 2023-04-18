@@ -8,7 +8,6 @@ class TwitchAPI {
     this.updateTokens = tokensUpdatedCallback;
 
     this.getAuthUrl.bind(this);
-    this.getAccessToken.bind(this);
     this.callTwitchApi.bind(this);
     this.requestAuthToken.bind(this);
     this.refreshAuthToken.bind(this);
@@ -208,14 +207,11 @@ class TwitchAPI {
     });
   }
 
-  async getBitsLeaderboard(count, period) {
-    return await this.callTwitchApiJson({
+  async getBitsLeaderboard(params) {
+    return await this.callTwitchApi({
       method: 'GET',
       endpoint: 'https://api.twitch.tv/helix/bits/leaderboard',
-      params: {
-        count,
-        period
-      }
+      params
     });
   }
 

@@ -292,7 +292,7 @@ class TwitchHandler extends Handler {
    * Handle hype train messages from twitch pubsub websocket.
    * @param {Object} message twitch hype train data
    */
-  async onHypeTrainMessage(message) {
+  onHypeTrainMessage(message) {
     if (message.type === 'hype-train-start') {
       this.currentConductor = {
         'SUBS': '',
@@ -363,14 +363,16 @@ class TwitchHandler extends Handler {
     var action = Parser.getAction(triggerData, 'Twitch');
     switch (action) {
       case 'addblockedterm':
-        var { term } = Parser.getInputs(triggerData, ['action', 'term']);
-        await this.api.addBlockedTerm(this.channelId, this.channelId, term);
+        var { terms } = Parser.getInputs(triggerData, ['action', 'terms'], true);
+        for (var i = 0; i < terms.length; i++) {
+          await this.api.addBlockedTerm(this.channelId, this.channelId, terms[i]);
+        }
         break;
       case 'announcement':
         var { message, color = 'primary' } = Parser.getInputs(triggerData, ['action', 'message', 'color'], false, 1);
         color = color.toLowerCase();
 
-        colors = ['blue', 'green', 'orange', 'purple', 'primary'];
+        var colors = ['blue', 'green', 'orange', 'purple', 'primary'];
         if (colors.indexOf(color) === -1) {
           console.error(`Invalid color value for Twitch Announcement. Found "${color}", expected one of "${colors.join('", "')}".`)
           color = 'primary';
@@ -383,19 +385,11 @@ class TwitchHandler extends Handler {
         };
         break;
       case 'ban':
-        var { user, duration = '', reason = '' } = Parser.getInputs(triggerData, ['action', 'user', 'duration', 'reason'], false, 2);
+        var { user } = Parser.getInputs(triggerData, ['action', 'user', 'duration', 'reason'], false, 2);
 
         var user_id = await getIdFromUser(user);
 
-        var data = { user_id };
-        if (isNumeric(duration)) {
-          data['duration'] = clamp(parseInt(duration), 1, 1209600);
-        }
-        if (reason) {
-          data['reason'] = reason;
-        }
-
-        await this.api.banUser(this.channelId, this.channelId, data);
+        await this.api.banUser(this.channelId, this.channelId, { user_id });
         break;
       case 'bitsleaderboard':
         var { count = 10, period = 'all' } = Parser.getInputs(triggerData, ['action', 'count', 'period'], false, 2);
@@ -413,7 +407,29 @@ class TwitchHandler extends Handler {
           period = 'all';
         }
 
-        var response = await this.api.getBitsLeaderboard(count, period);
+        var data = {
+          count,
+          period
+        };
+
+        if (period != 'all') {
+          // RFC 3339 format
+          var date = new Date();
+
+          if (period === 'day') {
+            date.setDate(d.getDate()-1);
+          } else if (period === 'week') {
+            date.setDate(d.getDate()-7);
+          } else if (period === 'month') {
+            date.setMonth(date.getMonth()-1);
+          } else if (period === 'year') {
+            date.setFullYear(date.getFullYear()-1);
+          }
+
+          data['started_at'] = date.toISOString();
+        }
+
+        var response = await this.api.getBitsLeaderboard(data);
         var userArgs = {};
         for (var i = 0; i < response.data.length; i++) {
           userArgs[`user${i+1}`] = response.data[i]['user_name'];
@@ -421,6 +437,7 @@ class TwitchHandler extends Handler {
         }
         return {
           data: response,
+          user_count: response.data.length,
           ...userArgs
         };
         break;
@@ -443,12 +460,14 @@ class TwitchHandler extends Handler {
         if (response?.data) {
           var tagArgs = {};
           for (var i = 0; i < response.data[0].tags.length; i++) {
-            chatArgs[`tag${i+1}`] = response.data[0].tags[i];
+            tagArgs[`tag${i+1}`] = response.data[0].tags[i];
           }
           return {
             data: response,
-            name: response.data[0].game_name,
+            name: response.data[0].broadcaster_name,
+            game: response.data[0].game_name,
             title: response.data[0].title,
+            tag_count: response.data[0].tags.length,
             ...tagArgs
           };
         }
@@ -745,6 +764,20 @@ class TwitchHandler extends Handler {
             ...teamArgs
           };
         }
+        break;
+      case 'timeout':
+        var { user, duration = 1, reason = '' } = Parser.getInputs(triggerData, ['action', 'user', 'duration', 'reason'], false, 2);
+
+        var user_id = await getIdFromUser(user);
+
+        var data = { user_id, duration: 1 };
+        if (isNumeric(duration)) {
+          data['duration'] = clamp(parseInt(duration), 1, 1209600);
+        }
+        if (reason) {
+          data['reason'] = reason;
+        }
+        await this.api.banUser(this.channelId, this.channelId, data);
         break;
       case 'title':
         var { title } = Parser.getInputs(triggerData, ['action', 'title']);

@@ -26,13 +26,6 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [API RawData](#api-rawdata)
     + [API Send](#api-send)
     + [API Url](#api-url)
-- [Channel Points](#channel-points)
-  * [Triggers](#channel-point-triggers)
-    + [OnChannelPoint](#onchannelpoint)
-    + [OnCommunityGoalComplete](#oncommunitygoalcomplete)
-    + [OnCommunityGoalProgress](#oncommunitygoalprogress)
-    + [OnCommunityGoalStart](#oncommunitygoalstart)
-  * [Actions](#channel-point-actions)
 - [Chat](#chat)
   * [Triggers](#chat-triggers)
     + [OnCommand](#oncommand)
@@ -246,6 +239,13 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Timer Reset](#timer-reset)
     + [Timer Start](#timer-start)
     + [Timer Stop](#timer-stop)
+- [Twitch](#twitch)
+  * [Triggers](#twitch-triggers)
+    + [OnChannelPoint](#onchannelpoint)
+    + [OnCommunityGoalComplete](#oncommunitygoalcomplete)
+    + [OnCommunityGoalProgress](#oncommunitygoalprogress)
+    + [OnCommunityGoalStart](#oncommunitygoalstart)
+  * [Actions](#twitch-actions)
 - [Variable](#variable)
   * [Triggers](#variable-triggers)
   * [Actions](#variable-actions)
@@ -502,96 +502,6 @@ None at the moment.
 **Info** | Used to set the url of an API configuration. `<name>` is the name of the API to update. `<url>` is the API to call.
 **Format** | `API Url <name> <url>`
 **Example** | `API Url TwitchAPI "https://api.twitch.tv/helix/users/follows"`
-
-***
-
-## Channel Points
-Enables the ability to run actions when channel point rewards are redeemed.
-
-### Channel Point Triggers
-
-#### OnChannelPoint
-| | |
------------- | -------------
-**Info** | Used to trigger a set of actions when a channel point reward is redeemed. Using `*` as the `<reward_name>` will execute the trigger for all channel point rewards.
-**Format** | `OnChannelPoint <reward_name>`
-**Format w/ Aliases** | `OnChannelPoint <reward_name1> <reward_name2> ...`
-**Example** | `OnChannelPoint "Example Reward"`
-**Example w/ Aliases** | `OnChannelPoint "Resize" "Left View"`
-
-_Note: Default channel point rewards are not supported: `Unlock a Random Sub Emote`, `Send a Message in Sub-Only Mode`, `Choose an Emote to Unlock`, `Highlight My Message`, and `Modify a Single Emote`._
-
-##### Parameters
-| | |
------------- | -------------
-**reward** | The name of the channel point reward that was redeemed.
-**user** | The display name of the user that redeemed the channel point reward.
-**message** | The message included with the channel point redemption (if one is provided)
-**data** | The complete json channel point message (for use with [Function](#function)).
-
-***
-
-#### OnCommunityGoalComplete
-| | |
------------- | -------------
-**Info** | Used to trigger a set of actions when a community goal is completed. Using `*` as the `<goal_title>` will execute the trigger for all channel point rewards.
-**Format** | `OnCommunityGoalComplete <goal_title>`
-**Format w/ Aliases** | `OnCommunityGoalComplete <goal_title1> <goal_title2> ...`
-**Example** | `OnCommunityGoalComplete "Example Goal"`
-**Example w/ Aliases** | `OnCommunityGoalComplete "Example Goal" "Extra Sunday Stream" ...`
-
-##### Parameters
-| | |
------------- | -------------
-**goal** | The title of the community goal.
-**user** | The display name of the user that completed the goal.
-**amount** | The amount of points donated to complete the goal.
-**user_total** | The total amount of points contributed by the user.
-**progress** | The current amount of points contributed towards the goal.
-**total** | The amount of points required to complete the goal.
-**data** | The complete json community goal message (for use with [Function](#function)).
-
-#### OnCommunityGoalProgress
-| | |
------------- | -------------
-**Info** | Used to trigger a set of actions when a user contributes towards a goal. Using `*` as the `<goal_title>` will execute the trigger for all channel point rewards.
-**Format** | `OnCommunityGoalProgress <goal_title>`
-**Format w/ Aliases** | `OnCommunityGoalProgress <goal_title1> <goal_title2> ...`
-**Example** | `OnCommunityGoalProgress "Example Goal"`
-**Example w/ Aliases** | `OnCommunityGoalProgress "Example Goal" "Extra Sunday Stream" ...`
-
-##### Parameters
-| | |
------------- | -------------
-**goal** | The title of the community goal.
-**user** | The display name of the user that completed the goal.
-**amount** | The amount of points donated to complete the goal.
-**user_total** | The total amount of points contributed by the user.
-**progress** | The current amount of points contributed towards the goal.
-**total** | The amount of points required to complete the goal.
-**data** | The complete json community goal message (for use with [Function](#function)).
-
-***
-
-#### OnCommunityGoalStart
-| | |
------------- | -------------
-**Info** | Used to trigger a set of actions when the streamer starts a goal. Using `*` as the `<goal_title>` will execute the trigger for all channel point rewards.
-**Format** | `OnCommunityGoalStart <goal_title>`
-**Format w/ Aliases** | `OnCommunityGoalStart <goal_title1> <goal_title2> ...`
-**Example** | `OnCommunityGoalStart "Example Goal"`
-**Example w/ Aliases** | `OnCommunityGoalStart "Example Goal" "Extra Sunday Stream" ...`
-
-##### Parameters
-| | |
------------- | -------------
-**goal** | The title of the community goal.
-**data** | The complete json community goal message (for use with [Function](#function)).
-
-***
-
-### Channel Point Actions
-None at the moment.
 
 ***
 
@@ -2912,6 +2822,240 @@ Enables the ability to run actions on a time interval.
 **Info** | Used to stop a timer based on the `<name>`. This can be used to interrupt a timer until it is reset or started.
 **Format** | `Timer Stop <name>`
 **Example** | `Timer Stop MyTimer`
+
+***
+
+## Twitch
+Enables the ability to run actions when channel point rewards are redeemed.
+
+### Twitch Triggers
+
+#### OnChannelPoint
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when a channel point reward is redeemed. Using `*` as the `<reward_name>` will execute the trigger for all channel point rewards.
+**Format** | `OnChannelPoint <reward_name>`
+**Format w/ Aliases** | `OnChannelPoint <reward_name1> <reward_name2> ...`
+**Example** | `OnChannelPoint "Example Reward"`
+**Example w/ Aliases** | `OnChannelPoint "Resize" "Left View"`
+
+_Note: Default channel point rewards are not supported: `Unlock a Random Sub Emote`, `Send a Message in Sub-Only Mode`, `Choose an Emote to Unlock`, `Highlight My Message`, and `Modify a Single Emote`._
+
+##### Parameters
+| | |
+------------ | -------------
+**reward** | The name of the channel point reward that was redeemed.
+**user** | The display name of the user that redeemed the channel point reward.
+**message** | The message included with the channel point redemption (if one is provided)
+**data** | The complete json channel point message (for use with [Function](#function)).
+
+***
+
+#### OnCommunityGoalComplete
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when a community goal is completed. Using `*` as the `<goal_title>` will execute the trigger for all channel point rewards.
+**Format** | `OnCommunityGoalComplete <goal_title>`
+**Format w/ Aliases** | `OnCommunityGoalComplete <goal_title1> <goal_title2> ...`
+**Example** | `OnCommunityGoalComplete "Example Goal"`
+**Example w/ Aliases** | `OnCommunityGoalComplete "Example Goal" "Extra Sunday Stream" ...`
+
+##### Parameters
+| | |
+------------ | -------------
+**goal** | The title of the community goal.
+**user** | The display name of the user that completed the goal.
+**amount** | The amount of points donated to complete the goal.
+**user_total** | The total amount of points contributed by the user.
+**progress** | The current amount of points contributed towards the goal.
+**total** | The amount of points required to complete the goal.
+**data** | The complete json community goal message (for use with [Function](#function)).
+
+#### OnCommunityGoalProgress
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when a user contributes towards a goal. Using `*` as the `<goal_title>` will execute the trigger for all channel point rewards.
+**Format** | `OnCommunityGoalProgress <goal_title>`
+**Format w/ Aliases** | `OnCommunityGoalProgress <goal_title1> <goal_title2> ...`
+**Example** | `OnCommunityGoalProgress "Example Goal"`
+**Example w/ Aliases** | `OnCommunityGoalProgress "Example Goal" "Extra Sunday Stream" ...`
+
+##### Parameters
+| | |
+------------ | -------------
+**goal** | The title of the community goal.
+**user** | The display name of the user that completed the goal.
+**amount** | The amount of points donated to complete the goal.
+**user_total** | The total amount of points contributed by the user.
+**progress** | The current amount of points contributed towards the goal.
+**total** | The amount of points required to complete the goal.
+**data** | The complete json community goal message (for use with [Function](#function)).
+
+***
+
+#### OnCommunityGoalStart
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when the streamer starts a goal. Using `*` as the `<goal_title>` will execute the trigger for all channel point rewards.
+**Format** | `OnCommunityGoalStart <goal_title>`
+**Format w/ Aliases** | `OnCommunityGoalStart <goal_title1> <goal_title2> ...`
+**Example** | `OnCommunityGoalStart "Example Goal"`
+**Example w/ Aliases** | `OnCommunityGoalStart "Example Goal" "Extra Sunday Stream" ...`
+
+##### Parameters
+| | |
+------------ | -------------
+**goal** | The title of the community goal.
+**data** | The complete json community goal message (for use with [Function](#function)).
+
+***
+
+### Twitch Actions
+
+#### Twitch AddBlockedTerm
+| | |
+------------ | -------------
+**Info** | Used to add a word or phrase to the broadcaster’s list of blocked terms. These are the terms that the broadcaster doesn’t want used in their chat room. `<name>` is the name assigned to the value.
+**Format** | `Twitch AddBlockedTerm <term>`
+**Example** | `Twitch AddBlockedTerm "bad word"`
+**Example w/ Aliases** | `Twitch AddBlockedTerm "phrase to block" "bad term"`
+
+***
+
+#### Twitch Announcement
+| | |
+------------ | -------------
+**Info** | Sends an announcement to the broadcaster’s chat room. `<message>` is the announcement to make (500 characters or less). `<optional_color>` is an optional color used to highlight the announcement. The color must be one of `blue`, `green`, `orange`, `purple`, `primary` (the default).
+**Format** | `Twitch Announcement <message> <optional_color>`
+**Example** | `Twitch Announcement "Check out this announcement!"`
+**Example w/ Color** | `Twitch Announcement "Check out this announcement!" blue`
+
+***
+
+#### Twitch Authenticate
+| | |
+------------ | -------------
+**Info** | Generate an login URL to authenticate a user and generate an access code.
+**Format** | `Twitch Authenticate`
+**Example** | `Twitch Authenticate`
+
+##### Parameters
+| | |
+------------ | -------------
+**auth_url** | The URL to open to authenticate a Twitch user.
+
+***
+
+#### Twitch Ban
+| | |
+------------ | -------------
+**Info** | Ban a user from participating in the specified broadcaster’s chat room. `<user>` is the Twitch user to ban.
+**Format** | `Twitch Ban <user>`
+**Example** | `Twitch Ban testUser`
+
+***
+
+#### Twitch BitsLeaderboard
+| | |
+------------ | -------------
+**Info** | Gets the Bits leaderboard for the authenticated broadcaster. `<optional_count>` is the number of users to return (default is 10). `<optional_period>` is the time period over which data is aggregated. Possible values are `day`, `week`, `month`, `year`, and `all` (default).
+**Format** | `Twitch BitsLeaderboard <optional_count> <optional_period>`
+**Example** | `Twitch BitsLeaderboard`
+**Example w/ Count** | `Twitch BitsLeaderboard 3`
+**Example w/ Count and Period** | `Twitch BitsLeaderboard 3 day`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Bit Leaderboard API.
+**user_count** | The number of users retrieved on the leaderboard.
+**user#** | The users on the leaderboard. Replace `#` with a number, starting at 1 and ending at `user_count`.
+**bits#** | The bits given by the users on the leaderboard. Replace `#` with a number, starting at 1 and ending at `user_count`.
+
+##### Example Usage
+
+<table>
+<tr>
+<td>Retrieve the top 3 cheerers from the past month.</td>
+</tr>
+<tr>
+<td>
+
+```m
+OnInit
+Twitch BitsLeaderboard 3 month
+if 2 {user_count} == 0
+Chat Send "There are no users for this period."
+Exit
+Param Create i 1
+Loop 2 {user_count}
+Chat Send "#{i} {user{i}} cheered {bits{i}} bits this month!"
+Param Add i 1
+```
+
+</td>
+</tr>
+</table>
+
+***
+
+#### Twitch Block
+| | |
+------------ | -------------
+**Info** | Blocks the specified user from interacting with or having contact with the broadcaster. `<user>` is the Twitch user to block.
+**Format** | `Twitch Block <user>`
+**Example** | `Twitch Block testUser`
+
+***
+
+#### Twitch ChannelInfo
+| | |
+------------ | -------------
+**Info** | Retrieves basic information about the specified channel. `<optional_user>` is the name of the twitch channel to retrieve. If no user is given, the `settings/twitch/user.txt` value is used.
+**Format** | `Twitch ChannelInfo <optional_user>`
+**Example** | `Twitch ChannelInfo`
+**Example w/ User** | `Twitch ChannelInfo Kruiser8`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Channel Information API.
+**name** | The specified Twitch stream's display name.
+**game** | The game (or category) of the Twitch stream.
+**title** | The title of the specified Twitch stream.
+**tag_count** | The number of tags retrieved for the channel.
+**tag#** | The tags on the specified channel. Replace `#` with a number, starting at 1 and ending at `tag_count`.
+
+***
+
+#### Twitch Chatters
+| | |
+------------ | -------------
+**Info** | Retrieves basic information about the specified channel. `<optional_user>` is the name of the twitch channel to retrieve. If no user is given, the `settings/twitch/user.txt` value is used.
+**Format** | `Twitch ChannelInfo <optional_user>`
+**Example** | `Twitch ChannelInfo`
+**Example w/ User** | `Twitch ChannelInfo Kruiser8`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Channel Information API.
+**name** | The specified Twitch stream's display name.
+**game** | The game (or category) of the Twitch stream.
+**title** | The title of the specified Twitch stream.
+**tag_count** | The number of tags retrieved for the channel.
+**tag#** | The tags on the specified channel. Replace `#` with a number, starting at 1 and ending at `tag_count`.
+
+***
+
+#### Twitch Timeout
+| | |
+------------ | -------------
+**Info** | Timeout a user from the chat room. `<user>` is the Twitch user to ban. `<optional_duration>` is an optional input with the number of seconds for a timeout (the default is 1). The minimum timeout is 1 second and the maximum is 1,209,600 seconds (2 weeks). `<optional_reason>` is text to define the reason for the timeout.
+**Format** | `Twitch Timeout <user> <optional_duration> <optional_reason>`
+**Example** | `Twitch Timeout testUser`
+**Example w/ Duration** | `Twitch Timeout testUser 1`
+**Example w/ Duration and Reason** | `Twitch Timeout testUser 1209600 "Inappropriate behavior, come back in two weeks!"`
 
 ***
 
