@@ -236,21 +236,6 @@ class TwitchAPI {
     });
   }
 
-  async updateRedemptionStatus(broadcaster_id, reward_id, redemption_id, status) {
-    await this.callTwitchApiJson({
-      method: 'PATCH',
-      endpoint: 'https://api.twitch.tv/helix/channel_points/custom_rewards/redemptions',
-      params: {
-        id: redemption_id,
-        broadcaster_id,
-        reward_id
-      },
-      data: {
-        status
-      }
-    });
-  }
-
   async getChatters(broadcaster_id, moderator_id, first, after) {
     var params = {
       broadcaster_id,

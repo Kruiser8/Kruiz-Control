@@ -255,9 +255,11 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Twitch ChannelInfo](#twitch-channelinfo)
     + [Twitch Chatters](#twitch-chatters)
     + [Twitch ChattersPaginated](#twitch-chatterspaginated)
+    + [Twitch ClearChat](#twitch-clearchat)
     + [Twitch ClipById](#twitch-clipbyid)
     + [Twitch ClipsByUser](#twitch-clipsbyuser)
     + [Twitch Color](#twitch-color)
+    + [Twitch DeleteMessage](#twitch-deletemessage)
     + [Twitch EmoteOnly](#twitch-emoteonly)
     + [Twitch EmoteOnlyOff](#twitch-emoteonlyoff)
     + [Twitch Emotes](#twitch-emotes)
@@ -3108,6 +3110,15 @@ Param Add i 1
 
 ***
 
+#### Twitch ClearChat
+| | |
+------------ | -------------
+**Info** | Clears the broadcaster's chatroom. This is the equivalent of using the `/clear` chat command.
+**Format** | `Twitch ClearChat`
+**Example** | `Twitch ClearChat`
+
+***
+
 #### Twitch ClipById
 | | |
 ------------ | -------------
@@ -3151,6 +3162,15 @@ Param Add i 1
 **Format** | `Twitch Color <color>`
 **Example** | `Twitch Color green`
 **Example w/ Hex** | `Twitch Color #9146FF`
+
+***
+
+#### Twitch DeleteMessage
+| | |
+------------ | -------------
+**Info** | Deletes a chat message by the provided id. `<message_id>` is the id of the chat message to delete. This can be used with the `message_id` parameter returned by [Chat Triggers](#chat-triggers).
+**Format** | `Twitch DeleteMessage <message_id>`
+**Example** | `Twitch DeleteMessage abc-123-def`
 
 ***
 

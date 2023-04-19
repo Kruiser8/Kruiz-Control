@@ -509,6 +509,9 @@ class TwitchHandler extends Handler {
           ...userArgs
         }
         break;
+      case 'clearchat':
+        await this.api.deleteChatMessages(this.channelId, this.channelId, '');
+        break;
       case 'clipbyid':
         var { id } = Parser.getInputs(triggerData, ['action', 'id']);
 
@@ -564,9 +567,11 @@ class TwitchHandler extends Handler {
         var { delay = false } = Parser.getInputs(triggerData, ['action', 'delay' ], false, 1);
         await this.api.createClip(this.channelId, delay);
         break;
-      case 'delete':
+      case 'deletemessage':
         var { message_id } = Parser.getInputs(triggerData, ['action', 'message_id']);
-        await this.api.deleteChatMessages(this.channelId, this.channelId, message_id);
+        if (message_id !== '') {
+          await this.api.deleteChatMessages(this.channelId, this.channelId, message_id);
+        }
         break;
       case 'emoteonly':
         await this.api.updateChatSettings(this.channelId, this.channelId, {
@@ -669,18 +674,6 @@ class TwitchHandler extends Handler {
         var user_id = await getIdFromUser(user);
 
         await this.api.startARaid(this.channelId, user_id);
-        break;
-      case 'redemption':
-        var { reward_id, redemption_id, status } = Parser.getInputs(triggerData, ['action', 'reward_id', 'redemption_id', status]);
-        status = status.toUpperCase();
-
-        statuses = ['CANCELED', 'FULFILLED'];
-        if (statuses.indexOf(status) === -1) {
-          console.error(`Invalid status value for Twitch Redemption. Found "${status}", expected one of "${statuses.join('", "')}".`)
-          return;
-        }
-
-        await this.api.updateRedemptionStatus(this.channelId, reward_id, redemption_id, status);
         break;
       case 'removeblockedterm':
         var { terms } = Parser.getInputs(triggerData, ['action', 'terms'], true);
