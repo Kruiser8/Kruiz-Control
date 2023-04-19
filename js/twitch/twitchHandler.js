@@ -563,6 +563,15 @@ class TwitchHandler extends Handler {
         }
         await this.api.updateUserChatColor(this.channelId, color);
         break;
+      case 'commercial':
+        var { duration: 60 } = Parser.getInputs(triggerData, ['action', 'duration'], false 1);
+
+        var data = { broadcaster_id: this.channelId, duration: 60 };
+        if (isNumeric(duration)) {
+          data['duration'] = clamp(parseInt(duration), 1, 180);
+        }
+        await this.api.startCommercial(data);
+        break;
       case 'createclip':
         var { delay = false } = Parser.getInputs(triggerData, ['action', 'delay' ], false, 1);
         await this.api.createClip(this.channelId, delay);

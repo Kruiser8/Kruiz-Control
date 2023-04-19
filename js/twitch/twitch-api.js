@@ -200,10 +200,7 @@ class TwitchAPI {
     await this.callTwitchApiJson({
       method: 'POST',
       endpoint: 'https://api.twitch.tv/helix/channels/commercial',
-      data: {
-        broadcaster_id,
-        length
-      }
+      data
     });
   }
 
