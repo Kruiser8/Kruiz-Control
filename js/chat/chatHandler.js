@@ -226,6 +226,7 @@ class ChatHandler extends Handler {
       this.onAllChat(user, {
         user: user,
         message: combined,
+        message_id: extra.id || '',
         data: {
           user: user,
           command: command,
@@ -250,6 +251,7 @@ class ChatHandler extends Handler {
               command: command,
               user: user,
               message: combined,
+              message_id: extra.id || '',
               after: message,
               data: {
                 user: user,
@@ -282,6 +284,7 @@ class ChatHandler extends Handler {
                 user: user,
                 keyword: match,
                 message: message,
+                message_id: extra.id || '',
                 data: {
                   user: user,
                   keyword: match,
@@ -302,6 +305,7 @@ class ChatHandler extends Handler {
       this.onAllChat(user, {
         user: user,
         message: message,
+        message_id: extra.id || '',
         data: {
           user: user,
           message: message,
@@ -325,6 +329,7 @@ class ChatHandler extends Handler {
               command: command,
               user: user,
               message: message,
+              message_id: extra.id || '',
               after: after,
               data: {
                 user: user,
@@ -357,6 +362,7 @@ class ChatHandler extends Handler {
                 user: user,
                 keyword: match,
                 message: message,
+                message_id: extra.id || '',
                 data: {
                   user: user,
                   keyword: match,
@@ -377,7 +383,7 @@ class ChatHandler extends Handler {
 
   /**
    * Check if a trigger is on cooldown.
-   * @param {strng} user that sent the message
+   * @param {string} user that sent the message
    * @param {data} data to send with the OnEveryChatMessage
    */
   onAllChat(user, data) {
