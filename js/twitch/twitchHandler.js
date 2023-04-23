@@ -1024,6 +1024,46 @@ class TwitchHandler extends Handler {
           }
         }
         break;
+      case 'videos':
+        var { type = 'all', period = 'all', sort = 'time' } = Parser.getInputs(triggerData, ['action', 'type', 'period', 'sort'], false, 3);
+
+        type = type.toLowerCase();
+        var types = ['all', 'archive', 'highlight', 'upload'];
+        if (types.indexOf(type) === -1) {
+          console.error(`Invalid type value for Twitch Videos. Found "${type}", expected one of "${types.join('", "')}".`)
+          type = 'all';
+        }
+
+        period = period.toLowerCase();
+        var periods = ['all', 'day', 'month', 'week'];
+        if (periods.indexOf(period) === -1) {
+          console.error(`Invalid period value for Twitch Videos. Found "${period}", expected one of "${periods.join('", "')}".`)
+          period = 'all';
+        }
+
+        sort = sort.toLowerCase();
+        var sorts = ['time', 'trending', 'views'];
+        if (sorts.indexOf(sort) === -1) {
+          console.error(`Invalid sort value for Twitch Videos. Found "${sort}", expected one of "${sorts.join('", "')}".`)
+          sort = 'time';
+        }
+
+        var response = await this.api.getVideos(this.channelId, type, period, sort);
+        console.error(JSON.stringify(response));
+
+        if (response?.data) {
+          var videoArgs = {};
+          for (var i = 0; i < response.data.length; i++) {
+            videoArgs[`title${i+1}`] = response.data[i].title;
+            videoArgs[`description${i+1}`] = response.data[i].description;
+            videoArgs[`url${i+1}`] = response.data[i].url;
+          }
+          return {
+            video_count: response.data.length,
+            ...videoArgs
+          };
+        }
+        break;
       case 'vip':
         var { user } = Parser.getInputs(triggerData, ['action', 'user']);
 

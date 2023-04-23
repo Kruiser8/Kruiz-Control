@@ -300,6 +300,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Twitch Unraid](#twitch-unraid)
     + [Twitch UnVIP](#twitch-unvip)
     + [Twitch UserColor](#twitch-usercolor)
+    + [Twitch Videos](#twitch-videos)
     + [Twitch VIP](#twitch-vip)
     + [Twitch VIPs](#twitch-vips)
 - [Variable](#variable)
@@ -3645,6 +3646,27 @@ Param Add i 1
 **data** | The complete response from the Twitch User Chat Color API.
 **color** | The Hex color code that the user uses in chat for their name. If the user hasn’t specified a color in their settings, the string is empty.
 **name** | The user's display name.
+
+***
+
+#### Twitch Videos
+| | |
+------------ | -------------
+**Info** | Gets information about one or more published videos. `<optional_type>` is the type of videos to return. The possible types are `archive` (VODS), `highlight`, `upload`, or `all` (default). `<optional_period>` is a filter used to filter the list of videos by when they were published. Possible periods are `day`, `week`, `month`, and `all` (default). `<optional_sort>` is the order to sort the returned videos in. Possible sort values are `time` (default: created, latest first), `trending` (biggest gain in viewership), or `views`.
+**Format** | `Twitch Videos <optional_type> <optional_period> <optional_sort>`
+**Example** | `Twitch Videos`
+**Example w/ Type** | `Twitch Videos Upload`
+**Example w/ Type and Period** | `Twitch Videos Archive month`
+**Example w/ Type, Period, and Sort** | `Twitch Videos Highlight all views`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Videos API.
+**video_count** | The number of users retrieved on the leaderboard.
+**title#** | The title of the video. Replace `#` with a number, starting at 1 and ending at `video_count`.
+**description#** | The description of the video. Replace `#` with a number, starting at 1 and ending at `video_count`.
+**url#** | The url of the video. Replace `#` with a number, starting at 1 and ending at `video_count`.
 
 ***
 

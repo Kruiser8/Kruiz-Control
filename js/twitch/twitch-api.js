@@ -853,4 +853,16 @@ class TwitchAPI {
       }
     });
   }
+
+  async getVideos(user_id, period, type) {
+    return await this.callTwitchApi({
+      method: 'GET',
+      endpoint: 'https://api.twitch.tv/helix/videos',
+      params: {
+        user_id,
+        type,
+        period
+      }
+    });
+  }
 }
