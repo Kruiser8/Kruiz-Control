@@ -560,9 +560,10 @@ class TwitchHandler extends Handler {
       case 'color':
         var { color } = Parser.getInputs(triggerData, ['action', 'color']);
 
+        color = color.toLowerCase();
         colors = ['blue', 'blue_violet', 'cadet_blue', 'chocolate', 'coral', 'dodger_blue', 'firebrick', 'golden_rod', 'green', 'hot_pink', 'orange_red', 'red', 'sea_green', 'spring_green', 'yellow_green'];
         if (!(/^#[0-9A-F]{6}$/i.test(color)) && colors.indexOf(color) === -1) {
-          console.error(`Invalid color value for Twitch Announcement. Found "${color}", expected a hex code or one of "${colors.join('", "')}".`)
+          console.error(`Invalid color value for Twitch Color. Found "${color}", expected a hex code or one of "${colors.join('", "')}".`)
           return;
         }
         await this.api.updateUserChatColor(this.channelId, color);
@@ -918,6 +919,20 @@ class TwitchHandler extends Handler {
         var user_id = await getIdFromUser(user);
 
         await this.api.removeChannelVIP(this.channelId, user_id);
+        break;
+      case 'usercolor':
+        var { user } = Parser.getInputs(triggerData, ['action', 'user']);
+
+        var user_id = await getIdFromUser(user);
+
+        var response = await this.api.getUserChatColor(user_id);
+        if (response?.data) {
+          return {
+            data: response,
+            color: response.data[0].color,
+            name: response.data[0].user_name
+          }
+        }
         break;
       case 'vip':
         var { user } = Parser.getInputs(triggerData, ['action', 'user']);

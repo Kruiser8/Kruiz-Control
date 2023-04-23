@@ -35,6 +35,7 @@ class TwitchAPI {
       'moderation:read',
       'moderator:read:blocked_terms',
       'moderator:read:chatters',
+      'moderator:read:followers',
       'moderator:read:shield_mode',
       'user:manage:chat_color',
       'user:manage:blocked_users'
@@ -379,8 +380,18 @@ class TwitchAPI {
     });
   }
 
-  async updateUserChatColor(user_id, color) {
+  async getUserChatColor(user_id) {
     return await this.callTwitchApi({
+      method: 'GET',
+      endpoint: 'https://api.twitch.tv/helix/chat/color',
+      params: {
+        user_id
+      }
+    });
+  }
+
+  async updateUserChatColor(user_id, color) {
+    await this.callTwitchApi({
       method: 'PUT',
       endpoint: 'https://api.twitch.tv/helix/chat/color',
       params: {
