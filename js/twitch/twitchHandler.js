@@ -470,6 +470,7 @@ class TwitchHandler extends Handler {
             data: response,
             name: response.data[0].broadcaster_name,
             game: response.data[0].game_name,
+            language: response.data[0].broadcaster_language,
             title: response.data[0].title,
             tag_count: response.data[0].tags.length,
             ...tagArgs
@@ -592,7 +593,7 @@ class TwitchHandler extends Handler {
                 "title": `kc_${customReward.title}`,
                 "cost": customReward.cost,
                 "prompt": customReward.prompt,
-                "is_enabled": customReward.is_enabled,
+                "is_enabled": false,
                 "background_color": customReward.background_color,
                 "is_user_input_required": customReward.is_user_input_required,
                 "is_max_per_stream_enabled": customReward.max_per_stream_setting.is_enabled,

@@ -2898,6 +2898,8 @@ _Note: Default channel point rewards are not supported: `Unlock a Random Sub Emo
 ------------ | -------------
 **reward** | The name of the channel point reward that was redeemed.
 **user** | The display name of the user that redeemed the channel point reward.
+**reward_id** | The id of the channel point reward (used with [Twitch Complete](#twitch-complete) or [Twitch Reject](#twitch-reject)).
+**redemption_id** | The id of the channel point redemption (used with [Twitch Complete](#twitch-complete) or [Twitch Reject](#twitch-reject)).
 **message** | The message included with the channel point redemption (if one is provided)
 **data** | The complete json channel point message (for use with [Function](#function)).
 
@@ -3072,8 +3074,9 @@ Param Add i 1
 | | |
 ------------ | -------------
 **data** | The complete response from the Twitch Channel Information API.
-**name** | The specified Twitch stream's display name.
 **game** | The game (or category) of the Twitch stream.
+**language** | The broadcaster's preferred language.
+**name** | The specified Twitch stream's display name.
 **title** | The title of the specified Twitch stream.
 **tag_count** | The number of tags retrieved for the channel.
 **tag#** | The tags on the specified channel. Replace `#` with a number, starting at 1 and ending at `tag_count`.
@@ -3182,7 +3185,7 @@ Param Add i 1
 #### Twitch Copy
 | | |
 ------------ | -------------
-**Info** | Create a copy of a channel point reward so that KC can manage the reward and redemptions. `<reward>` is the title of the channel point reward to copy. This aciton will create a copy of the reward with `kc_` in the title.
+**Info** | Create a copy of a channel point reward so that KC can manage the reward and redemptions. `<reward>` is the title of the channel point reward to copy. This action will create a copy of the reward with `kc_` in the title and will be disabled by default. The reward icon (image) will have to be re-added.
 **Format** | `Twitch Copy <reward>`
 **Example** | `Twitch Copy HeadPat`
 
@@ -3257,6 +3260,15 @@ Param Add i 1
 **Info** | Updates a channel's game (or category). `<game>` is the game to set for the channel. The `<game>` value must match a Twitch category exactly.
 **Format** | `Twitch Game <game>`
 **Example** | `Twitch Game "Rocket League"`
+
+***
+
+#### Twitch UserColor
+| | |
+------------ | -------------
+**Info** | Retrieves the color used for the user's name in chat. `<user>` is the name of the username to retrieve the chat color.
+**Format** | `Twitch UserColor <user>`
+**Example** | `Twitch UserColor Kruiser8`
 
 ***
 
