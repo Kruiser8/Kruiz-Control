@@ -233,6 +233,56 @@ class TwitchAPI {
     });
   }
 
+  async createCustomRewards(broadcaster_id, data) {
+    await this.callTwitchApiJson({
+      method: 'POST',
+      endpoint: 'https://api.twitch.tv/helix/channel_points/custom_rewards',
+      params: {
+        broadcaster_id
+      },
+      data
+    });
+  }
+
+  async getCustomReward(broadcaster_id, only_manageable_rewards) {
+    only_manageable_rewards = only_manageable_rewards || false;
+    return await this.callTwitchApi({
+      method: 'GET',
+      endpoint: 'https://api.twitch.tv/helix/channel_points/custom_rewards',
+      params: {
+        broadcaster_id,
+        only_manageable_rewards
+      }
+    });
+  }
+
+  async updateCustomReward(broadcaster_id, reward_id, data) {
+    await this.callTwitchApiJson({
+      method: 'PATCH',
+      endpoint: 'https://api.twitch.tv/helix/channel_points/custom_rewards',
+      params: {
+        broadcaster_id,
+        id: reward_id
+      },
+      data
+    });
+  }
+
+  async updateRedemptionStatus(broadcaster_id, reward_id, redemption_id, status) {
+    await this.callTwitchApiJson({
+      method: 'PATCH',
+      endpoint: 'https://api.twitch.tv/helix/channel_points/custom_rewards/redemptions',
+      params: {
+        id: redemption_id,
+        broadcaster_id,
+        reward_id
+      },
+      data: {
+        status
+      }
+    });
+  }
+
   async getChatters(broadcaster_id, moderator_id, first, after) {
     var params = {
       broadcaster_id,

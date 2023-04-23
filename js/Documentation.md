@@ -259,6 +259,8 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Twitch ClipById](#twitch-clipbyid)
     + [Twitch ClipsByUser](#twitch-clipsbyuser)
     + [Twitch Color](#twitch-color)
+    + [Twitch Complete](#twitch-complete)
+    + [Twitch Copy](#twitch-copy)
     + [Twitch DeleteMessage](#twitch-deletemessage)
     + [Twitch EmoteOnly](#twitch-emoteonly)
     + [Twitch EmoteOnlyOff](#twitch-emoteonlyoff)
@@ -270,7 +272,9 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Twitch Mod](#twitch-mod)
     + [Twitch Mods](#twitch-mods)
     + [Twitch Raid](#twitch-raid)
+    + [Twitch Reject](#twitch-reject)
     + [Twitch RemoveBlockedTerm](#twitch-removeblockedterm)
+    + [Twitch Reward](#twitch-reward)
     + [Twitch Shield](#twitch-shield)
     + [Twitch Slow](#twitch-slow)
     + [Twitch SlowOff](#twitch-slowoff)
@@ -3165,6 +3169,25 @@ Param Add i 1
 
 ***
 
+#### Twitch Complete
+| | |
+------------ | -------------
+**Info** | Mark a channel point reward redemption as complete. `<reward_id>` is the id of the channel point reward. `<redemption_id>` is the id of the channel point reward redemption. Both of these values are provided by `OnChannelPoint` as parameters. To reject a redemption and refund points, use [Twitch Reject](#twitch-reject).
+**Format** | `Twitch Complete <reward_id> <redemption_id>`
+**Example** | `Twitch Complete 92af127c-7326-4483-a52b-b0da0be61c01 17fa2df1-ad76-4804-bfa5-a40ef63efe63`
+**Example using OnChannelPoint Parameters** | `Twitch Complete {reward_id} {redemption_id}`
+
+***
+
+#### Twitch Copy
+| | |
+------------ | -------------
+**Info** | Create a copy of a channel point reward so that KC can manage the reward and redemptions. `<reward>` is the title of the channel point reward to copy. This aciton will create a copy of the reward with `kc_` in the title.
+**Format** | `Twitch Copy <reward>`
+**Example** | `Twitch Copy HeadPat`
+
+***
+
 #### Twitch DeleteMessage
 | | |
 ------------ | -------------
@@ -3292,6 +3315,16 @@ Param Add i 1
 
 ***
 
+#### Twitch Reject
+| | |
+------------ | -------------
+**Info** | Mark a channel point reward redemption as rejected and refund a user's points. `<reward_id>` is the id of the channel point reward. `<redemption_id>` is the id of the channel point reward redemption. Both of these values are provided by `OnChannelPoint` as parameters. To complete a redemption, use [Twitch Complete](#twitch-complete).
+**Format** | `Twitch Reject <reward_id> <redemption_id>`
+**Example** | `Twitch Reject 92af127c-7326-4483-a52b-b0da0be61c01 17fa2df1-ad76-4804-bfa5-a40ef63efe63`
+**Example using OnChannelPoint Parameters** | `Twitch Reject {reward_id} {redemption_id}`
+
+***
+
 #### Twitch RemoveBlockedTerm
 | | |
 ------------ | -------------
@@ -3299,6 +3332,15 @@ Param Add i 1
 **Format** | `Twitch RemoveBlockedTerm <term>`
 **Example** | `Twitch RemoveBlockedTerm "bad word"`
 **Example w/ Aliases** | `Twitch RemoveBlockedTerm "phrase to block" "bad term"`
+
+***
+
+#### Twitch Reward
+| | |
+------------ | -------------
+**Info** | Used to update the status of a channel point reward. `<reward>` is the title of the reward to update. `<off/on/pause/toggle/unpause>` are the status options. `off`, `on`, and `toggle` enable or disable the reward. `pause` and `unpause` will pause or resume the ability for viewers to redeem the reward.
+**Format** | `Twitch Reward <reward> <off/on/pause/toggle/unpause>`
+**Example** | `Twitch Reward HeadPat off`
 
 ***
 

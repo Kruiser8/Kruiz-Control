@@ -182,6 +182,8 @@ class TwitchHandler extends Handler {
   onChannelPointMessage(message) {
     // Check if tracking reward
     var reward = message.data.redemption.reward.title;
+    var reward_id = message.data.redemption.reward.id;
+    var redemption_id = message.data.redemption.id;
     var onChannelPointTriggers = [];
     if (this.rewards.indexOf(reward) !== -1) {
 
@@ -210,8 +212,10 @@ class TwitchHandler extends Handler {
       onChannelPointTriggers.sort((a,b) => a-b);
       onChannelPointTriggers.forEach(triggerId => {
         controller.handleData(triggerId, {
-          reward: reward,
-          user: user,
+          reward_id,
+          redemption_id,
+          reward,
+          user,
           message: input,
           data: message
         });
@@ -564,13 +568,45 @@ class TwitchHandler extends Handler {
         await this.api.updateUserChatColor(this.channelId, color);
         break;
       case 'commercial':
-        var { duration: 60 } = Parser.getInputs(triggerData, ['action', 'duration'], false 1);
+        var { duration = 60 } = Parser.getInputs(triggerData, ['action', 'duration'], false, 1);
 
         var data = { broadcaster_id: this.channelId, duration: 60 };
         if (isNumeric(duration)) {
           data['duration'] = clamp(parseInt(duration), 1, 180);
         }
         await this.api.startCommercial(data);
+        break;
+      case 'complete':
+        var { reward_id, redemption_id } = Parser.getInputs(triggerData, ['action', 'reward_id', 'redemption_id']);
+        await this.api.updateRedemptionStatus(this.channelId, reward_id, redemption_id, 'FULFILLED');
+        break;
+      case 'copy':
+        var { reward } = Parser.getInputs(triggerData, ['action', 'reward']);
+        var response = await this.api.getCustomReward(this.channelId);
+        if (response?.data) {
+          for (var i = 0; i < response.data.length; i++) {
+            var customReward = response.data[i];
+            if (customReward.title === reward) {
+              var data = {
+                "title": `kc_${customReward.title}`,
+                "cost": customReward.cost,
+                "prompt": customReward.prompt,
+                "is_enabled": customReward.is_enabled,
+                "background_color": customReward.background_color,
+                "is_user_input_required": customReward.is_user_input_required,
+                "is_max_per_stream_enabled": customReward.max_per_stream_setting.is_enabled,
+                "max_per_stream": customReward.max_per_stream_setting.max_per_stream,
+                "is_max_per_user_per_stream_enabled": customReward.max_per_user_per_stream_setting.is_enabled,
+                "max_per_user_per_stream": customReward.max_per_user_per_stream_setting.max_per_user_per_stream,
+                "is_global_cooldown_enabled": customReward.global_cooldown_setting.is_enabled,
+                "global_cooldown_seconds": customReward.global_cooldown_setting.global_cooldown_seconds,
+                "should_redemptions_skip_request_queue": customReward.should_redemptions_skip_request_queue,
+              }
+              await this.api.createCustomRewards(this.channelId, data);
+              return;
+            }
+          }
+        }
         break;
       case 'createclip':
         var { delay = false } = Parser.getInputs(triggerData, ['action', 'delay' ], false, 1);
@@ -684,6 +720,47 @@ class TwitchHandler extends Handler {
 
         await this.api.startARaid(this.channelId, user_id);
         break;
+      case 'reject':
+        var { reward_id, redemption_id } = Parser.getInputs(triggerData, ['action', 'reward_id', 'redemption_id']);
+        await this.api.updateRedemptionStatus(this.channelId, reward_id, redemption_id, 'CANCELED');
+        break;
+      case 'reward':
+        var { reward, status } = Parser.getInputs(triggerData, ['action', 'reward', 'status']);
+
+        status = status.toLowerCase();
+        var statuses = ['off', 'on', 'pause', 'toggle', 'unpause'];
+        if (statuses.indexOf(status) === -1) {
+          console.error(`Invalid status value for Twitch Announcement. Found "${status}", expected one of "${statuses.join('", "')}".`)
+          return;
+        }
+
+        var response = await this.api.getCustomReward(this.channelId);
+        if (response?.data) {
+          for (var i = 0; i < response.data.length; i++) {
+            var customReward = response.data[i];
+            if (customReward.title === reward) {
+              switch (status) {
+                case 'off':
+                  await this.api.updateCustomReward(this.channelId, customReward.id, { is_enabled: false });
+                  break;
+                case 'on':
+                  await this.api.updateCustomReward(this.channelId, customReward.id, { is_enabled: true });
+                  break;
+                case 'pause':
+                  await this.api.updateCustomReward(this.channelId, customReward.id, { is_paused: true });
+                  break;
+                case 'toggle':
+                  await this.api.updateCustomReward(this.channelId, customReward.id, { is_enabled: !customReward.is_enabled });
+                  break;
+                case 'unpause':
+                  await this.api.updateCustomReward(this.channelId, customReward.id, { is_paused: false });
+                  break;
+              }
+              return;
+            }
+          }
+        }
+      break;
       case 'removeblockedterm':
         var { terms } = Parser.getInputs(triggerData, ['action', 'terms'], true);
 
