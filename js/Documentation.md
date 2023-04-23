@@ -265,10 +265,12 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Twitch EmoteOnly](#twitch-emoteonly)
     + [Twitch EmoteOnlyOff](#twitch-emoteonlyoff)
     + [Twitch Emotes](#twitch-emotes)
+    + [Twitch FollowCount](#twitch-followcount)
     + [Twitch Followers](#twitch-followers)
     + [Twitch FollowersOff](#twitch-followersoff)
     + [Twitch Game](#twitch-game)
     + [Twitch Goals](#twitch-goals)
+    + [Twitch IsFollower](#twitch-isfollower)
     + [Twitch Mod](#twitch-mod)
     + [Twitch Mods](#twitch-mods)
     + [Twitch Raid](#twitch-raid)
@@ -292,6 +294,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Twitch Unmod](#twitch-unmod)
     + [Twitch Unraid](#twitch-unraid)
     + [Twitch UnVIP](#twitch-unvip)
+    + [Twitch UserColor](#twitch-usercolor)
     + [Twitch VIP](#twitch-vip)
     + [Twitch VIPs](#twitch-vips)
 - [Variable](#variable)
@@ -3235,6 +3238,16 @@ Param Add i 1
 
 ***
 
+#### Twitch FollowCount
+| | |
+------------ | -------------
+**Info** | Retrieve the number of followers for the given channel. `<optional_user>` is the channel to check. The broadcaster's follower count is used if no user is provided.
+**Format** | `Twitch FollowCount <optional_user>`
+**Example** | `Twitch FollowCount`
+**Example w/ User** | `Twitch FollowCount Kruiser8`
+
+***
+
 #### Twitch Followers
 | | |
 ------------ | -------------
@@ -3289,6 +3302,21 @@ Param Add i 1
 **current#** | The current value of the goal. Replace `#` with a number, starting at 1 and ending at `goal_count`.
 **target#** | The target value of the goal. Replace `#` with a number, starting at 1 and ending at `goal_count`.
 **perc#** | The current progress percentage of the goal (between 0 and 100). Replace `#` with a number, starting at 1 and ending at `goal_count`.
+
+***
+
+#### Twitch IsFollower
+| | |
+------------ | -------------
+**Info** | Check if the given user follows the channel. `<user>` is the channel to check.
+**Format** | `Twitch IsFollower <user>`
+**Example** | `Twitch IsFollower Kruiser8`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Channel Followers API.
+**is_follower** | [true/false] `true` if the user follows the channel. Otherwise, `false`.
 
 ***
 

@@ -234,6 +234,17 @@ class TwitchAPI {
     });
   }
 
+  async getChannelFollowers(broadcaster_id, user_id) {
+    return await this.callTwitchApi({
+      method: 'GET',
+      endpoint: 'https://api.twitch.tv/helix/channels/followers',
+      params: {
+        broadcaster_id,
+        user_id
+      }
+    });
+  }
+
   async createCustomRewards(broadcaster_id, data) {
     await this.callTwitchApiJson({
       method: 'POST',

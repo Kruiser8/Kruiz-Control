@@ -649,6 +649,25 @@ class TwitchHandler extends Handler {
           ...emoteArgs
         }
         break;
+      case 'followcount':
+        var { user = this.user } = Parser.getInputs(triggerData, ['action', 'user' ], false, 1);
+
+        var channelId = this.channelId;
+        if (user !== this.user) {
+          userId = await getIdFromUser(user);
+          if (userId) {
+            channelId = userId;
+          }
+        }
+
+        var response = await this.api.getChannelFollowers(channelId);
+        if (isNumeric(response?.total)) {
+          return {
+            data: response,
+            follow_count: response.total
+          };
+        }
+        break;
       case 'followers':
         var { duration = 0 } = Parser.getInputs(triggerData, ['action', 'duration'], false, 1);
 
@@ -690,6 +709,21 @@ class TwitchHandler extends Handler {
             goal_count: response.data.length,
             ...goalArgs
           };
+        }
+        break;
+      case 'isfollower':
+        var { user } = Parser.getInputs(triggerData, ['action', 'user']);
+        var userId = await getIdFromUser(user);
+
+        if (!userId) {
+          throw new Error(`Unable to get id for user: ${user}`);
+        }
+
+        var response = await this.api.getChannelFollowers(this.channelId, userId);
+
+        return {
+          data: response,
+          is_follower: response?.data && response.data.length > 0
         }
         break;
       case 'marker':
