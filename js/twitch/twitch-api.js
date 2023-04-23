@@ -9,6 +9,7 @@ class TwitchAPI {
 
     this.getAuthUrl.bind(this);
     this.callTwitchApi.bind(this);
+    this.callTwitchApiJson.bind(this);
     this.requestAuthToken.bind(this);
     this.refreshAuthToken.bind(this);
   }
@@ -19,6 +20,7 @@ class TwitchAPI {
       'channel:edit:commercial',
       'channel:manage:broadcast',
       'channel:manage:moderators',
+      'channel:manage:predictions',
       'channel:manage:raids',
       'channel:manage:redemptions',
       'channel:manage:vips',
@@ -719,6 +721,32 @@ class TwitchAPI {
         broadcaster_id,
         moderator_id
       }
+    });
+  }
+
+  async getPredictions(broadcaster_id) {
+    return await this.callTwitchApi({
+      method: 'GET',
+      endpoint: 'https://api.twitch.tv/helix/predictions',
+      params: {
+        broadcaster_id
+      }
+    });
+  }
+
+  async createPrediction(data) {
+    return await this.callTwitchApiJson({
+      method: 'POST',
+      endpoint: 'https://api.twitch.tv/helix/predictions',
+      data
+    });
+  }
+
+  async endPrediction(data) {
+    await this.callTwitchApiJson({
+      method: 'PATCH',
+      endpoint: 'https://api.twitch.tv/helix/predictions',
+      data
     });
   }
 

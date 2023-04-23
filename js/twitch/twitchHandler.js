@@ -39,6 +39,7 @@ class TwitchHandler extends Handler {
     this.onChannelPointMessage.bind(this);
     this.onCommunityGoalMessage.bind(this);
     this.onHypeTrainMessage.bind(this);
+    this.initializePrediction.bind(this);
   }
 
   /**
@@ -48,6 +49,7 @@ class TwitchHandler extends Handler {
     connectPubSubWebsocket(channelId, this.onMessage.bind(this));
     this.user = user;
     this.channelId = channelId;
+    this.initializePrediction();
     var prevAccessToken = await IDBService.get('CUTWAT');
     var prevRefreshToken = await IDBService.get('CUTWRT');
 
@@ -781,6 +783,9 @@ class TwitchHandler extends Handler {
           ...modArgs
         };
         break;
+      case 'prediction':
+        return await this.handlePrediction(triggerData);
+        break;
       case 'raid':
         var { user } = Parser.getInputs(triggerData, ['action', 'user']);
 
@@ -828,7 +833,7 @@ class TwitchHandler extends Handler {
             }
           }
         }
-      break;
+        break;
       case 'removeblockedterm':
         var { terms } = Parser.getInputs(triggerData, ['action', 'terms'], true);
 
@@ -1049,7 +1054,6 @@ class TwitchHandler extends Handler {
         }
 
         var response = await this.api.getVideos(this.channelId, type, period, sort);
-        console.error(JSON.stringify(response));
 
         if (response?.data) {
           var videoArgs = {};
@@ -1089,6 +1093,119 @@ class TwitchHandler extends Handler {
   isErrorResponse(response) {
     return response === 'Error with Twitch API';
   }
+
+  /**
+   * Handle the prediction data.
+   * @param {array} triggerData contents of trigger line
+   */
+  async handlePrediction(triggerData) {
+    var action = Parser.getAction(triggerData, 'Twitch Prediction', 1);
+    switch (action) {
+      case 'cancel':
+        var response = await this.api.getPredictions(this.channelId);
+        if (response?.data) {
+          for (var i = 0; i < response.data.length; i++) {
+            var status = response.data[i].status;
+            if (status === 'ACTIVE' || status === 'LOCKED') {
+              await this.api.endPrediction({
+                broadcaster_id: this.channelId,
+                id: response.data[i].id,
+                status: 'CANCELED'
+              });
+            }
+          }
+        }
+        break;
+      case 'clear':
+        this.initializePrediction();
+        break;
+      case 'complete':
+        var { outcome } = Parser.getInputs(triggerData, ['prediction', 'action', 'outcome']);
+        var response = await this.api.getPredictions(this.channelId);
+        if (response?.data) {
+          for (var i = 0; i < response.data.length; i++) {
+            var status = response.data[i].status;
+            if (status === 'ACTIVE' || status === 'LOCKED') {
+              var outcomeId = '';
+              response.data[i].outcomes.every(option => {
+                if (option.title === outcome) {
+                  outcomeId = option.id;
+                  return false;
+                }
+                return true;
+              });
+
+              if (!outcomeId) {
+                console.error(`Unable to get outcome id for input: ${outcome}`);
+                return;
+              }
+
+              await this.api.endPrediction({
+                broadcaster_id: this.channelId,
+                id: response.data[i].id,
+                status: 'RESOLVED',
+                winning_outcome_id: outcomeId
+              });
+            }
+          }
+        }
+        break;
+      case 'create':
+        var response = await this.api.createPrediction(this.prediction);
+        this.initializePrediction();
+        return {
+          data: response
+        }
+        break;
+      case 'lock':
+        var response = await this.api.getPredictions(this.channelId);
+        if (response?.data) {
+          for (var i = 0; i < response.data.length; i++) {
+            var status = response.data[i].status;
+            if (status === 'ACTIVE') {
+              await this.api.endPrediction({
+                broadcaster_id: this.channelId,
+                id: response.data[i].id,
+                status: 'LOCKED'
+              });
+            }
+          }
+        }
+        break;
+      case 'outcome':
+        var { outcomes } = Parser.getInputs(triggerData, ['prediction', 'action', 'outcomes'], true);
+
+        this.prediction.outcomes = [
+          ...this.prediction.outcomes,
+          ...outcomes.map(outcome => { return { title: outcome }; })
+        ];
+        break;
+      case 'time':
+        var { time } = Parser.getInputs(triggerData, ['prediction', 'action', 'time']);
+        if (!isNumeric(time)) {
+          console.error(`Invalid time provided to Twitch Prediction Time. Expected a number, found ${time}.`)
+          return;
+        }
+        this.prediction.prediction_window = clamp(parseInt(time), 30, 1800);
+        break;
+      case 'title':
+        var { title } = Parser.getInputs(triggerData, ['prediction', 'action', 'title']);
+        this.prediction.title = title;
+        break;
+    }
+  }
+
+  /**
+   * Set up the prediction object.
+   */
+   initializePrediction() {
+     this.prediction = {
+       broadcaster_id: this.channelId,
+       title: '',
+       outcomes: [],
+       prediction_window: 120
+     }
+   }
 }
 
 /**

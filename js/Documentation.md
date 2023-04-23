@@ -276,6 +276,14 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Twitch IsSubscriber](#twitch-issubscriber)
     + [Twitch Mod](#twitch-mod)
     + [Twitch Mods](#twitch-mods)
+    + [Twitch Prediction Cancel](#twitch-prediction-cancel)
+    + [Twitch Prediction Clear](#twitch-prediction-clear)
+    + [Twitch Prediction Complete](#twitch-prediction-complete)
+    + [Twitch Prediction Create](#twitch-prediction-create)
+    + [Twitch Prediction Lock](#twitch-prediction-lock)
+    + [Twitch Prediction Outcome](#twitch-prediction-outcome)
+    + [Twitch Prediction Time](#twitch-prediction-time)
+    + [Twitch Prediction Title](#twitch-prediction-title)
     + [Twitch Raid](#twitch-raid)
     + [Twitch Reject](#twitch-reject)
     + [Twitch RemoveBlockedTerm](#twitch-removeblockedterm)
@@ -3388,6 +3396,114 @@ Param Add i 1
 **mod_count** | The number of moderators retrieved.
 **mod#** | The name of the moderator. Replace `#` with a number, starting at 1 and ending at `mod_count`.
 **id#** | The user id (login) of the moderator. Replace `#` with a number, starting at 1 and ending at `mod_count`.
+
+***
+
+#### Twitch Prediction Cancel
+| | |
+------------ | -------------
+**Info** | Cancel the prediction and send channel point refunds to the participants.
+**Format** | `Twitch Prediction Cancel`
+**Example** | `Twitch Prediction Cancel`
+
+***
+
+#### Twitch Prediction Clear
+| | |
+------------ | -------------
+**Info** | Clear the current Prediction data, removing any existing prediction details.
+**Format** | `Twitch Prediction Clear`
+**Example** | `Twitch Prediction Clear`
+
+***
+
+#### Twitch Prediction Complete
+| | |
+------------ | -------------
+**Info** | Complete the prediction and provide the winning outcome. `<outcome>` is the prediction option that won. This must match the text of the outcome exactly.
+**Format** | `Twitch Prediction Complete <outcome>`
+**Example** | `Twitch Prediction Complete Yes`
+
+***
+
+#### Twitch Prediction Create
+| | |
+------------ | -------------
+**Info** | Creates a Channel Points Prediction. The prediction runs as soon as it’s created. The broadcaster may run only one prediction at a time.
+**Format** | `Twitch Prediction Create`
+**Example** | `Twitch Prediction Create`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Create Prediction API.
+
+##### Example Usage
+
+<table>
+<tr>
+<td>Create a Prediction</td>
+</tr>
+<tr>
+<td>
+
+```m
+OnInit
+Twitch Prediction Title "Will Kruizy Die??"
+Twitch Prediction Outcome "Yes" "No"
+Twitch Prediction Outcome "MAYBE"
+Twitch Prediction Time 55
+Twitch Prediction Create
+Delay 60
+Twitch Complete "MAYBE"
+```
+
+</td>
+</tr>
+</table>
+
+***
+
+#### Twitch Prediction Lock
+| | |
+------------ | -------------
+**Info** | Lock the current prediction, making it so viewers can no longer make predictions.
+**Format** | `Twitch Prediction Lock`
+**Example** | `Twitch Prediction Lock`
+
+***
+
+#### Twitch Prediction Outcome
+| | |
+------------ | -------------
+**Info** | Provide the outcomes (or options) for the prediction. `<outcome>` is the prediction option to add. Multiple outcomes can be added in the same action or across multiple actions.
+**Format** | `Twitch Prediction Outcome <outcome>`
+**Example** | `Twitch Prediction Outcome Yes`
+**Example to Add Multiple Outcomes** | `Twitch Prediction Outcome "Yes" "No"`
+
+_Note: For a complete prediction example, see [Twitch Prediction Create](#twitch-prediction-create)._
+
+***
+
+#### Twitch Prediction Time
+| | |
+------------ | -------------
+**Info** | Provide the number of seconds that the prediction will run for. The minimum is 30 seconds and the maximum is 1800 seconds (30 minutes). `<seconds>` is the number of seconds. If no time is provided for a prediction, `120` is used.
+**Format** | `Twitch Prediction Time <seconds>`
+**Example** | `Twitch Prediction Time 300`
+
+_Note: For a complete prediction example, see [Twitch Prediction Create](#twitch-prediction-create)._
+
+***
+
+#### Twitch Prediction Title
+| | |
+------------ | -------------
+**Info** | Provide the question that the broadcaster is asking. `<title>` is the title to use for the prediction. The title is limited to a maximum of 45 characters.
+**Format** | `Twitch Prediction Title <title>`
+**Example** | `Twitch Prediction Title "Do you believe?"`
+
+_Note: For a complete prediction example, see [Twitch Prediction Create](#twitch-prediction-create)._
 
 ***
 
