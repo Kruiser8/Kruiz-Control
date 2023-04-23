@@ -38,6 +38,7 @@ class TwitchAPI {
       'moderator:read:chatters',
       'moderator:read:followers',
       'moderator:read:shield_mode',
+      'user:edit',
       'user:manage:chat_color',
       'user:manage:blocked_users',
       'user:read:follows'
@@ -819,6 +820,16 @@ class TwitchAPI {
       endpoint: 'https://api.twitch.tv/helix/teams/channel',
       params: {
         broadcaster_id
+      }
+    });
+  }
+
+  async updateUser(description) {
+    await this.callTwitchApi({
+      method: 'PUT',
+      endpoint: 'https://api.twitch.tv/helix/users',
+      params: {
+        description
       }
     });
   }

@@ -620,6 +620,11 @@ class TwitchHandler extends Handler {
           await this.api.deleteChatMessages(this.channelId, this.channelId, message_id);
         }
         break;
+      case 'description':
+        var { description } = Parser.getInputs(triggerData, ['action', 'description']);
+
+        await this.api.updateUser(description);
+        break;
       case 'emoteonly':
         await this.api.updateChatSettings(this.channelId, this.channelId, {
           emote_mode: true
