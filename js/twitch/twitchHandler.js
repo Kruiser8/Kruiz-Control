@@ -726,6 +726,15 @@ class TwitchHandler extends Handler {
           is_follower: response?.data && response.data.length > 0
         }
         break;
+      case 'isshieldmode':
+        var response = await this.api.getShieldModeStatus(this.channelId, this.channelId);
+        if (response?.data) {
+          return {
+            data: response,
+            is_shield_mode: response.data[0].is_active
+          }
+        }
+        break;
       case 'marker':
         var { description = '' } = Parser.getInputs(triggerData, ['action', 'description'], false, 1);
         await this.api.createStreamMarker(this.channelId, description);

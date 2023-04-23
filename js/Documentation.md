@@ -271,6 +271,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Twitch Game](#twitch-game)
     + [Twitch Goals](#twitch-goals)
     + [Twitch IsFollower](#twitch-isfollower)
+    + [Twitch IsShieldMode](#twitch-isshieldmode)
     + [Twitch Mod](#twitch-mod)
     + [Twitch Mods](#twitch-mods)
     + [Twitch Raid](#twitch-raid)
@@ -281,6 +282,8 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Twitch Slow](#twitch-slow)
     + [Twitch SlowOff](#twitch-slowoff)
     + [Twitch Soundtrack](#twitch-soundtrack)
+    + [Twitch Streams](#twitch-streams)
+    + [Twitch SubCount](#twitch-subcount)
     + [Twitch Subscribers](#twitch-subscribers)
     + [Twitch SubscribersOff](#twitch-subscribersoff)
     + [Twitch Tags](#twitch-tags)
@@ -3246,6 +3249,12 @@ Param Add i 1
 **Example** | `Twitch FollowCount`
 **Example w/ User** | `Twitch FollowCount Kruiser8`
 
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Followed Streams API.
+**follow_count** | The total number of users that follow the specified channel.
+
 ***
 
 #### Twitch Followers
@@ -3273,15 +3282,6 @@ Param Add i 1
 **Info** | Updates a channel's game (or category). `<game>` is the game to set for the channel. The `<game>` value must match a Twitch category exactly.
 **Format** | `Twitch Game <game>`
 **Example** | `Twitch Game "Rocket League"`
-
-***
-
-#### Twitch UserColor
-| | |
------------- | -------------
-**Info** | Retrieves the color used for the user's name in chat. `<user>` is the name of the username to retrieve the chat color.
-**Format** | `Twitch UserColor <user>`
-**Example** | `Twitch UserColor Kruiser8`
 
 ***
 
@@ -3317,6 +3317,21 @@ Param Add i 1
 ------------ | -------------
 **data** | The complete response from the Twitch Channel Followers API.
 **is_follower** | [true/false] `true` if the user follows the channel. Otherwise, `false`.
+
+***
+
+#### Twitch IsShieldMode
+| | |
+------------ | -------------
+**Info** | Check if the stream has shield mode active.
+**Format** | `Twitch IsShieldMode`
+**Example** | `Twitch IsShieldMode`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Channel Followers API.
+**is_shield_mode** | [true/false] `true` if the stream has shield mode active. Otherwise, `false`.
 
 ***
 
@@ -3437,6 +3452,40 @@ Param Add i 1
 
 ***
 
+#### Twitch Streams
+| | |
+------------ | -------------
+**Info** | Gets the list of followed streams that are currently live.
+**Format** | `Twitch Streams`
+**Example** | `Twitch Streams`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Followed Streams API.
+**stream_count** | The number of streams retrieved.
+**stream#** | The name of the stream. Replace `#` with a number, starting at 1 and ending at `stream_count`.
+**id#** | The user id (login) of the stream. Replace `#` with a number, starting at 1 and ending at `stream_count`.
+**game#** | The game of the stream. Replace `#` with a number, starting at 1 and ending at `stream_count`.
+
+***
+
+#### Twitch SubCount
+| | |
+------------ | -------------
+**Info** | Retrieve the number of followers for the given channel.
+**Format** | `Twitch SubCount`
+**Example** | `Twitch SubCount`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Broadcaster Subscriptions API.
+**sub_count** | The total number of users that subscribe to this broadcaster.
+**sub_points** | The current number of subscriber points earned by this broadcaster. Points are based on the subscription tier of each user. For example, a Tier 1 subscription is worth 1 point, Tier 2 is worth 2 points, and Tier 3 is worth 6 points.
+
+***
+
 #### Twitch Subscribers
 | | |
 ------------ | -------------
@@ -3551,6 +3600,22 @@ Param Add i 1
 **Info** | Remove VIP status from a user in the broadcaster's chat room. `<user>` is the Twitch user to update.
 **Format** | `Twitch UnVIP <user>`
 **Example** | `Twitch UnVIP testUser`
+
+***
+
+#### Twitch UserColor
+| | |
+------------ | -------------
+**Info** | Retrieves the color used for the user's name in chat. `<user>` is the name of the username to retrieve the chat color.
+**Format** | `Twitch UserColor <user>`
+**Example** | `Twitch UserColor Kruiser8`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch User Chat Color API.
+**color** | The Hex color code that the user uses in chat for their name. If the user hasn’t specified a color in their settings, the string is empty.
+**name** | The user's display name.
 
 ***
 

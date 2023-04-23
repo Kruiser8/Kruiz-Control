@@ -24,6 +24,7 @@ class TwitchAPI {
       'channel:manage:vips',
       'channel:read:goals',
       'channel:read:vips',
+      'channel:read:subscriptions',
       'clips:edit',
       'moderator:manage:announcements',
       'moderator:manage:banned_users',
@@ -38,7 +39,8 @@ class TwitchAPI {
       'moderator:read:followers',
       'moderator:read:shield_mode',
       'user:manage:chat_color',
-      'user:manage:blocked_users'
+      'user:manage:blocked_users',
+      'user:read:follows'
     ].map(scope => encodeURIComponent(scope));
     return `https://id.twitch.tv/oauth2/authorize?response_type=code&client_id=${this.clientId}&redirect_uri=http://localhost&scope=${scopes.join('+')}`;
   }
@@ -750,6 +752,46 @@ class TwitchAPI {
     });
   }
 
+  async getFollowedStreams(user_id, first, after) {
+    var params = {
+      user_id,
+      first
+    }
+    if (after) {
+      params["after"] = after;
+    }
+
+    return await this.callTwitchApi({
+      method: 'GET',
+      endpoint: 'https://api.twitch.tv/helix/streams/followed',
+      params: params
+    });
+  }
+
+  async getAllFollowedStreams(user_id) {
+    var first = 100;
+    var after = '';
+    var isComplete = false;
+
+    var streams = [];
+
+    while (!isComplete) {
+      var response = await this.getFollowedStreams(user_id, first, after);
+      if (!response?.data) {
+        return streams;
+      }
+
+      streams = streams.concat(response.data);
+
+      if (response.pagination.cursor) {
+        after = response.pagination.cursor;
+      } else {
+        isComplete = true;
+      }
+    }
+    return streams;
+  }
+
   async createStreamMarker(user_id, description) {
     await this.callTwitchApiJson({
       method: 'POST',
@@ -757,6 +799,16 @@ class TwitchAPI {
       data: {
         user_id,
         description
+      }
+    });
+  }
+
+  async getBroadcasterSubscriptions(broadcaster_id) {
+    return await this.callTwitchApi({
+      method: 'GET',
+      endpoint: 'https://api.twitch.tv/helix/subscriptions',
+      params: {
+        broadcaster_id
       }
     });
   }
