@@ -735,6 +735,24 @@ class TwitchHandler extends Handler {
           }
         }
         break;
+      case 'issubscriber':
+        var { user } = Parser.getInputs(triggerData, ['action', 'user']);
+        var userId = await getIdFromUser(user);
+
+        if (!userId) {
+          throw new Error(`Unable to get id for user: ${user}`);
+        }
+
+        var response = await this.api.getBroadcasterSubscriptions(this.channelId, userId);
+
+        return {
+          data: response,
+          is_subscriber: response?.data && response.data.length > 0,
+          is_gifted: response.data[0].is_gift,
+          gifter: response.data[0].gifter_name,
+          tier: Math.round(response.data[0].tier / 1000),
+        }
+        break;
       case 'marker':
         var { description = '' } = Parser.getInputs(triggerData, ['action', 'description'], false, 1);
         await this.api.createStreamMarker(this.channelId, description);
@@ -876,6 +894,29 @@ class TwitchHandler extends Handler {
             data: response,
             artist: artists,
             title: response.data[0].track.title
+          };
+        }
+        break;
+      case 'streams':
+        var streams = await this.api.getAllFollowedStreams(this.channelId);
+        var streamArgs = {};
+        for (var i = 0; i < streams.length; i++) {
+          streamArgs[`id${i+1}`] = streams[i].user_login;
+          streamArgs[`stream${i+1}`] = streams[i].user_name;
+          streamArgs[`game${i+1}`] = streams[i].game_name;
+        }
+        return {
+          stream_count: streams.length,
+          ...streamArgs
+        };
+        break;
+      case 'subcount':
+        var response = await this.api.getBroadcasterSubscriptions(this.channelId);
+        if (isNumeric(response?.total)) {
+          return {
+            data: response,
+            sub_count: response.total,
+            sub_points: response.points
           };
         }
         break;

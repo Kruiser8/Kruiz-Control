@@ -272,6 +272,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Twitch Goals](#twitch-goals)
     + [Twitch IsFollower](#twitch-isfollower)
     + [Twitch IsShieldMode](#twitch-isshieldmode)
+    + [Twitch IsSubscriber](#twitch-issubscriber)
     + [Twitch Mod](#twitch-mod)
     + [Twitch Mods](#twitch-mods)
     + [Twitch Raid](#twitch-raid)
@@ -3332,6 +3333,24 @@ Param Add i 1
 ------------ | -------------
 **data** | The complete response from the Twitch Channel Followers API.
 **is_shield_mode** | [true/false] `true` if the stream has shield mode active. Otherwise, `false`.
+
+***
+
+#### Twitch IsSubscriber
+| | |
+------------ | -------------
+**Info** | Check if the given user subscribes to the channel. `<user>` is the channel to check.
+**Format** | `Twitch IsSubscriber <user>`
+**Example** | `Twitch IsSubscriber Kruiser8`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Channel Followers API.
+**is_subscriber** | [true/false] `true` if the user subscribes to the channel. Otherwise, `false`.
+**is_gifted** | [true/false] `true` if the user's subscription was a gifted sub. Otherwise, `false`.
+**gifter** | If `is_gifted`, this will contain the name of the user who gifted the subscription.
+**tier** | `1`, `2` or `3`, depending on what Tier the subscribed user is.
 
 ***
 
