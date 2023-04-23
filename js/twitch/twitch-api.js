@@ -20,6 +20,7 @@ class TwitchAPI {
       'channel:edit:commercial',
       'channel:manage:broadcast',
       'channel:manage:moderators',
+      'channel:manage:polls',
       'channel:manage:predictions',
       'channel:manage:raids',
       'channel:manage:redemptions',
@@ -721,6 +722,32 @@ class TwitchAPI {
         broadcaster_id,
         moderator_id
       }
+    });
+  }
+
+  async getPolls(broadcaster_id) {
+    return await this.callTwitchApi({
+      method: 'GET',
+      endpoint: 'https://api.twitch.tv/helix/polls',
+      params: {
+        broadcaster_id
+      }
+    });
+  }
+
+  async createPoll(data) {
+    return await this.callTwitchApiJson({
+      method: 'POST',
+      endpoint: 'https://api.twitch.tv/helix/polls',
+      data
+    });
+  }
+
+  async endPoll(data) {
+    await this.callTwitchApiJson({
+      method: 'PATCH',
+      endpoint: 'https://api.twitch.tv/helix/polls',
+      data
     });
   }
 

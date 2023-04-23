@@ -276,6 +276,14 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Twitch IsSubscriber](#twitch-issubscriber)
     + [Twitch Mod](#twitch-mod)
     + [Twitch Mods](#twitch-mods)
+    + [Twitch Poll Cancel](#twitch-prediction-cancel)
+    + [Twitch Poll Choice](#twitch-prediction-choice)
+    + [Twitch Poll Clear](#twitch-prediction-clear)
+    + [Twitch Poll Create](#twitch-prediction-create)
+    + [Twitch Poll End](#twitch-prediction-end)
+    + [Twitch Poll PointsPerVote](#twitch-prediction-pointspervote)
+    + [Twitch Poll Time](#twitch-prediction-time)
+    + [Twitch Poll Title](#twitch-prediction-title)
     + [Twitch Prediction Cancel](#twitch-prediction-cancel)
     + [Twitch Prediction Clear](#twitch-prediction-clear)
     + [Twitch Prediction Complete](#twitch-prediction-complete)
@@ -3399,6 +3407,117 @@ Param Add i 1
 
 ***
 
+#### Twitch Poll Cancel
+| | |
+------------ | -------------
+**Info** | Cancel the poll and send channel point refunds to the participants (if points enabled).
+**Format** | `Twitch Poll Cancel`
+**Example** | `Twitch Poll Cancel`
+
+***
+
+#### Twitch Poll Choice
+| | |
+------------ | -------------
+**Info** | Provide the choices for the poll. `<choice>` is the poll option to add. Multiple choices can be added in the same action or across multiple actions.
+**Format** | `Twitch Poll Choice <choice>`
+**Example** | `Twitch Poll Choice Yes`
+**Example to Add Multiple Outcomes** | `Twitch Poll Choice "Yes" "No"`
+
+_Note: For a complete poll example, see [Twitch Poll Create](#twitch-poll-create)._
+
+***
+
+#### Twitch Poll Clear
+| | |
+------------ | -------------
+**Info** | Clear the current poll data, removing any existing poll details.
+**Format** | `Twitch Poll Clear`
+**Example** | `Twitch Poll Clear`
+
+***
+
+#### Twitch Poll Create
+| | |
+------------ | -------------
+**Info** | Creates a poll on the channel. The poll runs as soon as it's created. The broadcaster may run only one poll at a time.
+**Format** | `Twitch Poll Create`
+**Example** | `Twitch Poll Create`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Create Poll API.
+
+##### Example Usage
+
+<table>
+<tr>
+<td>Create a Poll</td>
+</tr>
+<tr>
+<td>
+
+```m
+OnInit
+Twitch Poll Title "Will Kruizy Die??"
+Twitch Poll Choice "Yes" "No"
+Twitch Poll Choice "MAYBE"
+Twitch Poll Time 20
+Twitch Poll Create
+Delay 10
+# End the poll early (to show you can)
+Twitch Poll End
+```
+
+</td>
+</tr>
+</table>
+
+***
+
+#### Twitch Poll End
+| | |
+------------ | -------------
+**Info** | Complete the poll early before time is up.
+**Format** | `Twitch Poll End`
+**Example** | `Twitch Poll End`
+
+***
+
+#### Twitch Poll PointsPerVote
+| | |
+------------ | -------------
+**Info** | Enable viewers to cast additional votes using channel points. `<points>` is the number of points (between 1 and 1,000,000) that the viewer must spend to cast one additional vote. If `Twitch Poll PointsPerVote` isn't used, channel points may not be used to vote.
+**Format** | `Twitch Poll PointsPerVote <points>`
+**Example** | `Twitch Poll PointsPerVote 10000`
+
+_Note: For a complete poll example, see [Twitch Poll Create](#twitch-poll-create)._
+
+***
+
+#### Twitch Poll Time
+| | |
+------------ | -------------
+**Info** | Provide the number of seconds that the poll will run for. The minimum is 15 seconds and the maximum is 1800 seconds (30 minutes). `<seconds>` is the number of seconds. If no time is provided for a poll, `120` is used.
+**Format** | `Twitch Poll Time <seconds>`
+**Example** | `Twitch Poll Time 300`
+
+_Note: For a complete poll example, see [Twitch Poll Create](#twitch-poll-create)._
+
+***
+
+#### Twitch Poll Title
+| | |
+------------ | -------------
+**Info** | Provide the question that the broadcaster is asking. `<title>` is the title to use for the poll. The title may contain a maximum of 60 characters.
+**Format** | `Twitch Poll Title <title>`
+**Example** | `Twitch Poll Title "Do you believe?"`
+
+_Note: For a complete poll example, see [Twitch Poll Create](#twitch-poll-create)._
+
+***
+
 #### Twitch Prediction Cancel
 | | |
 ------------ | -------------
@@ -3429,7 +3548,7 @@ Param Add i 1
 #### Twitch Prediction Create
 | | |
 ------------ | -------------
-**Info** | Creates a Channel Points Prediction. The prediction runs as soon as it’s created. The broadcaster may run only one prediction at a time.
+**Info** | Creates a Channel Points Prediction. The prediction runs as soon as it's created. The broadcaster may run only one prediction at a time.
 **Format** | `Twitch Prediction Create`
 **Example** | `Twitch Prediction Create`
 
@@ -3452,10 +3571,11 @@ OnInit
 Twitch Prediction Title "Will Kruizy Die??"
 Twitch Prediction Outcome "Yes" "No"
 Twitch Prediction Outcome "MAYBE"
-Twitch Prediction Time 55
+Twitch Prediction Time 20
 Twitch Prediction Create
-Delay 60
-Twitch Complete "MAYBE"
+Delay 25
+# Mark "MAYBE" as the winning result
+Twitch Prediction Complete "MAYBE"
 ```
 
 </td>
@@ -3760,7 +3880,7 @@ _Note: For a complete prediction example, see [Twitch Prediction Create](#twitch
 | | |
 ------------ | -------------
 **data** | The complete response from the Twitch User Chat Color API.
-**color** | The Hex color code that the user uses in chat for their name. If the user hasn’t specified a color in their settings, the string is empty.
+**color** | The Hex color code that the user uses in chat for their name. If the user hasn't specified a color in their settings, the string is empty.
 **name** | The user's display name.
 
 ***

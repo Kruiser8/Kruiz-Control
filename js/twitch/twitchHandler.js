@@ -49,6 +49,7 @@ class TwitchHandler extends Handler {
     connectPubSubWebsocket(channelId, this.onMessage.bind(this));
     this.user = user;
     this.channelId = channelId;
+    this.initializePoll();
     this.initializePrediction();
     var prevAccessToken = await IDBService.get('CUTWAT');
     var prevRefreshToken = await IDBService.get('CUTWRT');
@@ -783,6 +784,9 @@ class TwitchHandler extends Handler {
           ...modArgs
         };
         break;
+      case 'poll':
+        return await this.handlePoll(triggerData);
+        break;
       case 'prediction':
         return await this.handlePrediction(triggerData);
         break;
@@ -1093,6 +1097,90 @@ class TwitchHandler extends Handler {
   isErrorResponse(response) {
     return response === 'Error with Twitch API';
   }
+
+  /**
+   * Handle the poll data.
+   * @param {array} triggerData contents of trigger line
+   */
+  async handlePoll(triggerData) {
+    var action = Parser.getAction(triggerData, 'Twitch Poll', 1);
+    switch (action) {
+      case 'cancel':
+        var response = await this.api.getPolls(this.channelId);
+        if (response?.data) {
+          await this.api.endPoll({
+            broadcaster_id: this.channelId,
+            id: response.data[0].id,
+            status: 'ARCHIVED'
+          });
+        }
+        break;
+      case 'pointspervote':
+        var { points } = Parser.getInputs(triggerData, ['poll', 'action', 'points']);
+
+        if (!isNumeric(points)) {
+          console.error(`Invalid points provided to Twitch Poll PointsPerVote. Expected a number, found ${points}.`)
+          return;
+        }
+
+        this.poll.channel_points_voting_enabled = true;
+        this.poll.channel_points_per_vote = clamp(parseInt(points), 1, 1000000);
+        break;
+      case 'choice':
+        var { choices } = Parser.getInputs(triggerData, ['poll', 'action', 'choices'], true);
+
+        this.poll.choices = [
+          ...this.poll.choices,
+          ...choices.map(choice => { return { title: choice }; })
+        ];
+        break;
+      case 'clear':
+        this.initializePoll();
+        break;
+      case 'create':
+        var response = await this.api.createPoll(this.poll);
+        this.initializePoll();
+        return {
+          data: response
+        }
+        break;
+      case 'end':
+        var response = await this.api.getPolls(this.channelId);
+        if (response?.data) {
+          await this.api.endPoll({
+            broadcaster_id: this.channelId,
+            id: response.data[0].id,
+            status: 'TERMINATED'
+          });
+        }
+        break;
+      case 'time':
+        var { time } = Parser.getInputs(triggerData, ['poll', 'action', 'time']);
+        if (!isNumeric(time)) {
+          console.error(`Invalid time provided to Twitch Poll Time. Expected a number, found ${time}.`)
+          return;
+        }
+        this.poll.duration = clamp(parseInt(time), 15, 1800);
+        break;
+      case 'title':
+        var { title } = Parser.getInputs(triggerData, ['poll', 'action', 'title']);
+        this.poll.title = title;
+        break;
+    }
+  }
+
+  /**
+   * Set up the poll object.
+   */
+   initializePoll() {
+     this.poll = {
+       broadcaster_id: this.channelId,
+       title: '',
+       choices: [],
+       duration: 120,
+       channel_points_voting_enabled: false,
+     }
+   }
 
   /**
    * Handle the prediction data.
