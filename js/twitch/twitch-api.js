@@ -25,10 +25,13 @@ class TwitchAPI {
       'channel:manage:raids',
       'channel:manage:redemptions',
       'channel:manage:vips',
+      'channel:moderate',
+      'channel:read:charity',
       'channel:read:goals',
-      'channel:read:vips',
+      'channel:read:hype_train',
       'channel:read:subscriptions',
       'clips:edit',
+      'moderation:read',
       'moderator:manage:announcements',
       'moderator:manage:banned_users',
       'moderator:manage:blocked_terms',
@@ -36,17 +39,14 @@ class TwitchAPI {
       'moderator:manage:chat_settings',
       'moderator:manage:shield_mode',
       'moderator:manage:shoutouts',
-      'moderation:read',
-      'moderator:read:blocked_terms',
       'moderator:read:chatters',
       'moderator:read:followers',
-      'moderator:read:shield_mode',
       'user:edit',
       'user:manage:chat_color',
       'user:manage:blocked_users',
       'user:read:follows'
     ].map(scope => encodeURIComponent(scope));
-    return `https://id.twitch.tv/oauth2/authorize?response_type=code&client_id=${this.clientId}&redirect_uri=http://localhost&scope=${scopes.join('+')}`;
+    return `https://id.twitch.tv/oauth2/authorize?response_type=code&client_id=${this.clientId}&redirect_uri=http://localhost&scope=${scopes.join('%20')}`;
   }
 
   async callTwitchApi({ method, endpoint, headers, params, data }) {
@@ -129,6 +129,17 @@ class TwitchAPI {
     }
     formBody = formBody.join("&");
 
+    if (Debug.Twitch || Debug.All) {
+      console.error("Making Twitch API call: " + JSON.stringify({
+        url: 'https://id.twitch.tv/oauth2/token',
+        data: formBody,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        type: 'POST',
+      }));
+    }
+
     await $.ajax({
       context: this,
       url: 'https://id.twitch.tv/oauth2/token',
@@ -138,6 +149,9 @@ class TwitchAPI {
       },
       type: 'POST',
       success: function(data) {
+        if (Debug.Twitch || Debug.All) {
+          console.error(`Received response for (https://id.twitch.tv/oauth2/token): ${JSON.stringify(data)}`);
+        }
         if (data.access_token && data.refresh_token) {
           console.error('Successfully refreshed your twitch token.')
           this.accessToken = data.access_token;
@@ -173,6 +187,17 @@ class TwitchAPI {
     }
     formBody = formBody.join("&");
 
+    if (Debug.Twitch || Debug.All) {
+      console.error("Making Twitch API call: " + JSON.stringify({
+        url: 'https://id.twitch.tv/oauth2/token',
+        data: formBody,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        type: 'POST',
+      }));
+    }
+
     return await new Promise((resolve) => {
       $.ajax({
         context: this,
@@ -182,13 +207,18 @@ class TwitchAPI {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
         type: 'POST',
-        success: async function(data) {
-          console.error(JSON.stringify(data));
-          if (data.access_token && data.refresh_token) {
+        success: async function(response) {
+          if (Debug.Twitch || Debug.All) {
+            console.error(`Received response for (https://id.twitch.tv/oauth2/token): ${JSON.stringify(response)}`);
+          }
+          if (response.access_token && response.refresh_token) {
             console.error('Successfully refreshed your twitch token.')
-            this.updateTokens(this.clientId, this.clientSecret, this.code, data.access_token, data.refresh_token);
-            this.accessToken = data.access_token;
-            this.refreshToken = data.refresh_token;
+
+            this.updateTokens(this.clientId, this.clientSecret, this.code, response.access_token, response.refresh_token);
+            this.accessToken = response.access_token;
+            this.refreshToken = response.refresh_token;
+            delete headers['Authorization'];
+
             var result = await this.callTwitchApi({ method, endpoint, headers, params, data });
             resolve(result);
           }

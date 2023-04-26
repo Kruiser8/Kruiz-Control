@@ -3,7 +3,7 @@ class TwitchHandler extends Handler {
    * Create a new Timer handler.
    */
   constructor() {
-    super('Twitch', ['OnChannelPoint', 'OnCommunityGoalStart', 'OnCommunityGoalProgress', 'OnCommunityGoalComplete', 'OnHypeTrainStart', 'OnHypeTrainEnd', 'OnHypeTrainLevel', 'OnHypeTrainProgress', 'OnHypeTrainConductor', 'OnHypeTrainCooldownExpired']);
+    super('Twitch', ['OnChannelPoint', 'OnCommunityGoalStart', 'OnCommunityGoalProgress', 'OnCommunityGoalComplete', 'OnHypeTrainStart', 'OnHypeTrainEnd', 'OnHypeTrainLevel', 'OnHypeTrainProgress', 'OnHypeTrainConductor', 'OnHypeTrainCooldownExpired', 'OnTwitchChannelUpdate', 'OnTwitchFollow', 'OnTwitchSub', 'OnTwitchSubEnd', 'OnTwitchSubGift', 'OnTwitchSubMessage', 'OnTwitchCheer', 'OnTwitchRaid', 'OnTwitchBan', 'OnTwitchTimeout', 'OnTwitchUnban', 'OnTwitchModAdd', 'OnTwitchModRemove', 'OnTwitchRedemption', 'OnTwitchRedemptionCompleted', 'OnTwitchRedemptionRejected', 'OnTwitchPoll', 'OnTwitchPollUpdate', 'OnTwitchPollEnd', 'OnTwitchPrediction', 'OnTwitchPredictionUpdate', 'OnTwitchPredictionLock', 'OnTwitchPredictionEnd', 'OnTwitchHypeTrainStart', 'OnTwitchHypeTrainProgress', 'OnTwitchHypeTrainEnd', 'OnTwitchCharityDonation', 'OnTwitchCharityStart', 'OnTwitchCharityProgress', 'OnTwitchCharityStop', 'OnTwitchShieldStart', 'OnTwitchShieldStop', 'OnTwitchShoutout', 'OnTwitchShoutoutReceived', 'OnTwitchGoalStart', 'OnTwitchGoalProgress', 'OnTwitchGoalComplete', 'OnTwitchGoalFailed', 'OnTwitchStreamStart', 'OnTwitchStreamStop']);
     this.rewards = [];
     this.rewardsTrigger = {};
     this.goals = [];
@@ -34,11 +34,16 @@ class TwitchHandler extends Handler {
       'BITS': ''
     }
 
+    this.eventSubs = [];
+    this.eventSubTrigger = {};
+
     this.init.bind(this);
     this.onMessage.bind(this);
     this.onChannelPointMessage.bind(this);
     this.onCommunityGoalMessage.bind(this);
     this.onHypeTrainMessage.bind(this);
+    this.onEventMessage.bind(this);
+    this.initializePoll.bind(this);
     this.initializePrediction.bind(this);
   }
 
@@ -51,17 +56,21 @@ class TwitchHandler extends Handler {
     this.channelId = channelId;
     this.initializePoll();
     this.initializePrediction();
-    var prevAccessToken = await IDBService.get('CUTWAT');
-    var prevRefreshToken = await IDBService.get('CUTWRT');
+    var accessToken = await IDBService.get('CUTWAT');
+    var refreshToken = await IDBService.get('CUTWRT');
 
-    this.api = new TwitchAPI(clientId, clientSecret, code, prevAccessToken, prevRefreshToken, this.updateTokens);
+    this.api = new TwitchAPI(clientId, clientSecret, code, accessToken, refreshToken, this.updateTokens);
     var initClientId = await IDBService.get('INTWC');
     var initClientSecret = await IDBService.get('INTWCS');
     var initCode = await IDBService.get('INTWCD');
     if (clientId != initClientId || clientSecret != initClientSecret || code != initCode) {
-      var { accessToken, refreshToken } = await this.api.requestAuthToken();
+      var { accessToken: newAccessToken, refreshToken: newRrefreshToken } = await this.api.requestAuthToken();
+      accessToken = newAccessToken;
+      refreshToken = newRrefreshToken;
       this.updateTokens(clientId, clientSecret, code, accessToken, refreshToken, true);
     }
+    await connectEventSubWebsocket(this.channelId, clientId, clientSecret, accessToken, refreshToken, this.onEventMessage.bind(this));
+    this.success();
   }
 
   updateTokens(clientId, clientSecret, code, accessToken, refreshToken, updateInitial) {
@@ -149,6 +158,12 @@ class TwitchHandler extends Handler {
           this.hypeTrainsTrigger[key].push(triggerId);
         }
         break;
+      default:
+        if (this.eventSubs.indexOf(trigger) === -1) {
+          this.eventSubs.push(trigger);
+          this.eventSubTrigger[trigger] = [];
+        }
+        this.eventSubTrigger[trigger].push(triggerId);
     }
     return;
   }
@@ -159,7 +174,7 @@ class TwitchHandler extends Handler {
    */
   onMessage(message) {
     if (Debug.All || Debug.Twitch) {
-      console.error('Twitch Message: ' + JSON.stringify(message));
+      console.error('Twitch PubSub Message: ' + JSON.stringify(message));
     }
     if (message.data) {
       var data = JSON.parse(message.data);
@@ -358,6 +373,581 @@ class TwitchHandler extends Handler {
       this.hypeTrainsTrigger['cooldown'].forEach(triggerId => {
         controller.handleData(triggerId);
       });
+    }
+  }
+
+  /**
+   * Handle a message from the twitch eventsub.
+   * @param {object} event twitch eventsub event
+   * @param {object} subscription twitch eventsub subscription
+   */
+  onEventMessage(event, subscription) {
+    if (Debug.All || Debug.Twitch) {
+      console.error('Twitch EventSub Event: ' + JSON.stringify(event));
+      console.error('Twitch EventSub Subscription: ' + JSON.stringify(subscription));
+    }
+
+    switch (subscription.type) {
+      case 'channel.update':
+        this.eventSubTrigger['ontwitchchannelupdate'].forEach(triggerId => {
+          controller.handleData(triggerId, {
+            data: event,
+            name: event.broadcaster_user_name,
+            game: event.category_name,
+            title: event.title,
+          });
+        });
+        break;
+      case 'channel.follow':
+        this.eventSubTrigger['ontwitchfollow'].forEach(triggerId => {
+          controller.handleData(triggerId, {
+            data: event,
+            id: event.user_id,
+            login: event.user_login,
+            name: event.user_name
+          });
+        });
+        break;
+      case 'channel.subscribe':
+        this.eventSubTrigger['ontwitchsub'].forEach(triggerId => {
+          controller.handleData(triggerId, {
+            data: event,
+            id: event.user_id,
+            login: event.user_login,
+            name: event.user_name,
+            tier: event.tier === 'Prime' ? 'Prime' : (parseInt(event.tier) / 1000),
+            is_gift: event.is_gift
+          });
+        });
+        break;
+      case 'channel.subscribe.end':
+        this.eventSubTrigger['ontwitchsubend'].forEach(triggerId => {
+          controller.handleData(triggerId, {
+            data: event,
+            id: event.user_id,
+            login: event.user_login,
+            name: event.user_name,
+            tier: event.tier === 'Prime' ? 'Prime' : (parseInt(event.tier) / 1000),
+            is_gift: event.is_gift
+          });
+        });
+        break;
+      case 'channel.subscribe.gift':
+        this.eventSubTrigger['ontwitchsubgift'].forEach(triggerId => {
+          controller.handleData(triggerId, {
+            data: event,
+            id: event.user_id,
+            login: event.user_login,
+            name: event.user_name,
+            tier: (parseInt(event.tier) / 1000),
+            amount: event.total,
+            total_gifts: event.cumulative_total,
+            is_anonymous: event.is_anonymous
+          });
+        });
+        break;
+      case 'channel.subscribe.message':
+        this.eventSubTrigger['ontwitchsubmessage'].forEach(triggerId => {
+          controller.handleData(triggerId, {
+            data: event,
+            id: event.user_id,
+            login: event.user_login,
+            name: event.user_name,
+            tier: (parseInt(event.tier) / 1000),
+            message: event.message.text,
+            months: event.cumulative_months,
+            streak: event.streak_months
+          });
+        });
+        break;
+      case 'channel.cheer':
+        this.eventSubTrigger['ontwitchcheer'].forEach(triggerId => {
+          controller.handleData(triggerId, {
+            data: event,
+            id: event.user_id,
+            login: event.user_login,
+            name: event.user_name,
+            is_anonymous: event.is_anonymous,
+            message: event.message,
+            amount: events.bits
+          });
+        });
+        break;
+      case 'channel.raid':
+        this.eventSubTrigger['ontwitchraid'].forEach(triggerId => {
+          controller.handleData(triggerId, {
+            data: event,
+            id: event.from_broadcaster_user_id,
+            login: event.from_broadcaster_user_login,
+            name: event.from_broadcaster_user_name,
+            raiders: events.viewers
+          });
+        });
+        break;
+      case 'channel.ban':
+        if (event.is_permanent) {
+          this.eventSubTrigger['ontwitchban'].forEach(triggerId => {
+            controller.handleData(triggerId, {
+              data: event,
+              id: event.user_id,
+              login: event.user_login,
+              name: event.user_name,
+              mod: event.moderator_user_name,
+              reason: event.reason
+            });
+          });
+        } else {
+          this.eventSubTrigger['ontwitchtimeout'].forEach(triggerId => {
+            controller.handleData(triggerId, {
+              data: event,
+              id: event.user_id,
+              login: event.user_login,
+              name: event.user_name,
+              mod: event.moderator_user_name,
+              reason: event.reason,
+            });
+          });
+        }
+        break;
+      case 'channel.unban':
+        this.eventSubTrigger['ontwitchunban'].forEach(triggerId => {
+          controller.handleData(triggerId, {
+            data: event,
+            id: event.user_id,
+            login: event.user_login,
+            name: event.user_name,
+            mod: event.moderator_user_name
+          });
+        });
+        break;
+      case 'channel.moderator.add':
+        this.eventSubTrigger['ontwitchmodadd'].forEach(triggerId => {
+          controller.handleData(triggerId, {
+            data: event,
+            id: event.user_id,
+            login: event.user_login,
+            name: event.user_name
+          });
+        });
+        break;
+      case 'channel.moderator.remove':
+        this.eventSubTrigger['ontwitchmodremove'].forEach(triggerId => {
+          controller.handleData(triggerId, {
+            data: event,
+            id: event.user_id,
+            login: event.user_login,
+            name: event.user_name
+          });
+        });
+        break;
+      case 'channel.channel_points_custom_reward_redemption.add':
+        this.eventSubTrigger['ontwitchredemption'].forEach(triggerId => {
+          controller.handleData(triggerId, {
+            data: event,
+            id: event.user_id,
+            login: event.user_login,
+            name: event.user_name,
+            redemption_id: event.id,
+            reward: event.reward.title
+          });
+        });
+        break;
+      case 'channel.channel_points_custom_reward_redemption.update':
+        if (event.status === 'fulfilled') {
+          this.eventSubTrigger['ontwitchredemptioncompleted'].forEach(triggerId => {
+            controller.handleData(triggerId, {
+              data: event,
+              id: event.user_id,
+              login: event.user_login,
+              name: event.user_name,
+              redemption_id: event.id,
+              reward: event.reward.title
+            });
+          });
+        } else if (event.status === 'cancelled') {
+          this.eventSubTrigger['ontwitchredemptionrejected'].forEach(triggerId => {
+            controller.handleData(triggerId, {
+              data: event,
+              id: event.user_id,
+              login: event.user_login,
+              name: event.user_name,
+              redemption_id: event.id,
+              reward: event.reward.title
+            });
+          });
+        }
+        break;
+      case 'channel.poll.begin':
+        this.eventSubTrigger['ontwitchpoll'].forEach(triggerId => {
+          var choiceArgs = {};
+          for (var i = 0; i < event.choices.length; i++) {
+            choiceArgs[`choice_id${i+1}`] = event.choices[i].id;
+            choiceArgs[`choice${i+1}`] = event.choices[i].title;
+          }
+          controller.handleData(triggerId, {
+            data: event,
+            title: event.title,
+            choice_count: event.choices.length,
+            bits_enabled: event.bits_voting.is_enabled,
+            bits_amount: event.bits_voting.amount_per_vote,
+            points_enabled: event.channel_points_voting.is_enabled,
+            points_amount: event.channel_points_voting.amount_per_vote,
+            ...choiceArgs
+          });
+        });
+        break;
+      case 'channel.poll.progress':
+        this.eventSubTrigger['ontwitchpollupdate'].forEach(triggerId => {
+          var choiceArgs = {};
+          for (var i = 0; i < event.choices.length; i++) {
+            choiceArgs[`choice_id${i+1}`] = event.choices[i].id;
+            choiceArgs[`choice${i+1}`] = event.choices[i].title;
+            choiceArgs[`choice_votes${i+1}`] = event.choices[i].votes;
+          }
+          controller.handleData(triggerId, {
+            data: event,
+            title: event.title,
+            choice_count: event.choices.length,
+            bits_enabled: event.bits_voting.is_enabled,
+            bits_amount: event.bits_voting.amount_per_vote,
+            points_enabled: event.channel_points_voting.is_enabled,
+            points_amount: event.channel_points_voting.amount_per_vote,
+            ...choiceArgs
+          });
+        });
+        break;
+      case 'channel.poll.end':
+        this.eventSubTrigger['ontwitchpollend'].forEach(triggerId => {
+          var choiceArgs = { votes: -1 };
+          for (var i = 0; i < event.choices.length; i++) {
+            choiceArgs[`choice_id${i+1}`] = event.choices[i].id;
+            choiceArgs[`choice${i+1}`] = event.choices[i].title;
+            choiceArgs[`choice_votes${i+1}`] = event.choices[i].votes;
+            if (event.choices[i].votes > choiceArgs.votes) {
+              choiceArgs.winner = event.choices[i].title;
+              choiceArgs.votes = event.choices[i].votes;
+            }
+          }
+          controller.handleData(triggerId, {
+            data: event,
+            title: event.title,
+            choice_count: event.choices.length,
+            bits_enabled: event.bits_voting.is_enabled,
+            bits_amount: event.bits_voting.amount_per_vote,
+            points_enabled: event.channel_points_voting.is_enabled,
+            points_amount: event.channel_points_voting.amount_per_vote,
+            ...choiceArgs
+          });
+        });
+        break;
+      case 'channel.prediction.begin':
+        this.eventSubTrigger['ontwitchprediction'].forEach(triggerId => {
+          var outcomeArgs = {};
+          for (var i = 0; i < event.outcomes.length; i++) {
+            outcomeArgs[`outcome_id${i+1}`] = event.outcomes[i].id;
+            outcomeArgs[`outcome_color${i+1}`] = event.outcomes[i].color;
+            outcomeArgs[`outcome${i+1}`] = event.outcomes[i].title;
+          }
+          controller.handleData(triggerId, {
+            data: event,
+            title: event.title,
+            outcome_count: event.outcomes.length,
+            ...outcomeArgs
+          });
+        });
+        break;
+      case 'channel.prediction.progress':
+        this.eventSubTrigger['ontwitchpredictionupdate'].forEach(triggerId => {
+          var outcomeArgs = {};
+          for (var i = 0; i < event.outcomes.length; i++) {
+            outcomeArgs[`outcome_id${i+1}`] = event.outcomes[i].id;
+            outcomeArgs[`outcome_color${i+1}`] = event.outcomes[i].color;
+            outcomeArgs[`outcome_points${i+1}`] = event.outcomes[i].channel_points;
+            outcomeArgs[`outcome_users${i+1}`] = event.outcomes[i].users;
+            outcomeArgs[`outcome${i+1}`] = event.outcomes[i].title;
+          }
+          controller.handleData(triggerId, {
+            data: event,
+            title: event.title,
+            outcome_count: event.outcomes.length,
+            ...outcomeArgs
+          });
+        });
+        break;
+      case 'channel.prediction.lock':
+        this.eventSubTrigger['ontwitchpredictionlock'].forEach(triggerId => {
+          var outcomeArgs = {};
+          for (var i = 0; i < event.outcomes.length; i++) {
+            outcomeArgs[`outcome_id${i+1}`] = event.outcomes[i].id;
+            outcomeArgs[`outcome_color${i+1}`] = event.outcomes[i].color;
+            outcomeArgs[`outcome_points${i+1}`] = event.outcomes[i].channel_points;
+            outcomeArgs[`outcome_users${i+1}`] = event.outcomes[i].users;
+            outcomeArgs[`outcome${i+1}`] = event.outcomes[i].title;
+          }
+          controller.handleData(triggerId, {
+            data: event,
+            title: event.title,
+            outcome_count: event.outcomes.length,
+            ...outcomeArgs
+          });
+        });
+        break;
+      case 'channel.prediction.end':
+        if (event.status === 'resolved') {
+          this.eventSubTrigger['ontwitchpredictionend'].forEach(triggerId => {
+            var outcomeArgs = {};
+            for (var i = 0; i < event.outcomes.length; i++) {
+              outcomeArgs[`outcome_id${i+1}`] = event.outcomes[i].id;
+              outcomeArgs[`outcome_color${i+1}`] = event.outcomes[i].color;
+              outcomeArgs[`outcome_points${i+1}`] = event.outcomes[i].channel_points;
+              outcomeArgs[`outcome_users${i+1}`] = event.outcomes[i].users;
+              outcomeArgs[`outcome${i+1}`] = event.outcomes[i].title;
+
+              if (event.outcomes[i].id === event.winning_outcome_id) {
+                outcomeArgs.result = event.outcomes[i].title;
+              }
+            }
+            controller.handleData(triggerId, {
+              data: event,
+              title: event.title,
+              outcome_count: event.outcomes.length,
+              ...outcomeArgs
+            });
+          });
+        }
+        break;
+      case 'channel.hype_train.begin':
+        this.eventSubTrigger['ontwitchhypetrainstart'].forEach(triggerId => {
+          var conductorArgs = {};
+          if (event.top_contributions) {
+            event.top_contributions.forEach(contribution => {
+              if (contribution.type === 'bits') {
+                conductorArgs.bit_conductor = contribution.user_name;
+              } else if (contribution.type === 'subscription') {
+                conductorArgs.sub_conductor = contribution.user_name;
+              }
+            })
+          }
+          controller.handleData(triggerId, {
+            data: event,
+            level: event.level,
+            progress: event.total,
+            goal: event.goal,
+            ...conductorArgs
+          });
+        });
+        break;
+      case 'channel.hype_train.progress':
+        this.eventSubTrigger['ontwitchhypetrainprogress'].forEach(triggerId => {
+          var conductorArgs = {};
+          if (event.top_contributions) {
+            event.top_contributions.forEach(contribution => {
+              if (contribution.type === 'bits') {
+                conductorArgs.bit_conductor = contribution.user_name;
+              } else if (contribution.type === 'subscription') {
+                conductorArgs.sub_conductor = contribution.user_name;
+              }
+            })
+          }
+          controller.handleData(triggerId, {
+            data: event,
+            level: event.level,
+            progress: event.total,
+            goal: event.goal,
+            ...conductorArgs
+          });
+        });
+        break;
+      case 'channel.hype_train.end':
+        this.eventSubTrigger['ontwitchhypetrainend'].forEach(triggerId => {
+          var conductorArgs = {};
+          if (event.top_contributions) {
+            event.top_contributions.forEach(contribution => {
+              if (contribution.type === 'bits') {
+                conductorArgs.bit_conductor = contribution.user_name;
+              } else if (contribution.type === 'subscription') {
+                conductorArgs.sub_conductor = contribution.user_name;
+              }
+            })
+          }
+          controller.handleData(triggerId, {
+            data: event,
+            level: event.level,
+            ...conductorArgs
+          });
+        });
+        break;
+      case 'channel.charity_campaign.donate':
+        this.eventSubTrigger['ontwitchcharitydonation'].forEach(triggerId => {
+          var amount = event.amount.decimal_places > 0
+              ? event.amount.value / Math.pow(10, event.amount.decimal_places)
+              : event.amount.value;
+          controller.handleData(triggerId, {
+            data: event,
+            id: event.user_id,
+            login: event.user_login,
+            name: event.user_name,
+            charity: event.charity_name,
+            description: event.charity_description,
+            website: event.charity_website,
+            amount: amount
+          });
+        });
+        break;
+      case 'channel.charity_campaign.start':
+        this.eventSubTrigger['ontwitchcharitystart'].forEach(triggerId => {
+          var current = event.current.decimal_places > 0
+              ? event.current.value / Math.pow(10, event.current.decimal_places)
+              : event.current.value;
+          var target = event.target.decimal_places > 0
+              ? event.target.value / Math.pow(10, event.target.decimal_places)
+              : event.target.value;
+          controller.handleData(triggerId, {
+            data: event,
+            charity: event.charity_name,
+            description: event.charity_description,
+            website: event.charity_website,
+            current: current,
+            target: target
+          });
+        });
+        break;
+      case 'channel.charity_campaign.progress':
+        this.eventSubTrigger['ontwitchcharityprogress'].forEach(triggerId => {
+          var current = event.current.decimal_places > 0
+              ? event.current.value / Math.pow(10, event.current.decimal_places)
+              : event.current.value;
+          var target = event.target.decimal_places > 0
+              ? event.target.value / Math.pow(10, event.target.decimal_places)
+              : event.target.value;
+          controller.handleData(triggerId, {
+            data: event,
+            charity: event.charity_name,
+            description: event.charity_description,
+            website: event.charity_website,
+            current: current,
+            target: target
+          });
+        });
+        break;
+      case 'channel.charity_campaign.stop':
+        this.eventSubTrigger['ontwitchcharitystop'].forEach(triggerId => {
+          var current = event.current.decimal_places > 0
+              ? event.current.value / Math.pow(10, event.current.decimal_places)
+              : event.current.value;
+          var target = event.target.decimal_places > 0
+              ? event.target.value / Math.pow(10, event.target.decimal_places)
+              : event.target.value;
+          controller.handleData(triggerId, {
+            data: event,
+            charity: event.charity_name,
+            description: event.charity_description,
+            website: event.charity_website,
+            current: current,
+            target: target
+          });
+        });
+        break;
+      case 'channel.shield_mode.begin':
+        this.eventSubTrigger['ontwitchshieldstart'].forEach(triggerId => {
+          controller.handleData(triggerId, {
+            data: event,
+            mod: event.moderator_user_name
+          });
+        });
+        break;
+      case 'channel.shield_mode.end':
+        this.eventSubTrigger['ontwitchshieldstop'].forEach(triggerId => {
+          controller.handleData(triggerId, {
+            data: event,
+            mod: event.moderator_user_name
+          });
+        });
+        break;
+      case 'channel.shoutout.create':
+        this.eventSubTrigger['ontwitchshoutout'].forEach(triggerId => {
+          controller.handleData(triggerId, {
+            data: event,
+            mod: event.moderator_user_name,
+            id: event.to_broadcaster_user_id,
+            login: event.to_broadcaster_user_login,
+            name: event.to_broadcaster_user_name,
+            viewers: event.viewer_count
+          });
+        });
+        break;
+      case 'channel.shoutout.receive':
+        this.eventSubTrigger['ontwitchshoutoutreceived'].forEach(triggerId => {
+          controller.handleData(triggerId, {
+            data: event,
+            id: event.from_broadcaster_user_id,
+            login: event.from_broadcaster_user_login,
+            name: event.from_broadcaster_user_name,
+            viewers: event.viewer_count
+          });
+        });
+        break;
+      case 'channel.goal.begin':
+        this.eventSubTrigger['ontwitchgoalstart'].forEach(triggerId => {
+          controller.handleData(triggerId, {
+            data: event,
+            type: event.type,
+            description: event.description,
+            current: event.current_amount,
+            target: event.target_amount
+          });
+        });
+        break;
+      case 'channel.goal.progress':
+        this.eventSubTrigger['ontwitchgoalprogress'].forEach(triggerId => {
+          controller.handleData(triggerId, {
+            data: event,
+            type: event.type,
+            description: event.description,
+            current: event.current_amount,
+            target: event.target_amount
+          });
+        });
+        break;
+      case 'channel.goal.end':
+        if (event.is_achieved) {
+          this.eventSubTrigger['ontwitchgoalcomplete'].forEach(triggerId => {
+            controller.handleData(triggerId, {
+              data: event,
+              type: event.type,
+              description: event.description,
+              current: event.current_amount,
+              target: event.target_amount,
+            });
+          });
+        } else {
+          this.eventSubTrigger['ontwitchgoalfailed'].forEach(triggerId => {
+            controller.handleData(triggerId, {
+              data: event,
+              type: event.type,
+              description: event.description,
+              current: event.current_amount,
+              target: event.target_amount,
+            });
+          });
+        }
+        break;
+      case 'stream.online':
+        if (event.type === 'live') {
+          this.eventSubTrigger['ontwitchstreamstart'].forEach(triggerId => {
+            controller.handleData(triggerId, {
+              data: event
+            });
+          });
+        }
+        break;
+      case 'stream.offline':
+        this.eventSubTrigger['ontwitchstreamstop'].forEach(triggerId => {
+          controller.handleData(triggerId, {
+            data: event
+          });
+        });
+        break;
     }
   }
 
@@ -758,10 +1348,10 @@ class TwitchHandler extends Handler {
           is_subscriber: response?.data && response.data.length > 0,
           is_gifted: response.data[0].is_gift,
           gifter: response.data[0].gifter_name,
-          tier: Math.round(response.data[0].tier / 1000),
+          tier: response.data[0].tier === 'Prime' ? 'Prime' : (parseInt(response.data[0].tier) / 1000),
         }
         break;
-      case 'marker':
+      case '**marker':
         var { description = '' } = Parser.getInputs(triggerData, ['action', 'description'], false, 1);
         await this.api.createStreamMarker(this.channelId, description);
         break;
@@ -876,7 +1466,7 @@ class TwitchHandler extends Handler {
 
         await this.api.updateShieldModeStatus(this.channelId, this.channelId, status);
         break;
-      case 'shoutout':
+      case '**shoutout':
         var { user } = Parser.getInputs(triggerData, ['action', 'user']);
         var user_id = await getIdFromUser(user);
         await this.api.sendShoutout(this.channelId, user_id, this.channelId);
@@ -1115,17 +1705,6 @@ class TwitchHandler extends Handler {
           });
         }
         break;
-      case 'pointspervote':
-        var { points } = Parser.getInputs(triggerData, ['poll', 'action', 'points']);
-
-        if (!isNumeric(points)) {
-          console.error(`Invalid points provided to Twitch Poll PointsPerVote. Expected a number, found ${points}.`)
-          return;
-        }
-
-        this.poll.channel_points_voting_enabled = true;
-        this.poll.channel_points_per_vote = clamp(parseInt(points), 1, 1000000);
-        break;
       case 'choice':
         var { choices } = Parser.getInputs(triggerData, ['poll', 'action', 'choices'], true);
 
@@ -1153,6 +1732,17 @@ class TwitchHandler extends Handler {
             status: 'TERMINATED'
           });
         }
+        break;
+      case 'pointspervote':
+        var { points } = Parser.getInputs(triggerData, ['poll', 'action', 'points']);
+
+        if (!isNumeric(points)) {
+          console.error(`Invalid points provided to Twitch Poll PointsPerVote. Expected a number, found ${points}.`)
+          return;
+        }
+
+        this.poll.channel_points_voting_enabled = true;
+        this.poll.channel_points_per_vote = clamp(parseInt(points), 1, 1000000);
         break;
       case 'time':
         var { time } = Parser.getInputs(triggerData, ['poll', 'action', 'time']);

@@ -22,7 +22,7 @@ function connectPubSubWebsocket(channelId, onMessage) {
 				],
 			}
 		};
-		// Send authentication payload to Streamlabs Chatbot
+		// Send authentication payload to Twitch PubSub
 		socket.send(JSON.stringify(auth));
 	};
 

@@ -245,6 +245,11 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnCommunityGoalComplete](#oncommunitygoalcomplete)
     + [OnCommunityGoalProgress](#oncommunitygoalprogress)
     + [OnCommunityGoalStart](#oncommunitygoalstart)
+    + [OnTwitchBan](#ontwitchchannelupdate)
+    + [OnTwitchChannelUpdate](#ontwitchchannelupdate)
+    + [OnTwitchFollow](#ontwitchfollow)
+    + [OnTwitchTimeout](#ontwitchtimeout)
+    + [OnTwitchUnban](#ontwitchunban)
   * [Actions](#twitch-actions)
     + [Twitch AddBlockedTerm](#twitch-addblockedterm)
     + [Twitch Announcement](#twitch-announcement)
@@ -2989,6 +2994,96 @@ _Note: Default channel point rewards are not supported: `Unlock a Random Sub Emo
 
 ***
 
+#### OnTwitchBan
+| | |
+------------ | -------------
+**Info** | Triggers when a viewer is banned from the channel.
+**Format** | `OnTwitchBan`
+**Example** | `OnTwitchBan`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user id for the user who was banned.
+**login** | The user login for the user who was banned.
+**name** | The user display name for the user who was banned.
+**mod** | The user name of the issuer of the ban.
+**reason** | The reason given for the ban.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTwitchChannelUpdate
+| | |
+------------ | -------------
+**Info** | Triggers when a broadcaster updates their channel name, title, or category (game).
+**Format** | `OnTwitchChannelUpdate`
+**Example** | `OnTwitchChannelUpdate`
+
+##### Parameters
+| | |
+------------ | -------------
+**game** | The name of the category (game) of the channel.
+**name** | The broadcaster's name.
+**title** | The broadcaster's stream title.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTwitchFollow
+| | |
+------------ | -------------
+**Info** | Triggers when the broadcaster receives a follow.
+**Format** | `OnTwitchFollow`
+**Example** | `OnTwitchFollow`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user ID for the user now following.
+**login** | The user login for the user now following.
+**name** | The user display name for the user now following.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTwitchTimeout
+| | |
+------------ | -------------
+**Info** | Triggers when a viewer is timed out from the channel.
+**Format** | `OnTwitchTimeout`
+**Example** | `OnTwitchTimeout`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user id for the user who was timed out.
+**login** | The user login for the user who was timed out.
+**name** | The user display name for the user who was timed out.
+**mod** | The user name of the issuer of the timeout.
+**reason** | The reason given for the timeout.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTwitchUnban
+| | |
+------------ | -------------
+**Info** | Triggers when a viewer is unbanned from the channel.
+**Format** | `OnTwitchUnban`
+**Example** | `OnTwitchUnban`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user id for the user who was unbanned.
+**login** | The user login for the user who was unbanned.
+**name** | The user display name for the user who was unbanned.
+**mod** | The user name of the issuer of the unban.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
 ### Twitch Actions
 
 #### Twitch AddBlockedTerm
@@ -3204,6 +3299,8 @@ Param Add i 1
 **Format** | `Twitch Complete <reward_id> <redemption_id>`
 **Example** | `Twitch Complete 92af127c-7326-4483-a52b-b0da0be61c01 17fa2df1-ad76-4804-bfa5-a40ef63efe63`
 **Example using OnChannelPoint Parameters** | `Twitch Complete {reward_id} {redemption_id}`
+
+_Note: Due to a Twitch API restriction, in order for Kruiz Control to interact with Channel Point rewards, Kruiz Control has to create the reward. Use [Twitch Copy](#twitch-copy) to create duplicates of existing channel point rewards._
 
 ***
 
@@ -3644,6 +3741,8 @@ _Note: For a complete prediction example, see [Twitch Prediction Create](#twitch
 **Example** | `Twitch Reject 92af127c-7326-4483-a52b-b0da0be61c01 17fa2df1-ad76-4804-bfa5-a40ef63efe63`
 **Example using OnChannelPoint Parameters** | `Twitch Reject {reward_id} {redemption_id}`
 
+_Note: Due to a Twitch API restriction, in order for Kruiz Control to interact with Channel Point rewards, Kruiz Control has to create the reward. Use [Twitch Copy](#twitch-copy) to create duplicates of existing channel point rewards._
+
 ***
 
 #### Twitch RemoveBlockedTerm
@@ -3662,6 +3761,8 @@ _Note: For a complete prediction example, see [Twitch Prediction Create](#twitch
 **Info** | Used to update the status of a channel point reward. `<reward>` is the title of the reward to update. `<off/on/pause/toggle/unpause>` are the status options. `off`, `on`, and `toggle` enable or disable the reward. `pause` and `unpause` will pause or resume the ability for viewers to redeem the reward.
 **Format** | `Twitch Reward <reward> <off/on/pause/toggle/unpause>`
 **Example** | `Twitch Reward HeadPat off`
+
+_Note: Due to a Twitch API restriction, in order for Kruiz Control to interact with Channel Point rewards, Kruiz Control has to create the reward. Use [Twitch Copy](#twitch-copy) to create duplicates of existing channel point rewards._
 
 ***
 
