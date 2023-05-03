@@ -3,7 +3,7 @@ class TwitchHandler extends Handler {
    * Create a new Timer handler.
    */
   constructor() {
-    super('Twitch', ['OnChannelPoint', 'OnCommunityGoalStart', 'OnCommunityGoalProgress', 'OnCommunityGoalComplete', 'OnHypeTrainStart', 'OnHypeTrainEnd', 'OnHypeTrainLevel', 'OnHypeTrainProgress', 'OnHypeTrainConductor', 'OnHypeTrainCooldownExpired', 'OnTwitchChannelUpdate', 'OnTwitchFollow', 'OnTwitchSub', 'OnTwitchSubEnd', 'OnTwitchSubGift', 'OnTwitchSubMessage', 'OnTwitchCheer', 'OnTwitchRaid', 'OnTwitchBan', 'OnTwitchTimeout', 'OnTwitchUnban', 'OnTwitchModAdd', 'OnTwitchModRemove', 'OnTwitchRedemption', 'OnTwitchRedemptionCompleted', 'OnTwitchRedemptionRejected', 'OnTwitchPoll', 'OnTwitchPollUpdate', 'OnTwitchPollEnd', 'OnTwitchPrediction', 'OnTwitchPredictionUpdate', 'OnTwitchPredictionLock', 'OnTwitchPredictionEnd', 'OnTwitchHypeTrainStart', 'OnTwitchHypeTrainProgress', 'OnTwitchHypeTrainEnd', 'OnTwitchCharityDonation', 'OnTwitchCharityStart', 'OnTwitchCharityProgress', 'OnTwitchCharityStop', 'OnTwitchShieldStart', 'OnTwitchShieldStop', 'OnTwitchShoutout', 'OnTwitchShoutoutReceived', 'OnTwitchGoalStart', 'OnTwitchGoalProgress', 'OnTwitchGoalComplete', 'OnTwitchGoalFailed', 'OnTwitchStreamStart', 'OnTwitchStreamStop']);
+    super('Twitch', ['OnChannelPoint', 'OnCommunityGoalStart', 'OnCommunityGoalProgress', 'OnCommunityGoalComplete', 'OnHypeTrainStart', 'OnHypeTrainEnd', 'OnHypeTrainLevel', 'OnHypeTrainProgress', 'OnHypeTrainConductor', 'OnHypeTrainCooldownExpired', 'OnTWChannelUpdate', 'OnTWFollow', 'OnTWSub', 'OnTWSubEnd', 'OnTWSubGift', 'OnTWSubMessage', 'OnTWCheer', 'OnTWRaid', 'OnTWBan', 'OnTWTimeout', 'OnTWUnban', 'OnTWModAdd', 'OnTWModRemove', 'OnTWChannelPoint', 'OnTWChannelPointCompleted', 'OnTWChannelPointRejected', 'OnTWPoll', 'OnTWPollUpdate', 'OnTWPollEnd', 'OnTWPrediction', 'OnTWPredictionUpdate', 'OnTWPredictionLock', 'OnTWPredictionEnd', 'OnTWHypeTrainStart', 'OnTWHypeTrainProgress', 'OnTWHypeTrainEnd', 'OnTWCharityDonation', 'OnTWCharityStart', 'OnTWCharityProgress', 'OnTWCharityStop', 'OnTWShieldStart', 'OnTWShieldStop', 'OnTWShoutout', 'OnTWShoutoutReceived', 'OnTWGoalStart', 'OnTWGoalProgress', 'OnTWGoalComplete', 'OnTWGoalFailed', 'OnTWStreamStart', 'OnTWStreamStop']);
     this.rewards = [];
     this.rewardsTrigger = {};
     this.goals = [];
@@ -389,7 +389,7 @@ class TwitchHandler extends Handler {
 
     switch (subscription.type) {
       case 'channel.update':
-        this.eventSubTrigger['ontwitchchannelupdate'].forEach(triggerId => {
+        this.eventSubTrigger['ontwchannelupdate'].forEach(triggerId => {
           controller.handleData(triggerId, {
             data: event,
             name: event.broadcaster_user_name,
@@ -399,7 +399,7 @@ class TwitchHandler extends Handler {
         });
         break;
       case 'channel.follow':
-        this.eventSubTrigger['ontwitchfollow'].forEach(triggerId => {
+        this.eventSubTrigger['ontwfollow'].forEach(triggerId => {
           controller.handleData(triggerId, {
             data: event,
             id: event.user_id,
@@ -409,7 +409,7 @@ class TwitchHandler extends Handler {
         });
         break;
       case 'channel.subscribe':
-        this.eventSubTrigger['ontwitchsub'].forEach(triggerId => {
+        this.eventSubTrigger['ontwsub'].forEach(triggerId => {
           controller.handleData(triggerId, {
             data: event,
             id: event.user_id,
@@ -421,7 +421,7 @@ class TwitchHandler extends Handler {
         });
         break;
       case 'channel.subscribe.end':
-        this.eventSubTrigger['ontwitchsubend'].forEach(triggerId => {
+        this.eventSubTrigger['ontwsubend'].forEach(triggerId => {
           controller.handleData(triggerId, {
             data: event,
             id: event.user_id,
@@ -433,7 +433,7 @@ class TwitchHandler extends Handler {
         });
         break;
       case 'channel.subscribe.gift':
-        this.eventSubTrigger['ontwitchsubgift'].forEach(triggerId => {
+        this.eventSubTrigger['ontwsubgift'].forEach(triggerId => {
           controller.handleData(triggerId, {
             data: event,
             id: event.user_id,
@@ -447,7 +447,7 @@ class TwitchHandler extends Handler {
         });
         break;
       case 'channel.subscribe.message':
-        this.eventSubTrigger['ontwitchsubmessage'].forEach(triggerId => {
+        this.eventSubTrigger['ontwsubmessage'].forEach(triggerId => {
           controller.handleData(triggerId, {
             data: event,
             id: event.user_id,
@@ -461,7 +461,7 @@ class TwitchHandler extends Handler {
         });
         break;
       case 'channel.cheer':
-        this.eventSubTrigger['ontwitchcheer'].forEach(triggerId => {
+        this.eventSubTrigger['ontwcheer'].forEach(triggerId => {
           controller.handleData(triggerId, {
             data: event,
             id: event.user_id,
@@ -474,7 +474,7 @@ class TwitchHandler extends Handler {
         });
         break;
       case 'channel.raid':
-        this.eventSubTrigger['ontwitchraid'].forEach(triggerId => {
+        this.eventSubTrigger['ontwraid'].forEach(triggerId => {
           controller.handleData(triggerId, {
             data: event,
             id: event.from_broadcaster_user_id,
@@ -486,7 +486,7 @@ class TwitchHandler extends Handler {
         break;
       case 'channel.ban':
         if (event.is_permanent) {
-          this.eventSubTrigger['ontwitchban'].forEach(triggerId => {
+          this.eventSubTrigger['ontwban'].forEach(triggerId => {
             controller.handleData(triggerId, {
               data: event,
               id: event.user_id,
@@ -497,7 +497,7 @@ class TwitchHandler extends Handler {
             });
           });
         } else {
-          this.eventSubTrigger['ontwitchtimeout'].forEach(triggerId => {
+          this.eventSubTrigger['ontwtimeout'].forEach(triggerId => {
             controller.handleData(triggerId, {
               data: event,
               id: event.user_id,
@@ -510,7 +510,7 @@ class TwitchHandler extends Handler {
         }
         break;
       case 'channel.unban':
-        this.eventSubTrigger['ontwitchunban'].forEach(triggerId => {
+        this.eventSubTrigger['ontwunban'].forEach(triggerId => {
           controller.handleData(triggerId, {
             data: event,
             id: event.user_id,
@@ -521,7 +521,7 @@ class TwitchHandler extends Handler {
         });
         break;
       case 'channel.moderator.add':
-        this.eventSubTrigger['ontwitchmodadd'].forEach(triggerId => {
+        this.eventSubTrigger['ontwmodadd'].forEach(triggerId => {
           controller.handleData(triggerId, {
             data: event,
             id: event.user_id,
@@ -531,7 +531,7 @@ class TwitchHandler extends Handler {
         });
         break;
       case 'channel.moderator.remove':
-        this.eventSubTrigger['ontwitchmodremove'].forEach(triggerId => {
+        this.eventSubTrigger['ontwmodremove'].forEach(triggerId => {
           controller.handleData(triggerId, {
             data: event,
             id: event.user_id,
@@ -541,52 +541,57 @@ class TwitchHandler extends Handler {
         });
         break;
       case 'channel.channel_points_custom_reward_redemption.add':
-        this.eventSubTrigger['ontwitchredemption'].forEach(triggerId => {
+        this.eventSubTrigger['ontwchannelpoint'].forEach(triggerId => {
           controller.handleData(triggerId, {
             data: event,
             id: event.user_id,
             login: event.user_login,
             name: event.user_name,
+            reward: event.reward.title,
             redemption_id: event.id,
-            reward: event.reward.title
+            reward_id: event.reward.id
           });
         });
         break;
       case 'channel.channel_points_custom_reward_redemption.update':
         if (event.status === 'fulfilled') {
-          this.eventSubTrigger['ontwitchredemptioncompleted'].forEach(triggerId => {
+          this.eventSubTrigger['ontwchannelpointcompleted'].forEach(triggerId => {
             controller.handleData(triggerId, {
               data: event,
               id: event.user_id,
               login: event.user_login,
               name: event.user_name,
+              reward: event.reward.title,
               redemption_id: event.id,
-              reward: event.reward.title
+              reward_id: event.reward.id
             });
           });
-        } else if (event.status === 'cancelled') {
-          this.eventSubTrigger['ontwitchredemptionrejected'].forEach(triggerId => {
+        } else if (event.status === 'canceled') {
+          this.eventSubTrigger['ontwchannelpointrejected'].forEach(triggerId => {
             controller.handleData(triggerId, {
               data: event,
               id: event.user_id,
               login: event.user_login,
               name: event.user_name,
+              reward: event.reward.title,
               redemption_id: event.id,
-              reward: event.reward.title
+              reward_id: event.reward.id
             });
           });
         }
         break;
       case 'channel.poll.begin':
-        this.eventSubTrigger['ontwitchpoll'].forEach(triggerId => {
+        this.eventSubTrigger['ontwpoll'].forEach(triggerId => {
           var choiceArgs = {};
           for (var i = 0; i < event.choices.length; i++) {
             choiceArgs[`choice_id${i+1}`] = event.choices[i].id;
             choiceArgs[`choice${i+1}`] = event.choices[i].title;
           }
+          var duration = Math.abs(new Date(event.ends_at).getTime() - new Date(event.started_at).getTime()) / 1000;
           controller.handleData(triggerId, {
             data: event,
             title: event.title,
+            duration: duration,
             choice_count: event.choices.length,
             bits_enabled: event.bits_voting.is_enabled,
             bits_amount: event.bits_voting.amount_per_vote,
@@ -597,16 +602,20 @@ class TwitchHandler extends Handler {
         });
         break;
       case 'channel.poll.progress':
-        this.eventSubTrigger['ontwitchpollupdate'].forEach(triggerId => {
+        this.eventSubTrigger['ontwpollupdate'].forEach(triggerId => {
           var choiceArgs = {};
           for (var i = 0; i < event.choices.length; i++) {
             choiceArgs[`choice_id${i+1}`] = event.choices[i].id;
             choiceArgs[`choice${i+1}`] = event.choices[i].title;
             choiceArgs[`choice_votes${i+1}`] = event.choices[i].votes;
           }
+          var duration = Math.abs(new Date(event.ends_at).getTime() - new Date(event.started_at).getTime()) / 1000;
+          var time_left = parseInt(Math.ceil(new Date(event.ends_at).getTime() - new Date().getTime()) / 1000);
           controller.handleData(triggerId, {
             data: event,
             title: event.title,
+            duration: duration,
+            time_left: time_left,
             choice_count: event.choices.length,
             bits_enabled: event.bits_voting.is_enabled,
             bits_amount: event.bits_voting.amount_per_vote,
@@ -617,47 +626,53 @@ class TwitchHandler extends Handler {
         });
         break;
       case 'channel.poll.end':
-        this.eventSubTrigger['ontwitchpollend'].forEach(triggerId => {
-          var choiceArgs = { votes: -1 };
-          for (var i = 0; i < event.choices.length; i++) {
-            choiceArgs[`choice_id${i+1}`] = event.choices[i].id;
-            choiceArgs[`choice${i+1}`] = event.choices[i].title;
-            choiceArgs[`choice_votes${i+1}`] = event.choices[i].votes;
-            if (event.choices[i].votes > choiceArgs.votes) {
-              choiceArgs.winner = event.choices[i].title;
-              choiceArgs.votes = event.choices[i].votes;
+        if (event.status === 'completed') {
+          this.eventSubTrigger['ontwpollend'].forEach(triggerId => {
+            var choiceArgs = { votes: -1 };
+            for (var i = 0; i < event.choices.length; i++) {
+              choiceArgs[`choice_id${i+1}`] = event.choices[i].id;
+              choiceArgs[`choice${i+1}`] = event.choices[i].title;
+              choiceArgs[`choice_votes${i+1}`] = event.choices[i].votes;
+              if (event.choices[i].votes > choiceArgs.votes) {
+                choiceArgs.winner = event.choices[i].title;
+                choiceArgs.votes = event.choices[i].votes;
+              }
             }
-          }
-          controller.handleData(triggerId, {
-            data: event,
-            title: event.title,
-            choice_count: event.choices.length,
-            bits_enabled: event.bits_voting.is_enabled,
-            bits_amount: event.bits_voting.amount_per_vote,
-            points_enabled: event.channel_points_voting.is_enabled,
-            points_amount: event.channel_points_voting.amount_per_vote,
-            ...choiceArgs
+            var duration = Math.abs(new Date(event.ended_at).getTime() - new Date(event.started_at).getTime()) / 1000;
+            controller.handleData(triggerId, {
+              data: event,
+              title: event.title,
+              duration: duration,
+              choice_count: event.choices.length,
+              bits_enabled: event.bits_voting.is_enabled,
+              bits_amount: event.bits_voting.amount_per_vote,
+              points_enabled: event.channel_points_voting.is_enabled,
+              points_amount: event.channel_points_voting.amount_per_vote,
+              ...choiceArgs
+            });
           });
-        });
+        }
         break;
       case 'channel.prediction.begin':
-        this.eventSubTrigger['ontwitchprediction'].forEach(triggerId => {
+        this.eventSubTrigger['ontwprediction'].forEach(triggerId => {
           var outcomeArgs = {};
           for (var i = 0; i < event.outcomes.length; i++) {
             outcomeArgs[`outcome_id${i+1}`] = event.outcomes[i].id;
             outcomeArgs[`outcome_color${i+1}`] = event.outcomes[i].color;
             outcomeArgs[`outcome${i+1}`] = event.outcomes[i].title;
           }
+          var duration = Math.abs(new Date(event.locks_at).getTime() - new Date(event.started_at).getTime()) / 1000;
           controller.handleData(triggerId, {
             data: event,
             title: event.title,
+            duration: duration,
             outcome_count: event.outcomes.length,
             ...outcomeArgs
           });
         });
         break;
       case 'channel.prediction.progress':
-        this.eventSubTrigger['ontwitchpredictionupdate'].forEach(triggerId => {
+        this.eventSubTrigger['ontwpredictionupdate'].forEach(triggerId => {
           var outcomeArgs = {};
           for (var i = 0; i < event.outcomes.length; i++) {
             outcomeArgs[`outcome_id${i+1}`] = event.outcomes[i].id;
@@ -666,16 +681,20 @@ class TwitchHandler extends Handler {
             outcomeArgs[`outcome_users${i+1}`] = event.outcomes[i].users;
             outcomeArgs[`outcome${i+1}`] = event.outcomes[i].title;
           }
+          var duration = Math.abs(new Date(event.locks_at).getTime() - new Date(event.started_at).getTime()) / 1000;
+          var time_left = parseInt(Math.ceil(new Date(event.ends_at).getTime() - new Date().getTime()) / 1000);
           controller.handleData(triggerId, {
             data: event,
             title: event.title,
+            duration: duration,
+            time_left: time_left,
             outcome_count: event.outcomes.length,
             ...outcomeArgs
           });
         });
         break;
       case 'channel.prediction.lock':
-        this.eventSubTrigger['ontwitchpredictionlock'].forEach(triggerId => {
+        this.eventSubTrigger['ontwpredictionlock'].forEach(triggerId => {
           var outcomeArgs = {};
           for (var i = 0; i < event.outcomes.length; i++) {
             outcomeArgs[`outcome_id${i+1}`] = event.outcomes[i].id;
@@ -694,7 +713,7 @@ class TwitchHandler extends Handler {
         break;
       case 'channel.prediction.end':
         if (event.status === 'resolved') {
-          this.eventSubTrigger['ontwitchpredictionend'].forEach(triggerId => {
+          this.eventSubTrigger['ontwpredictionend'].forEach(triggerId => {
             var outcomeArgs = {};
             for (var i = 0; i < event.outcomes.length; i++) {
               outcomeArgs[`outcome_id${i+1}`] = event.outcomes[i].id;
@@ -717,7 +736,7 @@ class TwitchHandler extends Handler {
         }
         break;
       case 'channel.hype_train.begin':
-        this.eventSubTrigger['ontwitchhypetrainstart'].forEach(triggerId => {
+        this.eventSubTrigger['ontwhypetrainstart'].forEach(triggerId => {
           var conductorArgs = {};
           if (event.top_contributions) {
             event.top_contributions.forEach(contribution => {
@@ -738,7 +757,7 @@ class TwitchHandler extends Handler {
         });
         break;
       case 'channel.hype_train.progress':
-        this.eventSubTrigger['ontwitchhypetrainprogress'].forEach(triggerId => {
+        this.eventSubTrigger['ontwhypetrainprogress'].forEach(triggerId => {
           var conductorArgs = {};
           if (event.top_contributions) {
             event.top_contributions.forEach(contribution => {
@@ -759,7 +778,7 @@ class TwitchHandler extends Handler {
         });
         break;
       case 'channel.hype_train.end':
-        this.eventSubTrigger['ontwitchhypetrainend'].forEach(triggerId => {
+        this.eventSubTrigger['ontwhypetrainend'].forEach(triggerId => {
           var conductorArgs = {};
           if (event.top_contributions) {
             event.top_contributions.forEach(contribution => {
@@ -778,7 +797,7 @@ class TwitchHandler extends Handler {
         });
         break;
       case 'channel.charity_campaign.donate':
-        this.eventSubTrigger['ontwitchcharitydonation'].forEach(triggerId => {
+        this.eventSubTrigger['ontwcharitydonation'].forEach(triggerId => {
           var amount = event.amount.decimal_places > 0
               ? event.amount.value / Math.pow(10, event.amount.decimal_places)
               : event.amount.value;
@@ -795,7 +814,7 @@ class TwitchHandler extends Handler {
         });
         break;
       case 'channel.charity_campaign.start':
-        this.eventSubTrigger['ontwitchcharitystart'].forEach(triggerId => {
+        this.eventSubTrigger['ontwcharitystart'].forEach(triggerId => {
           var current = event.current.decimal_places > 0
               ? event.current.value / Math.pow(10, event.current.decimal_places)
               : event.current.value;
@@ -813,7 +832,7 @@ class TwitchHandler extends Handler {
         });
         break;
       case 'channel.charity_campaign.progress':
-        this.eventSubTrigger['ontwitchcharityprogress'].forEach(triggerId => {
+        this.eventSubTrigger['ontwcharityprogress'].forEach(triggerId => {
           var current = event.current.decimal_places > 0
               ? event.current.value / Math.pow(10, event.current.decimal_places)
               : event.current.value;
@@ -831,7 +850,7 @@ class TwitchHandler extends Handler {
         });
         break;
       case 'channel.charity_campaign.stop':
-        this.eventSubTrigger['ontwitchcharitystop'].forEach(triggerId => {
+        this.eventSubTrigger['ontwcharitystop'].forEach(triggerId => {
           var current = event.current.decimal_places > 0
               ? event.current.value / Math.pow(10, event.current.decimal_places)
               : event.current.value;
@@ -849,23 +868,27 @@ class TwitchHandler extends Handler {
         });
         break;
       case 'channel.shield_mode.begin':
-        this.eventSubTrigger['ontwitchshieldstart'].forEach(triggerId => {
+        this.eventSubTrigger['ontwshieldstart'].forEach(triggerId => {
           controller.handleData(triggerId, {
             data: event,
-            mod: event.moderator_user_name
+            mod: event.moderator_user_name,
+            mod_id: event.moderator_user_id,
+            mod_login: event.moderator_user_login,
           });
         });
         break;
       case 'channel.shield_mode.end':
-        this.eventSubTrigger['ontwitchshieldstop'].forEach(triggerId => {
+        this.eventSubTrigger['ontwshieldstop'].forEach(triggerId => {
           controller.handleData(triggerId, {
             data: event,
-            mod: event.moderator_user_name
+            mod: event.moderator_user_name,
+            mod_id: event.moderator_user_id,
+            mod_login: event.moderator_user_login,
           });
         });
         break;
       case 'channel.shoutout.create':
-        this.eventSubTrigger['ontwitchshoutout'].forEach(triggerId => {
+        this.eventSubTrigger['ontwshoutout'].forEach(triggerId => {
           controller.handleData(triggerId, {
             data: event,
             mod: event.moderator_user_name,
@@ -877,7 +900,7 @@ class TwitchHandler extends Handler {
         });
         break;
       case 'channel.shoutout.receive':
-        this.eventSubTrigger['ontwitchshoutoutreceived'].forEach(triggerId => {
+        this.eventSubTrigger['ontwshoutoutreceived'].forEach(triggerId => {
           controller.handleData(triggerId, {
             data: event,
             id: event.from_broadcaster_user_id,
@@ -888,7 +911,7 @@ class TwitchHandler extends Handler {
         });
         break;
       case 'channel.goal.begin':
-        this.eventSubTrigger['ontwitchgoalstart'].forEach(triggerId => {
+        this.eventSubTrigger['ontwgoalstart'].forEach(triggerId => {
           controller.handleData(triggerId, {
             data: event,
             type: event.type,
@@ -899,7 +922,7 @@ class TwitchHandler extends Handler {
         });
         break;
       case 'channel.goal.progress':
-        this.eventSubTrigger['ontwitchgoalprogress'].forEach(triggerId => {
+        this.eventSubTrigger['ontwgoalprogress'].forEach(triggerId => {
           controller.handleData(triggerId, {
             data: event,
             type: event.type,
@@ -911,7 +934,7 @@ class TwitchHandler extends Handler {
         break;
       case 'channel.goal.end':
         if (event.is_achieved) {
-          this.eventSubTrigger['ontwitchgoalcomplete'].forEach(triggerId => {
+          this.eventSubTrigger['ontwgoalcomplete'].forEach(triggerId => {
             controller.handleData(triggerId, {
               data: event,
               type: event.type,
@@ -921,7 +944,7 @@ class TwitchHandler extends Handler {
             });
           });
         } else {
-          this.eventSubTrigger['ontwitchgoalfailed'].forEach(triggerId => {
+          this.eventSubTrigger['ontwgoalfailed'].forEach(triggerId => {
             controller.handleData(triggerId, {
               data: event,
               type: event.type,
@@ -934,7 +957,7 @@ class TwitchHandler extends Handler {
         break;
       case 'stream.online':
         if (event.type === 'live') {
-          this.eventSubTrigger['ontwitchstreamstart'].forEach(triggerId => {
+          this.eventSubTrigger['ontwstreamstart'].forEach(triggerId => {
             controller.handleData(triggerId, {
               data: event
             });
@@ -942,7 +965,7 @@ class TwitchHandler extends Handler {
         }
         break;
       case 'stream.offline':
-        this.eventSubTrigger['ontwitchstreamstop'].forEach(triggerId => {
+        this.eventSubTrigger['ontwstreamstop'].forEach(triggerId => {
           controller.handleData(triggerId, {
             data: event
           });

@@ -245,11 +245,19 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnCommunityGoalComplete](#oncommunitygoalcomplete)
     + [OnCommunityGoalProgress](#oncommunitygoalprogress)
     + [OnCommunityGoalStart](#oncommunitygoalstart)
-    + [OnTwitchBan](#ontwitchchannelupdate)
-    + [OnTwitchChannelUpdate](#ontwitchchannelupdate)
-    + [OnTwitchFollow](#ontwitchfollow)
-    + [OnTwitchTimeout](#ontwitchtimeout)
-    + [OnTwitchUnban](#ontwitchunban)
+    + [OnTWBan](#ontwchannelupdate)
+    + [OnTWChannelPoint](#ontwchannelpoint)
+    + [OnTWChannelPointCompleted](#ontwchannelpointcompleted)
+    + [OnTWChannelPointRejected](#ontwchannelpointrejected)
+    + [OnTWChannelUpdate](#ontwchannelupdate)
+    + [OnTWFollow](#ontwfollow)
+    + [OnTWModAdd](#ontwmodadd)
+    + [OnTWModRemove](#ontwmodremove)
+    + [OnTWPoll](#ontwpoll)
+    + [OnTWPollUpdate](#ontwpollupdate)
+    + [OnTWPollEnd](#ontwpollend)
+    + [OnTWTimeout](#ontwtimeout)
+    + [OnTWUnban](#ontwunban)
   * [Actions](#twitch-actions)
     + [Twitch AddBlockedTerm](#twitch-addblockedterm)
     + [Twitch Announcement](#twitch-announcement)
@@ -2994,12 +3002,12 @@ _Note: Default channel point rewards are not supported: `Unlock a Random Sub Emo
 
 ***
 
-#### OnTwitchBan
+#### OnTWBan
 | | |
 ------------ | -------------
 **Info** | Triggers when a viewer is banned from the channel.
-**Format** | `OnTwitchBan`
-**Example** | `OnTwitchBan`
+**Format** | `OnTWBan`
+**Example** | `OnTWBan`
 
 ##### Parameters
 | | |
@@ -3013,12 +3021,72 @@ _Note: Default channel point rewards are not supported: `Unlock a Random Sub Emo
 
 ***
 
-#### OnTwitchChannelUpdate
+#### OnTWChannelPoint
+| | |
+------------ | -------------
+**Info** | Triggers when a viewer has redeemed a custom channel points reward.
+**Format** | `OnTWChannelPoint`
+**Example** | `OnTWChannelPoint`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user ID of the user that redeemed the reward.
+**login** | The user login of the user that redeemed the reward.
+**name** | The user display name of the user that redeemed the reward.
+**reward** | The name of the reward.
+**reward_id** | The id of the channel point reward (used with [Twitch Complete](#twitch-complete) or [Twitch Reject](#twitch-reject)).
+**redemption_id** | The id of the channel point redemption (used with [Twitch Complete](#twitch-complete) or [Twitch Reject](#twitch-reject)).
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWChannelPointCompleted
+| | |
+------------ | -------------
+**Info** | Triggers when a channel point redemption has been marked as completed.
+**Format** | `OnTWChannelPointCompleted`
+**Example** | `OnTWChannelPointCompleted`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user ID of the user that redeemed the reward.
+**login** | The user login of the user that redeemed the reward.
+**name** | The user display name of the user that redeemed the reward.
+**reward** | The name of the reward.
+**reward_id** | The id of the channel point reward (used with [Twitch Complete](#twitch-complete) or [Twitch Reject](#twitch-reject)).
+**redemption_id** | The id of the channel point redemption (used with [Twitch Complete](#twitch-complete) or [Twitch Reject](#twitch-reject)).
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWChannelPointRejected
+| | |
+------------ | -------------
+**Info** | Triggers when a channel point redemption has been rejected and points are refunded to the user.
+**Format** | `OnTWChannelPointCompleted`
+**Example** | `OnTWChannelPointCompleted`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user ID of the user that redeemed the reward.
+**login** | The user login of the user that redeemed the reward.
+**name** | The user display name of the user that redeemed the reward.
+**reward** | The name of the reward.
+**reward_id** | The id of the channel point reward (used with [Twitch Complete](#twitch-complete) or [Twitch Reject](#twitch-reject)).
+**redemption_id** | The id of the channel point redemption (used with [Twitch Complete](#twitch-complete) or [Twitch Reject](#twitch-reject)).
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWChannelUpdate
 | | |
 ------------ | -------------
 **Info** | Triggers when a broadcaster updates their channel name, title, or category (game).
-**Format** | `OnTwitchChannelUpdate`
-**Example** | `OnTwitchChannelUpdate`
+**Format** | `OnTWChannelUpdate`
+**Example** | `OnTWChannelUpdate`
 
 ##### Parameters
 | | |
@@ -3030,12 +3098,12 @@ _Note: Default channel point rewards are not supported: `Unlock a Random Sub Emo
 
 ***
 
-#### OnTwitchFollow
+#### OnTWFollow
 | | |
 ------------ | -------------
 **Info** | Triggers when the broadcaster receives a follow.
-**Format** | `OnTwitchFollow`
-**Example** | `OnTwitchFollow`
+**Format** | `OnTWFollow`
+**Example** | `OnTWFollow`
 
 ##### Parameters
 | | |
@@ -3047,12 +3115,244 @@ _Note: Default channel point rewards are not supported: `Unlock a Random Sub Emo
 
 ***
 
-#### OnTwitchTimeout
+#### OnTWModAdd
+| | |
+------------ | -------------
+**Info** | Triggers when moderator privileges were added to a user.
+**Format** | `OnTWModAdd`
+**Example** | `OnTWModAdd`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user ID of the new moderator.
+**login** | The user login of the new moderator.
+**name** | The user display name of the new moderator.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWModRemove
+| | |
+------------ | -------------
+**Info** | Triggers when moderator privileges were removed from a user.
+**Format** | `OnTWModRemove`
+**Example** | `OnTWModRemove`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user ID of the removed moderator.
+**login** | The user login of the removed moderator.
+**name** | The user display name of the removed moderator.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWPoll
+| | |
+------------ | -------------
+**Info** | Triggers when a poll starts in the channel.
+**Format** | `OnTWPoll`
+**Example** | `OnTWPoll`
+
+##### Parameters
+| | |
+------------ | -------------
+**title** | The title of the poll.
+**duration** | The duration (in seconds) of the poll.
+**bits_enabled** | [true/false] `true` if voting with bits is enabled. Otherwise, `false`.
+**bits_amount** | The number of bits required to vote once.
+**points_enabled** | [true/false] `true` if voting with channel points is enabled. Otherwise, `false`.
+**points_amount** | The number of channel points required to vote once.
+**choice_count** | The number of choices (answers, options, etc.) in the poll.
+**choice#** | The text displayed for the choice in the poll. Replace `#` with a number, starting at 1 and ending at `choice_count`.
+**choice_id#** | The id of the choice in the poll. Replace `#` with a number, starting at 1 and ending at `choice_count`.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+_Note: Bit voting is not currently supported, however Twitch provides these values. Kruiz Control forwards them incase they are ever implemented._
+
+***
+
+#### OnTWPollUpdate
+| | |
+------------ | -------------
+**Info** | Triggers when any user votes in the poll.
+**Format** | `OnTWPollUpdate`
+**Example** | `OnTWPollUpdate`
+
+##### Parameters
+| | |
+------------ | -------------
+**title** | The title of the poll.
+**duration** | The duration (in seconds) of the poll.
+**time_left** | The time left (in seconds) for the poll.
+**bits_enabled** | [true/false] `true` if voting with bits is enabled. Otherwise, `false`.
+**bits_amount** | The number of bits required to vote once.
+**points_enabled** | [true/false] `true` if voting with channel points is enabled. Otherwise, `false`.
+**points_amount** | The number of channel points required to vote once.
+**choice_count** | The number of choices (answers, options, etc.) in the poll.
+**choice#** | The text displayed for the choice in the poll. Replace `#` with a number, starting at 1 and ending at `choice_count`.
+**choice_votes#** | The number of votes for a choice in the poll. Replace `#` with a number, starting at 1 and ending at `choice_count`.
+**choice_id#** | The id of the choice in the poll. Replace `#` with a number, starting at 1 and ending at `choice_count`.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+_Note: Bit voting is not currently supported, however Twitch provides these values. Kruiz Control forwards them incase they are ever implemented._
+
+***
+
+#### OnTWPollEnd
+| | |
+------------ | -------------
+**Info** | Triggers when a poll ends in the channel. Canceled or deleted polls do not trigger this.
+**Format** | `OnTWPollUpdate`
+**Example** | `OnTWPollUpdate`
+
+##### Parameters
+| | |
+------------ | -------------
+**title** | The title of the poll.
+**duration** | The duration (in seconds) of the poll.
+**bits_enabled** | [true/false] `true` if voting with bits is enabled. Otherwise, `false`.
+**bits_amount** | The number of bits required to vote once.
+**points_enabled** | [true/false] `true` if voting with channel points is enabled. Otherwise, `false`.
+**points_amount** | The number of channel points required to vote once.
+**choice_count** | The number of choices (answers, options, etc.) in the poll.
+**choice#** | The text displayed for the choice in the poll. Replace `#` with a number, starting at 1 and ending at `choice_count`.
+**choice_votes#** | The number of votes for a choice in the poll. Replace `#` with a number, starting at 1 and ending at `choice_count`.
+**choice_id#** | The id of the choice in the poll. Replace `#` with a number, starting at 1 and ending at `choice_count`.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+_Note: Bit voting is not currently supported, however Twitch provides these values. Kruiz Control forwards them incase they are ever implemented._
+
+***
+
+#### OnTWPrediction
+| | |
+------------ | -------------
+**Info** | Triggers when a prediction starts in the channel.
+**Format** | `OnTWPrediction`
+**Example** | `OnTWPrediction`
+
+##### Parameters
+| | |
+------------ | -------------
+**title** | The title of the prediction.
+**duration** | The duration (in seconds) of the prediction.
+**outcome_count** | The number of outcomes (options, etc.) in the prediction.
+**outcome#** | The text displayed for the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`.
+**outcome_color#** | The color of the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`.
+**outcome_id#** | The id of the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWPredictionUpdate
+| | |
+------------ | -------------
+**Info** | Triggers when user participates in a prediction in the channel.
+**Format** | `OnTWPredictionUpdate`
+**Example** | `OnTWPredictionUpdate`
+
+##### Parameters
+| | |
+------------ | -------------
+**title** | The title of the prediction.
+**duration** | The duration (in seconds) of the prediction.
+**time_left** | The time left (in seconds) for the prediction.
+**outcome_count** | The number of outcomes (options, etc.) in the prediction.
+**outcome#** | The text displayed for the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`.
+**outcome_color#** | The color of the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`.
+**outcome_points#** | The number of points contributed towards the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`
+**outcome_users#** | The number of users contributing towards the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`.
+**outcome_id#** | The id of the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWPredictionLock
+| | |
+------------ | -------------
+**Info** | Triggers when participation in a prediction was locked.
+**Format** | `OnTWPredictionLock`
+**Example** | `OnTWPredictionLock`
+
+##### Parameters
+| | |
+------------ | -------------
+**title** | The title of the prediction.
+**outcome_count** | The number of outcomes (options, etc.) in the prediction.
+**outcome#** | The text displayed for the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`.
+**outcome_color#** | The color of the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`.
+**outcome_points#** | The number of points contributed towards the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`
+**outcome_users#** | The number of users contributing towards the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`.
+**outcome_id#** | The id of the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWPredictionEnd
+| | |
+------------ | -------------
+**Info** | Triggers when a prediction ends on the channel. This does not trigger if the prediction is canceled.
+**Format** | `OnTWPredictionEnd`
+**Example** | `OnTWPredictionEnd`
+
+##### Parameters
+| | |
+------------ | -------------
+**title** | The title of the prediction.
+**result** | The winning prediction outcome.
+**outcome_count** | The number of outcomes (options, etc.) in the prediction.
+**outcome#** | The text displayed for the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`.
+**outcome_color#** | The color of the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`.
+**outcome_points#** | The number of points contributed towards the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`
+**outcome_users#** | The number of users contributing towards the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`.
+**outcome_id#** | The id of the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWShieldStart
+| | |
+------------ | -------------
+**Info** | Triggers when a moderator activates shield mode on the channel.
+**Format** | `OnTWShieldStart`
+**Example** | `OnTWShieldStart`
+
+##### Parameters
+| | |
+------------ | -------------
+**mod** | The user name of the moderator who activated shield mode.
+**mod_id** | The user id of the moderator who activated shield mode.
+**mod_login** | The user login of the moderator who activated shield mode.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWShieldStop
+| | |
+------------ | -------------
+**Info** | Triggers when a moderator deactivates shield mode on the channel.
+**Format** | `OnTWShieldStop`
+**Example** | `OnTWShieldStop`
+
+##### Parameters
+| | |
+------------ | -------------
+**mod** | The user name of the moderator who deactivated shield mode.
+**mod_id** | The user id of the moderator who deactivated shield mode.
+**mod_login** | The user login of the moderator who deactivated shield mode.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWTimeout
 | | |
 ------------ | -------------
 **Info** | Triggers when a viewer is timed out from the channel.
-**Format** | `OnTwitchTimeout`
-**Example** | `OnTwitchTimeout`
+**Format** | `OnTWTimeout`
+**Example** | `OnTWTimeout`
 
 ##### Parameters
 | | |
@@ -3066,12 +3366,12 @@ _Note: Default channel point rewards are not supported: `Unlock a Random Sub Emo
 
 ***
 
-#### OnTwitchUnban
+#### OnTWUnban
 | | |
 ------------ | -------------
 **Info** | Triggers when a viewer is unbanned from the channel.
-**Format** | `OnTwitchUnban`
-**Example** | `OnTwitchUnban`
+**Format** | `OnTWUnban`
+**Example** | `OnTWUnban`
 
 ##### Parameters
 | | |
