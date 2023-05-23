@@ -251,6 +251,10 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnTWChannelPointRejected](#ontwchannelpointrejected)
     + [OnTWChannelUpdate](#ontwchannelupdate)
     + [OnTWFollow](#ontwfollow)
+    + [OnTWGoalCompleted](#ontwgoalcompleted)
+    + [OnTWGoalFailed](#ontwgoalfailed)
+    + [OnTWGoalProgress](#ontwgoalprogress)
+    + [OnTWGoalStart](#ontwgoalstart)
     + [OnTWModAdd](#ontwmodadd)
     + [OnTWModRemove](#ontwmodremove)
     + [OnTWPoll](#ontwpoll)
@@ -3111,6 +3115,78 @@ _Note: Default channel point rewards are not supported: `Unlock a Random Sub Emo
 **id** | The user ID for the user now following.
 **login** | The user login for the user now following.
 **name** | The user display name for the user now following.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWGoalCompleted
+| | |
+------------ | -------------
+**Info** | Triggers when a broadcaster finishes a goal successfully. This does not occur automatically when a goal is met as goals are continuous and can be repeatedly _completed_. This trigger requires the goal to be ended through the Twitch UI (or API) after a goal has been met.
+**Format** | `OnTWGoalCompleted`
+**Example** | `OnTWGoalCompleted`
+
+##### Parameters
+| | |
+------------ | -------------
+**type** | The type of goal created. Possible values are `follow`, `subscription`, `subscription_count`, `new_subscription`, and `new_subscription_count`.
+**description** | A description of the goal, if specified.
+**current** | The goal's current value.
+**target** | The goal's target value.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWGoalFailed
+| | |
+------------ | -------------
+**Info** | Triggers when a broadcaster ends a goal that was not completed.
+**Format** | `OnTWGoalFailed`
+**Example** | `OnTWGoalFailed`
+
+##### Parameters
+| | |
+------------ | -------------
+**type** | The type of goal created. Possible values are `follow`, `subscription`, `subscription_count`, `new_subscription`, and `new_subscription_count`.
+**description** | A description of the goal, if specified.
+**current** | The goal's current value.
+**target** | The goal's target value.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWGoalProgress
+| | |
+------------ | -------------
+**Info** | Triggers when progress (either positive or negative) is made towards a broadcaster's goal.
+**Format** | `OnTWGoalProgress`
+**Example** | `OnTWGoalProgress`
+
+##### Parameters
+| | |
+------------ | -------------
+**type** | The type of goal created. Possible values are `follow`, `subscription`, `subscription_count`, `new_subscription`, and `new_subscription_count`.
+**description** | A description of the goal, if specified.
+**current** | The goal's current value.
+**target** | The goal's target value.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWGoalStart
+| | |
+------------ | -------------
+**Info** | Triggers when the broadcaster begins a channel goal.
+**Format** | `OnTWGoalStart`
+**Example** | `OnTWGoalStart`
+
+##### Parameters
+| | |
+------------ | -------------
+**type** | The type of goal created. Possible values are `follow`, `subscription`, `subscription_count`, `new_subscription`, and `new_subscription_count`.
+**description** | A description of the goal, if specified.
+**current** | The goal's current value.
+**target** | The goal's target value.
 **data** | The complete Twitch EventSub event data (for use with [Function](#function)).
 
 ***
