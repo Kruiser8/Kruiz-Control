@@ -120,11 +120,67 @@ eyJhaoiuh798a99h7HBN879DHF98A789aigfba8790gfh987Fb78987BgUYF4SD56gI9Uh98786rf7tV
 ***
 
 ## Twitch
+To capture Twitch events, you'll need a **Client Id** and **Client Secret** and a generated auth token for your Twitch user.
+
+### Client ID and Secret
+To capture Twitch events, you'll need a **Client Id** and **Client Secret**. To create your own,
+- Go to https://dev.twitch.tv/login
+- Login with your Twitch account
+- Once logged in, on the left sidebar click `Applications`.
+- Click the `+ Register Your Application` button and enter the following details:
+  - Name: `Kruiz Control`
+  - OAuth Redirect URLs: `http://localhost`
+  - Category: `Chat Bot`
+- Click the `Create` button at the bottom.
+- Click the `Manage` button on the right hand side for the application you created.
+- Copy the **Client ID** value and put it in the `settings/twitch/clientId.txt` file.
+- Click the `New Secret` button, confirm the prompt, and copy and paste the value into the `settings/twitch/clientSecret.txt` file.
+
+### Code
+Some APIs and events require a user authenticated auth code. To generate one of these, first follow the Client ID and Secret instructions to update the `settings/twitch/clientId.txt` and `settings/twitch/clientSecret.txt` files. Then follow the below steps:
+- Add the below to your Kruiz Control `triggers.txt` file to send an authentication link to your Twitch chat.
+```
+### Twitch Authenticate ###
+OnInit
+Twitch Authenticate
+Chat Send {auth_url}
+```
+- Open the generated link and login to your Twitch account. This provides the https://dev.twitch.tv application that you created to control your stream.
+- After login, you'll be redirected to a link that looks like the below.
+```
+http://localhost/?code=YOUR_CODE_HERE&scope=bits%3Aread+channel%3Aedit...
+```
+- Copy the `YOUR_CODE_HERE` value and put that into your `settings/twitch/code.txt` file.
+
+
+### clientId.txt
+**Location:** `settings/twitch/clientId.txt`
+
+Specify the Twitch Client ID to use when making API calls.
+```
+wasdfe23r9yujasbnvo9qhfiuqa328
+```
+
+### clientSecret.txt
+**Location:** `settings/twitch/clientId.txt`
+
+Specify the Twitch Client ID to use when making API calls.
+```
+wasdfe23r9yujasbnvo9qhfiuqa328
+```
+
+### code.txt
+**Location:** `settings/twitch/code.txt`
+
+Specify the Twitch auth code generated after logging in to your Twitch account.
+```
+098wh4ijbngse7w9r87yqu3gbq398f
+```
 
 ### user.txt
 **Location:** `settings/twitch/user.txt`
 
-Specify the twitch channel to watch for channel point redemptions and hype trains.
+Specify the Twitch channel that Kruiz Control will react to and control through triggers and actions.
 ```
 kruiser8
 ```
