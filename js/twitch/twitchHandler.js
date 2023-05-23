@@ -3,7 +3,7 @@ class TwitchHandler extends Handler {
    * Create a new Timer handler.
    */
   constructor() {
-    super('Twitch', ['OnChannelPoint', 'OnCommunityGoalStart', 'OnCommunityGoalProgress', 'OnCommunityGoalComplete', 'OnHypeTrainStart', 'OnHypeTrainEnd', 'OnHypeTrainLevel', 'OnHypeTrainProgress', 'OnHypeTrainConductor', 'OnHypeTrainCooldownExpired', 'OnTWChannelUpdate', 'OnTWFollow', 'OnTWSub', 'OnTWSubEnd', 'OnTWSubGift', 'OnTWSubMessage', 'OnTWCheer', 'OnTWRaid', 'OnTWBan', 'OnTWTimeout', 'OnTWUnban', 'OnTWModAdd', 'OnTWModRemove', 'OnTWChannelPoint', 'OnTWChannelPointCompleted', 'OnTWChannelPointRejected', 'OnTWPoll', 'OnTWPollUpdate', 'OnTWPollEnd', 'OnTWPrediction', 'OnTWPredictionUpdate', 'OnTWPredictionLock', 'OnTWPredictionEnd', 'OnTWHypeTrainStart', 'OnTWHypeTrainProgress', 'OnTWHypeTrainEnd', 'OnTWCharityDonation', 'OnTWCharityStart', 'OnTWCharityProgress', 'OnTWCharityStop', 'OnTWShieldStart', 'OnTWShieldStop', 'OnTWShoutout', 'OnTWShoutoutReceived', 'OnTWGoalStart', 'OnTWGoalProgress', 'OnTWGoalCompleted', 'OnTWGoalFailed', 'OnTWStreamStart', 'OnTWStreamStop']);
+    super('Twitch', ['OnChannelPoint', 'OnCommunityGoalStart', 'OnCommunityGoalProgress', 'OnCommunityGoalComplete', 'OnHypeTrainStart', 'OnHypeTrainEnd', 'OnHypeTrainLevel', 'OnHypeTrainProgress', 'OnHypeTrainConductor', 'OnHypeTrainCooldownExpired', 'OnTWChannelUpdate', 'OnTWFollow', 'OnTWSub', 'OnTWSubEnd', 'OnTWSubGift', 'OnTWSubMessage', 'OnTWCheer', 'OnTWRaid', 'OnTWBan', 'OnTWTimeout', 'OnTWUnban', 'OnTWModAdd', 'OnTWModRemove', 'OnTWChannelPoint', 'OnTWChannelPointCompleted', 'OnTWChannelPointRejected', 'OnTWPoll', 'OnTWPollUpdate', 'OnTWPollEnd', 'OnTWPrediction', 'OnTWPredictionUpdate', 'OnTWPredictionLock', 'OnTWPredictionEnd', 'OnTWHypeTrainStart', 'OnTWHypeTrainProgress', 'OnTWHypeTrainEnd', 'OnTWCharityDonation', 'OnTWCharityStart', 'OnTWCharityProgress', 'OnTWCharityStop', 'OnTWShieldStart', 'OnTWShieldStop', 'OnTWShoutout', 'OnTWShoutoutReceived', 'OnTWGoalStart', 'OnTWGoalProgress', 'OnTWGoalCompleted', 'OnTWGoalFailed', 'OnTWStreamStarted', 'OnTWStreamStopped']);
     this.rewards = [];
     this.rewardsTrigger = {};
     this.goals = [];
@@ -957,7 +957,7 @@ class TwitchHandler extends Handler {
         break;
       case 'stream.online':
         if (event.type === 'live') {
-          this.eventSubTrigger['ontwstreamstart'].forEach(triggerId => {
+          this.eventSubTrigger['ontwstreamstarted'].forEach(triggerId => {
             controller.handleData(triggerId, {
               data: event
             });
@@ -965,7 +965,7 @@ class TwitchHandler extends Handler {
         }
         break;
       case 'stream.offline':
-        this.eventSubTrigger['ontwstreamstop'].forEach(triggerId => {
+        this.eventSubTrigger['ontwstreamstopped'].forEach(triggerId => {
           controller.handleData(triggerId, {
             data: event
           });
@@ -1374,7 +1374,7 @@ class TwitchHandler extends Handler {
           tier: response.data[0].tier === 'Prime' ? 'Prime' : (parseInt(response.data[0].tier) / 1000),
         }
         break;
-      case '**marker':
+      case 'marker':
         var { description = '' } = Parser.getInputs(triggerData, ['action', 'description'], false, 1);
         await this.api.createStreamMarker(this.channelId, description);
         break;
@@ -1489,7 +1489,7 @@ class TwitchHandler extends Handler {
 
         await this.api.updateShieldModeStatus(this.channelId, this.channelId, status);
         break;
-      case '**shoutout':
+      case 'shoutout':
         var { user } = Parser.getInputs(triggerData, ['action', 'user']);
         var user_id = await getIdFromUser(user);
         await this.api.sendShoutout(this.channelId, user_id, this.channelId);
