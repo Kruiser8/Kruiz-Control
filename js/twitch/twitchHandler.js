@@ -424,18 +424,6 @@ class TwitchHandler extends Handler {
           });
         });
         break;
-      case 'channel.subscribe.end':
-        this.eventSubTrigger['ontwsubend']?.forEach(triggerId => {
-          controller.handleData(triggerId, {
-            data: event,
-            id: event.user_id,
-            login: event.user_login,
-            name: event.user_name,
-            tier: event.tier === 'Prime' ? 'Prime' : (parseInt(event.tier) / 1000),
-            is_gift: event.is_gift
-          });
-        });
-        break;
       case 'channel.subscribe.gift':
         this.eventSubTrigger['ontwsubgift']?.forEach(triggerId => {
           controller.handleData(triggerId, {
@@ -457,7 +445,7 @@ class TwitchHandler extends Handler {
             id: event.user_id,
             login: event.user_login,
             name: event.user_name,
-            tier: (parseInt(event.tier) / 1000),
+            tier: event.tier === 'Prime' ? 'Prime' : (parseInt(event.tier) / 1000),
             message: event.message.text,
             months: event.cumulative_months,
             streak: event.streak_months
