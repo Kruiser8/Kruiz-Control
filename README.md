@@ -48,11 +48,12 @@ Kruiz Control enables a pseudo code approach to manage and automatically handle 
 
 ## Setup Guide
 
-- (If using OBS) Install the [OBS Websocket Plugin](https://github.com/Palakis/obs-websocket/releases/latest) (version 5.0.0 or above). Reopen OBS after installing.
 - Fill out [the settings files](https://github.com/Kruiser8/Kruiz-Control/blob/master/settings/Settings.md) in the settings folder.
 - Add the **index.html** to OBS/SLOBS as a browser source.
 - Type `!example` in your twitch chat. If your user responds with `Success! It worked!`, you're good to go!
 - Customize the _triggers.txt_ with your own triggers from the [the documentation](https://github.com/Kruiser8/Kruiz-Control/blob/master/js/Documentation.md).
+
+_Note: If you're on OBS v27 or lower, you'll also have to install the [OBS Websocket Plugin](https://github.com/Palakis/obs-websocket/releases/latest). Reopen OBS after installing._
 
 ***
 
@@ -80,13 +81,6 @@ OBS.Live should also be supported but is untested.
 
 ## Installation
 
-### OBS Websocket (if using OBS)
-To use this script with OBS, install the [obs-websocket](https://github.com/Palakis/obs-websocket/releases/latest) plugin (version 5.0.0 or above). Reopen OBS after installing.
-
-In OBS, click **Tools** > **WebSockets Server Settings** and enable the websocket server.
-
-It is **highly recommended** to use a password!
-
 ### Settings
 Before the script will work, you'll need to fill out all of the settings files. Please see the [settings description](https://github.com/Kruiser8/Kruiz-Control/blob/master/settings/Settings.md) for more information.
 
@@ -99,6 +93,13 @@ Add the **index.html** file as a browser source within your broadcast software. 
 - Check the `Local file` checkbox.
 - Click **Browse** and open the **index.html** file within the Kruiz Control script directory.
 - Recommended to set the width/height to 100 or less to reduce the size of the source.
+
+### OBS Websocket (if using OBS v27 or below)
+To use this script with OBS, install the [obs-websocket](https://github.com/Palakis/obs-websocket/releases/latest) plugin (version 5.0.0 or above). Reopen OBS after installing.
+
+In OBS, click **Tools** > **WebSockets Server Settings** and enable the websocket server.
+
+It is **highly recommended** to use a password!
 
 ***
 
