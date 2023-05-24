@@ -2535,15 +2535,6 @@ Enables the ability to trigger actions based on StreamElement alerts. Note that 
 
 ***
 
-##### Parameters
-| | |
------------- | -------------
-**user** | The user that gifted the subscriptions.
-**amount** | The number of subscriptions the user is gifted.
-**data** | The complete json message (for use with [Function](#function)).
-
-***
-
 #### OnSEDonation
 | | |
 ------------ | -------------
