@@ -1505,17 +1505,6 @@ class TwitchHandler extends Handler {
           slow_mode: false
         });
         break;
-      case 'soundtrack':
-        var response = await this.api.getSoundtrackCurrentTrack(this.channelId);
-        if (response?.data[0]?.track) {
-          var artists = response.data[0].track.artists.map(artist => artist.name).join(', ');
-          return {
-            data: response,
-            artist: artists,
-            title: response.data[0].track.title
-          };
-        }
-        break;
       case 'streams':
         var streams = await this.api.getAllFollowedStreams(this.channelId);
         var streamArgs = {};

@@ -828,16 +828,6 @@ class TwitchAPI {
     });
   }
 
-  async getSoundtrackCurrentTrack(broadcaster_id) {
-    return await this.callTwitchApi({
-      method: 'GET',
-      endpoint: 'https://api.twitch.tv/helix/soundtrack/current_track',
-      params: {
-        broadcaster_id
-      }
-    });
-  }
-
   async getFollowedStreams(user_id, first, after) {
     var params = {
       user_id,

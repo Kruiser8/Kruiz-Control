@@ -319,7 +319,6 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Twitch Shield](#twitch-shield)
     + [Twitch Slow](#twitch-slow)
     + [Twitch SlowOff](#twitch-slowoff)
-    + [Twitch Soundtrack](#twitch-soundtrack)
     + [Twitch Streams](#twitch-streams)
     + [Twitch SubCount](#twitch-subcount)
     + [Twitch Subscribers](#twitch-subscribers)
@@ -3426,6 +3425,67 @@ _Note: Bit voting is not currently supported, however Twitch provides these valu
 
 ***
 
+#### OnTWSub
+| | |
+------------ | -------------
+**Info** | Triggers when the channel receives a subscriber. This does not include resubscribers.
+**Format** | `OnTWSub`
+**Example** | `OnTWSub`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user id of the user who subscribed.
+**login** | The user login of the user who subscribed.
+**name** | The user display name of the user who subscribed.
+**tier** | `1`, `2`, `3`, or `Prime` depending on what subscription tier the user is.
+**is_gift** | [true/false] `true` if the user's subscription was a gifted sub. Otherwise, `false`.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWSubGift
+| | |
+------------ | -------------
+**Info** | Triggers when a viewer gives a gift subscription to one or more users in the specified channel.
+**Format** | `OnTWSubGift`
+**Example** | `OnTWSubGift`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user id of the user who sent the subscription gift.
+**login** | The user login of the user who sent the subscription gift.
+**name** | The user display name of the user who sent the subscription gift.
+**tier** | The tier of subscriptions in the subscription gift. `1`, `2`, or `3` depending on what subscription tier the user is.
+**amount** | The number of subscriptions in the subscription gift.
+**total_gifts** | The number of subscriptions gifted by this user in the channel. This value is empty for anonymous gifts or if the gifter has opted out of sharing this information.
+**is_anonymous** | [true/false] `true` if the subscription gift was anonymous. Otherwise, `false`.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWSubMessage
+| | |
+------------ | -------------
+**Info** | Triggers when a user sends a resubscription chat message in the channel.
+**Format** | `OnTWSubMessage`
+**Example** | `OnTWSubMessage`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user id of the user who sent the subscription gift.
+**login** | The user login of the user who sent the subscription gift.
+**name** | The user display name of the user who sent the subscription gift.
+**tier** | The tier of subscriptions in the subscription gift. `1`, `2`, or `3` depending on what subscription tier the user is.
+**message** | The resubscription message.
+**months** | The total number of months the user has been subscribed to the channel.
+**streak** | The number of consecutive months the user’s current subscription has been active. This value is empty if the user has opted out of sharing this information.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
 #### OnTWTimeout
 | | |
 ------------ | -------------
@@ -4179,15 +4239,6 @@ _Note: Due to a Twitch API restriction, in order for Kruiz Control to interact w
 **Info** | Disable slow mode in the broadcaster's chat.
 **Format** | `Twitch SlowOff`
 **Example** | `Twitch SlowOff`
-
-***
-
-#### Twitch Soundtrack
-| | |
------------- | -------------
-**Info** | Gets the Twitch Soundtrack track that the broadcaster is playing.
-**Format** | `Twitch Soundtrack`
-**Example** | `Twitch Soundtrack`
 
 ##### Parameters
 | | |
