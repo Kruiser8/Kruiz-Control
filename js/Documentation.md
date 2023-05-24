@@ -112,6 +112,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Function](#function)
     + [Globals](#globals)
     + [If](#if)
+    + [Ignore](#ignore)
     + [Log](#log)
     + [Loop](#loop)
     + [Play](#play)
@@ -1540,6 +1541,16 @@ The `<optional_skip>` value allows you to specify the number of lines to skip if
 
 ***
 
+#### Ignore
+| | |
+------------ | -------------
+**Info** | Used to run an action without updating the number of actions in an event. This is used internally by Kruiz Control to add actions to an event without messing up [`Loop`](#loop) or [`If`](#if) actions that track the number of actions. `<action>` is the full action that you want to complete. The action can be provided as a single argument (inside of quotes) or written out normally.
+**Format** | `Ignore <action>`
+**Example** | `Ignore Chat Send "Hello world"`
+**Example w/ Single Argument** | `Ignore "Chat Send 'Hello world'"`
+
+***
+
 #### Log
 | | |
 ------------ | -------------
@@ -1555,6 +1566,12 @@ The `<optional_skip>` value allows you to specify the number of lines to skip if
 **Info** | Used to repeat a set of actions a specified number of times. `<lines>` is the number of actions/lines to repeat. `<times>` is the number of times to repeat the actions/lines.
 **Format** | `Loop <lines> <times>`
 **Example** | `Loop 8 10`
+
+##### Parameters
+| | |
+------------ | -------------
+**loop** | The loop iteration, starting at 1.
+**loop_i** | The loop index, starting at 0.
 
 ***
 
