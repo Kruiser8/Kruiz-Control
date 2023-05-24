@@ -514,6 +514,7 @@ Enables the ability to create your own actions within Kruiz Control.
 ------------ | -------------
 **action** | The `<action>` performed that triggered this event.
 **in#** | The numbered arguments passed to the action. Replace `#` with a number, starting at 1 and ending at the last argument passed into the command.
+**in_count** | The number of arguments passed to the action.
 
 ***
 
