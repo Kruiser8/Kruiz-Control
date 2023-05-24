@@ -1219,8 +1219,12 @@ class TwitchHandler extends Handler {
         }
         break;
       case 'createclip':
-        var { delay = false } = Parser.getInputs(triggerData, ['action', 'delay' ], false, 1);
-        await this.api.createClip(this.channelId, delay);
+        var { delay = "false" } = Parser.getInputs(triggerData, ['action', 'delay' ], false, 1);
+        var should_delay = false;
+        if (delay.toLowerCase() === 'true') {
+          should_delay = true;
+        }
+        await this.api.createClip(this.channelId, should_delay);
         break;
       case 'deletemessage':
         var { message_id } = Parser.getInputs(triggerData, ['action', 'message_id']);

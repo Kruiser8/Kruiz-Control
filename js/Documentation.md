@@ -250,16 +250,29 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnTWChannelPointCompleted](#ontwchannelpointcompleted)
     + [OnTWChannelPointRejected](#ontwchannelpointrejected)
     + [OnTWChannelUpdate](#ontwchannelupdate)
+    + [OnTWCharityDonation](#ontwcharitydonation)
+    + [OnTWCharityProgress](#ontwcharityprogress)
+    + [OnTWCharityStarted](#ontwcharitystarted)
+    + [OnTWCharityStopped](#ontwcharitystopped)
+    + [OnTWCheer](#ontwcheer)
     + [OnTWFollow](#ontwfollow)
     + [OnTWGoalCompleted](#ontwgoalcompleted)
     + [OnTWGoalFailed](#ontwgoalfailed)
     + [OnTWGoalProgress](#ontwgoalprogress)
     + [OnTWGoalStart](#ontwgoalstart)
+    + [OnTWHypeTrainEnd](#ontwhypetrainend)
+    + [OnTWHypeTrainProgress](#ontwhypetrainprogress)
+    + [OnTWHypeTrainStart](#ontwhypetrainstart)
     + [OnTWModAdd](#ontwmodadd)
     + [OnTWModRemove](#ontwmodremove)
     + [OnTWPoll](#ontwpoll)
     + [OnTWPollUpdate](#ontwpollupdate)
     + [OnTWPollEnd](#ontwpollend)
+    + [OnTWRaid](#ontwraid)
+    + [OnTWShoutout](#ontwshoutout)
+    + [OnTWShoutoutReceived](#ontwshoutoutreceived)
+    + [OnTWStreamStarted](#ontwstreamstarted)
+    + [OnTWStreamStopped](#ontwstreamstopped)
     + [OnTWSub](#ontwsub)
     + [OnTWSubGift](#ontwsubgift)
     + [OnTWSubMessage](#ontwsubmessage)
@@ -279,8 +292,10 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Twitch ClipById](#twitch-clipbyid)
     + [Twitch ClipsByUser](#twitch-clipsbyuser)
     + [Twitch Color](#twitch-color)
+    + [Twitch Commercial](#twitch-commercial)
     + [Twitch Complete](#twitch-complete)
     + [Twitch Copy](#twitch-copy)
+    + [Twitch CreateClip](#twitch-createclip)
     + [Twitch DeleteMessage](#twitch-deletemessage)
     + [Twitch Description](#twitch-description)
     + [Twitch EmoteOnly](#twitch-emoteonly)
@@ -295,6 +310,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Twitch IsShieldMode](#twitch-isshieldmode)
     + [Twitch IsSubscriber](#twitch-issubscriber)
     + [Twitch Mod](#twitch-mod)
+    + [Twitch Marker](#twitch-marker)
     + [Twitch Mods](#twitch-mods)
     + [Twitch Poll Cancel](#twitch-prediction-cancel)
     + [Twitch Poll Choice](#twitch-prediction-choice)
@@ -317,6 +333,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Twitch RemoveBlockedTerm](#twitch-removeblockedterm)
     + [Twitch Reward](#twitch-reward)
     + [Twitch Shield](#twitch-shield)
+    + [Twitch Shoutout](#twitch-shoutout)
     + [Twitch Slow](#twitch-slow)
     + [Twitch SlowOff](#twitch-slowoff)
     + [Twitch Streams](#twitch-streams)
@@ -3104,6 +3121,104 @@ _Note: Default channel point rewards are not supported: `Unlock a Random Sub Emo
 
 ***
 
+#### OnTWCharityDonation
+| | |
+------------ | -------------
+**Info** | Triggers when a user donates to the broadcaster's charity campaign.
+**Format** | `OnTWCharityDonation`
+**Example** | `OnTWCharityDonation`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user id of the user who donated.
+**login** | The user login of the user who donated.
+**name** | The user display name of the user who donated.
+**charity** | The charity's name.
+**description** | A description of the charity.
+**website** | A URL to the charity's website.
+**amount** | The donation amount.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWCharityProgress
+| | |
+------------ | -------------
+**Info** | Triggers when progress is made towards the campaign's goal or when the broadcaster changes the fundraising goal.
+**Format** | `OnTWCharityProgress`
+**Example** | `OnTWCharityProgress`
+
+##### Parameters
+| | |
+------------ | -------------
+**charity** | The charity's name.
+**description** | A description of the charity.
+**website** | A URL to the charity's website.
+**current** | The current amount of donations that the campaign has received.
+**target** | The campaign's target fundraising goal.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWCharityStarted
+| | |
+------------ | -------------
+**Info** | Triggers when the broadcaster starts a charity campaign.
+**Format** | `OnTWCharityStarted`
+**Example** | `OnTWCharityStarted`
+
+##### Parameters
+| | |
+------------ | -------------
+**charity** | The charity's name.
+**description** | A description of the charity.
+**website** | A URL to the charity's website.
+**current** | The current amount of donations that the campaign has received.
+**target** | The campaign's target fundraising goal.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWCharityStopped
+| | |
+------------ | -------------
+**Info** | Triggers when the broadcaster stops a charity campaign.
+**Format** | `OnTWCharityStopped`
+**Example** | `OnTWCharityStopped`
+
+##### Parameters
+| | |
+------------ | -------------
+**charity** | The charity's name.
+**description** | A description of the charity.
+**website** | A URL to the charity's website.
+**current** | The current amount of donations that the campaign has received.
+**target** | The campaign's target fundraising goal.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWCheer
+| | |
+------------ | -------------
+**Info** | Triggers when a user cheers in the channel.
+**Format** | `OnTWCheer`
+**Example** | `OnTWCheer`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user id of the user who cheered.
+**login** | The user login of the user who cheered.
+**name** | The user display name of the user who cheered.
+**message** | The message sent with the cheer.
+**amount** | The number of bits cheered.
+**is_anonymous** | Whether the user cheered anonymously or not.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
 #### OnTWFollow
 | | |
 ------------ | -------------
@@ -3189,6 +3304,61 @@ _Note: Default channel point rewards are not supported: `Unlock a Random Sub Emo
 **description** | A description of the goal, if specified.
 **current** | The goal's current value.
 **target** | The goal's target value.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWHypeTrainEnd
+| | |
+------------ | -------------
+**Info** | Triggers when a Hype Train ends on the specified channel.
+**Format** | `OnTWHypeTrainEnd`
+**Example** | `OnTWHypeTrainEnd`
+
+##### Parameters
+| | |
+------------ | -------------
+**level** | The final level of the Hype Train.
+**bit_conductor** | The user display name of the top cheer contributor, if one exists.
+**sub_conductor** | The user display name of the top sub contributor, if one exists.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWHypeTrainProgress
+| | |
+------------ | -------------
+**Info** | Triggers when a Hype Train makes progress on the specified channel.
+**Format** | `OnTWHypeTrainProgress`
+**Example** | `OnTWHypeTrainProgress`
+
+##### Parameters
+| | |
+------------ | -------------
+**level** | The current level of the Hype Train.
+**progress** | Total points contributed to the Hype Train.
+**goal** | The number of points required to reach the next level.
+**bit_conductor** | The user display name of the top cheer contributor, if one exists.
+**sub_conductor** | The user display name of the top sub contributor, if one exists.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWHypeTrainStart
+| | |
+------------ | -------------
+**Info** | Triggers when Hype Train begins on the channel.
+**Format** | `OnTWHypeTrainStart`
+**Example** | `OnTWHypeTrainStart`
+
+##### Parameters
+| | |
+------------ | -------------
+**level** | The starting level of the Hype Train.
+**progress** | Total points contributed to the Hype Train.
+**goal** | The number of points required to reach the next level.
+**bit_conductor** | The user display name of the top cheer contributor, if one exists.
+**sub_conductor** | The user display name of the top sub contributor, if one exists.
 **data** | The complete Twitch EventSub event data (for use with [Function](#function)).
 
 ***
@@ -3391,6 +3561,24 @@ _Note: Bit voting is not currently supported, however Twitch provides these valu
 
 ***
 
+#### OnTWRaid
+| | |
+------------ | -------------
+**Info** | Triggers when another streamer raids the broadcaster's channel.
+**Format** | `OnTWRaid`
+**Example** | `OnTWRaid`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user id of the user who created the raid.
+**login** | The user login of the user who created the raid.
+**name** | The user display name of the user who created the raid.
+**raiders** | The number of viewers in the raid.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
 #### OnTWShieldStart
 | | |
 ------------ | -------------
@@ -3421,6 +3609,71 @@ _Note: Bit voting is not currently supported, however Twitch provides these valu
 **mod** | The user name of the moderator who deactivated shield mode.
 **mod_id** | The user id of the moderator who deactivated shield mode.
 **mod_login** | The user login of the moderator who deactivated shield mode.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWShoutout
+| | |
+------------ | -------------
+**Info** | Triggers when a moderator sends a shoutout in the channel.
+**Format** | `OnTWShoutout`
+**Example** | `OnTWShoutout`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user id of the user who received the shoutout.
+**login** | The user login of the user who received the shoutout.
+**name** | The user display name of the user who received the shoutout.
+**mod** | The user display name of the mod who created the shoutout.
+**viewers** | The number of users that were watching the stream at the time of the shoutout.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWShoutoutReceived
+| | |
+------------ | -------------
+**Info** | Triggers when the channel receives a shoutout from another broadcaster.
+**Format** | `OnTWShoutoutReceived`
+**Example** | `OnTWShoutoutReceived`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user id of the user who sent the shoutout.
+**login** | The user login of the user who sent the shoutout.
+**name** | The user display name of the user who sent the shoutout.
+**viewers** | The number of users watching the other stream at the time of the shoutout.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWStreamStarted
+| | |
+------------ | -------------
+**Info** | Triggers when the channel starts a stream.
+**Format** | `OnTWStreamStarted`
+**Example** | `OnTWStreamStarted`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWStreamStopped
+| | |
+------------ | -------------
+**Info** | Triggers when the channel stops a stream.
+**Format** | `OnTWStreamStopped`
+**Example** | `OnTWStreamStopped`
+
+##### Parameters
+| | |
+------------ | -------------
 **data** | The complete Twitch EventSub event data (for use with [Function](#function)).
 
 ***
@@ -3731,6 +3984,16 @@ Param Add i 1
 
 ***
 
+#### Twitch Commercial
+| | |
+------------ | -------------
+**Info** | Starts a commercial on the Twitch channel. `<optional_duration>` is the number of seconds for the commercial to run (default is 60). Note that Twitch tries to serve a commercial that's the requested length, but it may be shorter or longer. The maximum length you should request is 180 seconds.
+**Format** | `Twitch Commercial <optional_duration>`
+**Example** | `Twitch Commercial`
+**Example w/ Duration** | `Twitch Commercial 120`
+
+***
+
 #### Twitch Complete
 | | |
 ------------ | -------------
@@ -3749,6 +4012,16 @@ _Note: Due to a Twitch API restriction, in order for Kruiz Control to interact w
 **Info** | Create a copy of a channel point reward so that KC can manage the reward and redemptions. `<reward>` is the title of the channel point reward to copy. This action will create a copy of the reward with `kc_` in the title and will be disabled by default. The reward icon (image) will have to be re-added.
 **Format** | `Twitch Copy <reward>`
 **Example** | `Twitch Copy HeadPat`
+
+***
+
+#### Twitch CreateClip
+| | |
+------------ | -------------
+**Info** | Creates a clip from the broadcaster's stream. If `<optional_should_delay>` is included and set to `true`, then Twitch adds a delay before capturing the clip (this basically shifts the capture window to the right slightly). Otherwise, no delay is added.
+**Format** | `Twitch CreateClip <optional_should_delay>`
+**Example** | `Twitch CreateClip`
+**Example w/ optional_should_delay** | `Twitch CreateClip true`
 
 ***
 
@@ -3914,6 +4187,16 @@ _Note: Due to a Twitch API restriction, in order for Kruiz Control to interact w
 **is_gifted** | [true/false] `true` if the user's subscription was a gifted sub. Otherwise, `false`.
 **gifter** | If `is_gifted`, this will contain the name of the user who gifted the subscription.
 **tier** | `1`, `2` or `3`, depending on what Tier the subscribed user is.
+
+***
+
+#### Twitch Marker
+| | |
+------------ | -------------
+**Info** | Adds a marker to a live stream. A marker is an arbitrary point in a live stream that the broadcaster or editor wants to mark, so they can return to that spot later to create video highlights (see Video Producer, Highlights in the Twitch UX). `<optional_description>` is an optional short description of the marker to help remember why the location was marked. The maximum length of the description is 140 characters.
+**Format** | `Twitch Marker <optional_description>`
+**Example** | `Twitch Marker`
+**Example w/ description** | `Twitch Marker "Amazing goal!"`
 
 ***
 
@@ -4217,9 +4500,9 @@ _Note: Due to a Twitch API restriction, in order for Kruiz Control to interact w
 #### Twitch Shoutout
 | | |
 ------------ | -------------
-**Info** | Raid another channel by sending the broadcaster's viewers to the targeted channel. `<user>` is the Twitch channel to raid.
-**Format** | `Twitch Raid <user>`
-**Example** | `Twitch Raid testUser`
+**Info** | Sends a Shoutout to the specified channel. `<user>` is the Twitch channel to shoutout.
+**Format** | `Twitch Shoutout <user>`
+**Example** | `Twitch Shoutout testUser`
 
 ***
 
