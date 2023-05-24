@@ -245,7 +245,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnCommunityGoalComplete](#oncommunitygoalcomplete)
     + [OnCommunityGoalProgress](#oncommunitygoalprogress)
     + [OnCommunityGoalStart](#oncommunitygoalstart)
-    + [OnTWBan](#ontwchannelupdate)
+    + [OnTWBan](#ontwban)
     + [OnTWChannelPoint](#ontwchannelpoint)
     + [OnTWChannelPointCompleted](#ontwchannelpointcompleted)
     + [OnTWChannelPointRejected](#ontwchannelpointrejected)
@@ -268,7 +268,13 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnTWPoll](#ontwpoll)
     + [OnTWPollUpdate](#ontwpollupdate)
     + [OnTWPollEnd](#ontwpollend)
+    + [OnTWPrediction](#ontwprediction)
+    + [OnTWPredictionEnd](#ontwpollend)
+    + [OnTWPredictionLock](#ontwpredictionlock)
+    + [OnTWPredictionUpdate](#ontwpredictionupdate)
     + [OnTWRaid](#ontwraid)
+    + [OnTWShieldStart](#ontwshieldstart)
+    + [OnTWShieldStop](#ontwshieldstop)
     + [OnTWShoutout](#ontwshoutout)
     + [OnTWShoutoutReceived](#ontwshoutoutreceived)
     + [OnTWStreamStarted](#ontwstreamstarted)
@@ -518,7 +524,7 @@ Enables the ability to create your own actions within Kruiz Control.
 **Info** | Used to run an action by passing it through. This allows actions to be fired dynamically within an event. `<action>` is the full action that you want to complete. The action can be provided as a single argument (inside of quotes) or written out normally.
 **Format** | `Action <action>`
 **Example** | `Action Chat Send "Hello world"`
-**Example w/ single argument** | `Action "Chat Send 'Hello world'"`
+**Example w/ Single Argument** | `Action "Chat Send 'Hello world'"`
 
 ***
 
@@ -973,7 +979,7 @@ None at the moment.
 ------------ | -------------
 **Info** | Used to upload a file attachment with a discord message. `<name>` is the id that was used to register the webhook in a [`Discord Create`](#discord-create). `<file>` is the relative path to a file to upload. Relative paths start at the Kruiz Control root directory.
 **Format** | `Discord File <name> <file>`
-**Example w/ relative path** | `Discord File "GeneralChannel" "screenshots/screenshot.png"`
+**Example w/ Relative Path** | `Discord File "GeneralChannel" "screenshots/screenshot.png"`
 
 ***
 
@@ -2848,7 +2854,7 @@ None at the moment.
 **Info** | Used to read a message with the specified voice. `<voice>` is the name of a voice from your computer's narration system. You can check the available voices by using [`TTS Voices`](#tts-voices). `<volume>`, `<pitch>`, and `<rate>` are all numbers between 0 and 100. If a non-numerical value is provided, the default is used. `<wait/nowait>` determines whether or not the script waits until the audio is done playing before completing the next action. `<message>` is the text to read in the audio.
 **Format** | `TTS <voice> <volume> <pitch> <rate> <wait/nowait> <message>`
 **Example** | `TTS "Microsoft David - English (United States)" 70 50 20 wait "Hey there!"`
-**Example w/ default pitch & rate** | `TTS "Microsoft David - English (United States)" 70 - - wait "Hey there!"`
+**Example w/ Default Pitch & Rate** | `TTS "Microsoft David - English (United States)" 70 - - wait "Hey there!"`
 
 _Note: For backwards compatibility, the `<pitch>` and `<rate>` inputs are optional, but they are both required if one of them is provided._
 
@@ -3035,9 +3041,9 @@ _Note: Default channel point rewards are not supported: `Unlock a Random Sub Emo
 ##### Parameters
 | | |
 ------------ | -------------
-**id** | The user id for the user who was banned.
-**login** | The user login for the user who was banned.
-**name** | The user display name for the user who was banned.
+**id** | The user id of the user who was banned.
+**login** | The user login of the user who was banned.
+**name** | The user display name of the user who was banned.
 **mod** | The user name of the issuer of the ban.
 **reason** | The reason given for the ban.
 **data** | The complete Twitch EventSub event data (for use with [Function](#function)).
@@ -3229,9 +3235,9 @@ _Note: Default channel point rewards are not supported: `Unlock a Random Sub Emo
 ##### Parameters
 | | |
 ------------ | -------------
-**id** | The user ID for the user now following.
-**login** | The user login for the user now following.
-**name** | The user display name for the user now following.
+**id** | The user ID of the user now following.
+**login** | The user login of the user now following.
+**name** | The user display name of the user now following.
 **data** | The complete Twitch EventSub event data (for use with [Function](#function)).
 
 ***
@@ -3495,19 +3501,18 @@ _Note: Bit voting is not currently supported, however Twitch provides these valu
 
 ***
 
-#### OnTWPredictionUpdate
+#### OnTWPredictionEnd
 | | |
 ------------ | -------------
-**Info** | Triggers when user participates in a prediction in the channel.
-**Format** | `OnTWPredictionUpdate`
-**Example** | `OnTWPredictionUpdate`
+**Info** | Triggers when a prediction ends on the channel. This does not trigger if the prediction is canceled.
+**Format** | `OnTWPredictionEnd`
+**Example** | `OnTWPredictionEnd`
 
 ##### Parameters
 | | |
 ------------ | -------------
 **title** | The title of the prediction.
-**duration** | The duration (in seconds) of the prediction.
-**time_left** | The time left (in seconds) for the prediction.
+**result** | The winning prediction outcome.
 **outcome_count** | The number of outcomes (options, etc.) in the prediction.
 **outcome#** | The text displayed for the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`.
 **outcome_color#** | The color of the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`.
@@ -3537,20 +3542,22 @@ _Note: Bit voting is not currently supported, however Twitch provides these valu
 **outcome_id#** | The id of the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`.
 **data** | The complete Twitch EventSub event data (for use with [Function](#function)).
 
+
 ***
 
-#### OnTWPredictionEnd
+#### OnTWPredictionUpdate
 | | |
 ------------ | -------------
-**Info** | Triggers when a prediction ends on the channel. This does not trigger if the prediction is canceled.
-**Format** | `OnTWPredictionEnd`
-**Example** | `OnTWPredictionEnd`
+**Info** | Triggers when user participates in a prediction in the channel.
+**Format** | `OnTWPredictionUpdate`
+**Example** | `OnTWPredictionUpdate`
 
 ##### Parameters
 | | |
 ------------ | -------------
 **title** | The title of the prediction.
-**result** | The winning prediction outcome.
+**duration** | The duration (in seconds) of the prediction.
+**time_left** | The time left (in seconds) for the prediction.
 **outcome_count** | The number of outcomes (options, etc.) in the prediction.
 **outcome#** | The text displayed for the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`.
 **outcome_color#** | The color of the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`.
@@ -3749,9 +3756,9 @@ _Note: Bit voting is not currently supported, however Twitch provides these valu
 ##### Parameters
 | | |
 ------------ | -------------
-**id** | The user id for the user who was timed out.
-**login** | The user login for the user who was timed out.
-**name** | The user display name for the user who was timed out.
+**id** | The user id of the user who was timed out.
+**login** | The user login of the user who was timed out.
+**name** | The user display name of the user who was timed out.
 **mod** | The user name of the issuer of the timeout.
 **reason** | The reason given for the timeout.
 **data** | The complete Twitch EventSub event data (for use with [Function](#function)).
@@ -3768,9 +3775,9 @@ _Note: Bit voting is not currently supported, however Twitch provides these valu
 ##### Parameters
 | | |
 ------------ | -------------
-**id** | The user id for the user who was unbanned.
-**login** | The user login for the user who was unbanned.
-**name** | The user display name for the user who was unbanned.
+**id** | The user id of the user who was unbanned.
+**login** | The user login of the user who was unbanned.
+**name** | The user display name of the user who was unbanned.
 **mod** | The user name of the issuer of the unban.
 **data** | The complete Twitch EventSub event data (for use with [Function](#function)).
 

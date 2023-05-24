@@ -1086,7 +1086,6 @@ class TwitchHandler extends Handler {
         }
         break;
       case 'chatters':
-      case 'viewers':
         var chatters = await this.api.getAllChatters(this.channelId, this.channelId);
 
         var userArgs = {};
@@ -1410,6 +1409,19 @@ class TwitchHandler extends Handler {
         var { reward_id, redemption_id } = Parser.getInputs(triggerData, ['action', 'reward_id', 'redemption_id']);
         await this.api.updateRedemptionStatus(this.channelId, reward_id, redemption_id, 'CANCELED');
         break;
+      case 'removeblockedterm':
+        var { terms } = Parser.getInputs(triggerData, ['action', 'terms'], true);
+
+        for (var i = 0; i < terms.length; i++) {
+          var term_id = await this.api.getBlockedTermId(this.channelId, this.channelId, terms[i]);
+          if (term_id === undefined) {
+            console.error(`Unable to find blocked term: ${terms[i]}`);
+            continue;
+          }
+
+          await this.api.removeBlockedTerm(this.channelId, this.channelId, term_id);
+        }
+        break;
       case 'reward':
         var { reward, status } = Parser.getInputs(triggerData, ['action', 'reward', 'status']);
 
@@ -1445,19 +1457,6 @@ class TwitchHandler extends Handler {
               return;
             }
           }
-        }
-        break;
-      case 'removeblockedterm':
-        var { terms } = Parser.getInputs(triggerData, ['action', 'terms'], true);
-
-        for (var i = 0; i < terms.length; i++) {
-          var term_id = await this.api.getBlockedTermId(this.channelId, this.channelId, terms[i]);
-          if (term_id === undefined) {
-            console.error(`Unable to find blocked term: ${terms[i]}`);
-            continue;
-          }
-
-          await this.api.removeBlockedTerm(this.channelId, this.channelId, term_id);
         }
         break;
       case 'shield':
