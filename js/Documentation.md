@@ -1634,6 +1634,15 @@ Enables the ability to interact with and respond to OBS.
 
 ***
 
+#### OBS Image
+| | |
+------------ | -------------
+**Info** | Used to set the file path of an image source. `<source>` is the name of the source. `<path>` is the absolute path to the file.
+**Format** | `OBS Image <source> <path>`
+**Example** | `OBS Image RecordingDot "C:/Users/YOUR_USER_NAME/Stream/recording.png"`
+
+***
+
 #### OBS IsSceneSourceVisible
 | | |
 ------------ | -------------
