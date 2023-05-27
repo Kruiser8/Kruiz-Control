@@ -3,45 +3,26 @@ class TwitchHandler extends Handler {
    * Create a new Timer handler.
    */
   constructor() {
-    super('Twitch', ['OnChannelPoint', 'OnCommunityGoalStart', 'OnCommunityGoalProgress', 'OnCommunityGoalComplete', 'OnHypeTrainStart', 'OnHypeTrainEnd', 'OnHypeTrainLevel', 'OnHypeTrainProgress', 'OnHypeTrainConductor', 'OnHypeTrainCooldownExpired', 'OnTWChannelUpdate', 'OnTWFollow', 'OnTWSub', 'OnTWSubEnd', 'OnTWSubGift', 'OnTWSubMessage', 'OnTWCheer', 'OnTWRaid', 'OnTWBan', 'OnTWTimeout', 'OnTWUnban', 'OnTWModAdd', 'OnTWModRemove', 'OnTWChannelPoint', 'OnTWChannelPointCompleted', 'OnTWChannelPointRejected', 'OnTWPoll', 'OnTWPollUpdate', 'OnTWPollEnd', 'OnTWPrediction', 'OnTWPredictionUpdate', 'OnTWPredictionLock', 'OnTWPredictionEnd', 'OnTWHypeTrainStart', 'OnTWHypeTrainProgress', 'OnTWHypeTrainEnd', 'OnTWCharityDonation', 'OnTWCharityStarted', 'OnTWCharityProgress', 'OnTWCharityStopped', 'OnTWShieldStarted', 'OnTWShieldStopped', 'OnTWShoutout', 'OnTWShoutoutReceived', 'OnTWGoalStarted', 'OnTWGoalProgress', 'OnTWGoalCompleted', 'OnTWGoalFailed', 'OnTWStreamStarted', 'OnTWStreamStopped']);
+    super('Twitch', ['OnTWCommunityGoalStart', 'OnTWCommunityGoalProgress', 'OnTWCommunityGoalComplete', 'OnTWChannelUpdate', 'OnTWFollow', 'OnTWSub', 'OnTWSubEnd', 'OnTWSubGift', 'OnTWSubMessage', 'OnTWCheer', 'OnTWRaid', 'OnTWBan', 'OnTWTimeout', 'OnTWUnban', 'OnTWModAdd', 'OnTWModRemove', 'OnTWChannelPoint', 'OnTWChannelPointCompleted', 'OnTWChannelPointRejected', 'OnTWPoll', 'OnTWPollUpdate', 'OnTWPollEnd', 'OnTWPrediction', 'OnTWPredictionUpdate', 'OnTWPredictionLock', 'OnTWPredictionEnd', 'OnTWHypeTrainStart', 'OnTWHypeTrainProgress', 'OnTWHypeTrainEnd', 'OnTWCharityDonation', 'OnTWCharityStarted', 'OnTWCharityProgress', 'OnTWCharityStopped', 'OnTWShieldStarted', 'OnTWShieldStopped', 'OnTWShoutout', 'OnTWShoutoutReceived', 'OnTWGoalStarted', 'OnTWGoalProgress', 'OnTWGoalCompleted', 'OnTWGoalFailed', 'OnTWStreamStarted', 'OnTWStreamStopped']);
     this.rewards = [];
     this.rewardsTrigger = {};
+    this.completedRewards = [];
+    this.completedRewardsTrigger = {};
+    this.rejectedRewards = [];
+    this.rejectedRewardsTrigger = {};
     this.goals = [];
     this.goalsTrigger = {};
     this.complete = [];
     this.completeTrigger = {};
     this.start = [];
     this.startTrigger = {};
-    this.hypeTrains = [];
-    this.hypeTrainsTrigger = {
-      'start': [],
-      'end': [],
-      'level': [],
-      'progress': [],
-      'conductor': [],
-      'cooldown': []
-    };
-    this.hypeTrainsMap = {
-      'onhypetrainstart': 'start',
-      'onhypetrainend': 'end',
-      'onhypetrainlevel': 'level',
-      'onhypetrainprogress': 'progress',
-      'onhypetrainconductor': 'conductor',
-      'onhypetraincooldownexpired': 'cooldown'
-    };
-    this.currentConductor = {
-      'SUBS': '',
-      'BITS': ''
-    }
 
     this.eventSubs = [];
     this.eventSubTrigger = {};
 
     this.init.bind(this);
     this.onMessage.bind(this);
-    this.onChannelPointMessage.bind(this);
     this.onCommunityGoalMessage.bind(this);
-    this.onHypeTrainMessage.bind(this);
     this.onEventMessage.bind(this);
     this.initializePoll.bind(this);
     this.initializePrediction.bind(this);
@@ -99,19 +80,7 @@ class TwitchHandler extends Handler {
   addTriggerData(trigger, triggerLine, triggerId) {
     trigger = trigger.toLowerCase();
     switch (trigger) {
-      case 'onchannelpoint':
-        var { rewards } = Parser.getInputs(triggerLine, ['rewards'], true);
-        rewards.forEach(reward => {
-          if (this.rewards.indexOf(reward) !== -1) {
-            this.rewardsTrigger[reward].push(triggerId);
-          } else {
-            this.rewardsTrigger[reward] = [];
-            this.rewards.push(reward);
-            this.rewardsTrigger[reward].push(triggerId);
-          }
-        });
-        break;
-      case 'oncommunitygoalprogress':
+      case 'ontwcommunitygoalprogress':
         var { goals } = Parser.getInputs(triggerLine, ['goals'], true);
         goals.forEach(goal => {
           if (this.goals.indexOf(goal) !== -1) {
@@ -123,7 +92,7 @@ class TwitchHandler extends Handler {
           }
         });
         break;
-      case 'oncommunitygoalcomplete':
+      case 'ontwcommunitygoalcomplete':
         var { goals } = Parser.getInputs(triggerLine, ['goals'], true);
         goals.forEach(goal => {
           if (this.complete.indexOf(goal) !== -1) {
@@ -135,7 +104,7 @@ class TwitchHandler extends Handler {
           }
         });
         break;
-      case 'oncommunitygoalstart':
+      case 'ontwcommunitygoalstart':
         var { goals } = Parser.getInputs(triggerLine, ['goals'], true);
         goals.forEach(goal => {
           if (this.start.indexOf(goal) !== -1) {
@@ -147,21 +116,39 @@ class TwitchHandler extends Handler {
           }
         });
         break;
-      case 'onhypetrainstart':
-      case 'onhypetrainend':
-      case 'onhypetrainconductor':
-      case 'onhypetrainlevel':
-      case 'onhypetrainprogress':
-      case 'onhypetraincooldownexpired':
-        var key = this.hypeTrainsMap[trigger];
-        if (this.hypeTrains.indexOf(key) !== -1) {
-          this.hypeTrainsTrigger[key].push(triggerId);
-        } else {
-          this.hypeTrainsTrigger[key] = [];
-          this.hypeTrains.push(key);
-          this.hypeTrainsTrigger[key].push(triggerId);
-        }
-        break;
+      case 'ontwchannelpoint':
+        var { rewards } = Parser.getInputs(triggerLine, ['rewards'], true);
+        rewards.forEach(reward => {
+          if (this.rewards.indexOf(reward) !== -1) {
+            this.rewardsTrigger[reward].push(triggerId);
+          } else {
+            this.rewardsTrigger[reward] = [];
+            this.rewards.push(reward);
+            this.rewardsTrigger[reward].push(triggerId);
+          }
+        });
+      case 'ontwchannelpointcompleted':
+        var { rewards } = Parser.getInputs(triggerLine, ['rewards'], true);
+        rewards.forEach(reward => {
+          if (this.completedRewards.indexOf(reward) !== -1) {
+            this.completedRewardsTrigger[reward].push(triggerId);
+          } else {
+            this.completedRewardsTrigger[reward] = [];
+            this.completedRewards.push(reward);
+            this.completedRewardsTrigger[reward].push(triggerId);
+          }
+        });
+      case 'ontwchannelpointrejected':
+        var { rewards } = Parser.getInputs(triggerLine, ['rewards'], true);
+        rewards.forEach(reward => {
+          if (this.rejectedRewards.indexOf(reward) !== -1) {
+            this.rejectedRewardsTrigger[reward].push(triggerId);
+          } else {
+            this.rejectedRewardsTrigger[reward] = [];
+            this.rejectedRewards.push(reward);
+            this.rejectedRewardsTrigger[reward].push(triggerId);
+          }
+        });
       default:
         if (this.eventSubs.indexOf(trigger) === -1) {
           this.eventSubs.push(trigger);
@@ -186,62 +173,10 @@ class TwitchHandler extends Handler {
         this.success();
       } else if (data.type == 'MESSAGE' && data.data.topic.startsWith('community-points-channel-v1.')) {
         var dataMessage = JSON.parse(data.data.message);
-        if (dataMessage.type === 'reward-redeemed') {
-          this.onChannelPointMessage(dataMessage);
-        } else if (dataMessage.type === 'community-goal-contribution' || dataMessage.type === 'community-goal-updated') {
+        if (dataMessage.type === 'community-goal-contribution' || dataMessage.type === 'community-goal-updated') {
           this.onCommunityGoalMessage(dataMessage);
         }
-      } else if (data.type == 'MESSAGE' && data.data.topic.startsWith('hype-train-events-v1.')) {
-        this.onHypeTrainMessage(JSON.parse(data.data.message));
       }
-    }
-  }
-
-  /**
-   * Handle event messages from twitch pubsub websocket for channel points.
-   * @param {Object} message twitch channel point data
-   */
-  onChannelPointMessage(message) {
-    // Check if tracking reward
-    var reward = message.data.redemption.reward.title;
-    var reward_id = message.data.redemption.reward.id;
-    var redemption_id = message.data.redemption.id;
-    var onChannelPointTriggers = [];
-    if (this.rewards.indexOf(reward) !== -1) {
-
-      // Grab data to return
-      var user = message.data.redemption.user.display_name;
-      var input = '';
-      if ('undefined' !== typeof(message.data.redemption.user_input)) {
-        input = message.data.redemption.user_input;
-      }
-
-      // Handle triggers
-      onChannelPointTriggers.push(...this.rewardsTrigger[reward]);
-    }
-    if (this.rewards.indexOf('*') !== -1) {
-      // Grab data to return
-      var user = message.data.redemption.user.display_name;
-      var input = '';
-      if ('undefined' !== typeof(message.data.redemption.user_input)) {
-        input = message.data.redemption.user_input;
-      }
-
-      // Handle triggers
-      onChannelPointTriggers.push(...this.rewardsTrigger['*']);
-    }
-    if (onChannelPointTriggers.length > 0) {
-      onChannelPointTriggers.sort((a,b) => a-b);
-      onChannelPointTriggers.forEach(triggerId => {
-        controller.handleData(triggerId, {
-          reward_id,
-          redemption_id,
-          reward,
-          user,
-          message: input,
-          data: message
-        });
-      });
     }
   }
 
@@ -311,72 +246,6 @@ class TwitchHandler extends Handler {
           });
         })
       }
-    }
-  }
-
-  /**
-   * Handle hype train messages from twitch pubsub websocket.
-   * @param {Object} message twitch hype train data
-   */
-  onHypeTrainMessage(message) {
-    if (message.type === 'hype-train-start') {
-      this.currentConductor = {
-        'SUBS': '',
-        'BITS': ''
-      };
-      // Handle triggers
-      this.hypeTrainsTrigger['start'].forEach(triggerId => {
-        controller.handleData(triggerId, {
-          data: message.data
-        });
-      });
-    } else if (message.type === 'hype-train-end') {
-      // Handle triggers
-      this.hypeTrainsTrigger['end'].forEach(triggerId => {
-        controller.handleData(triggerId, {
-          sub_conductor_id: this.currentConductor['SUBS'],
-          cheer_conductor_id: this.currentConductor['BITS'],
-          data: message.data
-        });
-      });
-    } else if (message.type === 'hype-train-conductor-update') {
-      // Handle triggers
-      this.currentConductor[message.data.source] = message.data.user.id;
-      this.hypeTrainsTrigger['conductor'].forEach(triggerId => {
-        controller.handleData(triggerId, {
-          sub_conductor_id: this.currentConductor['SUBS'],
-          cheer_conductor_id: this.currentConductor['BITS'],
-          type: message.data.source,
-          data: message.data
-        });
-      });
-    } else if (message.type === 'hype-train-progression') {
-      // Handle triggers
-      this.hypeTrainsTrigger['progress'].forEach(triggerId => {
-        controller.handleData(triggerId, {
-          user_id: message.data.user_id,
-          level: message.data.progress.level.value,
-          progress: message.data.progress.total,
-          total: message.data.progress.level.goal,
-          time: message.data.progress.remaining_seconds,
-          data: message.data
-        });
-      });
-    } else if (message.type === 'hype-train-level-up') {
-      // Handle triggers
-      this.hypeTrainsTrigger['level'].forEach(triggerId => {
-        controller.handleData(triggerId, {
-          level: message.data.progress.level.value,
-          progress: message.data.progress.total,
-          total: message.data.progress.level.goal,
-          time: message.data.progress.remaining_seconds,
-          data: message.data
-        });
-      });
-    } else if (message.type === 'hype-train-cooldown-expiration') {
-      this.hypeTrainsTrigger['cooldown'].forEach(triggerId => {
-        controller.handleData(triggerId);
-      });
     }
   }
 
@@ -534,41 +403,92 @@ class TwitchHandler extends Handler {
         break;
       case 'channel.channel_points_custom_reward_redemption.add':
         this.eventSubTrigger['ontwchannelpoint']?.forEach(triggerId => {
-          controller.handleData(triggerId, {
-            data: event,
-            id: event.user_id,
-            login: event.user_login,
-            name: event.user_name,
-            reward: event.reward.title,
-            redemption_id: event.id,
-            reward_id: event.reward.id
-          });
+          var reward = event.reward.title;
+          var onChannelPointTriggers = [];
+
+          if (this.rewards.indexOf(reward) !== -1) {
+            // Handle triggers
+            onChannelPointTriggers.push(...this.rewardsTrigger[reward]);
+          }
+          if (this.rewards.indexOf('*') !== -1) {
+            // Handle triggers
+            onChannelPointTriggers.push(...this.rewardsTrigger['*']);
+          }
+
+          if (onChannelPointTriggers.length > 0) {
+            onChannelPointTriggers.sort((a,b) => a-b);
+            onChannelPointTriggers.forEach(triggerId => {
+              controller.handleData(triggerId, {
+                data: event,
+                id: event.user_id,
+                login: event.user_login,
+                name: event.user_name,
+                reward: event.reward.title,
+                redemption_id: event.id,
+                reward_id: event.reward.id
+              });
+            });
+          }
         });
         break;
       case 'channel.channel_points_custom_reward_redemption.update':
         if (event.status === 'fulfilled') {
           this.eventSubTrigger['ontwchannelpointcompleted']?.forEach(triggerId => {
-            controller.handleData(triggerId, {
-              data: event,
-              id: event.user_id,
-              login: event.user_login,
-              name: event.user_name,
-              reward: event.reward.title,
-              redemption_id: event.id,
-              reward_id: event.reward.id
-            });
+            var reward = event.reward.title;
+            var onChannelPointTriggers = [];
+
+            if (this.completedRewards.indexOf(reward) !== -1) {
+              // Handle triggers
+              onChannelPointTriggers.push(...this.completedRewardsTrigger[reward]);
+            }
+            if (this.completedRewards.indexOf('*') !== -1) {
+              // Handle triggers
+              onChannelPointTriggers.push(...this.completedRewardsTrigger['*']);
+            }
+
+            if (onChannelPointTriggers.length > 0) {
+              onChannelPointTriggers.sort((a,b) => a-b);
+              onChannelPointTriggers.forEach(triggerId => {
+                controller.handleData(triggerId, {
+                  data: event,
+                  id: event.user_id,
+                  login: event.user_login,
+                  name: event.user_name,
+                  reward: event.reward.title,
+                  redemption_id: event.id,
+                  reward_id: event.reward.id
+                });
+              });
+            }
           });
         } else if (event.status === 'canceled') {
           this.eventSubTrigger['ontwchannelpointrejected']?.forEach(triggerId => {
-            controller.handleData(triggerId, {
-              data: event,
-              id: event.user_id,
-              login: event.user_login,
-              name: event.user_name,
-              reward: event.reward.title,
-              redemption_id: event.id,
-              reward_id: event.reward.id
-            });
+            var reward = event.reward.title;
+            var onChannelPointTriggers = [];
+
+            if (this.rejectedRewards.indexOf(reward) !== -1) {
+              // Handle triggers
+              onChannelPointTriggers.push(...this.rejectedRewardsTrigger[reward]);
+            }
+            if (this.rejectedRewards.indexOf('*') !== -1) {
+              // Handle triggers
+              onChannelPointTriggers.push(...this.rejectedRewardsTrigger['*']);
+            }
+
+            if (onChannelPointTriggers.length > 0) {
+              onChannelPointTriggers.sort((a,b) => a-b);
+              onChannelPointTriggers.forEach(triggerId => {
+                controller.handleData(triggerId, {
+                  data: event,
+                  id: event.user_id,
+                  login: event.user_login,
+                  name: event.user_name,
+                  reward: event.reward.title,
+                  redemption_id: event.id,
+                  reward_id: event.reward.id
+                });
+              });
+            }
           });
         }
         break;

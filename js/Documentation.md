@@ -72,15 +72,6 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Discord Title](#discord-title)
     + [Discord Update](#discord-update)
     + [Discord Url](#discord-url)
-- [Hype Train](#hype-train)
-  * [Triggers](#hype-train-triggers)
-    + [OnHypeTrainCooldownExpired](#onhypetraincooldownexpired)
-    + [OnHypeTrainConductor](#onhypetrainconductor)
-    + [OnHypeTrainEnd](#onhypetrainend)
-    + [OnHypeTrainLevel](#onhypetrainlevel)
-    + [OnHypeTrainProgress](#onhypetrainprogress)
-    + [OnHypeTrainStart](#onhypetrainstart)
-  * [Actions](#hype-train-actions)
 - [List](#list)
   * [Triggers](#list-triggers)
   * [Actions](#list-actions)
@@ -242,10 +233,9 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Timer Stop](#timer-stop)
 - [Twitch](#twitch)
   * [Triggers](#twitch-triggers)
-    + [OnChannelPoint](#onchannelpoint)
-    + [OnCommunityGoalComplete](#oncommunitygoalcomplete)
-    + [OnCommunityGoalProgress](#oncommunitygoalprogress)
-    + [OnCommunityGoalStart](#oncommunitygoalstart)
+    + [OnTWCommunityGoalComplete](#ontwcommunitygoalcomplete)
+    + [OnTWCommunityGoalProgress](#ontwcommunitygoalprogress)
+    + [OnTWCommunityGoalStart](#ontwcommunitygoalstart)
     + [OnTWBan](#ontwban)
     + [OnTWChannelPoint](#ontwchannelpoint)
     + [OnTWChannelPointCompleted](#ontwchannelpointcompleted)
@@ -472,10 +462,10 @@ The commands, `!so`, `!sh`, `!caster`, and `!shout` will all cause the message t
 - OnKeyword
 - OnSpeak
 - OnMessage
-- OnChannelPoint
-- OnCommunityGoalStart
-- OnCommunityGoalProgress
-- OnCommunityGoalComplete
+- OnTWChannelPoint
+- OnTWCommunityGoalStart
+- OnTWCommunityGoalProgress
+- OnTWCommunityGoalComplete
 - OnOBSSwitchScenes
 - OnOBSTransitionTo
 - OnOBSCustomMessage
@@ -1071,109 +1061,6 @@ None at the moment.
 **Info** | Used to add a link to the discord embed title. `<name>` is the id that was used to register the webhook in a [`Discord Create`](#discord-create). `<url>` is the link URL for the embed.
 **Format** | `Discord Url <name> <url>`
 **Example** | `Discord Url "GeneralChannel" "https://twitch.tv/kruiser8"`
-
-***
-
-## Hype Train
-A handler to allow you to trigger events from twitch hype trains.
-
-### Hype Train Triggers
-
-#### OnHypeTrainCooldownExpired
-| | |
------------- | -------------
-**Info** | Used to fire a set of actions when the hype train is no longer on cooldown and can be triggered again.
-**Format** | `OnHypeTrainCooldownExpired`
-**Example** | `OnHypeTrainCooldownExpired`
-
-***
-
-#### OnHypeTrainConductor
-| | |
------------- | -------------
-**Info** | Used to fire a set of actions when the conductor is changed for a given type (sub or cheer). Note that this fires every time progress is made in the hype train regardless of if the conductor changes.
-**Format** | `OnHypeTrainConductor`
-**Example** | `OnHypeTrainConductor`
-
-##### Parameters
-| | |
------------- | -------------
-**cheer_conductor_id** | Id of the current cheer conductor if one exists.
-**sub_conductor_id** | Id of the current sub conductor if one exists.
-**type** | `SUBS` or `CHEER` to designate the type of conductor changed.
-**data** | Data included with the message.
-
-***
-
-#### OnHypeTrainEnd
-| | |
------------- | -------------
-**Info** | Used to fire a set of actions when the hype train ends.
-**Format** | `OnHypeTrainEnd`
-**Example** | `OnHypeTrainEnd`
-
-##### Parameters
-| | |
------------- | -------------
-**cheer_conductor_id** | Id of the current cheer conductor if one exists.
-**sub_conductor_id** | Id of the current sub conductor if one exists.
-**data** | Data included with the message.
-
-***
-
-#### OnHypeTrainLevel
-| | |
------------- | -------------
-**Info** | Used to fire a set of actions when the hype train levels up.
-**Format** | `OnHypeTrainLevel`
-**Example** | `OnHypeTrainLevel`
-
-##### Parameters
-| | |
------------- | -------------
-**level** | The current level of the hype train.
-**progress** | The current progress towards the next level (designated by `total`).
-**total** | The amount needed to reach the next level in the hype train.
-**time** | The amount of seconds left in the hype train.
-**data** | Data included with the message.
-
-***
-
-#### OnHypeTrainProgress
-| | |
------------- | -------------
-**Info** | Used to fire a set of actions when someone contributes to the hype train.
-**Format** | `OnHypeTrainProgress`
-**Example** | `OnHypeTrainProgress`
-
-##### Parameters
-| | |
------------- | -------------
-**user_id** | The twitch id of the user that contributed.
-**level** | The current level of the hype train.
-**progress** | The current progress towards the next level (designated by `total`).
-**total** | The amount needed to reach the next level in the hype train.
-**time** | The amount of seconds left in the hype train.
-**data** | Data included with the message.
-
-***
-
-#### OnHypeTrainStart
-| | |
------------- | -------------
-**Info** | Used to fire a set of actions when a hype train starts.
-**Format** | `OnHypeTrainStart`
-**Example** | `OnHypeTrainStart`
-
-##### Parameters
-| | |
------------- | -------------
-**data** | Data included with the message.
-
-***
-
-### Hype Train Actions
-None at the moment.
 
 ***
 
@@ -2958,29 +2845,6 @@ Enables the ability to run actions when channel point rewards are redeemed.
 
 ### Twitch Triggers
 
-#### OnChannelPoint
-| | |
------------- | -------------
-**Info** | Used to trigger a set of actions when a channel point reward is redeemed. Using `*` as the `<reward_name>` will execute the trigger for all channel point rewards.
-**Format** | `OnChannelPoint <reward_name>`
-**Format w/ Aliases** | `OnChannelPoint <reward_name1> <reward_name2> ...`
-**Example** | `OnChannelPoint "Example Reward"`
-**Example w/ Aliases** | `OnChannelPoint "Resize" "Left View"`
-
-_Note: Default channel point rewards are not supported: `Unlock a Random Sub Emote`, `Send a Message in Sub-Only Mode`, `Choose an Emote to Unlock`, `Highlight My Message`, and `Modify a Single Emote`._
-
-##### Parameters
-| | |
------------- | -------------
-**reward** | The name of the channel point reward that was redeemed.
-**user** | The display name of the user that redeemed the channel point reward.
-**reward_id** | The id of the channel point reward (used with [Twitch Complete](#twitch-complete) or [Twitch Reject](#twitch-reject)).
-**redemption_id** | The id of the channel point redemption (used with [Twitch Complete](#twitch-complete) or [Twitch Reject](#twitch-reject)).
-**message** | The message included with the channel point redemption (if one is provided)
-**data** | The complete json channel point message (for use with [Function](#function)).
-
-***
-
 #### OnCommunityGoalComplete
 | | |
 ------------ | -------------
@@ -3062,9 +2926,11 @@ _Note: Default channel point rewards are not supported: `Unlock a Random Sub Emo
 #### OnTWChannelPoint
 | | |
 ------------ | -------------
-**Info** | Triggers when a viewer has redeemed a custom channel points reward.
-**Format** | `OnTWChannelPoint`
-**Example** | `OnTWChannelPoint`
+**Info** | Used to trigger a set of actions when a channel point reward is redeemed. Using `*` as the `<reward_name>` will execute the trigger for all channel point rewards.
+**Format** | `OnTWChannelPoint <reward_name>`
+**Format w/ Aliases** | `OnTWChannelPoint <reward_name1> <reward_name2> ...`
+**Example** | `OnTWChannelPoint "Example Reward"`
+**Example w/ Aliases** | `OnTWChannelPoint "Resize" "Left View"`
 
 ##### Parameters
 | | |
@@ -3082,9 +2948,11 @@ _Note: Default channel point rewards are not supported: `Unlock a Random Sub Emo
 #### OnTWChannelPointCompleted
 | | |
 ------------ | -------------
-**Info** | Triggers when a channel point redemption has been marked as completed.
-**Format** | `OnTWChannelPointCompleted`
-**Example** | `OnTWChannelPointCompleted`
+**Info** | Triggers when a channel point redemption has been marked as completed. Using `*` as the `<reward_name>` will execute the trigger for all channel point rewards.
+**Format** | `OnTWChannelPointCompleted <reward_name>`
+**Format w/ Aliases** | `OnTWChannelPointCompleted <reward_name1> <reward_name2> ...`
+**Example** | `OnTWChannelPointCompleted "Example Reward"`
+**Example w/ Aliases** | `OnTWChannelPointCompleted "Resize" "Left View"`
 
 ##### Parameters
 | | |
@@ -3102,9 +2970,11 @@ _Note: Default channel point rewards are not supported: `Unlock a Random Sub Emo
 #### OnTWChannelPointRejected
 | | |
 ------------ | -------------
-**Info** | Triggers when a channel point redemption has been rejected and points are refunded to the user.
-**Format** | `OnTWChannelPointCompleted`
-**Example** | `OnTWChannelPointCompleted`
+**Info** | Triggers when a channel point redemption has been rejected and points are refunded to the user. Using `*` as the `<reward_name>` will execute the trigger for all channel point rewards.
+**Format** | `OnTWChannelPointRejected <reward_name>`
+**Format w/ Aliases** | `OnTWChannelPointRejected <reward_name1> <reward_name2> ...`
+**Example** | `OnTWChannelPointRejected "Example Reward"`
+**Example w/ Aliases** | `OnTWChannelPointRejected "Resize" "Left View"`
 
 ##### Parameters
 | | |
@@ -4013,10 +3883,10 @@ Param Add i 1
 #### Twitch Complete
 | | |
 ------------ | -------------
-**Info** | Mark a channel point reward redemption as complete. `<reward_id>` is the id of the channel point reward. `<redemption_id>` is the id of the channel point reward redemption. Both of these values are provided by `OnChannelPoint` as parameters. To reject a redemption and refund points, use [Twitch Reject](#twitch-reject).
+**Info** | Mark a channel point reward redemption as complete. `<reward_id>` is the id of the channel point reward. `<redemption_id>` is the id of the channel point reward redemption. Both of these values are provided by `OnTWChannelPoint` as parameters. To reject a redemption and refund points, use [Twitch Reject](#twitch-reject).
 **Format** | `Twitch Complete <reward_id> <redemption_id>`
 **Example** | `Twitch Complete 92af127c-7326-4483-a52b-b0da0be61c01 17fa2df1-ad76-4804-bfa5-a40ef63efe63`
-**Example using OnChannelPoint Parameters** | `Twitch Complete {reward_id} {redemption_id}`
+**Example using OnTWChannelPoint Parameters** | `Twitch Complete {reward_id} {redemption_id}`
 
 _Note: Due to a Twitch API restriction, in order for Kruiz Control to interact with Channel Point rewards, Kruiz Control has to create the reward. Use [Twitch Copy](#twitch-copy) to create duplicates of existing channel point rewards._
 
@@ -4474,10 +4344,10 @@ _Note: For a complete prediction example, see [Twitch Prediction Create](#twitch
 #### Twitch Reject
 | | |
 ------------ | -------------
-**Info** | Mark a channel point reward redemption as rejected and refund a user's points. `<reward_id>` is the id of the channel point reward. `<redemption_id>` is the id of the channel point reward redemption. Both of these values are provided by `OnChannelPoint` as parameters. To complete a redemption, use [Twitch Complete](#twitch-complete).
+**Info** | Mark a channel point reward redemption as rejected and refund a user's points. `<reward_id>` is the id of the channel point reward. `<redemption_id>` is the id of the channel point reward redemption. Both of these values are provided by `OnTWChannelPoint` as parameters. To complete a redemption, use [Twitch Complete](#twitch-complete).
 **Format** | `Twitch Reject <reward_id> <redemption_id>`
 **Example** | `Twitch Reject 92af127c-7326-4483-a52b-b0da0be61c01 17fa2df1-ad76-4804-bfa5-a40ef63efe63`
-**Example using OnChannelPoint Parameters** | `Twitch Reject {reward_id} {redemption_id}`
+**Example using OnTWChannelPoint Parameters** | `Twitch Reject {reward_id} {redemption_id}`
 
 _Note: Due to a Twitch API restriction, in order for Kruiz Control to interact with Channel Point rewards, Kruiz Control has to create the reward. Use [Twitch Copy](#twitch-copy) to create duplicates of existing channel point rewards._
 

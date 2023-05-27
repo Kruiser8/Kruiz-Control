@@ -17,8 +17,7 @@ function connectPubSubWebsocket(channelId, onMessage) {
 			"nonce": nonce,
 			"data": {
 				"topics": [
-					"community-points-channel-v1." + channelId,
-					"hype-train-events-v1." + channelId
+					"community-points-channel-v1." + channelId
 				],
 			}
 		};
