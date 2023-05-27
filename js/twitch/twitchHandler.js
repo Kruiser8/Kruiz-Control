@@ -127,6 +127,7 @@ class TwitchHandler extends Handler {
             this.rewardsTrigger[reward].push(triggerId);
           }
         });
+        break;
       case 'ontwchannelpointcompleted':
         var { rewards } = Parser.getInputs(triggerLine, ['rewards'], true);
         rewards.forEach(reward => {
@@ -138,6 +139,7 @@ class TwitchHandler extends Handler {
             this.completedRewardsTrigger[reward].push(triggerId);
           }
         });
+        break;
       case 'ontwchannelpointrejected':
         var { rewards } = Parser.getInputs(triggerLine, ['rewards'], true);
         rewards.forEach(reward => {
@@ -149,6 +151,7 @@ class TwitchHandler extends Handler {
             this.rejectedRewardsTrigger[reward].push(triggerId);
           }
         });
+        break;
       default:
         if (this.eventSubs.indexOf(trigger) === -1) {
           this.eventSubs.push(trigger);
@@ -402,38 +405,36 @@ class TwitchHandler extends Handler {
         });
         break;
       case 'channel.channel_points_custom_reward_redemption.add':
-        this.eventSubTrigger['ontwchannelpoint']?.forEach(triggerId => {
-          var reward = event.reward.title;
-          var onChannelPointTriggers = [];
+        var reward = event.reward.title;
+        var onChannelPointTriggers = [];
 
-          if (this.rewards.indexOf(reward) !== -1) {
-            // Handle triggers
-            onChannelPointTriggers.push(...this.rewardsTrigger[reward]);
-          }
-          if (this.rewards.indexOf('*') !== -1) {
-            // Handle triggers
-            onChannelPointTriggers.push(...this.rewardsTrigger['*']);
-          }
+        if (this.rewards.indexOf(reward) !== -1) {
+          // Handle triggers
+          onChannelPointTriggers.push(...this.rewardsTrigger[reward]);
+        }
+        if (this.rewards.indexOf('*') !== -1) {
+          // Handle triggers
+          onChannelPointTriggers.push(...this.rewardsTrigger['*']);
+        }
 
-          if (onChannelPointTriggers.length > 0) {
-            onChannelPointTriggers.sort((a,b) => a-b);
-            onChannelPointTriggers.forEach(triggerId => {
-              controller.handleData(triggerId, {
-                data: event,
-                id: event.user_id,
-                login: event.user_login,
-                name: event.user_name,
-                reward: event.reward.title,
-                redemption_id: event.id,
-                reward_id: event.reward.id
-              });
+        if (onChannelPointTriggers.length > 0) {
+          onChannelPointTriggers.sort((a,b) => a-b);
+          onChannelPointTriggers.forEach(triggerId => {
+            controller.handleData(triggerId, {
+              data: event,
+              id: event.user_id,
+              login: event.user_login,
+              name: event.user_name,
+              message: event.user_input,
+              reward: event.reward.title,
+              redemption_id: event.id,
+              reward_id: event.reward.id
             });
-          }
-        });
+          });
+        }
         break;
       case 'channel.channel_points_custom_reward_redemption.update':
         if (event.status === 'fulfilled') {
-          this.eventSubTrigger['ontwchannelpointcompleted']?.forEach(triggerId => {
             var reward = event.reward.title;
             var onChannelPointTriggers = [];
 
@@ -454,42 +455,41 @@ class TwitchHandler extends Handler {
                   id: event.user_id,
                   login: event.user_login,
                   name: event.user_name,
+                  message: event.user_input,
                   reward: event.reward.title,
                   redemption_id: event.id,
                   reward_id: event.reward.id
                 });
               });
             }
-          });
         } else if (event.status === 'canceled') {
-          this.eventSubTrigger['ontwchannelpointrejected']?.forEach(triggerId => {
-            var reward = event.reward.title;
-            var onChannelPointTriggers = [];
+          var reward = event.reward.title;
+          var onChannelPointTriggers = [];
 
-            if (this.rejectedRewards.indexOf(reward) !== -1) {
-              // Handle triggers
-              onChannelPointTriggers.push(...this.rejectedRewardsTrigger[reward]);
-            }
-            if (this.rejectedRewards.indexOf('*') !== -1) {
-              // Handle triggers
-              onChannelPointTriggers.push(...this.rejectedRewardsTrigger['*']);
-            }
+          if (this.rejectedRewards.indexOf(reward) !== -1) {
+            // Handle triggers
+            onChannelPointTriggers.push(...this.rejectedRewardsTrigger[reward]);
+          }
+          if (this.rejectedRewards.indexOf('*') !== -1) {
+            // Handle triggers
+            onChannelPointTriggers.push(...this.rejectedRewardsTrigger['*']);
+          }
 
-            if (onChannelPointTriggers.length > 0) {
-              onChannelPointTriggers.sort((a,b) => a-b);
-              onChannelPointTriggers.forEach(triggerId => {
-                controller.handleData(triggerId, {
-                  data: event,
-                  id: event.user_id,
-                  login: event.user_login,
-                  name: event.user_name,
-                  reward: event.reward.title,
-                  redemption_id: event.id,
-                  reward_id: event.reward.id
-                });
+          if (onChannelPointTriggers.length > 0) {
+            onChannelPointTriggers.sort((a,b) => a-b);
+            onChannelPointTriggers.forEach(triggerId => {
+              controller.handleData(triggerId, {
+                data: event,
+                id: event.user_id,
+                login: event.user_login,
+                name: event.user_name,
+                message: event.user_input,
+                reward: event.reward.title,
+                redemption_id: event.id,
+                reward_id: event.reward.id
               });
-            }
-          });
+            });
+          }
         }
         break;
       case 'channel.poll.begin':

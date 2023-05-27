@@ -2938,6 +2938,7 @@ Enables the ability to run actions when channel point rewards are redeemed.
 **id** | The user ID of the user that redeemed the reward.
 **login** | The user login of the user that redeemed the reward.
 **name** | The user display name of the user that redeemed the reward.
+**message** | The message included with the channel point redemption.
 **reward** | The name of the reward.
 **reward_id** | The id of the channel point reward (used with [Twitch Complete](#twitch-complete) or [Twitch Reject](#twitch-reject)).
 **redemption_id** | The id of the channel point redemption (used with [Twitch Complete](#twitch-complete) or [Twitch Reject](#twitch-reject)).
@@ -2960,6 +2961,7 @@ Enables the ability to run actions when channel point rewards are redeemed.
 **id** | The user ID of the user that redeemed the reward.
 **login** | The user login of the user that redeemed the reward.
 **name** | The user display name of the user that redeemed the reward.
+**message** | The message included with the channel point redemption.
 **reward** | The name of the reward.
 **reward_id** | The id of the channel point reward (used with [Twitch Complete](#twitch-complete) or [Twitch Reject](#twitch-reject)).
 **redemption_id** | The id of the channel point redemption (used with [Twitch Complete](#twitch-complete) or [Twitch Reject](#twitch-reject)).
@@ -2982,6 +2984,7 @@ Enables the ability to run actions when channel point rewards are redeemed.
 **id** | The user ID of the user that redeemed the reward.
 **login** | The user login of the user that redeemed the reward.
 **name** | The user display name of the user that redeemed the reward.
+**message** | The message included with the channel point redemption.
 **reward** | The name of the reward.
 **reward_id** | The id of the channel point reward (used with [Twitch Complete](#twitch-complete) or [Twitch Reject](#twitch-reject)).
 **redemption_id** | The id of the channel point redemption (used with [Twitch Complete](#twitch-complete) or [Twitch Reject](#twitch-reject)).
