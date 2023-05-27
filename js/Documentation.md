@@ -654,7 +654,7 @@ _WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mi
 **user** | The display name of the user that sent the command.
 **after** | The message excluding the command.
 **message** | The entire chat message, including the command.
-**message_id** | The id of the message. If the message was sent by Kruiz Control, the id will be an empty string (`""`).
+**message_id** | The id of the message (used with [Twitch DeleteMessage](#twitch-deletemessage)). If the message was sent by Kruiz Control, the id will be an empty string (`""`).
 **data** | An object with all metadata about the message (for use with [Function](#function)).
 **arg#** | The numbered arguments in the message. Replace `#` with a number, starting at 1 and ending at the last argument passed into the command.
 **arg_count** | The number of arguments in the message. This indicates the number of `arg#` parameters returned.
@@ -675,7 +675,7 @@ _WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mi
 ------------ | -------------
 **user** | The display name of the user that sent the command.
 **message** | The entire chat message, including the command.
-**message_id** | The id of the message. If the message was sent by Kruiz Control, the id will be an empty string (`""`).
+**message_id** | The id of the message (used with [Twitch DeleteMessage](#twitch-deletemessage)). If the message was sent by Kruiz Control, the id will be an empty string (`""`).
 **data** | An object with all metadata about the message (for use with [Function](#function)).
 
 ***
@@ -697,7 +697,7 @@ _WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mi
 **user** | The display name of the user that triggered the keyword.
 **keyword** | The keyword matched by the trigger.
 **message** | The chat message.
-**message_id** | The id of the message. If the message was sent by Kruiz Control, the id will be an empty string (`""`).
+**message_id** | The id of the message (used with [Twitch DeleteMessage](#twitch-deletemessage)). If the message was sent by Kruiz Control, the id will be an empty string (`""`).
 **data** | An object with all metadata about the message (for use with [Function](#function)).
 **arg#** | The numbered arguments in the message. Replace `#` with a number, starting at 1 and ending at the last argument passed into the command.
 **arg_count** | The number of arguments in the message. This indicates the number of `arg#` parameters returned.
@@ -717,7 +717,7 @@ _WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mi
 ------------ | -------------
 **user** | The display name of the user that sent the command.
 **message** | The entire chat message, including the command.
-**message_id** | The id of the message. If the message was sent by Kruiz Control, the id will be an empty string (`""`).
+**message_id** | The id of the message (used with [Twitch DeleteMessage](#twitch-deletemessage)). If the message was sent by Kruiz Control, the id will be an empty string (`""`).
 **data** | An object with all metadata about the message (for use with [Function](#function)).
 
 ***
