@@ -627,11 +627,15 @@ Chat triggers use a `<permission>` parameter to specify who can use a command. T
 - *n* - Check if a user has _none_ of the permissions above.
 - *e* - Everyone
 
-Additionally, you can use *u* as the permission to specify a specific user that can use a command or keyword. In this case, `<optional_info>` is required to specify the user. The username input is case insensitive.
+Additionally, you can use *u* as the permission to specify a user or group of users that can use a command or keyword. In this case, `<optional_info>` is required to specify the user. The username input is case insensitive. If multiple users are provided, they must be comma delimited without any spaces.
 
 **Example**:
 ```
 OnCommand u kruiser8 10 !secret
+```
+**Example w/ Multiple Users**:
+```
+OnCommand u kruiser8,kruizbot 10 !secret
 ```
 
 Chat triggers also use a `<cooldown>` parameter to put the command or keyword on cooldown for the specified number of seconds. The `<cooldown>` can be any number 0 or higher.

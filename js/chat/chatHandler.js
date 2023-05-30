@@ -71,6 +71,7 @@ class ChatHandler extends Handler {
         var { permission, info, cooldown, commands } = Parser.getInputs(triggerLine, inputs, true);
         permission = permission.toLowerCase();
         info = info ? info.toLowerCase() : "";
+        info = info.split(',')
 
         cooldown = parseInt(cooldown);
         if (isNaN(cooldown)) {
@@ -112,6 +113,7 @@ class ChatHandler extends Handler {
         var { permission, info, cooldown, keywords } = Parser.getInputs(triggerLine, inputs, true);
         permission = permission.toLowerCase();
         info = info ? info.toLowerCase() : "";
+        info = info.split(',')
 
         cooldown = parseInt(cooldown);
         if (isNaN(cooldown)) {
@@ -191,7 +193,7 @@ class ChatHandler extends Handler {
       return [true, 'm'];
     } else if (permissions.includes('b') && this.channel === username) {
       return [true, 'b'];
-    } else if (permissions.includes('u') && info && user === info) {
+    } else if (permissions.includes('u') && info && info.indexOf(user) !== -1) {
       return [true, 'u'];
     } else if (permissions.includes('n') && !flags.founder && !flags.subscriber && !flags.vip && !flags.mod && this.channel !== user) {
       return [true, 'n']
