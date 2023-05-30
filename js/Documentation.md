@@ -251,7 +251,9 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnTWGoalFailed](#ontwgoalfailed)
     + [OnTWGoalProgress](#ontwgoalprogress)
     + [OnTWGoalStart](#ontwgoalstart)
+    + [OnTWHypeTrainConductor](#ontwhypetrainconductor)
     + [OnTWHypeTrainEnd](#ontwhypetrainend)
+    + [OnTWHypeTrainLevel](#ontwhypetrainlevel)
     + [OnTWHypeTrainProgress](#ontwhypetrainprogress)
     + [OnTWHypeTrainStart](#ontwhypetrainstart)
     + [OnTWModAdd](#ontwmodadd)
@@ -3206,6 +3208,22 @@ Enables the ability to run actions when channel point rewards are redeemed.
 **description** | A description of the goal, if specified.
 **current** | The goal's current value.
 **target** | The goal's target value.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWHypeTrainConductor
+| | |
+------------ | -------------
+**Info** | Triggers when a Hype Train conductor updates.
+**Format** | `OnTWHypeTrainConductor`
+**Example** | `OnTWHypeTrainConductor`
+
+##### Parameters
+| | |
+------------ | -------------
+**bit_conductor** | The user display name of the top cheer contributor, if one exists.
+**sub_conductor** | The user display name of the top sub contributor, if one exists.
 **data** | The complete Twitch EventSub event data (for use with [Function](#function)).
 
 ***

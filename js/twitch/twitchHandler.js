@@ -20,6 +20,10 @@ class TwitchHandler extends Handler {
     this.eventSubs = [];
     this.eventSubTrigger = {};
     this.hypeTrainLevel = 0;
+    this.hypeTrainConductors = {
+      bits: '',
+      subs: ''
+    }
 
     this.init.bind(this);
     this.onMessage.bind(this);
@@ -682,6 +686,29 @@ class TwitchHandler extends Handler {
             }
           })
         }
+
+        var conductorTriggers = [];
+        if (conductorArgs.bit_conductor && this.hypeTrainConductors.bits !== conductorArgs.bit_conductor) {
+          if (this.eventSubTrigger['ontwhypetrainconductor']) {
+            conductorTriggers.push(...this.eventSubTrigger['ontwhypetrainconductor'])
+          }
+        }
+        if (conductorArgs.sub_conductor && this.hypeTrainConductors.subs !== conductorArgs.sub_conductor) {
+          if (this.eventSubTrigger['ontwhypetrainconductor']) {
+            conductorTriggers.push(...this.eventSubTrigger['ontwhypetrainconductor'])
+          }
+        }
+
+        if (conductorTriggers.length > 0) {
+          conductorTriggers.sort((a,b) => a-b);
+          conductorTriggers.forEach(triggerId => {
+            controller.handleData(triggerId, {
+              data: event,
+              ...conductorArgs
+            });
+          });
+        }
+
         if (event.level > this.hypeTrainLevel) {
           this.hypeTrainLevel = event.level;
           if (this.eventSubTrigger['ontwhypetrainlevel']) {
@@ -691,6 +718,7 @@ class TwitchHandler extends Handler {
         if (this.eventSubTrigger['ontwhypetrainprogress']) {
           hypeTrainTriggers.push(...this.eventSubTrigger['ontwhypetrainprogress'])
         }
+        hypeTrainTriggers.sort((a,b) => a-b);
         hypeTrainTriggers.forEach(triggerId => {
           controller.handleData(triggerId, {
             data: event,
