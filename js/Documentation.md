@@ -3222,6 +3222,25 @@ Enables the ability to run actions when channel point rewards are redeemed.
 
 ***
 
+#### OnTWHypeTrainLevel
+| | |
+------------ | -------------
+**Info** | Used to fire a set of actions when the hype train levels up.
+**Format** | `OnTWHypeTrainLevel`
+**Example** | `OnTWHypeTrainLevel`
+
+##### Parameters
+| | |
+------------ | -------------
+**level** | The current level of the Hype Train.
+**progress** | Total points contributed to the Hype Train.
+**goal** | The number of points required to reach the next level.
+**bit_conductor** | The user display name of the top cheer contributor, if one exists.
+**sub_conductor** | The user display name of the top sub contributor, if one exists.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
 #### OnTWHypeTrainProgress
 | | |
 ------------ | -------------

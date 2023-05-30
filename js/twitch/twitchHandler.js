@@ -19,6 +19,7 @@ class TwitchHandler extends Handler {
 
     this.eventSubs = [];
     this.eventSubTrigger = {};
+    this.hypeTrainLevel = 0;
 
     this.init.bind(this);
     this.onMessage.bind(this);
@@ -648,17 +649,18 @@ class TwitchHandler extends Handler {
         }
         break;
       case 'channel.hype_train.begin':
+        this.hypeTrainLevel = event.level;
+        var conductorArgs = {};
+        if (event.top_contributions) {
+          event.top_contributions.forEach(contribution => {
+            if (contribution.type === 'bits') {
+              conductorArgs.bit_conductor = contribution.user_name;
+            } else if (contribution.type === 'subscription') {
+              conductorArgs.sub_conductor = contribution.user_name;
+            }
+          })
+        }
         this.eventSubTrigger['ontwhypetrainstart']?.forEach(triggerId => {
-          var conductorArgs = {};
-          if (event.top_contributions) {
-            event.top_contributions.forEach(contribution => {
-              if (contribution.type === 'bits') {
-                conductorArgs.bit_conductor = contribution.user_name;
-              } else if (contribution.type === 'subscription') {
-                conductorArgs.sub_conductor = contribution.user_name;
-              }
-            })
-          }
           controller.handleData(triggerId, {
             data: event,
             level: event.level,
@@ -669,17 +671,27 @@ class TwitchHandler extends Handler {
         });
         break;
       case 'channel.hype_train.progress':
-        this.eventSubTrigger['ontwhypetrainprogress']?.forEach(triggerId => {
-          var conductorArgs = {};
-          if (event.top_contributions) {
-            event.top_contributions.forEach(contribution => {
-              if (contribution.type === 'bits') {
-                conductorArgs.bit_conductor = contribution.user_name;
-              } else if (contribution.type === 'subscription') {
-                conductorArgs.sub_conductor = contribution.user_name;
-              }
-            })
+        var hypeTrainTriggers = [];
+        var conductorArgs = {};
+        if (event.top_contributions) {
+          event.top_contributions.forEach(contribution => {
+            if (contribution.type === 'bits') {
+              conductorArgs.bit_conductor = contribution.user_name;
+            } else if (contribution.type === 'subscription') {
+              conductorArgs.sub_conductor = contribution.user_name;
+            }
+          })
+        }
+        if (event.level > this.hypeTrainLevel) {
+          this.hypeTrainLevel = event.level;
+          if (this.eventSubTrigger['ontwhypetrainlevel']) {
+            hypeTrainTriggers.push(...this.eventSubTrigger['ontwhypetrainlevel'])
           }
+        }
+        if (this.eventSubTrigger['ontwhypetrainprogress']) {
+          hypeTrainTriggers.push(...this.eventSubTrigger['ontwhypetrainprogress'])
+        }
+        hypeTrainTriggers.forEach(triggerId => {
           controller.handleData(triggerId, {
             data: event,
             level: event.level,
@@ -690,6 +702,7 @@ class TwitchHandler extends Handler {
         });
         break;
       case 'channel.hype_train.end':
+        this.hypeTrainLevel = 0;
         this.eventSubTrigger['ontwhypetrainend']?.forEach(triggerId => {
           var conductorArgs = {};
           if (event.top_contributions) {
