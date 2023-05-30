@@ -620,7 +620,8 @@ Chat triggers use a `<permission>` parameter to specify who can use a command. T
 
 - *b* - Broadcaster
 - *s* - Subscriber
-- *f* - Founder
+- *f* - Follower
+- *o* - Founder
 - *v* - VIP
 - *m* - Moderator
 - *n* - Check if a user has _none_ of the permissions above.

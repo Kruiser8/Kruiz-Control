@@ -121,21 +121,26 @@ class Controller {
   /**
    * Setup async queue for given trigger id
    * @param {string} triggerId id of the trigger to run
+   * @param {object} triggerParams initial parameters for this event
+   * @param {string} actionsToInsert actions to add at the start of the event
    */
-  async handleData(triggerId, triggerParams) {
+  async handleData(triggerId, triggerParams, actionsToInsert) {
     triggerParams = triggerParams || {};
     triggerParams['_kc_event_id_'] = uuidv4();
+    actionsToInsert = actionsToInsert || [];
 
     if (typeof(this.triggerAsyncMap[triggerId]) !== "undefined") {
       var queue = this.triggerAsync[this.triggerAsyncMap[triggerId]];
       queue.push({
         triggerId: triggerId,
-        triggerParams: triggerParams
+        triggerParams: triggerParams,
+        actionsToInsert: actionsToInsert
       });
     } else {
       this.performTrigger({
         triggerId: triggerId,
-        triggerParams: triggerParams
+        triggerParams: triggerParams,
+        actionsToInsert: actionsToInsert
       }, null);
     }
   }
@@ -149,11 +154,13 @@ class Controller {
       var toSkip = 0;
       var triggerId = triggerInfo.triggerId;
       var triggerParams = triggerInfo.triggerParams;
+      var actionsToInsert = triggerInfo.actionsToInsert;
       triggerParams['_successful_'] = this.successful.join(', ');
       triggerParams['_unsuccessful_'] = this.getUnsuccessful().join(', ');
 
       // Get trigger content
       var triggerSequence = JSON.parse(JSON.stringify(this.triggerData[triggerId]));
+      triggerSequence.unshift(...actionsToInsert);
 
       // Setup regex for any parameters
       var triggerRegex = null;
