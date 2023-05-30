@@ -440,33 +440,33 @@ class TwitchHandler extends Handler {
         break;
       case 'channel.channel_points_custom_reward_redemption.update':
         if (event.status === 'fulfilled') {
-            var reward = event.reward.title;
-            var onChannelPointTriggers = [];
+          var reward = event.reward.title;
+          var onChannelPointTriggers = [];
 
-            if (this.completedRewards.indexOf(reward) !== -1) {
-              // Handle triggers
-              onChannelPointTriggers.push(...this.completedRewardsTrigger[reward]);
-            }
-            if (this.completedRewards.indexOf('*') !== -1) {
-              // Handle triggers
-              onChannelPointTriggers.push(...this.completedRewardsTrigger['*']);
-            }
+          if (this.completedRewards.indexOf(reward) !== -1) {
+            // Handle triggers
+            onChannelPointTriggers.push(...this.completedRewardsTrigger[reward]);
+          }
+          if (this.completedRewards.indexOf('*') !== -1) {
+            // Handle triggers
+            onChannelPointTriggers.push(...this.completedRewardsTrigger['*']);
+          }
 
-            if (onChannelPointTriggers.length > 0) {
-              onChannelPointTriggers.sort((a,b) => a-b);
-              onChannelPointTriggers.forEach(triggerId => {
-                controller.handleData(triggerId, {
-                  data: event,
-                  id: event.user_id,
-                  login: event.user_login,
-                  name: event.user_name,
-                  message: event.user_input,
-                  reward: event.reward.title,
-                  redemption_id: event.id,
-                  reward_id: event.reward.id
-                });
+          if (onChannelPointTriggers.length > 0) {
+            onChannelPointTriggers.sort((a,b) => a-b);
+            onChannelPointTriggers.forEach(triggerId => {
+              controller.handleData(triggerId, {
+                data: event,
+                id: event.user_id,
+                login: event.user_login,
+                name: event.user_name,
+                message: event.user_input,
+                reward: event.reward.title,
+                redemption_id: event.id,
+                reward_id: event.reward.id
               });
-            }
+            });
+          }
         } else if (event.status === 'canceled') {
           var reward = event.reward.title;
           var onChannelPointTriggers = [];
@@ -498,13 +498,13 @@ class TwitchHandler extends Handler {
         }
         break;
       case 'channel.poll.begin':
+        var choiceArgs = {};
+        for (var i = 0; i < event.choices.length; i++) {
+          choiceArgs[`choice_id${i+1}`] = event.choices[i].id;
+          choiceArgs[`choice${i+1}`] = event.choices[i].title;
+        }
+        var duration = Math.abs(new Date(event.ends_at).getTime() - new Date(event.started_at).getTime()) / 1000;
         this.eventSubTrigger['ontwpoll']?.forEach(triggerId => {
-          var choiceArgs = {};
-          for (var i = 0; i < event.choices.length; i++) {
-            choiceArgs[`choice_id${i+1}`] = event.choices[i].id;
-            choiceArgs[`choice${i+1}`] = event.choices[i].title;
-          }
-          var duration = Math.abs(new Date(event.ends_at).getTime() - new Date(event.started_at).getTime()) / 1000;
           controller.handleData(triggerId, {
             data: event,
             title: event.title,
@@ -519,15 +519,15 @@ class TwitchHandler extends Handler {
         });
         break;
       case 'channel.poll.progress':
+        var choiceArgs = {};
+        for (var i = 0; i < event.choices.length; i++) {
+          choiceArgs[`choice_id${i+1}`] = event.choices[i].id;
+          choiceArgs[`choice${i+1}`] = event.choices[i].title;
+          choiceArgs[`choice_votes${i+1}`] = event.choices[i].votes;
+        }
+        var duration = Math.abs(new Date(event.ends_at).getTime() - new Date(event.started_at).getTime()) / 1000;
+        var time_left = parseInt(Math.ceil(new Date(event.ends_at).getTime() - new Date().getTime()) / 1000);
         this.eventSubTrigger['ontwpollupdate']?.forEach(triggerId => {
-          var choiceArgs = {};
-          for (var i = 0; i < event.choices.length; i++) {
-            choiceArgs[`choice_id${i+1}`] = event.choices[i].id;
-            choiceArgs[`choice${i+1}`] = event.choices[i].title;
-            choiceArgs[`choice_votes${i+1}`] = event.choices[i].votes;
-          }
-          var duration = Math.abs(new Date(event.ends_at).getTime() - new Date(event.started_at).getTime()) / 1000;
-          var time_left = parseInt(Math.ceil(new Date(event.ends_at).getTime() - new Date().getTime()) / 1000);
           controller.handleData(triggerId, {
             data: event,
             title: event.title,
@@ -544,18 +544,18 @@ class TwitchHandler extends Handler {
         break;
       case 'channel.poll.end':
         if (event.status === 'completed') {
-          this.eventSubTrigger['ontwpollend']?.forEach(triggerId => {
-            var choiceArgs = { votes: -1 };
-            for (var i = 0; i < event.choices.length; i++) {
-              choiceArgs[`choice_id${i+1}`] = event.choices[i].id;
-              choiceArgs[`choice${i+1}`] = event.choices[i].title;
-              choiceArgs[`choice_votes${i+1}`] = event.choices[i].votes;
-              if (event.choices[i].votes > choiceArgs.votes) {
-                choiceArgs.winner = event.choices[i].title;
-                choiceArgs.votes = event.choices[i].votes;
-              }
+          var choiceArgs = { votes: -1 };
+          for (var i = 0; i < event.choices.length; i++) {
+            choiceArgs[`choice_id${i+1}`] = event.choices[i].id;
+            choiceArgs[`choice${i+1}`] = event.choices[i].title;
+            choiceArgs[`choice_votes${i+1}`] = event.choices[i].votes;
+            if (event.choices[i].votes > choiceArgs.votes) {
+              choiceArgs.winner = event.choices[i].title;
+              choiceArgs.votes = event.choices[i].votes;
             }
-            var duration = Math.abs(new Date(event.ended_at).getTime() - new Date(event.started_at).getTime()) / 1000;
+          }
+          var duration = Math.abs(new Date(event.ended_at).getTime() - new Date(event.started_at).getTime()) / 1000;
+          this.eventSubTrigger['ontwpollend']?.forEach(triggerId => {
             controller.handleData(triggerId, {
               data: event,
               title: event.title,
@@ -571,14 +571,14 @@ class TwitchHandler extends Handler {
         }
         break;
       case 'channel.prediction.begin':
+        var outcomeArgs = {};
+        for (var i = 0; i < event.outcomes.length; i++) {
+          outcomeArgs[`outcome_id${i+1}`] = event.outcomes[i].id;
+          outcomeArgs[`outcome_color${i+1}`] = event.outcomes[i].color;
+          outcomeArgs[`outcome${i+1}`] = event.outcomes[i].title;
+        }
+        var duration = Math.abs(new Date(event.locks_at).getTime() - new Date(event.started_at).getTime()) / 1000;
         this.eventSubTrigger['ontwprediction']?.forEach(triggerId => {
-          var outcomeArgs = {};
-          for (var i = 0; i < event.outcomes.length; i++) {
-            outcomeArgs[`outcome_id${i+1}`] = event.outcomes[i].id;
-            outcomeArgs[`outcome_color${i+1}`] = event.outcomes[i].color;
-            outcomeArgs[`outcome${i+1}`] = event.outcomes[i].title;
-          }
-          var duration = Math.abs(new Date(event.locks_at).getTime() - new Date(event.started_at).getTime()) / 1000;
           controller.handleData(triggerId, {
             data: event,
             title: event.title,
@@ -589,17 +589,17 @@ class TwitchHandler extends Handler {
         });
         break;
       case 'channel.prediction.progress':
+        var outcomeArgs = {};
+        for (var i = 0; i < event.outcomes.length; i++) {
+          outcomeArgs[`outcome_id${i+1}`] = event.outcomes[i].id;
+          outcomeArgs[`outcome_color${i+1}`] = event.outcomes[i].color;
+          outcomeArgs[`outcome_points${i+1}`] = event.outcomes[i].channel_points;
+          outcomeArgs[`outcome_users${i+1}`] = event.outcomes[i].users;
+          outcomeArgs[`outcome${i+1}`] = event.outcomes[i].title;
+        }
+        var duration = Math.abs(new Date(event.locks_at).getTime() - new Date(event.started_at).getTime()) / 1000;
+        var time_left = parseInt(Math.ceil(new Date(event.ends_at).getTime() - new Date().getTime()) / 1000);
         this.eventSubTrigger['ontwpredictionupdate']?.forEach(triggerId => {
-          var outcomeArgs = {};
-          for (var i = 0; i < event.outcomes.length; i++) {
-            outcomeArgs[`outcome_id${i+1}`] = event.outcomes[i].id;
-            outcomeArgs[`outcome_color${i+1}`] = event.outcomes[i].color;
-            outcomeArgs[`outcome_points${i+1}`] = event.outcomes[i].channel_points;
-            outcomeArgs[`outcome_users${i+1}`] = event.outcomes[i].users;
-            outcomeArgs[`outcome${i+1}`] = event.outcomes[i].title;
-          }
-          var duration = Math.abs(new Date(event.locks_at).getTime() - new Date(event.started_at).getTime()) / 1000;
-          var time_left = parseInt(Math.ceil(new Date(event.ends_at).getTime() - new Date().getTime()) / 1000);
           controller.handleData(triggerId, {
             data: event,
             title: event.title,
@@ -611,15 +611,15 @@ class TwitchHandler extends Handler {
         });
         break;
       case 'channel.prediction.lock':
+        var outcomeArgs = {};
+        for (var i = 0; i < event.outcomes.length; i++) {
+          outcomeArgs[`outcome_id${i+1}`] = event.outcomes[i].id;
+          outcomeArgs[`outcome_color${i+1}`] = event.outcomes[i].color;
+          outcomeArgs[`outcome_points${i+1}`] = event.outcomes[i].channel_points;
+          outcomeArgs[`outcome_users${i+1}`] = event.outcomes[i].users;
+          outcomeArgs[`outcome${i+1}`] = event.outcomes[i].title;
+        }
         this.eventSubTrigger['ontwpredictionlock']?.forEach(triggerId => {
-          var outcomeArgs = {};
-          for (var i = 0; i < event.outcomes.length; i++) {
-            outcomeArgs[`outcome_id${i+1}`] = event.outcomes[i].id;
-            outcomeArgs[`outcome_color${i+1}`] = event.outcomes[i].color;
-            outcomeArgs[`outcome_points${i+1}`] = event.outcomes[i].channel_points;
-            outcomeArgs[`outcome_users${i+1}`] = event.outcomes[i].users;
-            outcomeArgs[`outcome${i+1}`] = event.outcomes[i].title;
-          }
           controller.handleData(triggerId, {
             data: event,
             title: event.title,
@@ -630,19 +630,19 @@ class TwitchHandler extends Handler {
         break;
       case 'channel.prediction.end':
         if (event.status === 'resolved') {
-          this.eventSubTrigger['ontwpredictionend']?.forEach(triggerId => {
-            var outcomeArgs = {};
-            for (var i = 0; i < event.outcomes.length; i++) {
-              outcomeArgs[`outcome_id${i+1}`] = event.outcomes[i].id;
-              outcomeArgs[`outcome_color${i+1}`] = event.outcomes[i].color;
-              outcomeArgs[`outcome_points${i+1}`] = event.outcomes[i].channel_points;
-              outcomeArgs[`outcome_users${i+1}`] = event.outcomes[i].users;
-              outcomeArgs[`outcome${i+1}`] = event.outcomes[i].title;
+          var outcomeArgs = {};
+          for (var i = 0; i < event.outcomes.length; i++) {
+            outcomeArgs[`outcome_id${i+1}`] = event.outcomes[i].id;
+            outcomeArgs[`outcome_color${i+1}`] = event.outcomes[i].color;
+            outcomeArgs[`outcome_points${i+1}`] = event.outcomes[i].channel_points;
+            outcomeArgs[`outcome_users${i+1}`] = event.outcomes[i].users;
+            outcomeArgs[`outcome${i+1}`] = event.outcomes[i].title;
 
-              if (event.outcomes[i].id === event.winning_outcome_id) {
-                outcomeArgs.result = event.outcomes[i].title;
-              }
+            if (event.outcomes[i].id === event.winning_outcome_id) {
+              outcomeArgs.result = event.outcomes[i].title;
             }
+          }
+          this.eventSubTrigger['ontwpredictionend']?.forEach(triggerId => {
             controller.handleData(triggerId, {
               data: event,
               title: event.title,
@@ -750,10 +750,10 @@ class TwitchHandler extends Handler {
         });
         break;
       case 'channel.charity_campaign.donate':
+        var amount = event.amount.decimal_places > 0
+          ? event.amount.value / Math.pow(10, event.amount.decimal_places)
+          : event.amount.value;
         this.eventSubTrigger['ontwcharitydonation']?.forEach(triggerId => {
-          var amount = event.amount.decimal_places > 0
-              ? event.amount.value / Math.pow(10, event.amount.decimal_places)
-              : event.amount.value;
           controller.handleData(triggerId, {
             data: event,
             id: event.user_id,
@@ -767,13 +767,13 @@ class TwitchHandler extends Handler {
         });
         break;
       case 'channel.charity_campaign.start':
+        var current = event.current.decimal_places > 0
+            ? event.current.value / Math.pow(10, event.current.decimal_places)
+            : event.current.value;
+        var target = event.target.decimal_places > 0
+            ? event.target.value / Math.pow(10, event.target.decimal_places)
+            : event.target.value;
         this.eventSubTrigger['ontwcharitystarted']?.forEach(triggerId => {
-          var current = event.current.decimal_places > 0
-              ? event.current.value / Math.pow(10, event.current.decimal_places)
-              : event.current.value;
-          var target = event.target.decimal_places > 0
-              ? event.target.value / Math.pow(10, event.target.decimal_places)
-              : event.target.value;
           controller.handleData(triggerId, {
             data: event,
             charity: event.charity_name,
@@ -785,13 +785,13 @@ class TwitchHandler extends Handler {
         });
         break;
       case 'channel.charity_campaign.progress':
+        var current = event.current.decimal_places > 0
+            ? event.current.value / Math.pow(10, event.current.decimal_places)
+            : event.current.value;
+        var target = event.target.decimal_places > 0
+            ? event.target.value / Math.pow(10, event.target.decimal_places)
+            : event.target.value;
         this.eventSubTrigger['ontwcharityprogress']?.forEach(triggerId => {
-          var current = event.current.decimal_places > 0
-              ? event.current.value / Math.pow(10, event.current.decimal_places)
-              : event.current.value;
-          var target = event.target.decimal_places > 0
-              ? event.target.value / Math.pow(10, event.target.decimal_places)
-              : event.target.value;
           controller.handleData(triggerId, {
             data: event,
             charity: event.charity_name,
@@ -803,13 +803,13 @@ class TwitchHandler extends Handler {
         });
         break;
       case 'channel.charity_campaign.stop':
+        var current = event.current.decimal_places > 0
+            ? event.current.value / Math.pow(10, event.current.decimal_places)
+            : event.current.value;
+        var target = event.target.decimal_places > 0
+            ? event.target.value / Math.pow(10, event.target.decimal_places)
+            : event.target.value;
         this.eventSubTrigger['ontwcharitystopped']?.forEach(triggerId => {
-          var current = event.current.decimal_places > 0
-              ? event.current.value / Math.pow(10, event.current.decimal_places)
-              : event.current.value;
-          var target = event.target.decimal_places > 0
-              ? event.target.value / Math.pow(10, event.target.decimal_places)
-              : event.target.value;
           controller.handleData(triggerId, {
             data: event,
             charity: event.charity_name,
