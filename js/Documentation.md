@@ -54,6 +54,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Debug StreamElements](#debug-streamelements)
     + [Debug StreamLabs](#debug-streamlabs)
     + [Debug Twitch](#debug-twitch)
+    + [Debug Voicemod](#debug-voicemod)
 - [Discord](#discord)
   * [Triggers](#discord-triggers)
   * [Actions](#discord-actions)
@@ -364,6 +365,18 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Variable Global Load](#variable-global-load)
     + [Variable Global Remove](#variable-global-remove)
     + [Variable Global Set](#variable-global-set)
+- [Voicemod](#voicemod)
+  * [Triggers](#voicemod-triggers)
+  * [Actions](#voicemod-actions)
+    + [Voicemod Background](#voicemod-background)
+    + [Voicemod Beep](#voicemod-beep)
+    + [Voicemod Hear](#voicemod-hear)
+    + [Voicemod Mute](#voicemod-mute)
+    + [Voicemod Play](#voicemod-play)
+    + [Voicemod Random](#voicemod-random)
+    + [Voicemod Stop](#voicemod-stop)
+    + [Voicemod Voice](#voicemod-voice)
+    + [Voicemod VoiceChanger](#voicemod-voicechanger)
 
 ***
 
@@ -901,6 +914,15 @@ None at the moment.
 **Info** | Used to enable debugging for Twitch events. This handles channel points, hype trains, and community goals. For alerts, see [`Debug StreamElements`](#debug-streamelements) or [`Debug Streamlabs`](#debug-streamlabs).
 **Format** | `Debug Twitch`
 **Example** | `Debug Twitch`
+
+***
+
+#### Debug Voicemod
+| | |
+------------ | -------------
+**Info** | Used to enable debugging for Voicemod messages.
+**Format** | `Debug Voicemod`
+**Example** | `Debug Voicemod`
 
 ***
 
@@ -4788,3 +4810,96 @@ _Note: The above example, `Variable Global Load Recent_Sub`, would return the pa
 **\<name\>** | The variable value where **\<name\>** is the name of the variable.
 
 _Note: The above example, `Variable Global Set Recent_Sub Kruiser8`, would return the parameter **Recent_Sub**._
+
+***
+
+## Voicemod
+Enables the ability to interact with Voicemod, a real-time voice changer and soundboard.
+
+### Voicemod Triggers
+None at the moment.
+
+***
+
+### Voicemod Actions
+
+#### Voicemod Background
+| | |
+------------ | -------------
+**Info** | Used to alter whether or not Voicemod background effects are enabled. `<on/off/toggle>` determines whether the background effect is turned on, off, or toggled.
+**Format** | `Voicemod Background <on/off/toggle>`
+**Example** | `Voicemod Background on`
+
+***
+
+#### Voicemod Beep
+| | |
+------------ | -------------
+**Info** | Used to trigger the censor bleep for a period of time. `<optional_duration>` is the number of seconds to play the censor noise. If no duration is provided, the bleep is played for 1 second.
+**Format** | `Voicemod Beep <optional_duration>`
+**Example** | `Voicemod Beep`
+**Example w/ duration** | `Voicemod Beep 3`
+
+***
+
+#### Voicemod Hear
+| | |
+------------ | -------------
+**Info** | Used to alter whether or not the Voicemod hear myself setting is enabled. `<on/off/toggle>` determines whether the Voicemod hear myself setting is turned on, off, or toggled.
+**Format** | `Voicemod Hear <on/off/toggle>`
+**Example** | `Voicemod Hear on`
+
+***
+
+#### Voicemod Mute
+| | |
+------------ | -------------
+**Info** | Used to mute yourself through Voicemod. `<on/off/toggle>` determines whether the Voicemod mute is turned on, off, or toggled.
+**Format** | `Voicemod Mute <on/off/toggle>`
+**Example** | `Voicemod Mute on`
+
+***
+
+#### Voicemod Play
+| | |
+------------ | -------------
+**Info** | Used to play a sound from a Voicemod soundboard. `<soundboard>` is the name of the soundboard in Voicemod. `<sound>` is the name of the sound to play.
+**Format** | `Voicemod Play <soundboard> <sound>`
+**Example** | `Voicemod Play Prankster "Sad Trombone"`
+
+***
+
+#### Voicemod Random
+| | |
+------------ | -------------
+**Info** | Used to select a random voice in Voicemod. `<optional_type>` is the type of random voice to choose. If no `<optional_type>` is provided, the random voice is selected from all available voices. If `<optional_type>` is `favorite` or `custom`, then only a favorite or custom voice in Voicemod will be randomly selected.
+**Format** | `Voicemod Random <optional_type>`
+**Example** | `Voicemod Random`
+**Example w/ Type** | `Voicemod Random favorite`
+
+***
+
+#### Voicemod Stop
+| | |
+------------ | -------------
+**Info** | Used to stop all sounds from the Voicemod soundboard.
+**Format** | `Voicemod Stop`
+**Example** | `Voicemod Stop`
+
+***
+
+#### Voicemod Voice
+| | |
+------------ | -------------
+**Info** | Used to select a voice in Voicemod. `<voice>` is the name of the voice to select.
+**Format** | `Voicemod Voice <voice>`
+**Example** | `Voicemod Voice Chipmunk`
+
+***
+
+#### Voicemod VoiceChanger
+| | |
+------------ | -------------
+**Info** | Used to alter whether or not the Voicemod voice changer setting is enabled. `<on/off/toggle>` determines whether the Voicemod voice changer setting is turned on, off, or toggled.
+**Format** | `Voicemod VoiceChanger <on/off/toggle>`
+**Example** | `Voicemod VoiceChanger on`
