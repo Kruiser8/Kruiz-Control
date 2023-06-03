@@ -25,6 +25,7 @@ class ChatHandler extends Handler {
 
     this.init.bind(this);
     this.checkPermissions.bind(this);
+    this.addFollowerActions.bind(this);
     this.onAllChat.bind(this);
   }
 
@@ -70,6 +71,7 @@ class ChatHandler extends Handler {
         var { permission, info, cooldown, commands } = Parser.getInputs(triggerLine, inputs, true);
         permission = permission.toLowerCase();
         info = info ? info.toLowerCase() : "";
+        info = info.split(',')
 
         cooldown = parseInt(cooldown);
         if (isNaN(cooldown)) {
@@ -111,6 +113,7 @@ class ChatHandler extends Handler {
         var { permission, info, cooldown, keywords } = Parser.getInputs(triggerLine, inputs, true);
         permission = permission.toLowerCase();
         info = info ? info.toLowerCase() : "";
+        info = info.split(',')
 
         cooldown = parseInt(cooldown);
         if (isNaN(cooldown)) {
@@ -178,19 +181,25 @@ class ChatHandler extends Handler {
    */
   checkPermissions(user, flags, permissions, username, info) {
     user = user.toLowerCase();
-    if (
-      (permissions.includes('e')) ||
-      (permissions.includes('s') && flags.subscriber) ||
-      (permissions.includes('v') && flags.vip) ||
-      (permissions.includes('f') && flags.founder) ||
-      (permissions.includes('m') && flags.mod) ||
-      (permissions.includes('b') && this.channel === username) ||
-      (permissions.includes('n') && !flags.founder && !flags.subscriber && !flags.vip && !flags.mod && this.channel !== user) ||
-      (permissions.includes('u') && info && user === info)
-    ){
-      return true;
+    if (permissions.includes('e')) {
+      return [true, 'e'];
+    } else if (permissions.includes('s') && flags.subscriber) {
+      return [true, 's'];
+    } else if (permissions.includes('v') && flags.vip) {
+      return [true, 'v'];
+    } else if (permissions.includes('o') && flags.founder) {
+      return [true, 'o'];
+    } else if (permissions.includes('m') && flags.mod) {
+      return [true, 'm'];
+    } else if (permissions.includes('b') && this.channel === username) {
+      return [true, 'b'];
+    } else if (permissions.includes('u') && info && info.indexOf(user) !== -1) {
+      return [true, 'u'];
+    } else if (permissions.includes('n') && !flags.founder && !flags.subscriber && !flags.vip && !flags.mod && this.channel !== user) {
+      return [true, 'n']
     }
-    return false;
+
+    return [false, ''];
   }
 
   /**
@@ -226,6 +235,7 @@ class ChatHandler extends Handler {
       this.onAllChat(user, {
         user: user,
         message: combined,
+        message_id: extra.id || '',
         data: {
           user: user,
           command: command,
@@ -245,23 +255,29 @@ class ChatHandler extends Handler {
           chatArgs[`arg${i+1}`] = args[i];
         }
         this.commandsInfo[command].forEach(info => {
-          if (this.checkPermissions(user, flags, info.permission, extra.username, info.info) && this.updateCooldown(info)) {
-            controller.handleData(info.trigger, {
-              command: command,
-              user: user,
-              message: combined,
-              after: message,
-              data: {
-                user: user,
+          var [canUseCommand, grantingPermission] = this.checkPermissions(user, flags, info.permission, extra.username, info.info);
+          if ((canUseCommand || info.permission.includes('f')) && this.updateCooldown(info)) {
+            controller.handleData(
+              info.trigger,
+              {
                 command: command,
+                user: user,
                 message: combined,
+                message_id: extra.id || '',
                 after: message,
-                flags: flags,
-                extra: extra
+                data: {
+                  user: user,
+                  command: command,
+                  message: combined,
+                  after: message,
+                  flags: flags,
+                  extra: extra
+                },
+                arg_count: args.length,
+                ...chatArgs
               },
-              arg_count: args.length,
-              ...chatArgs
-            });
+              canUseCommand && grantingPermission !== 'n' ? [] : this.addFollowerActions(info.permission, user)
+            );
           }
         });
       }
@@ -277,21 +293,26 @@ class ChatHandler extends Handler {
           }
           this.keywordsInfo[match].forEach(info => {
             // Check if user has permission to trigger keyword
-            if (this.checkPermissions(user, flags, info.permission, extra.username, info.info) && this.updateCooldown(info)) {
-              controller.handleData(info.trigger, {
-                user: user,
-                keyword: match,
-                message: message,
-                data: {
+            var [canUseCommand, grantingPermission] = this.checkPermissions(user, flags, info.permission, extra.username, info.info);
+            if ((canUseCommand || info.permission.includes('f')) && this.updateCooldown(info)) {
+              controller.handleData(info.trigger,
+                {
                   user: user,
                   keyword: match,
                   message: message,
-                  flags: flags,
-                  extra: extra
+                  message_id: extra.id || '',
+                  data: {
+                    user: user,
+                    keyword: match,
+                    message: message,
+                    flags: flags,
+                    extra: extra
+                  },
+                  arg_count: args.length,
+                  ...chatArgs
                 },
-                arg_count: args.length,
-                ...chatArgs
-              });
+                canUseCommand && grantingPermission !== 'n' ? [] : this.addFollowerActions(info.permission, user)
+              );
             }
           });
         }
@@ -302,6 +323,7 @@ class ChatHandler extends Handler {
       this.onAllChat(user, {
         user: user,
         message: message,
+        message_id: extra.id || '',
         data: {
           user: user,
           message: message,
@@ -319,24 +341,29 @@ class ChatHandler extends Handler {
           chatArgs[`arg${i+1}`] = args[i];
         }
         this.commandsInfo[command].forEach(info => {
-          if (this.checkPermissions(user, flags, info.permission, extra.username, info.info) && this.updateCooldown(info)) {
+          var [canUseCommand, grantingPermission] = this.checkPermissions(user, flags, info.permission, extra.username, info.info);
+          if ((canUseCommand || info.permission.includes('f')) && this.updateCooldown(info)) {
             var after = args.join(' ');
-            controller.handleData(info.trigger, {
-              command: command,
-              user: user,
-              message: message,
-              after: after,
-              data: {
-                user: user,
+            controller.handleData(info.trigger,
+              {
                 command: command,
+                user: user,
                 message: message,
+                message_id: extra.id || '',
                 after: after,
-                flags: flags,
-                extra: extra
+                data: {
+                  user: user,
+                  command: command,
+                  message: message,
+                  after: after,
+                  flags: flags,
+                  extra: extra
+                },
+                arg_count: args.length,
+                ...chatArgs
               },
-              arg_count: args.length,
-              ...chatArgs
-            });
+              canUseCommand && grantingPermission !== 'n' ? [] : this.addFollowerActions(info.permission, user)
+            );
           }
         });
       }
@@ -352,21 +379,26 @@ class ChatHandler extends Handler {
           var match = result[0].trim().toLowerCase();
           this.keywordsInfo[match].forEach(info => {
             // Check if user has permission to trigger keyword
-            if (this.checkPermissions(user, flags, info.permission, extra.username, info.info) && this.updateCooldown(info)) {
-              controller.handleData(info.trigger, {
-                user: user,
-                keyword: match,
-                message: message,
-                data: {
+            var [canUseCommand, grantingPermission] = this.checkPermissions(user, flags, info.permission, extra.username, info.info);
+            if ((canUseCommand || info.permission.includes('f')) && this.updateCooldown(info)) {
+              controller.handleData(info.trigger,
+                {
                   user: user,
                   keyword: match,
                   message: message,
-                  flags: flags,
-                  extra: extra
+                  message_id: extra.id || '',
+                  data: {
+                    user: user,
+                    keyword: match,
+                    message: message,
+                    flags: flags,
+                    extra: extra
+                  },
+                  arg_count: args.length,
+                  ...chatArgs
                 },
-                arg_count: args.length,
-                ...chatArgs
-              });
+                canUseCommand && grantingPermission !== 'n' ? [] : this.addFollowerActions(info.permission, user)
+              );
             }
           });
         }
@@ -376,8 +408,29 @@ class ChatHandler extends Handler {
   }
 
   /**
+   * Return actions to check for twitch follower status if requested by the event.
+   * @param {string} permissions usability of the command or keyword
+   * @param {string} user twitch display name that sent the message
+   */
+  addFollowerActions(permissions, user) {
+    if (permissions.includes('n')) {
+      return [
+        ['Ignore', 'Twitch', 'IsFollower', user],
+        ['Ignore', 'If', '{is_follower}', '=', 'false']
+      ];
+    } else if (permissions.includes('f')) {
+      return [
+        ['Ignore', 'Twitch', 'IsFollower', user],
+        ['Ignore', 'If', '{is_follower}', '=', 'true']
+      ];
+    } else {
+      return [];
+    }
+  }
+
+  /**
    * Check if a trigger is on cooldown.
-   * @param {strng} user that sent the message
+   * @param {string} user that sent the message
    * @param {data} data to send with the OnEveryChatMessage
    */
   onAllChat(user, data) {

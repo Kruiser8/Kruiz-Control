@@ -12,6 +12,7 @@ class DebugHandler extends Handler {
     this.StreamElements = false;
     this.Streamlabs = false;
     this.Twitch = false;
+    this.Voicemod = false;
   }
 
   /**
@@ -42,6 +43,9 @@ class DebugHandler extends Handler {
           break;
         case 'twitch':
           this.Twitch = true;
+          break;
+        case 'voicemod':
+          this.Voicemod = true;
           break;
         default:
           break;

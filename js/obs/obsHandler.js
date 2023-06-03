@@ -354,10 +354,14 @@ class OBSHandler extends Handler {
         var is_active = await this.obs.getSourceActiveStatus(source);
         return { is_active };
         break;
+      case 'image':
+        var { source, path } = Parser.getInputs(triggerData, ['action', 'source', 'path']);
+        var imageSettings = { file: path };
+        await this.obs.setInputSettings(source, imageSettings)
       case 'media':
         var { media, source, path } = Parser.getInputs(triggerData, ['action', 'media', 'source', 'path'], false, 1);
-        let mediaAction = '';
-        let mediaSettings = {};
+        var mediaAction = '';
+        var mediaSettings = {};
         media = media.toLowerCase();
         switch (media) {
           case 'duration':
