@@ -1,7 +1,7 @@
 # Kruiz Control
 
 <p align="center"><i>
-Kruiz Control enables a pseudo code approach to manage and automatically handle Twitch Channel Points, Twitch Chat, OBS or SLOBS, and StreamElements or Streamlabs alerts.
+Kruiz Control enables a pseudo code approach to manage and automatically handle Twitch chat and events, OBS or SLOBS, and StreamElements or Streamlabs alerts.
 </i></p>
 <p align="center"><b>
   <a href="https://youtu.be/YaXLsWQuhLE">Tutorial</a> |
@@ -22,9 +22,9 @@ Kruiz Control enables a pseudo code approach to manage and automatically handle 
 - [Setup Guide](#setup-guide)
 - [Compatibility](#compatibility)
 - [Installation](#installation)
-  + [OBS Websocket](#obs-websocket)
   + [Settings](#settings)
   + [Add as Browser Source](#add-as-browser-source)
+  + [OBS Websocket](#obs-websocket)
 - [Usage](#usage)
   + [Pseudo Code Format](#pseudo-code-format)
   + [triggers.txt](#triggerstxt)
@@ -44,7 +44,7 @@ Kruiz Control enables a pseudo code approach to manage and automatically handle 
 ## Setup Guide
 
 - Fill out [the settings files](https://github.com/Kruiser8/Kruiz-Control/blob/master/settings/Settings.md) in the settings folder.
-- Add the **index.html** to OBS/SLOBS as a browser source.
+- Add the **index.html** to OBS or SLOBS as a browser source.
 - Type `!example` in your twitch chat. If your user responds with `Success! It worked!`, you're good to go!
 - Customize the _triggers.txt_ with your own triggers from the [the documentation](https://github.com/Kruiser8/Kruiz-Control/blob/master/js/Documentation.md).
 
@@ -55,22 +55,21 @@ _Note: If you're on OBS v27 or lower, you'll also have to install the [OBS Webso
 ## Compatibility
 
 Kruiz Control supports
-- Twitch Channel Points
+- Twitch Channel Management
 - Twitch Chat
-- Twitch Hype Trains
+- Twitch Events (alerts, channel points, hype trains)
 - Streamlabs Alerts
 - StreamElements Alerts
 - OBS scene, source, and filter changes
 - SLOBS scene and source changes
+- Voicemod Voice Changer control
 - Playing music (mp3, wav, ogg)
 - Timers (triggering on an interval)
 - Sending API calls
 
 and more in [the documentation](https://github.com/Kruiser8/Kruiz-Control/blob/master/js/Documentation.md)!
 
-The script should run on any broadcast software that supports browser sources, however only OBS and SLOBS support changing scenes and sources.
-
-OBS.Live should also be supported but is untested.
+The script should run on any broadcast software that supports browser sources, however only OBS and SLOBS support changing scenes and sources. OBS.Live is supported.
 
 ***
 
@@ -89,7 +88,8 @@ Add the **index.html** file as a browser source within your broadcast software. 
 - Click **Browse** and open the **index.html** file within the Kruiz Control script directory.
 - Recommended to set the width/height to 100 or less to reduce the size of the source.
 
-### OBS Websocket (if using OBS v27 or below)
+### OBS Websocket
+_Note: Only if using OBS v27 or below!_
 To use this script with OBS, install the [obs-websocket](https://github.com/Palakis/obs-websocket/releases/latest) plugin (version 5.0.0 or above). Reopen OBS after installing.
 
 In OBS, click **Tools** > **WebSockets Server Settings** and enable the websocket server.
