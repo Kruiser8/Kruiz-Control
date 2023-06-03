@@ -14,6 +14,7 @@ This script uses text files to improve the average user experience.
 - [StreamElements](#streamelements)
 - [Streamlabs](#streamlabs)
 - [Twitch](#twitch)
+- [Voicemod](#voicemod)
 
 ***
 
@@ -183,4 +184,28 @@ Specify the Twitch auth code generated after logging in to your Twitch account.
 Specify the Twitch channel that Kruiz Control will react to and control through triggers and actions.
 ```
 kruiser8
+```
+
+***
+
+## Voicemod
+To connect to [Voicemod](https://www.voicemod.net/), you'll need an **API Key**. To get your API Key,
+
+- Fill out [Voicemod's form](https://voicemod.typeform.com/to/Zh5ZHRED) to request a key.
+- After submitting the form, check your email inbox for an email from control.api.devs@voicemod.net with your `clientKey`.
+- Copy the `clientKey` value. It should look something like `abc-defh12345`.
+- Paste the `clientKey` into the `settings/voicemod/apiKey.txt` file.
+
+### address.txt
+**Location:** `settings/voicemod/address.txt`
+
+```
+ws://localhost:59129/v1
+```
+
+### apiKey.txt
+**Location:** `settings/voicemod/apiKey.txt`
+
+```
+abc-defg12345
 ```
