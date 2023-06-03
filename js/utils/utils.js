@@ -1,6 +1,14 @@
 let AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
 
 /**
+ * Clamp a number between two values.
+ * @param {number} num number to clamp
+ * @param {number} min minimum number allowed
+ * @param {number} max maximum number allowed
+ */
+const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
+
+/**
  * Create a random string of the provided length.
  * @param {number} length string length to generate
  */
@@ -118,6 +126,12 @@ async function getIdFromUser(user) {
       console.error(`Error getting the user id for ${user}! Please double-check that your user is spelled correctly.`);
     }
   });
+
+  if (response === `User not found: ${user}`) {
+    console.error(`Unable to get the ID for the input user: ${user}`);
+    return '';
+  }
+
   return response;
 }
 

@@ -33,28 +33,33 @@
         console.error('SLOBS Message: ' + e.data);
       }
       var data = JSON.parse(e.data);
-      if (data.id === 2) {
-        data.result.forEach(scene => {
-          slobsSocket.scenes[scene.name] = scene;
-        });
-      } else if (data.id === 3) {
-        slobsSocket.activeScene = data.result.name;
-      } else if (data.result && data.result.resourceId === 'ScenesService.sceneAdded' && data.result.data) {
-        slobsSocket.scenes[data.result.data.name] = data.result.data;
-      } else if (data.result && data.result.resourceId === 'ScenesService.sceneRemoved' && data.result.data) {
-        delete slobsSocket.scenes[data.result.data.name];
-      } else if (data.result && data.result.resourceId === 'ScenesService.sceneSwitched' && data.result.data) {
-        slobsSocket.activeScene = data.result.data.name;
-        onSwitchScenes(data.result.data);
-      } else if (data.result && data.result.resourceId === 'StreamingService.streamingStatusChange' && data.result.data) {
-        if (data.result.data === 'starting') {
-          onStreamStarted();
-        } else if (data.result.data === 'ending') {
-          onStreamStopped();
+
+      if (data.error) {
+        console.error(`Received SLOBS error: ${JSON.stringify(data)}`);
+      } else {
+        if (data.id === 2) {
+          data.result.forEach(scene => {
+            slobsSocket.scenes[scene.name] = scene;
+          });
+        } else if (data.id === 3) {
+          slobsSocket.activeScene = data.result.name;
+        } else if (data.result && data.result.resourceId === 'ScenesService.sceneAdded' && data.result.data) {
+          slobsSocket.scenes[data.result.data.name] = data.result.data;
+        } else if (data.result && data.result.resourceId === 'ScenesService.sceneRemoved' && data.result.data) {
+          delete slobsSocket.scenes[data.result.data.name];
+        } else if (data.result && data.result.resourceId === 'ScenesService.sceneSwitched' && data.result.data) {
+          slobsSocket.activeScene = data.result.data.name;
+          onSwitchScenes(data.result.data);
+        } else if (data.result && data.result.resourceId === 'StreamingService.streamingStatusChange' && data.result.data) {
+          if (data.result.data === 'starting') {
+            onStreamStarted();
+          } else if (data.result.data === 'ending') {
+            onStreamStopped();
+          }
+        } else if (slobsSocket.responses.hasOwnProperty(data.id.toString())) {
+          slobsSocket.responses[data.id][0](data, ...slobsSocket.responses[data.id][1]);
+          delete slobsSocket.responses[data.id];
         }
-      } else if (slobsSocket.responses.hasOwnProperty(data.id.toString())) {
-        slobsSocket.responses[data.id][0](data, ...slobsSocket.responses[data.id][1]);
-        delete slobsSocket.responses[data.id];
       }
     }
   };

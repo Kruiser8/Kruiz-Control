@@ -121,21 +121,26 @@ class Controller {
   /**
    * Setup async queue for given trigger id
    * @param {string} triggerId id of the trigger to run
+   * @param {object} triggerParams initial parameters for this event
+   * @param {string} actionsToInsert actions to add at the start of the event
    */
-  async handleData(triggerId, triggerParams) {
+  async handleData(triggerId, triggerParams, actionsToInsert) {
     triggerParams = triggerParams || {};
     triggerParams['_kc_event_id_'] = uuidv4();
+    actionsToInsert = actionsToInsert || [];
 
     if (typeof(this.triggerAsyncMap[triggerId]) !== "undefined") {
       var queue = this.triggerAsync[this.triggerAsyncMap[triggerId]];
       queue.push({
         triggerId: triggerId,
-        triggerParams: triggerParams
+        triggerParams: triggerParams,
+        actionsToInsert: actionsToInsert
       });
     } else {
       this.performTrigger({
         triggerId: triggerId,
-        triggerParams: triggerParams
+        triggerParams: triggerParams,
+        actionsToInsert: actionsToInsert
       }, null);
     }
   }
@@ -149,11 +154,13 @@ class Controller {
       var toSkip = 0;
       var triggerId = triggerInfo.triggerId;
       var triggerParams = triggerInfo.triggerParams;
+      var actionsToInsert = triggerInfo.actionsToInsert;
       triggerParams['_successful_'] = this.successful.join(', ');
       triggerParams['_unsuccessful_'] = this.getUnsuccessful().join(', ');
 
       // Get trigger content
       var triggerSequence = JSON.parse(JSON.stringify(this.triggerData[triggerId]));
+      triggerSequence.unshift(...actionsToInsert);
 
       // Setup regex for any parameters
       var triggerRegex = null;
@@ -163,90 +170,101 @@ class Controller {
 
       // Run through actions
       for (var i = 0; i < triggerSequence.length; i++) {
-        if (toSkip > 0) {
+        var data = triggerSequence[i];
+        var run_data = [];
+
+        // Check if should skip...
+        var parserName = data[0].toLowerCase();
+        if (toSkip > 0 && parserName !== 'ignore') {
           toSkip--;
-        } else {
-          var data = triggerSequence[i];
-          var run_data = [];
+          continue;
+        }
 
-          // If need to check for parameters
-          if (triggerRegex) {
-            for (var j = 0; j < data.length; j++) {
-              // Copy data into new array to avoid replacing directly
-              run_data.push(data[j])
+        // If need to check for parameters
+        if (triggerRegex) {
+          for (var j = 0; j < data.length; j++) {
+            // Copy data into new array to avoid replacing directly
+            run_data.push(data[j])
 
-              // Find and replace all matches
-              var result = run_data[j].match(triggerRegex);
-              while (result) {
-                result.forEach(match => {
-                  if (match.charAt(0) === '[') {
-                    var replacement = JSON.stringify(triggerParams[match.substring(1, match.length - 1)]);
-                    run_data[j] = run_data[j].replace(match, replacement);
-                  } else {
-                    run_data[j] = run_data[j].replace(match, triggerParams[match.substring(1, match.length - 1)]);
-                  }
-                });
-                result = run_data[j].match(triggerRegex);
-              }
-            }
-          } else {
-            run_data = data;
-          }
-
-          // Execute action
-          var runParams = await this.runTrigger(run_data, triggerParams);
-
-          // Handle parameters returned by action
-          if (runParams) {
-            // If continue param set to false, exit trigger
-            if (runParams.continue === false) {
-              return;
-            }
-
-            if (runParams["_trigId"]) {
-              var inNum = 1;
-              while (triggerParams[`in${inNum}`]) {
-                delete triggerParams[`in${inNum}`];
-                inNum++;
-              }
-              runParams["_trigId"].forEach(trigId => {
-                var trigSequence = JSON.parse(JSON.stringify(this.triggerData[trigId]));
-                triggerSequence.splice(i+1, 0, ...trigSequence);
-              });
-              delete runParams["_trigId"];
-            }
-
-            if (runParams.skip) {
-              toSkip = runParams.skip;
-              delete runParams.skip;
-            }
-
-            if (runParams.actions) {
-              runParams.actions.forEach((item, i) => {
-                if (typeof item === 'string' || item instanceof String) {
-                  runParams.actions[i] = Parser.splitLine(item);
+            // Find and replace all matches
+            var result = run_data[j].match(triggerRegex);
+            while (result) {
+              result.forEach(match => {
+                if (match.charAt(0) === '[') {
+                  var replacement = JSON.stringify(triggerParams[match.substring(1, match.length - 1)]);
+                  run_data[j] = run_data[j].replace(match, replacement);
+                } else {
+                  run_data[j] = run_data[j].replace(match, triggerParams[match.substring(1, match.length - 1)]);
                 }
               });
-
-              triggerSequence.splice(i+1, 0, ...runParams.actions);
-              delete runParams.actions;
+              result = run_data[j].match(triggerRegex);
             }
-
-            if (runParams.loops && runParams.lines) {
-              var toLoop = triggerSequence.slice(i + 1, i + runParams.lines + 1);
-              for (var loopLine = 0; loopLine < runParams.loops - 1; loopLine++) {
-                triggerSequence.splice(i+1, 0, ...toLoop);
-              }
-              delete runParams.loops;
-              delete runParams.lines;
-            }
-
-            // Recreate regex with new params
-            Object.keys(runParams).forEach(attribute => {
-              triggerParams[attribute] = runParams[attribute];
-            });
-            triggerRegex = new RegExp('{' + Object.keys(triggerParams).join('}|{') + '}|\\[' + Object.keys(triggerParams).join('\\]|\\[') + '\\]', 'gi');
           }
+        } else {
+          run_data = data;
+        }
+
+        // Execute action
+        var runParams = await this.runTrigger(run_data, triggerParams);
+
+        // Handle parameters returned by action
+        if (runParams) {
+          // If continue param set to false, exit trigger
+          if (runParams.continue === false) {
+            return;
+          }
+
+          if (runParams["_trigId"]) {
+            var inNum = 1;
+            while (triggerParams[`in${inNum}`]) {
+              delete triggerParams[`in${inNum}`];
+              inNum++;
+            }
+            runParams["_trigId"].forEach(trigId => {
+              var trigSequence = JSON.parse(JSON.stringify(this.triggerData[trigId]));
+              triggerSequence.splice(i+1, 0, ...trigSequence);
+            });
+            delete runParams["_trigId"];
+          }
+
+          if (runParams.skip) {
+            toSkip = runParams.skip;
+            delete runParams.skip;
+          }
+
+          if (runParams.actions) {
+            runParams.actions.forEach((item, actionIndex) => {
+              if (typeof item === 'string' || item instanceof String) {
+                runParams.actions[actionIndex] = Parser.splitLine(item);
+              }
+            });
+
+            triggerSequence.splice(i+1, 0, ...runParams.actions);
+            delete runParams.actions;
+          }
+
+          if (runParams.loops && runParams.lines) {
+            var toLoop = triggerSequence.slice(i + 1, i + runParams.lines + 1);
+            triggerSequence.splice(i+1, 0,
+              ['Ignore', 'Param', 'Create', 'loop_i', '0'],
+              ['Ignore', 'Param', 'Create', 'loop', '1']
+            );
+            triggerSequence.splice(i+2, 0, );
+            for (var loopLine = 0; loopLine < runParams.loops - 1; loopLine++) {
+              triggerSequence.splice(i+3, 0, ...toLoop,
+                ['Ignore', 'Param', 'Add', 'loop_i', '1'],
+                ['Ignore', 'Param', 'Add', 'loop', '1']
+              );
+            }
+            delete runParams.loops;
+            delete runParams.lines;
+          }
+
+          // Recreate regex with new params
+          Object.keys(runParams).forEach(attribute => {
+            triggerParams[attribute] = runParams[attribute];
+          });
+          triggerRegex = new RegExp('{' + Object.keys(triggerParams).join('}|{') + '}|\\[' + Object.keys(triggerParams).join('\\]|\\[') + '\\]', 'gi');
         }
       }
     } catch (error) {
@@ -266,6 +284,10 @@ class Controller {
       // Custom delay handler
       var { delay } = Parser.getInputs(data, ['delay']);
       await timeout(parseFloat(delay) * 1000);
+    }
+    else if (parserName === 'ignore') {
+      data.shift();
+      return await this.runTrigger(data, parameters);
     }
     else if (parserName === 'skip') {
       var { lines } = Parser.getInputs(data, ['lines']);

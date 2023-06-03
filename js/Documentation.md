@@ -26,13 +26,6 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [API RawData](#api-rawdata)
     + [API Send](#api-send)
     + [API Url](#api-url)
-- [Channel Points](#channel-points)
-  * [Triggers](#channel-point-triggers)
-    + [OnChannelPoint](#onchannelpoint)
-    + [OnCommunityGoalComplete](#oncommunitygoalcomplete)
-    + [OnCommunityGoalProgress](#oncommunitygoalprogress)
-    + [OnCommunityGoalStart](#oncommunitygoalstart)
-  * [Actions](#channel-point-actions)
 - [Chat](#chat)
   * [Triggers](#chat-triggers)
     + [OnCommand](#oncommand)
@@ -61,6 +54,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Debug StreamElements](#debug-streamelements)
     + [Debug StreamLabs](#debug-streamlabs)
     + [Debug Twitch](#debug-twitch)
+    + [Debug Voicemod](#debug-voicemod)
 - [Discord](#discord)
   * [Triggers](#discord-triggers)
   * [Actions](#discord-actions)
@@ -79,15 +73,6 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Discord Title](#discord-title)
     + [Discord Update](#discord-update)
     + [Discord Url](#discord-url)
-- [Hype Train](#hype-train)
-  * [Triggers](#hype-train-triggers)
-    + [OnHypeTrainCooldownExpired](#onhypetraincooldownexpired)
-    + [OnHypeTrainConductor](#onhypetrainconductor)
-    + [OnHypeTrainEnd](#onhypetrainend)
-    + [OnHypeTrainLevel](#onhypetrainlevel)
-    + [OnHypeTrainProgress](#onhypetrainprogress)
-    + [OnHypeTrainStart](#onhypetrainstart)
-  * [Actions](#hype-train-actions)
 - [List](#list)
   * [Triggers](#list-triggers)
   * [Actions](#list-actions)
@@ -119,6 +104,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Function](#function)
     + [Globals](#globals)
     + [If](#if)
+    + [Ignore](#ignore)
     + [Log](#log)
     + [Loop](#loop)
     + [Play](#play)
@@ -246,6 +232,129 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Timer Reset](#timer-reset)
     + [Timer Start](#timer-start)
     + [Timer Stop](#timer-stop)
+- [Twitch](#twitch)
+  * [Triggers](#twitch-triggers)
+    + [OnTWCommunityGoalComplete](#ontwcommunitygoalcomplete)
+    + [OnTWCommunityGoalProgress](#ontwcommunitygoalprogress)
+    + [OnTWCommunityGoalStart](#ontwcommunitygoalstart)
+    + [OnTWBan](#ontwban)
+    + [OnTWChannelPoint](#ontwchannelpoint)
+    + [OnTWChannelPointCompleted](#ontwchannelpointcompleted)
+    + [OnTWChannelPointRejected](#ontwchannelpointrejected)
+    + [OnTWChannelUpdate](#ontwchannelupdate)
+    + [OnTWCharityDonation](#ontwcharitydonation)
+    + [OnTWCharityProgress](#ontwcharityprogress)
+    + [OnTWCharityStarted](#ontwcharitystarted)
+    + [OnTWCharityStopped](#ontwcharitystopped)
+    + [OnTWCheer](#ontwcheer)
+    + [OnTWFollow](#ontwfollow)
+    + [OnTWGoalCompleted](#ontwgoalcompleted)
+    + [OnTWGoalFailed](#ontwgoalfailed)
+    + [OnTWGoalProgress](#ontwgoalprogress)
+    + [OnTWGoalStart](#ontwgoalstart)
+    + [OnTWHypeTrainConductor](#ontwhypetrainconductor)
+    + [OnTWHypeTrainEnd](#ontwhypetrainend)
+    + [OnTWHypeTrainLevel](#ontwhypetrainlevel)
+    + [OnTWHypeTrainProgress](#ontwhypetrainprogress)
+    + [OnTWHypeTrainStart](#ontwhypetrainstart)
+    + [OnTWModAdd](#ontwmodadd)
+    + [OnTWModRemove](#ontwmodremove)
+    + [OnTWPoll](#ontwpoll)
+    + [OnTWPollUpdate](#ontwpollupdate)
+    + [OnTWPollEnd](#ontwpollend)
+    + [OnTWPrediction](#ontwprediction)
+    + [OnTWPredictionEnd](#ontwpollend)
+    + [OnTWPredictionLock](#ontwpredictionlock)
+    + [OnTWPredictionUpdate](#ontwpredictionupdate)
+    + [OnTWRaid](#ontwraid)
+    + [OnTWShieldStart](#ontwshieldstart)
+    + [OnTWShieldStop](#ontwshieldstop)
+    + [OnTWShoutout](#ontwshoutout)
+    + [OnTWShoutoutReceived](#ontwshoutoutreceived)
+    + [OnTWStreamStarted](#ontwstreamstarted)
+    + [OnTWStreamStopped](#ontwstreamstopped)
+    + [OnTWSub](#ontwsub)
+    + [OnTWSubGift](#ontwsubgift)
+    + [OnTWSubMessage](#ontwsubmessage)
+    + [OnTWTimeout](#ontwtimeout)
+    + [OnTWUnban](#ontwunban)
+  * [Actions](#twitch-actions)
+    + [Twitch AddBlockedTerm](#twitch-addblockedterm)
+    + [Twitch Announcement](#twitch-announcement)
+    + [Twitch Authenticate](#twitch-authenticate)
+    + [Twitch Ban](#twitch-ban)
+    + [Twitch BitsLeaderboard](#twitch-bitsleaderboard)
+    + [Twitch Block](#twitch-block)
+    + [Twitch ChannelInfo](#twitch-channelinfo)
+    + [Twitch Chatters](#twitch-chatters)
+    + [Twitch ChattersPaginated](#twitch-chatterspaginated)
+    + [Twitch ClearChat](#twitch-clearchat)
+    + [Twitch ClipById](#twitch-clipbyid)
+    + [Twitch ClipsByUser](#twitch-clipsbyuser)
+    + [Twitch Color](#twitch-color)
+    + [Twitch Commercial](#twitch-commercial)
+    + [Twitch Complete](#twitch-complete)
+    + [Twitch Copy](#twitch-copy)
+    + [Twitch CreateClip](#twitch-createclip)
+    + [Twitch DeleteMessage](#twitch-deletemessage)
+    + [Twitch Description](#twitch-description)
+    + [Twitch EmoteOnly](#twitch-emoteonly)
+    + [Twitch EmoteOnlyOff](#twitch-emoteonlyoff)
+    + [Twitch Emotes](#twitch-emotes)
+    + [Twitch FollowCount](#twitch-followcount)
+    + [Twitch Followers](#twitch-followers)
+    + [Twitch FollowersOff](#twitch-followersoff)
+    + [Twitch Game](#twitch-game)
+    + [Twitch Goals](#twitch-goals)
+    + [Twitch IsFollower](#twitch-isfollower)
+    + [Twitch IsShieldMode](#twitch-isshieldmode)
+    + [Twitch IsSubscriber](#twitch-issubscriber)
+    + [Twitch Mod](#twitch-mod)
+    + [Twitch Marker](#twitch-marker)
+    + [Twitch Mods](#twitch-mods)
+    + [Twitch Poll Cancel](#twitch-prediction-cancel)
+    + [Twitch Poll Choice](#twitch-prediction-choice)
+    + [Twitch Poll Clear](#twitch-prediction-clear)
+    + [Twitch Poll Create](#twitch-prediction-create)
+    + [Twitch Poll End](#twitch-prediction-end)
+    + [Twitch Poll PointsPerVote](#twitch-prediction-pointspervote)
+    + [Twitch Poll Time](#twitch-prediction-time)
+    + [Twitch Poll Title](#twitch-prediction-title)
+    + [Twitch Prediction Cancel](#twitch-prediction-cancel)
+    + [Twitch Prediction Clear](#twitch-prediction-clear)
+    + [Twitch Prediction Complete](#twitch-prediction-complete)
+    + [Twitch Prediction Create](#twitch-prediction-create)
+    + [Twitch Prediction Lock](#twitch-prediction-lock)
+    + [Twitch Prediction Outcome](#twitch-prediction-outcome)
+    + [Twitch Prediction Time](#twitch-prediction-time)
+    + [Twitch Prediction Title](#twitch-prediction-title)
+    + [Twitch Raid](#twitch-raid)
+    + [Twitch Reject](#twitch-reject)
+    + [Twitch RemoveBlockedTerm](#twitch-removeblockedterm)
+    + [Twitch Reward](#twitch-reward)
+    + [Twitch Shield](#twitch-shield)
+    + [Twitch Shoutout](#twitch-shoutout)
+    + [Twitch Slow](#twitch-slow)
+    + [Twitch SlowOff](#twitch-slowoff)
+    + [Twitch Streams](#twitch-streams)
+    + [Twitch SubCount](#twitch-subcount)
+    + [Twitch Subscribers](#twitch-subscribers)
+    + [Twitch SubscribersOff](#twitch-subscribersoff)
+    + [Twitch Tags](#twitch-tags)
+    + [Twitch Teams](#twitch-teams)
+    + [Twitch Timeout](#twitch-timeout)
+    + [Twitch Title](#twitch-title)
+    + [Twitch Unban](#twitch-unban)
+    + [Twitch Unblock](#twitch-unblock)
+    + [Twitch UniqueChat](#twitch-uniquechat)
+    + [Twitch UniqueChatOff](#twitch-uniquechatoff)
+    + [Twitch Unmod](#twitch-unmod)
+    + [Twitch Unraid](#twitch-unraid)
+    + [Twitch UnVIP](#twitch-unvip)
+    + [Twitch UserColor](#twitch-usercolor)
+    + [Twitch Videos](#twitch-videos)
+    + [Twitch VIP](#twitch-vip)
+    + [Twitch VIPs](#twitch-vips)
 - [Variable](#variable)
   * [Triggers](#variable-triggers)
   * [Actions](#variable-actions)
@@ -256,6 +365,18 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Variable Global Load](#variable-global-load)
     + [Variable Global Remove](#variable-global-remove)
     + [Variable Global Set](#variable-global-set)
+- [Voicemod](#voicemod)
+  * [Triggers](#voicemod-triggers)
+  * [Actions](#voicemod-actions)
+    + [Voicemod Background](#voicemod-background)
+    + [Voicemod Beep](#voicemod-beep)
+    + [Voicemod Hear](#voicemod-hear)
+    + [Voicemod Mute](#voicemod-mute)
+    + [Voicemod Play](#voicemod-play)
+    + [Voicemod Random](#voicemod-random)
+    + [Voicemod Stop](#voicemod-stop)
+    + [Voicemod Voice](#voicemod-voice)
+    + [Voicemod VoiceChanger](#voicemod-voicechanger)
 
 ***
 
@@ -354,11 +475,12 @@ The commands, `!so`, `!sh`, `!caster`, and `!shout` will all cause the message t
 - OnAction
 - OnCommand
 - OnKeyword
+- OnSpeak
 - OnMessage
-- OnChannelPoint
-- OnCommunityGoalStart
-- OnCommunityGoalProgress
-- OnCommunityGoalComplete
+- OnTWChannelPoint
+- OnTWCommunityGoalStart
+- OnTWCommunityGoalProgress
+- OnTWCommunityGoalComplete
 - OnOBSSwitchScenes
 - OnOBSTransitionTo
 - OnOBSCustomMessage
@@ -397,6 +519,7 @@ Enables the ability to create your own actions within Kruiz Control.
 ------------ | -------------
 **action** | The `<action>` performed that triggered this event.
 **in#** | The numbered arguments passed to the action. Replace `#` with a number, starting at 1 and ending at the last argument passed into the command.
+**in_count** | The number of arguments passed to the action.
 
 ***
 
@@ -408,7 +531,7 @@ Enables the ability to create your own actions within Kruiz Control.
 **Info** | Used to run an action by passing it through. This allows actions to be fired dynamically within an event. `<action>` is the full action that you want to complete. The action can be provided as a single argument (inside of quotes) or written out normally.
 **Format** | `Action <action>`
 **Example** | `Action Chat Send "Hello world"`
-**Example w/ single argument** | `Action "Chat Send 'Hello world'"`
+**Example w/ Single Argument** | `Action "Chat Send 'Hello world'"`
 
 ***
 
@@ -504,96 +627,6 @@ None at the moment.
 
 ***
 
-## Channel Points
-Enables the ability to run actions when channel point rewards are redeemed.
-
-### Channel Point Triggers
-
-#### OnChannelPoint
-| | |
------------- | -------------
-**Info** | Used to trigger a set of actions when a channel point reward is redeemed. Using `*` as the `<reward_name>` will execute the trigger for all channel point rewards.
-**Format** | `OnChannelPoint <reward_name>`
-**Format w/ Aliases** | `OnChannelPoint <reward_name1> <reward_name2> ...`
-**Example** | `OnChannelPoint "Example Reward"`
-**Example w/ Aliases** | `OnChannelPoint "Resize" "Left View"`
-
-_Note: Default channel point rewards are not supported: `Unlock a Random Sub Emote`, `Send a Message in Sub-Only Mode`, `Choose an Emote to Unlock`, `Highlight My Message`, and `Modify a Single Emote`._
-
-##### Parameters
-| | |
------------- | -------------
-**reward** | The name of the channel point reward that was redeemed.
-**user** | The display name of the user that redeemed the channel point reward.
-**message** | The message included with the channel point redemption (if one is provided)
-**data** | The complete json channel point message (for use with [Function](#function)).
-
-***
-
-#### OnCommunityGoalComplete
-| | |
------------- | -------------
-**Info** | Used to trigger a set of actions when a community goal is completed. Using `*` as the `<goal_title>` will execute the trigger for all channel point rewards.
-**Format** | `OnCommunityGoalComplete <goal_title>`
-**Format w/ Aliases** | `OnCommunityGoalComplete <goal_title1> <goal_title2> ...`
-**Example** | `OnCommunityGoalComplete "Example Goal"`
-**Example w/ Aliases** | `OnCommunityGoalComplete "Example Goal" "Extra Sunday Stream" ...`
-
-##### Parameters
-| | |
------------- | -------------
-**goal** | The title of the community goal.
-**user** | The display name of the user that completed the goal.
-**amount** | The amount of points donated to complete the goal.
-**user_total** | The total amount of points contributed by the user.
-**progress** | The current amount of points contributed towards the goal.
-**total** | The amount of points required to complete the goal.
-**data** | The complete json community goal message (for use with [Function](#function)).
-
-#### OnCommunityGoalProgress
-| | |
------------- | -------------
-**Info** | Used to trigger a set of actions when a user contributes towards a goal. Using `*` as the `<goal_title>` will execute the trigger for all channel point rewards.
-**Format** | `OnCommunityGoalProgress <goal_title>`
-**Format w/ Aliases** | `OnCommunityGoalProgress <goal_title1> <goal_title2> ...`
-**Example** | `OnCommunityGoalProgress "Example Goal"`
-**Example w/ Aliases** | `OnCommunityGoalProgress "Example Goal" "Extra Sunday Stream" ...`
-
-##### Parameters
-| | |
------------- | -------------
-**goal** | The title of the community goal.
-**user** | The display name of the user that completed the goal.
-**amount** | The amount of points donated to complete the goal.
-**user_total** | The total amount of points contributed by the user.
-**progress** | The current amount of points contributed towards the goal.
-**total** | The amount of points required to complete the goal.
-**data** | The complete json community goal message (for use with [Function](#function)).
-
-***
-
-#### OnCommunityGoalStart
-| | |
------------- | -------------
-**Info** | Used to trigger a set of actions when the streamer starts a goal. Using `*` as the `<goal_title>` will execute the trigger for all channel point rewards.
-**Format** | `OnCommunityGoalStart <goal_title>`
-**Format w/ Aliases** | `OnCommunityGoalStart <goal_title1> <goal_title2> ...`
-**Example** | `OnCommunityGoalStart "Example Goal"`
-**Example w/ Aliases** | `OnCommunityGoalStart "Example Goal" "Extra Sunday Stream" ...`
-
-##### Parameters
-| | |
------------- | -------------
-**goal** | The title of the community goal.
-**data** | The complete json community goal message (for use with [Function](#function)).
-
-***
-
-### Channel Point Actions
-None at the moment.
-
-***
-
 ## Chat
 Enables the ability to take actions on chat message and send messages. Note that Kruiz Control can respond to messages sent by Kruiz Control.
 
@@ -602,17 +635,22 @@ Chat triggers use a `<permission>` parameter to specify who can use a command. T
 
 - *b* - Broadcaster
 - *s* - Subscriber
-- *f* - Founder
+- *f* - Follower
+- *o* - Founder
 - *v* - VIP
 - *m* - Moderator
 - *n* - Check if a user has _none_ of the permissions above.
 - *e* - Everyone
 
-Additionally, you can use *u* as the permission to specify a specific user that can use a command or keyword. In this case, `<optional_info>` is required to specify the user. The username input is case insensitive.
+Additionally, you can use *u* as the permission to specify a user or group of users that can use a command or keyword. In this case, `<optional_info>` is required to specify the user. The username input is case insensitive. If multiple users are provided, they must be comma delimited without any spaces.
 
 **Example**:
 ```
 OnCommand u kruiser8 10 !secret
+```
+**Example w/ Multiple Users**:
+```
+OnCommand u kruiser8,kruizbot 10 !secret
 ```
 
 Chat triggers also use a `<cooldown>` parameter to put the command or keyword on cooldown for the specified number of seconds. The `<cooldown>` can be any number 0 or higher.
@@ -636,8 +674,10 @@ _WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mi
 **user** | The display name of the user that sent the command.
 **after** | The message excluding the command.
 **message** | The entire chat message, including the command.
+**message_id** | The id of the message (used with [Twitch DeleteMessage](#twitch-deletemessage)). If the message was sent by Kruiz Control, the id will be an empty string (`""`).
 **data** | An object with all metadata about the message (for use with [Function](#function)).
 **arg#** | The numbered arguments in the message. Replace `#` with a number, starting at 1 and ending at the last argument passed into the command.
+**arg_count** | The number of arguments in the message. This indicates the number of `arg#` parameters returned.
 
 ***
 
@@ -655,6 +695,7 @@ _WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mi
 ------------ | -------------
 **user** | The display name of the user that sent the command.
 **message** | The entire chat message, including the command.
+**message_id** | The id of the message (used with [Twitch DeleteMessage](#twitch-deletemessage)). If the message was sent by Kruiz Control, the id will be an empty string (`""`).
 **data** | An object with all metadata about the message (for use with [Function](#function)).
 
 ***
@@ -676,8 +717,10 @@ _WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mi
 **user** | The display name of the user that triggered the keyword.
 **keyword** | The keyword matched by the trigger.
 **message** | The chat message.
+**message_id** | The id of the message (used with [Twitch DeleteMessage](#twitch-deletemessage)). If the message was sent by Kruiz Control, the id will be an empty string (`""`).
 **data** | An object with all metadata about the message (for use with [Function](#function)).
 **arg#** | The numbered arguments in the message. Replace `#` with a number, starting at 1 and ending at the last argument passed into the command.
+**arg_count** | The number of arguments in the message. This indicates the number of `arg#` parameters returned.
 
 ***
 
@@ -686,6 +729,7 @@ _WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mi
 ------------ | -------------
 **Info** | Used to trigger a set of actions when a user speaks in chat for the first time. Using `*` as the `<name>` will execute the trigger for all users.
 **Format** | `OnSpeak <name>`
+**Format w/ Aliases** | `OnSpeak <name1> <name2> <name3>`
 **Example** | `OnSpeak Kruiser8`
 
 ##### Parameters
@@ -693,6 +737,7 @@ _WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mi
 ------------ | -------------
 **user** | The display name of the user that sent the command.
 **message** | The entire chat message, including the command.
+**message_id** | The id of the message (used with [Twitch DeleteMessage](#twitch-deletemessage)). If the message was sent by Kruiz Control, the id will be an empty string (`""`).
 **data** | An object with all metadata about the message (for use with [Function](#function)).
 
 ***
@@ -872,6 +917,15 @@ None at the moment.
 
 ***
 
+#### Debug Voicemod
+| | |
+------------ | -------------
+**Info** | Used to enable debugging for Voicemod messages.
+**Format** | `Debug Voicemod`
+**Example** | `Debug Voicemod`
+
+***
+
 ## Discord
 Enables the ability to send messages to discord by creating webhooks and using discord embeds.
 
@@ -946,7 +1000,7 @@ None at the moment.
 ------------ | -------------
 **Info** | Used to upload a file attachment with a discord message. `<name>` is the id that was used to register the webhook in a [`Discord Create`](#discord-create). `<file>` is the relative path to a file to upload. Relative paths start at the Kruiz Control root directory.
 **Format** | `Discord File <name> <file>`
-**Example w/ relative path** | `Discord File "GeneralChannel" "screenshots/screenshot.png"`
+**Example w/ Relative Path** | `Discord File "GeneralChannel" "screenshots/screenshot.png"`
 
 ***
 
@@ -1036,109 +1090,6 @@ None at the moment.
 **Info** | Used to add a link to the discord embed title. `<name>` is the id that was used to register the webhook in a [`Discord Create`](#discord-create). `<url>` is the link URL for the embed.
 **Format** | `Discord Url <name> <url>`
 **Example** | `Discord Url "GeneralChannel" "https://twitch.tv/kruiser8"`
-
-***
-
-## Hype Train
-A handler to allow you to trigger events from twitch hype trains.
-
-### Hype Train Triggers
-
-#### OnHypeTrainCooldownExpired
-| | |
------------- | -------------
-**Info** | Used to fire a set of actions when the hype train is no longer on cooldown and can be triggered again.
-**Format** | `OnHypeTrainCooldownExpired`
-**Example** | `OnHypeTrainCooldownExpired`
-
-***
-
-#### OnHypeTrainConductor
-| | |
------------- | -------------
-**Info** | Used to fire a set of actions when the conductor is changed for a given type (sub or cheer). Note that this fires every time progress is made in the hype train regardless of if the conductor changes.
-**Format** | `OnHypeTrainConductor`
-**Example** | `OnHypeTrainConductor`
-
-##### Parameters
-| | |
------------- | -------------
-**cheer_conductor_id** | Id of the current cheer conductor if one exists.
-**sub_conductor_id** | Id of the current sub conductor if one exists.
-**type** | `SUBS` or `CHEER` to designate the type of conductor changed.
-**data** | Data included with the message.
-
-***
-
-#### OnHypeTrainEnd
-| | |
------------- | -------------
-**Info** | Used to fire a set of actions when the hype train ends.
-**Format** | `OnHypeTrainEnd`
-**Example** | `OnHypeTrainEnd`
-
-##### Parameters
-| | |
------------- | -------------
-**cheer_conductor_id** | Id of the current cheer conductor if one exists.
-**sub_conductor_id** | Id of the current sub conductor if one exists.
-**data** | Data included with the message.
-
-***
-
-#### OnHypeTrainLevel
-| | |
------------- | -------------
-**Info** | Used to fire a set of actions when the hype train levels up.
-**Format** | `OnHypeTrainLevel`
-**Example** | `OnHypeTrainLevel`
-
-##### Parameters
-| | |
------------- | -------------
-**level** | The current level of the hype train.
-**progress** | The current progress towards the next level (designated by `total`).
-**total** | The amount needed to reach the next level in the hype train.
-**time** | The amount of seconds left in the hype train.
-**data** | Data included with the message.
-
-***
-
-#### OnHypeTrainProgress
-| | |
------------- | -------------
-**Info** | Used to fire a set of actions when someone contributes to the hype train.
-**Format** | `OnHypeTrainProgress`
-**Example** | `OnHypeTrainProgress`
-
-##### Parameters
-| | |
------------- | -------------
-**user_id** | The twitch id of the user that contributed.
-**level** | The current level of the hype train.
-**progress** | The current progress towards the next level (designated by `total`).
-**total** | The amount needed to reach the next level in the hype train.
-**time** | The amount of seconds left in the hype train.
-**data** | Data included with the message.
-
-***
-
-#### OnHypeTrainStart
-| | |
------------- | -------------
-**Info** | Used to fire a set of actions when a hype train starts.
-**Format** | `OnHypeTrainStart`
-**Example** | `OnHypeTrainStart`
-
-##### Parameters
-| | |
------------- | -------------
-**data** | Data included with the message.
-
-***
-
-### Hype Train Actions
-None at the moment.
 
 ***
 
@@ -1507,6 +1458,16 @@ The `<optional_skip>` value allows you to specify the number of lines to skip if
 
 ***
 
+#### Ignore
+| | |
+------------ | -------------
+**Info** | Used to run an action without updating the number of actions in an event. This is used internally by Kruiz Control to add actions to an event without messing up [`Loop`](#loop) or [`If`](#if) actions that track the number of actions. `<action>` is the full action that you want to complete. The action can be provided as a single argument (inside of quotes) or written out normally.
+**Format** | `Ignore <action>`
+**Example** | `Ignore Chat Send "Hello world"`
+**Example w/ Single Argument** | `Ignore "Chat Send 'Hello world'"`
+
+***
+
 #### Log
 | | |
 ------------ | -------------
@@ -1522,6 +1483,12 @@ The `<optional_skip>` value allows you to specify the number of lines to skip if
 **Info** | Used to repeat a set of actions a specified number of times. `<lines>` is the number of actions/lines to repeat. `<times>` is the number of times to repeat the actions/lines.
 **Format** | `Loop <lines> <times>`
 **Example** | `Loop 8 10`
+
+##### Parameters
+| | |
+------------ | -------------
+**loop** | The loop iteration, starting at 1.
+**loop_i** | The loop index, starting at 0.
 
 ***
 
@@ -1693,6 +1660,15 @@ Enables the ability to interact with and respond to OBS.
 **Info** | Used to flip a source in OBS.
 **Format** | `OBS Flip <scene> <source> <x/y>`
 **Example** | `OBS Flip Webcam Camera x`
+
+***
+
+#### OBS Image
+| | |
+------------ | -------------
+**Info** | Used to set the file path of an image source. `<source>` is the name of the source. `<path>` is the absolute path to the file.
+**Format** | `OBS Image <source> <path>`
+**Example** | `OBS Image RecordingDot "C:/Users/YOUR_USER_NAME/Stream/recording.png"`
 
 ***
 
@@ -2043,7 +2019,7 @@ Error "OBS is rendering {fps} FPS, skipping {render_skipped_frames} frames total
 ##### Parameters
 | | |
 ------------ | -------------
-**version** | The version of the websocket.
+**version** | The version of the websocket. If OBS is not connected, `Disconnected` will be returned.
 
 ***
 
@@ -2502,15 +2478,6 @@ Enables the ability to trigger actions based on StreamElement alerts. Note that 
 
 ***
 
-##### Parameters
-| | |
------------- | -------------
-**user** | The user that gifted the subscriptions.
-**amount** | The number of subscriptions the user is gifted.
-**data** | The complete json message (for use with [Function](#function)).
-
-***
-
 #### OnSEDonation
 | | |
 ------------ | -------------
@@ -2821,7 +2788,7 @@ None at the moment.
 **Info** | Used to read a message with the specified voice. `<voice>` is the name of a voice from your computer's narration system. You can check the available voices by using [`TTS Voices`](#tts-voices). `<volume>`, `<pitch>`, and `<rate>` are all numbers between 0 and 100. If a non-numerical value is provided, the default is used. `<wait/nowait>` determines whether or not the script waits until the audio is done playing before completing the next action. `<message>` is the text to read in the audio.
 **Format** | `TTS <voice> <volume> <pitch> <rate> <wait/nowait> <message>`
 **Example** | `TTS "Microsoft David - English (United States)" 70 50 20 wait "Hey there!"`
-**Example w/ default pitch & rate** | `TTS "Microsoft David - English (United States)" 70 - - wait "Hey there!"`
+**Example w/ Default Pitch & Rate** | `TTS "Microsoft David - English (United States)" 70 - - wait "Hey there!"`
 
 _Note: For backwards compatibility, the `<pitch>` and `<rate>` inputs are optional, but they are both required if one of them is provided._
 
@@ -2908,6 +2875,1836 @@ Enables the ability to run actions on a time interval.
 **Info** | Used to stop a timer based on the `<name>`. This can be used to interrupt a timer until it is reset or started.
 **Format** | `Timer Stop <name>`
 **Example** | `Timer Stop MyTimer`
+
+***
+
+## Twitch
+Enables the ability to run actions when channel point rewards are redeemed.
+
+### Twitch Triggers
+
+#### OnCommunityGoalComplete
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when a community goal is completed. Using `*` as the `<goal_title>` will execute the trigger for all channel point rewards.
+**Format** | `OnCommunityGoalComplete <goal_title>`
+**Format w/ Aliases** | `OnCommunityGoalComplete <goal_title1> <goal_title2> ...`
+**Example** | `OnCommunityGoalComplete "Example Goal"`
+**Example w/ Aliases** | `OnCommunityGoalComplete "Example Goal" "Extra Sunday Stream" ...`
+
+##### Parameters
+| | |
+------------ | -------------
+**goal** | The title of the community goal.
+**user** | The display name of the user that completed the goal.
+**amount** | The amount of points donated to complete the goal.
+**user_total** | The total amount of points contributed by the user.
+**progress** | The current amount of points contributed towards the goal.
+**total** | The amount of points required to complete the goal.
+**data** | The complete json community goal message (for use with [Function](#function)).
+
+#### OnCommunityGoalProgress
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when a user contributes towards a goal. Using `*` as the `<goal_title>` will execute the trigger for all channel point rewards.
+**Format** | `OnCommunityGoalProgress <goal_title>`
+**Format w/ Aliases** | `OnCommunityGoalProgress <goal_title1> <goal_title2> ...`
+**Example** | `OnCommunityGoalProgress "Example Goal"`
+**Example w/ Aliases** | `OnCommunityGoalProgress "Example Goal" "Extra Sunday Stream" ...`
+
+##### Parameters
+| | |
+------------ | -------------
+**goal** | The title of the community goal.
+**user** | The display name of the user that completed the goal.
+**amount** | The amount of points donated to complete the goal.
+**user_total** | The total amount of points contributed by the user.
+**progress** | The current amount of points contributed towards the goal.
+**total** | The amount of points required to complete the goal.
+**data** | The complete json community goal message (for use with [Function](#function)).
+
+***
+
+#### OnCommunityGoalStart
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when the streamer starts a goal. Using `*` as the `<goal_title>` will execute the trigger for all channel point rewards.
+**Format** | `OnCommunityGoalStart <goal_title>`
+**Format w/ Aliases** | `OnCommunityGoalStart <goal_title1> <goal_title2> ...`
+**Example** | `OnCommunityGoalStart "Example Goal"`
+**Example w/ Aliases** | `OnCommunityGoalStart "Example Goal" "Extra Sunday Stream" ...`
+
+##### Parameters
+| | |
+------------ | -------------
+**goal** | The title of the community goal.
+**data** | The complete json community goal message (for use with [Function](#function)).
+
+***
+
+#### OnTWBan
+| | |
+------------ | -------------
+**Info** | Triggers when a viewer is banned from the channel.
+**Format** | `OnTWBan`
+**Example** | `OnTWBan`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user id of the user who was banned.
+**login** | The user login of the user who was banned.
+**name** | The user display name of the user who was banned.
+**mod** | The user name of the issuer of the ban.
+**reason** | The reason given for the ban.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWChannelPoint
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when a channel point reward is redeemed. Using `*` as the `<reward_name>` will execute the trigger for all channel point rewards.
+**Format** | `OnTWChannelPoint <reward_name>`
+**Format w/ Aliases** | `OnTWChannelPoint <reward_name1> <reward_name2> ...`
+**Example** | `OnTWChannelPoint "Example Reward"`
+**Example w/ Aliases** | `OnTWChannelPoint "Resize" "Left View"`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user ID of the user that redeemed the reward.
+**login** | The user login of the user that redeemed the reward.
+**name** | The user display name of the user that redeemed the reward.
+**message** | The message included with the channel point redemption.
+**reward** | The name of the reward.
+**reward_id** | The id of the channel point reward (used with [Twitch Complete](#twitch-complete) or [Twitch Reject](#twitch-reject)).
+**redemption_id** | The id of the channel point redemption (used with [Twitch Complete](#twitch-complete) or [Twitch Reject](#twitch-reject)).
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWChannelPointCompleted
+| | |
+------------ | -------------
+**Info** | Triggers when a channel point redemption has been marked as completed. Using `*` as the `<reward_name>` will execute the trigger for all channel point rewards.
+**Format** | `OnTWChannelPointCompleted <reward_name>`
+**Format w/ Aliases** | `OnTWChannelPointCompleted <reward_name1> <reward_name2> ...`
+**Example** | `OnTWChannelPointCompleted "Example Reward"`
+**Example w/ Aliases** | `OnTWChannelPointCompleted "Resize" "Left View"`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user ID of the user that redeemed the reward.
+**login** | The user login of the user that redeemed the reward.
+**name** | The user display name of the user that redeemed the reward.
+**message** | The message included with the channel point redemption.
+**reward** | The name of the reward.
+**reward_id** | The id of the channel point reward (used with [Twitch Complete](#twitch-complete) or [Twitch Reject](#twitch-reject)).
+**redemption_id** | The id of the channel point redemption (used with [Twitch Complete](#twitch-complete) or [Twitch Reject](#twitch-reject)).
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWChannelPointRejected
+| | |
+------------ | -------------
+**Info** | Triggers when a channel point redemption has been rejected and points are refunded to the user. Using `*` as the `<reward_name>` will execute the trigger for all channel point rewards.
+**Format** | `OnTWChannelPointRejected <reward_name>`
+**Format w/ Aliases** | `OnTWChannelPointRejected <reward_name1> <reward_name2> ...`
+**Example** | `OnTWChannelPointRejected "Example Reward"`
+**Example w/ Aliases** | `OnTWChannelPointRejected "Resize" "Left View"`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user ID of the user that redeemed the reward.
+**login** | The user login of the user that redeemed the reward.
+**name** | The user display name of the user that redeemed the reward.
+**message** | The message included with the channel point redemption.
+**reward** | The name of the reward.
+**reward_id** | The id of the channel point reward (used with [Twitch Complete](#twitch-complete) or [Twitch Reject](#twitch-reject)).
+**redemption_id** | The id of the channel point redemption (used with [Twitch Complete](#twitch-complete) or [Twitch Reject](#twitch-reject)).
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWChannelUpdate
+| | |
+------------ | -------------
+**Info** | Triggers when a broadcaster updates their channel name, title, or category (game).
+**Format** | `OnTWChannelUpdate`
+**Example** | `OnTWChannelUpdate`
+
+##### Parameters
+| | |
+------------ | -------------
+**game** | The name of the category (game) of the channel.
+**name** | The broadcaster's name.
+**title** | The broadcaster's stream title.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWCharityDonation
+| | |
+------------ | -------------
+**Info** | Triggers when a user donates to the broadcaster's charity campaign.
+**Format** | `OnTWCharityDonation`
+**Example** | `OnTWCharityDonation`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user id of the user who donated.
+**login** | The user login of the user who donated.
+**name** | The user display name of the user who donated.
+**charity** | The charity's name.
+**description** | A description of the charity.
+**website** | A URL to the charity's website.
+**amount** | The donation amount.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWCharityProgress
+| | |
+------------ | -------------
+**Info** | Triggers when progress is made towards the campaign's goal or when the broadcaster changes the fundraising goal.
+**Format** | `OnTWCharityProgress`
+**Example** | `OnTWCharityProgress`
+
+##### Parameters
+| | |
+------------ | -------------
+**charity** | The charity's name.
+**description** | A description of the charity.
+**website** | A URL to the charity's website.
+**current** | The current amount of donations that the campaign has received.
+**target** | The campaign's target fundraising goal.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWCharityStarted
+| | |
+------------ | -------------
+**Info** | Triggers when the broadcaster starts a charity campaign.
+**Format** | `OnTWCharityStarted`
+**Example** | `OnTWCharityStarted`
+
+##### Parameters
+| | |
+------------ | -------------
+**charity** | The charity's name.
+**description** | A description of the charity.
+**website** | A URL to the charity's website.
+**current** | The current amount of donations that the campaign has received.
+**target** | The campaign's target fundraising goal.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWCharityStopped
+| | |
+------------ | -------------
+**Info** | Triggers when the broadcaster stops a charity campaign.
+**Format** | `OnTWCharityStopped`
+**Example** | `OnTWCharityStopped`
+
+##### Parameters
+| | |
+------------ | -------------
+**charity** | The charity's name.
+**description** | A description of the charity.
+**website** | A URL to the charity's website.
+**current** | The current amount of donations that the campaign has received.
+**target** | The campaign's target fundraising goal.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWCheer
+| | |
+------------ | -------------
+**Info** | Triggers when a user cheers in the channel.
+**Format** | `OnTWCheer`
+**Example** | `OnTWCheer`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user id of the user who cheered.
+**login** | The user login of the user who cheered.
+**name** | The user display name of the user who cheered.
+**message** | The message sent with the cheer.
+**amount** | The number of bits cheered.
+**is_anonymous** | Whether the user cheered anonymously or not.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWFollow
+| | |
+------------ | -------------
+**Info** | Triggers when the broadcaster receives a follow.
+**Format** | `OnTWFollow`
+**Example** | `OnTWFollow`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user ID of the user now following.
+**login** | The user login of the user now following.
+**name** | The user display name of the user now following.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWGoalCompleted
+| | |
+------------ | -------------
+**Info** | Triggers when a broadcaster finishes a goal successfully. This does not occur automatically when a goal is met as goals are continuous and can be repeatedly _completed_. This trigger requires the goal to be ended through the Twitch UI (or API) after a goal has been met.
+**Format** | `OnTWGoalCompleted`
+**Example** | `OnTWGoalCompleted`
+
+##### Parameters
+| | |
+------------ | -------------
+**type** | The type of goal created. Possible values are `follow`, `subscription`, `subscription_count`, `new_subscription`, and `new_subscription_count`.
+**description** | A description of the goal, if specified.
+**current** | The goal's current value.
+**target** | The goal's target value.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWGoalFailed
+| | |
+------------ | -------------
+**Info** | Triggers when a broadcaster ends a goal that was not completed.
+**Format** | `OnTWGoalFailed`
+**Example** | `OnTWGoalFailed`
+
+##### Parameters
+| | |
+------------ | -------------
+**type** | The type of goal created. Possible values are `follow`, `subscription`, `subscription_count`, `new_subscription`, and `new_subscription_count`.
+**description** | A description of the goal, if specified.
+**current** | The goal's current value.
+**target** | The goal's target value.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWGoalProgress
+| | |
+------------ | -------------
+**Info** | Triggers when progress (either positive or negative) is made towards a broadcaster's goal.
+**Format** | `OnTWGoalProgress`
+**Example** | `OnTWGoalProgress`
+
+##### Parameters
+| | |
+------------ | -------------
+**type** | The type of goal created. Possible values are `follow`, `subscription`, `subscription_count`, `new_subscription`, and `new_subscription_count`.
+**description** | A description of the goal, if specified.
+**current** | The goal's current value.
+**target** | The goal's target value.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWGoalStart
+| | |
+------------ | -------------
+**Info** | Triggers when the broadcaster begins a channel goal.
+**Format** | `OnTWGoalStart`
+**Example** | `OnTWGoalStart`
+
+##### Parameters
+| | |
+------------ | -------------
+**type** | The type of goal created. Possible values are `follow`, `subscription`, `subscription_count`, `new_subscription`, and `new_subscription_count`.
+**description** | A description of the goal, if specified.
+**current** | The goal's current value.
+**target** | The goal's target value.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWHypeTrainConductor
+| | |
+------------ | -------------
+**Info** | Triggers when a Hype Train conductor updates.
+**Format** | `OnTWHypeTrainConductor`
+**Example** | `OnTWHypeTrainConductor`
+
+##### Parameters
+| | |
+------------ | -------------
+**bit_conductor** | The user display name of the top cheer contributor, if one exists.
+**sub_conductor** | The user display name of the top sub contributor, if one exists.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWHypeTrainEnd
+| | |
+------------ | -------------
+**Info** | Triggers when a Hype Train ends on the specified channel.
+**Format** | `OnTWHypeTrainEnd`
+**Example** | `OnTWHypeTrainEnd`
+
+##### Parameters
+| | |
+------------ | -------------
+**level** | The final level of the Hype Train.
+**bit_conductor** | The user display name of the top cheer contributor, if one exists.
+**sub_conductor** | The user display name of the top sub contributor, if one exists.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWHypeTrainLevel
+| | |
+------------ | -------------
+**Info** | Used to fire a set of actions when the hype train levels up.
+**Format** | `OnTWHypeTrainLevel`
+**Example** | `OnTWHypeTrainLevel`
+
+##### Parameters
+| | |
+------------ | -------------
+**level** | The current level of the Hype Train.
+**progress** | Total points contributed to the Hype Train.
+**goal** | The number of points required to reach the next level.
+**bit_conductor** | The user display name of the top cheer contributor, if one exists.
+**sub_conductor** | The user display name of the top sub contributor, if one exists.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWHypeTrainProgress
+| | |
+------------ | -------------
+**Info** | Triggers when a Hype Train makes progress on the specified channel.
+**Format** | `OnTWHypeTrainProgress`
+**Example** | `OnTWHypeTrainProgress`
+
+##### Parameters
+| | |
+------------ | -------------
+**level** | The current level of the Hype Train.
+**progress** | Total points contributed to the Hype Train.
+**goal** | The number of points required to reach the next level.
+**bit_conductor** | The user display name of the top cheer contributor, if one exists.
+**sub_conductor** | The user display name of the top sub contributor, if one exists.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWHypeTrainStart
+| | |
+------------ | -------------
+**Info** | Triggers when Hype Train begins on the channel.
+**Format** | `OnTWHypeTrainStart`
+**Example** | `OnTWHypeTrainStart`
+
+##### Parameters
+| | |
+------------ | -------------
+**level** | The starting level of the Hype Train.
+**progress** | Total points contributed to the Hype Train.
+**goal** | The number of points required to reach the next level.
+**bit_conductor** | The user display name of the top cheer contributor, if one exists.
+**sub_conductor** | The user display name of the top sub contributor, if one exists.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWModAdd
+| | |
+------------ | -------------
+**Info** | Triggers when moderator privileges were added to a user.
+**Format** | `OnTWModAdd`
+**Example** | `OnTWModAdd`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user ID of the new moderator.
+**login** | The user login of the new moderator.
+**name** | The user display name of the new moderator.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWModRemove
+| | |
+------------ | -------------
+**Info** | Triggers when moderator privileges were removed from a user.
+**Format** | `OnTWModRemove`
+**Example** | `OnTWModRemove`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user ID of the removed moderator.
+**login** | The user login of the removed moderator.
+**name** | The user display name of the removed moderator.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWPoll
+| | |
+------------ | -------------
+**Info** | Triggers when a poll starts in the channel.
+**Format** | `OnTWPoll`
+**Example** | `OnTWPoll`
+
+##### Parameters
+| | |
+------------ | -------------
+**title** | The title of the poll.
+**duration** | The duration (in seconds) of the poll.
+**bits_enabled** | [true/false] `true` if voting with bits is enabled. Otherwise, `false`.
+**bits_amount** | The number of bits required to vote once.
+**points_enabled** | [true/false] `true` if voting with channel points is enabled. Otherwise, `false`.
+**points_amount** | The number of channel points required to vote once.
+**choice_count** | The number of choices (answers, options, etc.) in the poll.
+**choice#** | The text displayed for the choice in the poll. Replace `#` with a number, starting at 1 and ending at `choice_count`.
+**choice_id#** | The id of the choice in the poll. Replace `#` with a number, starting at 1 and ending at `choice_count`.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+_Note: Bit voting is not currently supported, however Twitch provides these values. Kruiz Control forwards them incase they are ever implemented._
+
+***
+
+#### OnTWPollUpdate
+| | |
+------------ | -------------
+**Info** | Triggers when any user votes in the poll.
+**Format** | `OnTWPollUpdate`
+**Example** | `OnTWPollUpdate`
+
+##### Parameters
+| | |
+------------ | -------------
+**title** | The title of the poll.
+**duration** | The duration (in seconds) of the poll.
+**time_left** | The time left (in seconds) for the poll.
+**bits_enabled** | [true/false] `true` if voting with bits is enabled. Otherwise, `false`.
+**bits_amount** | The number of bits required to vote once.
+**points_enabled** | [true/false] `true` if voting with channel points is enabled. Otherwise, `false`.
+**points_amount** | The number of channel points required to vote once.
+**choice_count** | The number of choices (answers, options, etc.) in the poll.
+**choice#** | The text displayed for the choice in the poll. Replace `#` with a number, starting at 1 and ending at `choice_count`.
+**choice_votes#** | The number of votes for a choice in the poll. Replace `#` with a number, starting at 1 and ending at `choice_count`.
+**choice_id#** | The id of the choice in the poll. Replace `#` with a number, starting at 1 and ending at `choice_count`.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+_Note: Bit voting is not currently supported, however Twitch provides these values. Kruiz Control forwards them incase they are ever implemented._
+
+***
+
+#### OnTWPollEnd
+| | |
+------------ | -------------
+**Info** | Triggers when a poll ends in the channel. Canceled or deleted polls do not trigger this.
+**Format** | `OnTWPollUpdate`
+**Example** | `OnTWPollUpdate`
+
+##### Parameters
+| | |
+------------ | -------------
+**title** | The title of the poll.
+**duration** | The duration (in seconds) of the poll.
+**bits_enabled** | [true/false] `true` if voting with bits is enabled. Otherwise, `false`.
+**bits_amount** | The number of bits required to vote once.
+**points_enabled** | [true/false] `true` if voting with channel points is enabled. Otherwise, `false`.
+**points_amount** | The number of channel points required to vote once.
+**choice_count** | The number of choices (answers, options, etc.) in the poll.
+**choice#** | The text displayed for the choice in the poll. Replace `#` with a number, starting at 1 and ending at `choice_count`.
+**choice_votes#** | The number of votes for a choice in the poll. Replace `#` with a number, starting at 1 and ending at `choice_count`.
+**choice_id#** | The id of the choice in the poll. Replace `#` with a number, starting at 1 and ending at `choice_count`.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+_Note: Bit voting is not currently supported, however Twitch provides these values. Kruiz Control forwards them incase they are ever implemented._
+
+***
+
+#### OnTWPrediction
+| | |
+------------ | -------------
+**Info** | Triggers when a prediction starts in the channel.
+**Format** | `OnTWPrediction`
+**Example** | `OnTWPrediction`
+
+##### Parameters
+| | |
+------------ | -------------
+**title** | The title of the prediction.
+**duration** | The duration (in seconds) of the prediction.
+**outcome_count** | The number of outcomes (options, etc.) in the prediction.
+**outcome#** | The text displayed for the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`.
+**outcome_color#** | The color of the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`.
+**outcome_id#** | The id of the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWPredictionEnd
+| | |
+------------ | -------------
+**Info** | Triggers when a prediction ends on the channel. This does not trigger if the prediction is canceled.
+**Format** | `OnTWPredictionEnd`
+**Example** | `OnTWPredictionEnd`
+
+##### Parameters
+| | |
+------------ | -------------
+**title** | The title of the prediction.
+**result** | The winning prediction outcome.
+**outcome_count** | The number of outcomes (options, etc.) in the prediction.
+**outcome#** | The text displayed for the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`.
+**outcome_color#** | The color of the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`.
+**outcome_points#** | The number of points contributed towards the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`
+**outcome_users#** | The number of users contributing towards the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`.
+**outcome_id#** | The id of the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWPredictionLock
+| | |
+------------ | -------------
+**Info** | Triggers when participation in a prediction was locked.
+**Format** | `OnTWPredictionLock`
+**Example** | `OnTWPredictionLock`
+
+##### Parameters
+| | |
+------------ | -------------
+**title** | The title of the prediction.
+**outcome_count** | The number of outcomes (options, etc.) in the prediction.
+**outcome#** | The text displayed for the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`.
+**outcome_color#** | The color of the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`.
+**outcome_points#** | The number of points contributed towards the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`
+**outcome_users#** | The number of users contributing towards the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`.
+**outcome_id#** | The id of the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+
+***
+
+#### OnTWPredictionUpdate
+| | |
+------------ | -------------
+**Info** | Triggers when user participates in a prediction in the channel.
+**Format** | `OnTWPredictionUpdate`
+**Example** | `OnTWPredictionUpdate`
+
+##### Parameters
+| | |
+------------ | -------------
+**title** | The title of the prediction.
+**duration** | The duration (in seconds) of the prediction.
+**time_left** | The time left (in seconds) for the prediction.
+**outcome_count** | The number of outcomes (options, etc.) in the prediction.
+**outcome#** | The text displayed for the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`.
+**outcome_color#** | The color of the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`.
+**outcome_points#** | The number of points contributed towards the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`
+**outcome_users#** | The number of users contributing towards the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`.
+**outcome_id#** | The id of the outcome in the prediction. Replace `#` with a number, starting at 1 and ending at `outcome_count`.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWRaid
+| | |
+------------ | -------------
+**Info** | Triggers when another streamer raids the broadcaster's channel.
+**Format** | `OnTWRaid`
+**Example** | `OnTWRaid`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user id of the user who created the raid.
+**login** | The user login of the user who created the raid.
+**name** | The user display name of the user who created the raid.
+**raiders** | The number of viewers in the raid.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWShieldStart
+| | |
+------------ | -------------
+**Info** | Triggers when a moderator activates shield mode on the channel.
+**Format** | `OnTWShieldStart`
+**Example** | `OnTWShieldStart`
+
+##### Parameters
+| | |
+------------ | -------------
+**mod** | The user name of the moderator who activated shield mode.
+**mod_id** | The user id of the moderator who activated shield mode.
+**mod_login** | The user login of the moderator who activated shield mode.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWShieldStop
+| | |
+------------ | -------------
+**Info** | Triggers when a moderator deactivates shield mode on the channel.
+**Format** | `OnTWShieldStop`
+**Example** | `OnTWShieldStop`
+
+##### Parameters
+| | |
+------------ | -------------
+**mod** | The user name of the moderator who deactivated shield mode.
+**mod_id** | The user id of the moderator who deactivated shield mode.
+**mod_login** | The user login of the moderator who deactivated shield mode.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWShoutout
+| | |
+------------ | -------------
+**Info** | Triggers when a moderator sends a shoutout in the channel.
+**Format** | `OnTWShoutout`
+**Example** | `OnTWShoutout`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user id of the user who received the shoutout.
+**login** | The user login of the user who received the shoutout.
+**name** | The user display name of the user who received the shoutout.
+**mod** | The user display name of the mod who created the shoutout.
+**viewers** | The number of users that were watching the stream at the time of the shoutout.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWShoutoutReceived
+| | |
+------------ | -------------
+**Info** | Triggers when the channel receives a shoutout from another broadcaster.
+**Format** | `OnTWShoutoutReceived`
+**Example** | `OnTWShoutoutReceived`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user id of the user who sent the shoutout.
+**login** | The user login of the user who sent the shoutout.
+**name** | The user display name of the user who sent the shoutout.
+**viewers** | The number of users watching the other stream at the time of the shoutout.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWStreamStarted
+| | |
+------------ | -------------
+**Info** | Triggers when the channel starts a stream.
+**Format** | `OnTWStreamStarted`
+**Example** | `OnTWStreamStarted`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWStreamStopped
+| | |
+------------ | -------------
+**Info** | Triggers when the channel stops a stream.
+**Format** | `OnTWStreamStopped`
+**Example** | `OnTWStreamStopped`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWSub
+| | |
+------------ | -------------
+**Info** | Triggers when the channel receives a subscriber. This does not include resubscribers.
+**Format** | `OnTWSub`
+**Example** | `OnTWSub`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user id of the user who subscribed.
+**login** | The user login of the user who subscribed.
+**name** | The user display name of the user who subscribed.
+**tier** | `1`, `2`, `3`, or `Prime` depending on what subscription tier the user is.
+**is_gift** | [true/false] `true` if the user's subscription was a gifted sub. Otherwise, `false`.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWSubGift
+| | |
+------------ | -------------
+**Info** | Triggers when a viewer gives a gift subscription to one or more users in the specified channel.
+**Format** | `OnTWSubGift`
+**Example** | `OnTWSubGift`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user id of the user who sent the subscription gift.
+**login** | The user login of the user who sent the subscription gift.
+**name** | The user display name of the user who sent the subscription gift.
+**tier** | The tier of subscriptions in the subscription gift. `1`, `2`, or `3` depending on what subscription tier the user is.
+**amount** | The number of subscriptions in the subscription gift.
+**total_gifts** | The number of subscriptions gifted by this user in the channel. This value is empty for anonymous gifts or if the gifter has opted out of sharing this information.
+**is_anonymous** | [true/false] `true` if the subscription gift was anonymous. Otherwise, `false`.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWSubMessage
+| | |
+------------ | -------------
+**Info** | Triggers when a user sends a resubscription chat message in the channel.
+**Format** | `OnTWSubMessage`
+**Example** | `OnTWSubMessage`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user id of the user who sent the subscription gift.
+**login** | The user login of the user who sent the subscription gift.
+**name** | The user display name of the user who sent the subscription gift.
+**tier** | The tier of subscriptions in the subscription gift. `1`, `2`, or `3` depending on what subscription tier the user is.
+**message** | The resubscription message.
+**months** | The total number of months the user has been subscribed to the channel.
+**streak** | The number of consecutive months the user’s current subscription has been active. This value is empty if the user has opted out of sharing this information.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWTimeout
+| | |
+------------ | -------------
+**Info** | Triggers when a viewer is timed out from the channel.
+**Format** | `OnTWTimeout`
+**Example** | `OnTWTimeout`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user id of the user who was timed out.
+**login** | The user login of the user who was timed out.
+**name** | The user display name of the user who was timed out.
+**mod** | The user name of the issuer of the timeout.
+**reason** | The reason given for the timeout.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWUnban
+| | |
+------------ | -------------
+**Info** | Triggers when a viewer is unbanned from the channel.
+**Format** | `OnTWUnban`
+**Example** | `OnTWUnban`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user id of the user who was unbanned.
+**login** | The user login of the user who was unbanned.
+**name** | The user display name of the user who was unbanned.
+**mod** | The user name of the issuer of the unban.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+### Twitch Actions
+
+#### Twitch AddBlockedTerm
+| | |
+------------ | -------------
+**Info** | Used to add a word or phrase to the broadcaster's list of blocked terms. These are the terms that the broadcaster doesn't want used in their chat room. `<term>` is the term or phrase to remove.
+**Format** | `Twitch AddBlockedTerm <term>`
+**Example** | `Twitch AddBlockedTerm "bad word"`
+**Example w/ Aliases** | `Twitch AddBlockedTerm "phrase to block" "bad term"`
+
+***
+
+#### Twitch Announcement
+| | |
+------------ | -------------
+**Info** | Sends an announcement to the broadcaster's chat room. `<message>` is the announcement to make (500 characters or less). `<optional_color>` is an optional color used to highlight the announcement. The color must be one of `blue`, `green`, `orange`, `purple`, `primary` (the default).
+**Format** | `Twitch Announcement <message> <optional_color>`
+**Example** | `Twitch Announcement "Check out this announcement!"`
+**Example w/ Color** | `Twitch Announcement "Check out this announcement!" blue`
+
+***
+
+#### Twitch Authenticate
+| | |
+------------ | -------------
+**Info** | Generate an login URL to authenticate a user and generate an access code.
+**Format** | `Twitch Authenticate`
+**Example** | `Twitch Authenticate`
+
+##### Parameters
+| | |
+------------ | -------------
+**auth_url** | The URL to open to authenticate a Twitch user.
+
+***
+
+#### Twitch Ban
+| | |
+------------ | -------------
+**Info** | Ban a user from participating in the specified broadcaster's chat room. `<user>` is the Twitch user to ban.
+**Format** | `Twitch Ban <user>`
+**Example** | `Twitch Ban testUser`
+
+***
+
+#### Twitch BitsLeaderboard
+| | |
+------------ | -------------
+**Info** | Gets the Bits leaderboard for the authenticated broadcaster. `<optional_count>` is the number of users to return (default is 10). `<optional_period>` is the time period over which data is aggregated. Possible values are `day`, `week`, `month`, `year`, and `all` (default).
+**Format** | `Twitch BitsLeaderboard <optional_count> <optional_period>`
+**Example** | `Twitch BitsLeaderboard`
+**Example w/ Count** | `Twitch BitsLeaderboard 3`
+**Example w/ Count and Period** | `Twitch BitsLeaderboard 3 day`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Bit Leaderboard API.
+**user_count** | The number of users retrieved on the leaderboard.
+**user#** | The users on the leaderboard. Replace `#` with a number, starting at 1 and ending at `user_count`.
+**bits#** | The bits given by the users on the leaderboard. Replace `#` with a number, starting at 1 and ending at `user_count`.
+
+##### Example Usage
+
+<table>
+<tr>
+<td>Retrieve the top 3 cheerers from the past month.</td>
+</tr>
+<tr>
+<td>
+
+```m
+OnInit
+Twitch BitsLeaderboard 3 month
+if 2 {user_count} == 0
+Chat Send "There are no users for this period."
+Exit
+Param Create i 1
+Loop 2 {user_count}
+Chat Send "#{i} {user{i}} cheered {bits{i}} bits this month!"
+Param Add i 1
+```
+
+</td>
+</tr>
+</table>
+
+***
+
+#### Twitch Block
+| | |
+------------ | -------------
+**Info** | Blocks the specified user from interacting with or having contact with the broadcaster. `<user>` is the Twitch user to block.
+**Format** | `Twitch Block <user>`
+**Example** | `Twitch Block testUser`
+
+***
+
+#### Twitch ChannelInfo
+| | |
+------------ | -------------
+**Info** | Retrieves basic information about the specified channel. `<optional_user>` is the name of the twitch channel to retrieve. If no user is given, the `settings/twitch/user.txt` value is used.
+**Format** | `Twitch ChannelInfo <optional_user>`
+**Example** | `Twitch ChannelInfo`
+**Example w/ User** | `Twitch ChannelInfo Kruiser8`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Channel Information API.
+**game** | The game (or category) of the Twitch stream.
+**language** | The broadcaster's preferred language.
+**name** | The specified Twitch stream's display name.
+**title** | The title of the specified Twitch stream.
+**tag_count** | The number of tags retrieved for the channel.
+**tag#** | The tags on the specified channel. Replace `#` with a number, starting at 1 and ending at `tag_count`.
+
+***
+
+#### Twitch Chatters
+| | |
+------------ | -------------
+**Info** | Gets the list of all users that are connected to the broadcaster's chat session.
+**Format** | `Twitch Chatters`
+**Example** | `Twitch Chatters`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Chatters API.
+**chatter_count** | The number of chatters in the channel.
+**user#** | The users in the specified channel. Replace `#` with a number, starting at 1 and ending at `chatter_count`.
+
+***
+
+#### Twitch ChattersPaginated
+| | |
+------------ | -------------
+**Info** | Gets a paginated list of users that are connected to the broadcaster's chat session. `<first>` is the number of chatters to get on this page between 1 and 1000. `<optional_cursor>` is the pagination cursor to use when retrieving the next page. On the first page, the cursor should not be supplied.
+**Format** | `Twitch Chatters <first> <optional_cursor>`
+**Example** | `Twitch Chatters 1000`
+**Example w/ Cursor** | `Twitch Chatters 1000 eyJiIjpudWxsLCJhIjp7Ik9mZnNldCI6NX19`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Chatters API.
+**chatter_count** | The number of chatters in the channel.
+**cursor** | The pagination value to retrieve the next page of results.
+**user#** | The users in the specified channel. Replace `#` with a number, starting at 1 and ending at `chatter_count`.
+
+***
+
+#### Twitch ClearChat
+| | |
+------------ | -------------
+**Info** | Clears the broadcaster's chatroom. This is the equivalent of using the `/clear` chat command.
+**Format** | `Twitch ClearChat`
+**Example** | `Twitch ClearChat`
+
+***
+
+#### Twitch ClipById
+| | |
+------------ | -------------
+**Info** | Retrieves the information for the specified clip id.
+**Format** | `Twitch ClipById <id>`
+**Example** | `Twitch ClipById AltruisticWiseNewtNomNom`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Clip API.
+**clip** | The URL for the clip.
+**name** | The name of the Twitch clip.
+**duration** | The duration of the Twitch clip in seconds.
+
+***
+
+#### Twitch ClipsByUser
+| | |
+------------ | -------------
+**Info** | Returns the top clips that were captured for the specified user. `<user>` is the channel to retrieve clips for. `<optional_count>` is the number of clips to retrieve (20 by default).
+**Format** | `Twitch ClipsByUser <user> <optional_count>`
+**Example** | `Twitch ClipsByUser Kruiser8`
+**Example w/ Count** | `Twitch ClipsByUser Kruiser8 1`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Clip API.
+**clip_count** | The number of clips retrieved.
+**clip#** | The URL of the clip from the specified channel. Replace `#` with a number, starting at 1 and ending at `clip_count`.
+**name#** | The name of the clip from the specified channel. Replace `#` with a number, starting at 1 and ending at `clip_count`.
+**duration#** | The duration of the clip from the specified channel. Replace `#` with a number, starting at 1 and ending at `clip_count`.
+
+***
+
+#### Twitch Color
+| | |
+------------ | -------------
+**Info** | Updates the color used for the user's name in chat. `<color>` is the color to use for the user's name in chat. Turbo and Prime users may specify a named color or a Hex color code like `#9146FF`. Otherwise, the color must be one of `blue`, `blue_violet`, `cadet_blue`, `chocolate`, `coral`, `dodger_blue`, `firebrick`, `golden_rod`, `green`, `hot_pink`, `orange_red`, `red`, `sea_green`, `spring_green`, `yellow_green`.
+**Format** | `Twitch Color <color>`
+**Example** | `Twitch Color green`
+**Example w/ Hex** | `Twitch Color #9146FF`
+
+***
+
+#### Twitch Commercial
+| | |
+------------ | -------------
+**Info** | Starts a commercial on the Twitch channel. `<optional_duration>` is the number of seconds for the commercial to run (default is 60). Note that Twitch tries to serve a commercial that's the requested length, but it may be shorter or longer. The maximum length you should request is 180 seconds.
+**Format** | `Twitch Commercial <optional_duration>`
+**Example** | `Twitch Commercial`
+**Example w/ Duration** | `Twitch Commercial 120`
+
+***
+
+#### Twitch Complete
+| | |
+------------ | -------------
+**Info** | Mark a channel point reward redemption as complete. `<reward_id>` is the id of the channel point reward. `<redemption_id>` is the id of the channel point reward redemption. Both of these values are provided by `OnTWChannelPoint` as parameters. To reject a redemption and refund points, use [Twitch Reject](#twitch-reject).
+**Format** | `Twitch Complete <reward_id> <redemption_id>`
+**Example** | `Twitch Complete 92af127c-7326-4483-a52b-b0da0be61c01 17fa2df1-ad76-4804-bfa5-a40ef63efe63`
+**Example using OnTWChannelPoint Parameters** | `Twitch Complete {reward_id} {redemption_id}`
+
+_Note: Due to a Twitch API restriction, in order for Kruiz Control to interact with Channel Point rewards, Kruiz Control has to create the reward. Use [Twitch Copy](#twitch-copy) to create duplicates of existing channel point rewards._
+
+***
+
+#### Twitch Copy
+| | |
+------------ | -------------
+**Info** | Create a copy of a channel point reward so that KC can manage the reward and redemptions. `<reward>` is the title of the channel point reward to copy. This action will create a copy of the reward with `kc_` in the title and will be disabled by default. The reward icon (image) will have to be re-added.
+**Format** | `Twitch Copy <reward>`
+**Example** | `Twitch Copy HeadPat`
+
+***
+
+#### Twitch CreateClip
+| | |
+------------ | -------------
+**Info** | Creates a clip from the broadcaster's stream. If `<optional_should_delay>` is included and set to `true`, then Twitch adds a delay before capturing the clip (this basically shifts the capture window to the right slightly). Otherwise, no delay is added.
+**Format** | `Twitch CreateClip <optional_should_delay>`
+**Example** | `Twitch CreateClip`
+**Example w/ optional_should_delay** | `Twitch CreateClip true`
+
+***
+
+#### Twitch DeleteMessage
+| | |
+------------ | -------------
+**Info** | Deletes a chat message by the provided id. `<message_id>` is the id of the chat message to delete. This can be used with the `message_id` parameter returned by [Chat Triggers](#chat-triggers).
+**Format** | `Twitch DeleteMessage <message_id>`
+**Example** | `Twitch DeleteMessage abc-123-def`
+
+***
+
+#### Twitch Description
+| | |
+------------ | -------------
+**Info** | Deletes a chat message by the provided id. `<description>` The string to update the channel's description to. The description is limited to a maximum of 300 characters.
+**Format** | `Twitch Description <description>`
+**Example** | `Twitch Description "Hey there -- Welcome to the Krew!"`
+
+***
+
+#### Twitch EmoteOnly
+| | |
+------------ | -------------
+**Info** | Turn on emote only mode where chat messages must contain only emotes.
+**Format** | `Twitch EmoteOnly`
+**Example** | `Twitch EmoteOnly`
+
+***
+
+#### Twitch EmoteOnlyOff
+| | |
+------------ | -------------
+**Info** | Turn off emote only mode where chat messages must contain only emotes.
+**Format** | `Twitch EmoteOnlyOff`
+**Example** | `Twitch EmoteOnlyOff`
+
+***
+
+#### Twitch Emotes
+| | |
+------------ | -------------
+**Info** | Gets the channel's list of custom emotes. `<optional_user>` is the channel to query (Default is the `settings/twitch/user.txt` value).
+**Format** | `Twitch Emotes <optional_user>`
+**Example** | `Twitch Emotes`
+**Example w/ User** | `Twitch Emotes Kruiser8`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Channel Emotes API.
+**emote_count** | The number of emotes retrieved.
+**emote#** | An emote from the specified channel. Replace `#` with a number, starting at 1 and ending at `emote_count`.
+
+***
+
+#### Twitch FollowCount
+| | |
+------------ | -------------
+**Info** | Retrieve the number of followers for the given channel. `<optional_user>` is the channel to check. The broadcaster's follower count is used if no user is provided.
+**Format** | `Twitch FollowCount <optional_user>`
+**Example** | `Twitch FollowCount`
+**Example w/ User** | `Twitch FollowCount Kruiser8`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Followed Streams API.
+**follow_count** | The total number of users that follow the specified channel.
+
+***
+
+#### Twitch Followers
+| | |
+------------ | -------------
+**Info** | Restricts the broadcaster's chat room to followers only. `<optional_duration>` is the number of minutes to be in follower mode. The default duration is 0 (no restriction) and the maximum is 129,600 (3 months).
+**Format** | `Twitch Followers <optional_duration>`
+**Example** | `Twitch Followers`
+**Example w/ Duration** | `Twitch Followers 60`
+
+***
+
+#### Twitch FollowersOff
+| | |
+------------ | -------------
+**Info** | Disable follower only mode in the broadcaster's chat.
+**Format** | `Twitch FollowersOff`
+**Example** | `Twitch FollowersOff`
+
+***
+
+#### Twitch Game
+| | |
+------------ | -------------
+**Info** | Updates a channel's game (or category). `<game>` is the game to set for the channel. The `<game>` value must match a Twitch category exactly.
+**Format** | `Twitch Game <game>`
+**Example** | `Twitch Game "Rocket League"`
+
+***
+
+#### Twitch Goals
+| | |
+------------ | -------------
+**Info** | Gets the broadcaster's list of active goals.
+**Format** | `Twitch Goals`
+**Example** | `Twitch Goals`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Creator Goals API.
+**goal_count** | The number of goals retrieved.
+**goal#** | The name (description) of the goal. Replace `#` with a number, starting at 1 and ending at `goal_count`.
+**type#** | The type of the goal (follower, subscriber, etc.). Replace `#` with a number, starting at 1 and ending at `goal_count`.
+**current#** | The current value of the goal. Replace `#` with a number, starting at 1 and ending at `goal_count`.
+**target#** | The target value of the goal. Replace `#` with a number, starting at 1 and ending at `goal_count`.
+**perc#** | The current progress percentage of the goal (between 0 and 100). Replace `#` with a number, starting at 1 and ending at `goal_count`.
+
+***
+
+#### Twitch IsFollower
+| | |
+------------ | -------------
+**Info** | Check if the given user follows the channel. `<user>` is the channel to check.
+**Format** | `Twitch IsFollower <user>`
+**Example** | `Twitch IsFollower Kruiser8`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Channel Followers API.
+**is_follower** | [true/false] `true` if the user follows the channel. Otherwise, `false`.
+
+***
+
+#### Twitch IsShieldMode
+| | |
+------------ | -------------
+**Info** | Check if the stream has shield mode active.
+**Format** | `Twitch IsShieldMode`
+**Example** | `Twitch IsShieldMode`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Channel Followers API.
+**is_shield_mode** | [true/false] `true` if the stream has shield mode active. Otherwise, `false`.
+
+***
+
+#### Twitch IsSubscriber
+| | |
+------------ | -------------
+**Info** | Check if the given user subscribes to the channel. `<user>` is the channel to check.
+**Format** | `Twitch IsSubscriber <user>`
+**Example** | `Twitch IsSubscriber Kruiser8`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Channel Followers API.
+**is_subscriber** | [true/false] `true` if the user subscribes to the channel. Otherwise, `false`.
+**is_gifted** | [true/false] `true` if the user's subscription was a gifted sub. Otherwise, `false`.
+**gifter** | If `is_gifted`, this will contain the name of the user who gifted the subscription.
+**tier** | `1`, `2` or `3`, depending on what Tier the subscribed user is.
+
+***
+
+#### Twitch Marker
+| | |
+------------ | -------------
+**Info** | Adds a marker to a live stream. A marker is an arbitrary point in a live stream that the broadcaster or editor wants to mark, so they can return to that spot later to create video highlights (see Video Producer, Highlights in the Twitch UX). `<optional_description>` is an optional short description of the marker to help remember why the location was marked. The maximum length of the description is 140 characters.
+**Format** | `Twitch Marker <optional_description>`
+**Example** | `Twitch Marker`
+**Example w/ description** | `Twitch Marker "Amazing goal!"`
+
+***
+
+#### Twitch Mod
+| | |
+------------ | -------------
+**Info** | Adds a moderator to the broadcaster's chat room. `<user>` is the Twitch user to mod.
+**Format** | `Twitch Mod <user>`
+**Example** | `Twitch Mod testUser`
+
+***
+
+#### Twitch Mods
+| | |
+------------ | -------------
+**Info** | Gets the broadcaster's list of moderators.
+**Format** | `Twitch Mods`
+**Example** | `Twitch Mods`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Moderators API.
+**mod_count** | The number of moderators retrieved.
+**mod#** | The name of the moderator. Replace `#` with a number, starting at 1 and ending at `mod_count`.
+**id#** | The user id (login) of the moderator. Replace `#` with a number, starting at 1 and ending at `mod_count`.
+
+***
+
+#### Twitch Poll Cancel
+| | |
+------------ | -------------
+**Info** | Cancel the poll and send channel point refunds to the participants (if points enabled).
+**Format** | `Twitch Poll Cancel`
+**Example** | `Twitch Poll Cancel`
+
+***
+
+#### Twitch Poll Choice
+| | |
+------------ | -------------
+**Info** | Provide the choices for the poll. `<choice>` is the poll option to add. Multiple choices can be added in the same action or across multiple actions.
+**Format** | `Twitch Poll Choice <choice>`
+**Example** | `Twitch Poll Choice Yes`
+**Example to Add Multiple Outcomes** | `Twitch Poll Choice "Yes" "No"`
+
+_Note: For a complete poll example, see [Twitch Poll Create](#twitch-poll-create)._
+
+***
+
+#### Twitch Poll Clear
+| | |
+------------ | -------------
+**Info** | Clear the current poll data, removing any existing poll details.
+**Format** | `Twitch Poll Clear`
+**Example** | `Twitch Poll Clear`
+
+***
+
+#### Twitch Poll Create
+| | |
+------------ | -------------
+**Info** | Creates a poll on the channel. The poll runs as soon as it's created. The broadcaster may run only one poll at a time.
+**Format** | `Twitch Poll Create`
+**Example** | `Twitch Poll Create`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Create Poll API.
+
+##### Example Usage
+
+<table>
+<tr>
+<td>Create a Poll</td>
+</tr>
+<tr>
+<td>
+
+```m
+OnInit
+Twitch Poll Title "Will Kruizy Die??"
+Twitch Poll Choice "Yes" "No"
+Twitch Poll Choice "MAYBE"
+Twitch Poll Time 20
+Twitch Poll Create
+Delay 10
+# End the poll early (to show you can)
+Twitch Poll End
+```
+
+</td>
+</tr>
+</table>
+
+***
+
+#### Twitch Poll End
+| | |
+------------ | -------------
+**Info** | Complete the poll early before time is up.
+**Format** | `Twitch Poll End`
+**Example** | `Twitch Poll End`
+
+***
+
+#### Twitch Poll PointsPerVote
+| | |
+------------ | -------------
+**Info** | Enable viewers to cast additional votes using channel points. `<points>` is the number of points (between 1 and 1,000,000) that the viewer must spend to cast one additional vote. If `Twitch Poll PointsPerVote` isn't used, channel points may not be used to vote.
+**Format** | `Twitch Poll PointsPerVote <points>`
+**Example** | `Twitch Poll PointsPerVote 10000`
+
+_Note: For a complete poll example, see [Twitch Poll Create](#twitch-poll-create)._
+
+***
+
+#### Twitch Poll Time
+| | |
+------------ | -------------
+**Info** | Provide the number of seconds that the poll will run for. The minimum is 15 seconds and the maximum is 1800 seconds (30 minutes). `<seconds>` is the number of seconds. If no time is provided for a poll, `120` is used.
+**Format** | `Twitch Poll Time <seconds>`
+**Example** | `Twitch Poll Time 300`
+
+_Note: For a complete poll example, see [Twitch Poll Create](#twitch-poll-create)._
+
+***
+
+#### Twitch Poll Title
+| | |
+------------ | -------------
+**Info** | Provide the question that the broadcaster is asking. `<title>` is the title to use for the poll. The title may contain a maximum of 60 characters.
+**Format** | `Twitch Poll Title <title>`
+**Example** | `Twitch Poll Title "Do you believe?"`
+
+_Note: For a complete poll example, see [Twitch Poll Create](#twitch-poll-create)._
+
+***
+
+#### Twitch Prediction Cancel
+| | |
+------------ | -------------
+**Info** | Cancel the prediction and send channel point refunds to the participants.
+**Format** | `Twitch Prediction Cancel`
+**Example** | `Twitch Prediction Cancel`
+
+***
+
+#### Twitch Prediction Clear
+| | |
+------------ | -------------
+**Info** | Clear the current Prediction data, removing any existing prediction details.
+**Format** | `Twitch Prediction Clear`
+**Example** | `Twitch Prediction Clear`
+
+***
+
+#### Twitch Prediction Complete
+| | |
+------------ | -------------
+**Info** | Complete the prediction and provide the winning outcome. `<outcome>` is the prediction option that won. This must match the text of the outcome exactly.
+**Format** | `Twitch Prediction Complete <outcome>`
+**Example** | `Twitch Prediction Complete Yes`
+
+***
+
+#### Twitch Prediction Create
+| | |
+------------ | -------------
+**Info** | Creates a Channel Points Prediction. The prediction runs as soon as it's created. The broadcaster may run only one prediction at a time.
+**Format** | `Twitch Prediction Create`
+**Example** | `Twitch Prediction Create`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Create Prediction API.
+
+##### Example Usage
+
+<table>
+<tr>
+<td>Create a Prediction</td>
+</tr>
+<tr>
+<td>
+
+```m
+OnInit
+Twitch Prediction Title "Will Kruizy Die??"
+Twitch Prediction Outcome "Yes" "No"
+Twitch Prediction Outcome "MAYBE"
+Twitch Prediction Time 20
+Twitch Prediction Create
+Delay 25
+# Mark "MAYBE" as the winning result
+Twitch Prediction Complete "MAYBE"
+```
+
+</td>
+</tr>
+</table>
+
+***
+
+#### Twitch Prediction Lock
+| | |
+------------ | -------------
+**Info** | Lock the current prediction, making it so viewers can no longer make predictions.
+**Format** | `Twitch Prediction Lock`
+**Example** | `Twitch Prediction Lock`
+
+***
+
+#### Twitch Prediction Outcome
+| | |
+------------ | -------------
+**Info** | Provide the outcomes (or options) for the prediction. `<outcome>` is the prediction option to add. Multiple outcomes can be added in the same action or across multiple actions.
+**Format** | `Twitch Prediction Outcome <outcome>`
+**Example** | `Twitch Prediction Outcome Yes`
+**Example to Add Multiple Outcomes** | `Twitch Prediction Outcome "Yes" "No"`
+
+_Note: For a complete prediction example, see [Twitch Prediction Create](#twitch-prediction-create)._
+
+***
+
+#### Twitch Prediction Time
+| | |
+------------ | -------------
+**Info** | Provide the number of seconds that the prediction will run for. The minimum is 30 seconds and the maximum is 1800 seconds (30 minutes). `<seconds>` is the number of seconds. If no time is provided for a prediction, `120` is used.
+**Format** | `Twitch Prediction Time <seconds>`
+**Example** | `Twitch Prediction Time 300`
+
+_Note: For a complete prediction example, see [Twitch Prediction Create](#twitch-prediction-create)._
+
+***
+
+#### Twitch Prediction Title
+| | |
+------------ | -------------
+**Info** | Provide the question that the broadcaster is asking. `<title>` is the title to use for the prediction. The title is limited to a maximum of 45 characters.
+**Format** | `Twitch Prediction Title <title>`
+**Example** | `Twitch Prediction Title "Do you believe?"`
+
+_Note: For a complete prediction example, see [Twitch Prediction Create](#twitch-prediction-create)._
+
+***
+
+#### Twitch Raid
+| | |
+------------ | -------------
+**Info** | Raid another channel by sending the broadcaster's viewers to the targeted channel. `<user>` is the Twitch channel to raid.
+**Format** | `Twitch Raid <user>`
+**Example** | `Twitch Raid testUser`
+
+***
+
+#### Twitch Reject
+| | |
+------------ | -------------
+**Info** | Mark a channel point reward redemption as rejected and refund a user's points. `<reward_id>` is the id of the channel point reward. `<redemption_id>` is the id of the channel point reward redemption. Both of these values are provided by `OnTWChannelPoint` as parameters. To complete a redemption, use [Twitch Complete](#twitch-complete).
+**Format** | `Twitch Reject <reward_id> <redemption_id>`
+**Example** | `Twitch Reject 92af127c-7326-4483-a52b-b0da0be61c01 17fa2df1-ad76-4804-bfa5-a40ef63efe63`
+**Example using OnTWChannelPoint Parameters** | `Twitch Reject {reward_id} {redemption_id}`
+
+_Note: Due to a Twitch API restriction, in order for Kruiz Control to interact with Channel Point rewards, Kruiz Control has to create the reward. Use [Twitch Copy](#twitch-copy) to create duplicates of existing channel point rewards._
+
+***
+
+#### Twitch RemoveBlockedTerm
+| | |
+------------ | -------------
+**Info** | Used to remove a word or phrase from the broadcaster's list of blocked terms. These are the terms that the broadcaster doesn't want used in their chat room. `<term>` is the term or phrase to remove.
+**Format** | `Twitch RemoveBlockedTerm <term>`
+**Example** | `Twitch RemoveBlockedTerm "bad word"`
+**Example w/ Aliases** | `Twitch RemoveBlockedTerm "phrase to block" "bad term"`
+
+***
+
+#### Twitch Reward
+| | |
+------------ | -------------
+**Info** | Used to update the status of a channel point reward. `<reward>` is the title of the reward to update. `<off/on/pause/toggle/unpause>` are the status options. `off`, `on`, and `toggle` enable or disable the reward. `pause` and `unpause` will pause or resume the ability for viewers to redeem the reward.
+**Format** | `Twitch Reward <reward> <off/on/pause/toggle/unpause>`
+**Example** | `Twitch Reward HeadPat off`
+
+_Note: Due to a Twitch API restriction, in order for Kruiz Control to interact with Channel Point rewards, Kruiz Control has to create the reward. Use [Twitch Copy](#twitch-copy) to create duplicates of existing channel point rewards._
+
+***
+
+#### Twitch Shield
+| | |
+------------ | -------------
+**Info** | Activates or deactivates the broadcaster's Shield Mode.
+**Format** | `Twitch Shield <on/off/toggle>`
+**Example** | `Twitch Shield toggle`
+
+***
+
+#### Twitch Shoutout
+| | |
+------------ | -------------
+**Info** | Sends a Shoutout to the specified channel. `<user>` is the Twitch channel to shoutout.
+**Format** | `Twitch Shoutout <user>`
+**Example** | `Twitch Shoutout testUser`
+
+***
+
+#### Twitch Slow
+| | |
+------------ | -------------
+**Info** | Limit how often users in the chat room are allowed to send messages. `<optional_duration>` is the number of seconds that users must wait between sending messages (default 30). The minimum duration is 3 seconds and the maximum is 120 (2 minutes).
+**Format** | `Twitch Slow <optional_duration>`
+**Example** | `Twitch Slow`
+**Example w/ Duration** | `Twitch Slow 60`
+
+***
+
+#### Twitch SlowOff
+| | |
+------------ | -------------
+**Info** | Disable slow mode in the broadcaster's chat.
+**Format** | `Twitch SlowOff`
+**Example** | `Twitch SlowOff`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Soundtrack API.
+**artist** | The artist(s) included on the current track.
+**title** | The title of the current track.
+
+***
+
+#### Twitch Streams
+| | |
+------------ | -------------
+**Info** | Gets the list of followed streams that are currently live.
+**Format** | `Twitch Streams`
+**Example** | `Twitch Streams`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Followed Streams API.
+**stream_count** | The number of streams retrieved.
+**stream#** | The name of the stream. Replace `#` with a number, starting at 1 and ending at `stream_count`.
+**id#** | The user id (login) of the stream. Replace `#` with a number, starting at 1 and ending at `stream_count`.
+**game#** | The game of the stream. Replace `#` with a number, starting at 1 and ending at `stream_count`.
+
+***
+
+#### Twitch SubCount
+| | |
+------------ | -------------
+**Info** | Retrieve the number of followers for the given channel.
+**Format** | `Twitch SubCount`
+**Example** | `Twitch SubCount`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Broadcaster Subscriptions API.
+**sub_count** | The total number of users that subscribe to this broadcaster.
+**sub_points** | The current number of subscriber points earned by this broadcaster. Points are based on the subscription tier of each user. For example, a Tier 1 subscription is worth 1 point, Tier 2 is worth 2 points, and Tier 3 is worth 6 points.
+
+***
+
+#### Twitch Subscribers
+| | |
+------------ | -------------
+**Info** | Restricts the broadcaster's chat room to subscribers only.
+**Format** | `Twitch Subscribers`
+**Example** | `Twitch Subscribers`
+
+***
+
+#### Twitch SubscribersOff
+| | |
+------------ | -------------
+**Info** | Disable subscriber only mode in the broadcaster's chat.
+**Format** | `Twitch SubscribersOff`
+**Example** | `Twitch SubscribersOff`
+
+***
+
+#### Twitch Tags
+| | |
+------------ | -------------
+**Info** | Update the channel-defined tags on the channel. `<tag>` is the tag to add. Up to 10 tags may be provided. Each tag is limited to a maximum of 25 characters and may not be an empty string or contain spaces or special characters. Tags are case insensitive.
+**Format** | `Twitch Tags <tag1> <tag2> ... <tag10>`
+**Example** | `Twitch Tags "Rocket League" "Champion" "Ranked"`
+
+***
+
+#### Twitch Teams
+| | |
+------------ | -------------
+**Info** | Gets the list of Twitch teams that the broadcaster is a member of.
+**Format** | `Twitch Teams`
+**Example** | `Twitch Teams`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Teams API.
+**team_count** | The number of teams retrieved.
+**team#** | The name of the team. Replace `#` with a number, starting at 1 and ending at `team_count`.
+
+***
+
+#### Twitch Timeout
+| | |
+------------ | -------------
+**Info** | Timeout a user from the chat room. `<user>` is the Twitch user to ban. `<optional_duration>` is an optional input with the number of seconds for a timeout (the default is 1). The minimum timeout is 1 second and the maximum is 1,209,600 seconds (2 weeks). `<optional_reason>` is text to define the reason for the timeout.
+**Format** | `Twitch Timeout <user> <optional_duration> <optional_reason>`
+**Example** | `Twitch Timeout testUser`
+**Example w/ Duration** | `Twitch Timeout testUser 1`
+**Example w/ Duration and Reason** | `Twitch Timeout testUser 1209600 "Inappropriate behavior, come back in two weeks!"`
+
+***
+
+#### Twitch Title
+| | |
+------------ | -------------
+**Info** | Updates a channel's title. `<title>` is the title to set for the channel.
+**Format** | `Twitch Title <title>`
+**Example** | `Twitch Title "Rocket League with viewers!"`
+
+***
+
+#### Twitch Unban
+| | |
+------------ | -------------
+**Info** | Unban a user from the specified broadcaster's chat room. `<user>` is the Twitch user to unban.
+**Format** | `Twitch Unban <user>`
+**Example** | `Twitch Unban testUser`
+
+***
+
+#### Twitch Unblock
+| | |
+------------ | -------------
+**Info** | Unblock the specified user from interacting with or having contact with the broadcaster. `<user>` is the Twitch user to unblock.
+**Format** | `Twitch Unblock <user>`
+**Example** | `Twitch Unblock testUser`
+
+***
+
+#### Twitch UniqueChat
+| | |
+------------ | -------------
+**Info** | Restricts the broadcaster's chat room to require users to post only unique messages in the chat room.
+**Format** | `Twitch UniqueChat`
+**Example** | `Twitch UniqueChat`
+
+***
+
+#### Twitch UniqueChatOff
+| | |
+------------ | -------------
+**Info** | Disable unique chat mode in the broadcaster's chat.
+**Format** | `Twitch UniqueChatOff`
+**Example** | `Twitch UniqueChatOff`
+
+***
+
+#### Twitch Unmod
+| | |
+------------ | -------------
+**Info** | Remove moderator status from a user in the broadcaster's chat room. `<user>` is the Twitch user to update.
+**Format** | `Twitch Unmod <user>`
+**Example** | `Twitch Unmod testUser`
+
+***
+
+#### Twitch UnVIP
+| | |
+------------ | -------------
+**Info** | Remove VIP status from a user in the broadcaster's chat room. `<user>` is the Twitch user to update.
+**Format** | `Twitch UnVIP <user>`
+**Example** | `Twitch UnVIP testUser`
+
+***
+
+#### Twitch UserColor
+| | |
+------------ | -------------
+**Info** | Retrieves the color used for the user's name in chat. `<user>` is the name of the username to retrieve the chat color.
+**Format** | `Twitch UserColor <user>`
+**Example** | `Twitch UserColor Kruiser8`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch User Chat Color API.
+**color** | The Hex color code that the user uses in chat for their name. If the user hasn't specified a color in their settings, the string is empty.
+**name** | The user's display name.
+
+***
+
+#### Twitch Videos
+| | |
+------------ | -------------
+**Info** | Gets information about one or more published videos. `<optional_type>` is the type of videos to return. The possible types are `archive` (VODS), `highlight`, `upload`, or `all` (default). `<optional_period>` is a filter used to filter the list of videos by when they were published. Possible periods are `day`, `week`, `month`, and `all` (default). `<optional_sort>` is the order to sort the returned videos in. Possible sort values are `time` (default: created, latest first), `trending` (biggest gain in viewership), or `views`.
+**Format** | `Twitch Videos <optional_type> <optional_period> <optional_sort>`
+**Example** | `Twitch Videos`
+**Example w/ Type** | `Twitch Videos Upload`
+**Example w/ Type and Period** | `Twitch Videos Archive month`
+**Example w/ Type, Period, and Sort** | `Twitch Videos Highlight all views`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Videos API.
+**video_count** | The number of users retrieved on the leaderboard.
+**title#** | The title of the video. Replace `#` with a number, starting at 1 and ending at `video_count`.
+**description#** | The description of the video. Replace `#` with a number, starting at 1 and ending at `video_count`.
+**url#** | The url of the video. Replace `#` with a number, starting at 1 and ending at `video_count`.
+
+***
+
+#### Twitch VIP
+| | |
+------------ | -------------
+**Info** | Adds a VIP to the broadcaster's chat room. `<user>` is the Twitch user to give VIP status.
+**Format** | `Twitch VIP <user>`
+**Example** | `Twitch VIP testUser`
+
+***
+
+#### Twitch VIPs
+| | |
+------------ | -------------
+**Info** | Gets the broadcaster's list of VIPs.
+**Format** | `Twitch VIPs`
+**Example** | `Twitch VIPs`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Moderators API.
+**vip_count** | The number of moderators retrieved.
+**vip#** | The name of the VIP. Replace `#` with a number, starting at 1 and ending at `vip_count`.
+**id#** | The user id (login) of the VIP. Replace `#` with a number, starting at 1 and ending at `vip_count`.
 
 ***
 
@@ -3013,3 +4810,96 @@ _Note: The above example, `Variable Global Load Recent_Sub`, would return the pa
 **\<name\>** | The variable value where **\<name\>** is the name of the variable.
 
 _Note: The above example, `Variable Global Set Recent_Sub Kruiser8`, would return the parameter **Recent_Sub**._
+
+***
+
+## Voicemod
+Enables the ability to interact with Voicemod, a real-time voice changer and soundboard.
+
+### Voicemod Triggers
+None at the moment.
+
+***
+
+### Voicemod Actions
+
+#### Voicemod Background
+| | |
+------------ | -------------
+**Info** | Used to alter whether or not Voicemod background effects are enabled. `<on/off/toggle>` determines whether the background effect is turned on, off, or toggled.
+**Format** | `Voicemod Background <on/off/toggle>`
+**Example** | `Voicemod Background on`
+
+***
+
+#### Voicemod Beep
+| | |
+------------ | -------------
+**Info** | Used to trigger the censor bleep for a period of time. `<optional_duration>` is the number of seconds to play the censor noise. If no duration is provided, the bleep is played for 1 second.
+**Format** | `Voicemod Beep <optional_duration>`
+**Example** | `Voicemod Beep`
+**Example w/ duration** | `Voicemod Beep 3`
+
+***
+
+#### Voicemod Hear
+| | |
+------------ | -------------
+**Info** | Used to alter whether or not the Voicemod hear myself setting is enabled. `<on/off/toggle>` determines whether the Voicemod hear myself setting is turned on, off, or toggled.
+**Format** | `Voicemod Hear <on/off/toggle>`
+**Example** | `Voicemod Hear on`
+
+***
+
+#### Voicemod Mute
+| | |
+------------ | -------------
+**Info** | Used to mute yourself through Voicemod. `<on/off/toggle>` determines whether the Voicemod mute is turned on, off, or toggled.
+**Format** | `Voicemod Mute <on/off/toggle>`
+**Example** | `Voicemod Mute on`
+
+***
+
+#### Voicemod Play
+| | |
+------------ | -------------
+**Info** | Used to play a sound from a Voicemod soundboard. `<soundboard>` is the name of the soundboard in Voicemod. `<sound>` is the name of the sound to play.
+**Format** | `Voicemod Play <soundboard> <sound>`
+**Example** | `Voicemod Play Prankster "Sad Trombone"`
+
+***
+
+#### Voicemod Random
+| | |
+------------ | -------------
+**Info** | Used to select a random voice in Voicemod. `<optional_type>` is the type of random voice to choose. If no `<optional_type>` is provided, the random voice is selected from all available voices. If `<optional_type>` is `favorite` or `custom`, then only a favorite or custom voice in Voicemod will be randomly selected.
+**Format** | `Voicemod Random <optional_type>`
+**Example** | `Voicemod Random`
+**Example w/ Type** | `Voicemod Random favorite`
+
+***
+
+#### Voicemod Stop
+| | |
+------------ | -------------
+**Info** | Used to stop all sounds from the Voicemod soundboard.
+**Format** | `Voicemod Stop`
+**Example** | `Voicemod Stop`
+
+***
+
+#### Voicemod Voice
+| | |
+------------ | -------------
+**Info** | Used to select a voice in Voicemod. `<voice>` is the name of the voice to select.
+**Format** | `Voicemod Voice <voice>`
+**Example** | `Voicemod Voice Chipmunk`
+
+***
+
+#### Voicemod VoiceChanger
+| | |
+------------ | -------------
+**Info** | Used to alter whether or not the Voicemod voice changer setting is enabled. `<on/off/toggle>` determines whether the Voicemod voice changer setting is turned on, off, or toggled.
+**Format** | `Voicemod VoiceChanger <on/off/toggle>`
+**Example** | `Voicemod VoiceChanger on`
