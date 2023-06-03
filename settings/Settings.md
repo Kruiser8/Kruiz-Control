@@ -144,7 +144,7 @@ Some APIs and events require a user authenticated auth code. To generate one of 
 ### Twitch Authenticate ###
 OnInit
 Twitch Authenticate
-Chat Send {auth_url}
+Error {auth_url}
 ```
 - Open the generated link and login to your Twitch account. This provides the https://dev.twitch.tv application that you created to control your stream.
 - After login, you'll be redirected to a link that looks like the below.
