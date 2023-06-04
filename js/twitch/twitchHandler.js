@@ -50,14 +50,22 @@ class TwitchHandler extends Handler {
     var initClientSecret = await IDBService.get('INTWCS');
     var initCode = await IDBService.get('INTWCD');
     if (clientId != initClientId || clientSecret != initClientSecret || code != initCode) {
-      var { accessToken: newAccessToken, refreshToken: newRrefreshToken } = await this.api.requestAuthToken();
-      accessToken = newAccessToken;
-      refreshToken = newRrefreshToken;
-      this.updateTokens(clientId, clientSecret, code, accessToken, refreshToken, true);
+      try {
+        var { accessToken: newAccessToken, refreshToken: newRrefreshToken } = await this.api.requestAuthToken();
+        accessToken = newAccessToken;
+        refreshToken = newRrefreshToken;
+        this.updateTokens(clientId, clientSecret, code, accessToken, refreshToken, true);
+      } catch (error) {
+        console.error(JSON.stringify(error));
+      }
     } else {
-      await this.api.getChannelInformation(this.channelId);
-      accessToken = await IDBService.get('CUTWAT');
-      refreshToken = await IDBService.get('CUTWRT');
+      try {
+        await this.api.getChannelInformation(this.channelId);
+        accessToken = await IDBService.get('CUTWAT');
+        refreshToken = await IDBService.get('CUTWRT');
+      } catch (error) {
+        console.error(JSON.stringify(error));
+      }
     }
     await connectEventSubWebsocket(this.channelId, clientId, clientSecret, accessToken, refreshToken, this.onEventMessage.bind(this));
     this.success();
