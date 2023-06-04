@@ -463,6 +463,28 @@ Function 'var name = [user]; var data = [data]; // rest of code ... }())
 > (function() { var name = "Kruiser8"; var data = {"property": value}; // rest of code ...'
 ```
 
+#### parameter#
+Some triggers and actions provide parameters of the format `param#`. When you see a `#` on a parameter, that means there are multiple values returned and you have to loop over them. There is always a `param_count` parameter provided that states how many values were returned.
+
+For example, [`Twitch Emotes`](#twitch-emotes) retrieves all custom emotes available on the broadcaster's channel. The action provides an `emote#` parameter as well as an `emote_count`. The emotes would be looped through using the example below.
+
+```m
+OnCommand e 0 !emotes
+Twitch Emotes
+Loop 1 {emote_count}
+Chat Send {emote{loop}}
+```
+
+For a nicely formatted message:
+```m
+OnCommand e 0 !emotes
+Twitch Emotes
+Loop 1 {emote_count}
+List Add Emotes {emote{loop}}
+List Join Emotes " "
+Chat Send "Channel Emotes: {joined}"
+```
+
 ***
 
 ### Aliases
