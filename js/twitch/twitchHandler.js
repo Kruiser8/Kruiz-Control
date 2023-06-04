@@ -960,6 +960,13 @@ class TwitchHandler extends Handler {
         }
         await this.api.sendChatAnnouncement(this.channelId, this.channelId, { message, color });
         break;
+      case 'auth':
+        return {
+          client_id: this.api.clientId,
+          client_secret: this.api.clientSecret,
+          access_token: this.api.accessToken
+        };
+        break;
       case 'authenticate':
         return {
           auth_url: this.api.getAuthUrl()
@@ -1584,6 +1591,24 @@ class TwitchHandler extends Handler {
         var user_id = await getIdFromUser(user);
 
         await this.api.removeChannelVIP(this.channelId, user_id);
+        break;
+      case 'user':
+        var { user = this.user } = Parser.getInputs(triggerData, ['action', 'user'], false, 1);
+
+        var user_id = this.channelId;
+        if (user.toLowerCase() !== this.user) {
+          user_id = await getIdFromUser(user);
+        }
+
+        var response = await this.api.getUser(user_id);
+
+        if (response?.data.length > 0) {
+          return {
+            data: response,
+            user: response.data[0].display_name,
+            description: response.data[0].description
+          }
+        }
         break;
       case 'usercolor':
         var { user } = Parser.getInputs(triggerData, ['action', 'user']);

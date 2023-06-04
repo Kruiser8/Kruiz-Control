@@ -899,6 +899,17 @@ class TwitchAPI {
     });
   }
 
+  
+  async getUser(id) {
+    return await this.callTwitchApi({
+      method: 'GET',
+      endpoint: 'https://api.twitch.tv/helix/users',
+      params: {
+        id
+      }
+    });
+  }
+
   async updateUser(description) {
     await this.callTwitchApi({
       method: 'PUT',

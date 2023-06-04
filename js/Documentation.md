@@ -281,6 +281,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Actions](#twitch-actions)
     + [Twitch AddBlockedTerm](#twitch-addblockedterm)
     + [Twitch Announcement](#twitch-announcement)
+    + [Twitch Auth](#twitch-auth)
     + [Twitch Authenticate](#twitch-authenticate)
     + [Twitch Ban](#twitch-ban)
     + [Twitch BitsLeaderboard](#twitch-bitsleaderboard)
@@ -351,6 +352,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Twitch Unmod](#twitch-unmod)
     + [Twitch Unraid](#twitch-unraid)
     + [Twitch UnVIP](#twitch-unvip)
+    + [Twitch User](#twitch-user)
     + [Twitch UserColor](#twitch-usercolor)
     + [Twitch Videos](#twitch-videos)
     + [Twitch VIP](#twitch-vip)
@@ -3782,6 +3784,22 @@ _Note: Bit voting is not currently supported, however Twitch provides these valu
 
 ***
 
+#### Twitch Auth
+| | |
+------------ | -------------
+**Info** | Request the current twitch credentials. Useful if running additional API calls not included in Kruiz Control.
+**Format** | `Twitch Auth`
+**Example** | `Twitch Auth`
+
+##### Parameters
+| | |
+------------ | -------------
+**client_id** | The Twitch client ID.
+**client_secret** | The Twitch client secret.
+**access_token** | The current Twitch OAuth access token (The _bearer_ token).
+
+***
+
 #### Twitch Authenticate
 | | |
 ------------ | -------------
@@ -4664,6 +4682,23 @@ _Note: Due to a Twitch API restriction, in order for Kruiz Control to interact w
 **Info** | Remove VIP status from a user in the broadcaster's chat room. `<user>` is the Twitch user to update.
 **Format** | `Twitch UnVIP <user>`
 **Example** | `Twitch UnVIP testUser`
+
+***
+
+#### Twitch User
+| | |
+------------ | -------------
+**Info** | Retrieves user data for the provided channel. `<optional_user>` is the channel name to retrieve. If no user is provided, the broadcaster information retrieved.
+**Format** | `Twitch User <optional_user>`
+**Example** | `Twitch User`
+**Example w/ User** | `Twitch User Kruiser8`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch User API.
+**user** | The user's display name.
+**description** | The user's channel description.
 
 ***
 
