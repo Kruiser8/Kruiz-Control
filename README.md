@@ -43,8 +43,8 @@ Kruiz Control enables a pseudo code approach to manage and automatically handle 
 
 ## Setup Guide
 
-- Fill out [the settings files](https://github.com/Kruiser8/Kruiz-Control/blob/master/settings/Settings.md) in the settings folder.
 - Add the **index.html** to OBS or SLOBS as a browser source.
+- Fill out [the settings files](https://github.com/Kruiser8/Kruiz-Control/blob/master/settings/Settings.md) in the settings folder.
 - Type `!example` in your twitch chat. If your user responds with `Success! It worked!`, you're good to go!
 - Customize the _triggers.txt_ with your own triggers from the [the documentation](https://github.com/Kruiser8/Kruiz-Control/blob/master/js/Documentation.md).
 
@@ -75,11 +75,11 @@ The script should run on any broadcast software that supports browser sources, h
 
 ## Installation
 
-### Settings
-Before the script will work, you'll need to fill out all of the settings files. Please see the [settings description](https://github.com/Kruiser8/Kruiz-Control/blob/master/settings/Settings.md) for more information.
-
 ### Add as Browser Source
 Add the **index.html** file as a browser source within your broadcast software. It is *recommended* to add this source to one scene that is included in all other scenes (like your alert scene) rather than recreate this source in every scene.
+
+### Settings
+Before the script will work, you'll need to fill out all of the settings files. Please see the [settings description](https://github.com/Kruiser8/Kruiz-Control/blob/master/settings/Settings.md) for more information.
 
 #### Steps for adding to OBS/SLOBS
 - In OBS, under **Sources** click the + icon to add a new **Browser** source.

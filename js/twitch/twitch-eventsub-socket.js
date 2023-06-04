@@ -220,10 +220,12 @@ async function connectEventSubWebsocket(
     await new Promise((resolve) => {
       tes.subscribe(type, data, version)
       .then(() => {
-          console.info(`${type} Subscription successful`);
-          resolve();
+          if (Debug.Twitch || Debug.All) {
+              console.error(`${type} Subscription successful`);
+          }
       }).catch(err => {
           console.error(`${type} Subscription failed: `, err);
+      }).finally(() => {
           resolve();
       });
     });

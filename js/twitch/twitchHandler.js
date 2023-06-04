@@ -1063,7 +1063,7 @@ class TwitchHandler extends Handler {
         }
 
         return {
-          data: response,
+          data: chatters,
           chatter_count: chatters.length,
           ...userArgs
         }
