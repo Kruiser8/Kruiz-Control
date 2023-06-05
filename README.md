@@ -1,5 +1,9 @@
 # Kruiz Control
 
+<p align="center">
+  <img src="logo.png" width="150" title="Kruiz Control Logo">
+</p>
+
 <p align="center"><i>
 Kruiz Control enables a pseudo code approach to manage and automatically handle Twitch chat and events, OBS or SLOBS, and StreamElements or Streamlabs alerts.
 </i></p>
