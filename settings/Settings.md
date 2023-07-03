@@ -146,7 +146,11 @@ OnInit
 Twitch Authenticate
 Error {auth_url}
 ```
-- Open the generated link and login to your Twitch account. This provides the https://dev.twitch.tv application that you created to control your stream.
+- Reset Kruiz Control to generate the link.
+- Open your OBS or SLOBS log file to find the URL.
+  - For OBS, go to `Help` > `Log Files` > `Open Current Log File`.
+- Copy the link at the bottom of the log file, and open it in a browser.
+- Login to your Twitch account. This provides the https://dev.twitch.tv application that you created to control your stream.
 - After login, you'll be redirected to a link that looks like the below.
 ```
 http://localhost/?code=YOUR_CODE_HERE&scope=bits%3Aread+channel%3Aedit...
