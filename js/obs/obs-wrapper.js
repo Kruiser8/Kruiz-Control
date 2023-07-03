@@ -25,16 +25,16 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
 
   // You must add this handler to avoid uncaught exceptions.
   obs.on('error', err => {
-    console.log('socket error:', err);
-    console.error('socket error:', err);
+    console.error('OBS Websocket Error:', err);
   });
 
   // Ws OnClose : try reconnect
   obs.on('onclose', function() {
-    console.log('OBS Websocket Closed');
+    console.error('OBS Websocket Closed');
   });
 
   obs.on('Exiting', function() {
+    console.error('OBS Websocket Exiting');
     obs.disconnect();
   });
 

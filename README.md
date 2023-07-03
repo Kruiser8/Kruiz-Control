@@ -1,7 +1,11 @@
 # Kruiz Control
 
+<p align="center">
+  <img src="logo.png" width="150" title="Kruiz Control Logo">
+</p>
+
 <p align="center"><i>
-Kruiz Control enables a pseudo code approach to manage and automatically handle Twitch Channel Points, Twitch Chat, OBS or SLOBS, and StreamElements or Streamlabs alerts.
+Kruiz Control enables a pseudo code approach to manage and automatically handle Twitch chat and events, OBS or SLOBS, and StreamElements or Streamlabs alerts.
 </i></p>
 <p align="center"><b>
   <a href="https://youtu.be/YaXLsWQuhLE">Tutorial</a> |
@@ -17,19 +21,14 @@ Kruiz Control enables a pseudo code approach to manage and automatically handle 
   <a href="https://discord.gg/wU3ZK3Q">Support Discord</a>
 </b></i></p>
 
-***
-
-<h3 align="center"><a href="https://github.com/CrashKoeck/Kruiz-Control-Configurator/releases">Kruiz Control Configurator</a></h3>
-<p align="center"><a href="https://github.com/CrashKoeck/Kruiz-Control-Configurator/releases">Kruiz Control Configurator</a> is a simple frontend for Kruiz Control made by <a href="https://github.com/CrashKoeck">CrashKoeck</a> which allows easy configuration of the settings files. Download the executable and add it into your Kruiz Control folder in order to manage your settings.</p>
-
 ## Table of Contents
 
 - [Setup Guide](#setup-guide)
 - [Compatibility](#compatibility)
 - [Installation](#installation)
-  + [OBS Websocket](#obs-websocket)
   + [Settings](#settings)
   + [Add as Browser Source](#add-as-browser-source)
+  + [OBS Websocket](#obs-websocket)
 - [Usage](#usage)
   + [Pseudo Code Format](#pseudo-code-format)
   + [triggers.txt](#triggerstxt)
@@ -48,50 +47,43 @@ Kruiz Control enables a pseudo code approach to manage and automatically handle 
 
 ## Setup Guide
 
-- (If using OBS) Install the [OBS Websocket Plugin](https://github.com/Palakis/obs-websocket/releases/latest) (version 5.0.0 or above). Reopen OBS after installing.
+- Add the **index.html** to OBS or SLOBS as a browser source.
 - Fill out [the settings files](https://github.com/Kruiser8/Kruiz-Control/blob/master/settings/Settings.md) in the settings folder.
-- Add the **index.html** to OBS/SLOBS as a browser source.
 - Type `!example` in your twitch chat. If your user responds with `Success! It worked!`, you're good to go!
 - Customize the _triggers.txt_ with your own triggers from the [the documentation](https://github.com/Kruiser8/Kruiz-Control/blob/master/js/Documentation.md).
+
+_Note: If you're on OBS v27 or lower, you'll also have to install the [OBS Websocket Plugin](https://github.com/Palakis/obs-websocket/releases/latest). Reopen OBS after installing._
 
 ***
 
 ## Compatibility
 
 Kruiz Control supports
-- Twitch Channel Points
+- Twitch Channel Management
 - Twitch Chat
-- Twitch Hype Trains
+- Twitch Events (alerts, channel points, hype trains)
 - Streamlabs Alerts
 - StreamElements Alerts
 - OBS scene, source, and filter changes
 - SLOBS scene and source changes
+- Voicemod Voice Changer control
 - Playing music (mp3, wav, ogg)
 - Timers (triggering on an interval)
 - Sending API calls
 
 and more in [the documentation](https://github.com/Kruiser8/Kruiz-Control/blob/master/js/Documentation.md)!
 
-The script should run on any broadcast software that supports browser sources, however only OBS and SLOBS support changing scenes and sources.
-
-OBS.Live should also be supported but is untested.
+The script should run on any broadcast software that supports browser sources, however only OBS and SLOBS support changing scenes and sources. OBS.Live is supported.
 
 ***
 
 ## Installation
 
-### OBS Websocket (if using OBS)
-To use this script with OBS, install the [obs-websocket](https://github.com/Palakis/obs-websocket/releases/latest) plugin (version 5.0.0 or above). Reopen OBS after installing.
-
-In OBS, click **Tools** > **WebSockets Server Settings** and enable the websocket server.
-
-It is **highly recommended** to use a password!
+### Add as Browser Source
+Add the **index.html** file as a browser source within your broadcast software. It is *recommended* to add this source to one scene that is included in all other scenes (like your alert scene) rather than recreate this source in every scene.
 
 ### Settings
 Before the script will work, you'll need to fill out all of the settings files. Please see the [settings description](https://github.com/Kruiser8/Kruiz-Control/blob/master/settings/Settings.md) for more information.
-
-### Add as Browser Source
-Add the **index.html** file as a browser source within your broadcast software. It is *recommended* to add this source to one scene that is included in all other scenes (like your alert scene) rather than recreate this source in every scene.
 
 #### Steps for adding to OBS/SLOBS
 - In OBS, under **Sources** click the + icon to add a new **Browser** source.
@@ -99,6 +91,14 @@ Add the **index.html** file as a browser source within your broadcast software. 
 - Check the `Local file` checkbox.
 - Click **Browse** and open the **index.html** file within the Kruiz Control script directory.
 - Recommended to set the width/height to 100 or less to reduce the size of the source.
+
+### OBS Websocket
+_Note: Only if using OBS v27 or below!_
+To use this script with OBS, install the [obs-websocket](https://github.com/Palakis/obs-websocket/releases/latest) plugin (version 5.0.0 or above). Reopen OBS after installing.
+
+In OBS, click **Tools** > **WebSockets Server Settings** and enable the websocket server.
+
+It is **highly recommended** to use a password!
 
 ***
 

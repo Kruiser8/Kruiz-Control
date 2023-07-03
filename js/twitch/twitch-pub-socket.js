@@ -17,12 +17,11 @@ function connectPubSubWebsocket(channelId, onMessage) {
 			"nonce": nonce,
 			"data": {
 				"topics": [
-					"community-points-channel-v1." + channelId,
-					"hype-train-events-v1." + channelId
+					"community-points-channel-v1." + channelId
 				],
 			}
 		};
-		// Send authentication payload to Streamlabs Chatbot
+		// Send authentication payload to Twitch PubSub
 		socket.send(JSON.stringify(auth));
 	};
 
