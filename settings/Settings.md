@@ -129,7 +129,7 @@ To capture Twitch events, you'll need a **Client Id** and **Client Secret**. To 
 - Login with your Twitch account
 - Once logged in, on the left sidebar click `Applications`.
 - Click the `+ Register Your Application` button and enter the following details:
-  - Name: `Kruiz Control`
+  - Name: `YOUR_USERNAME Kruiz Control`
   - OAuth Redirect URLs: `http://localhost`
   - Category: `Chat Bot`
 - Click the `Create` button at the bottom.
@@ -146,12 +146,18 @@ OnInit
 Twitch Authenticate
 Error {auth_url}
 ```
-- Open the generated link and login to your Twitch account. This provides the https://dev.twitch.tv application that you created to control your stream.
+- Reset Kruiz Control to generate the link.
+- Open your OBS or SLOBS log file to find the URL.
+  - For OBS, go to `Help` > `Log Files` > `Open Current Log File`.
+  - For SLOBS, open the settings cog (bottom left) and then go to `Get Support` and click the `Show Cache Directory` option under `Cache Directory`. Open the `node-obs` folder and then the `logs` folder. Open the most recently modified file.
+- Copy the link at the bottom of the log file, and open it in a browser.
+- Login to your Twitch account. This provides the https://dev.twitch.tv application that you created to control your stream.
 - After login, you'll be redirected to a link that looks like the below.
 ```
 http://localhost/?code=YOUR_CODE_HERE&scope=bits%3Aread+channel%3Aedit...
 ```
 - Copy the `YOUR_CODE_HERE` value and put that into your `settings/twitch/code.txt` file.
+- Once you have generated a code, you can remove the `### Twitch Authenticate ###` event from your `triggers.txt` file.
 
 
 ### clientId.txt
