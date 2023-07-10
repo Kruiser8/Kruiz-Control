@@ -87,7 +87,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [List Index](#list-index)
     + [List Join](#list-join)
     + [List Remove](#list-remove)
-    + [List Set](#list-remove)
+    + [List Set](#list-set)
 - [Message](#message)
   * [Triggers](#message-triggers)
     + [OnMessage](#onmessage)
