@@ -3714,10 +3714,10 @@ _Note: Bit voting is not currently supported, however Twitch provides these valu
 ##### Parameters
 | | |
 ------------ | -------------
-**id** | The user id of the user who sent the subscription gift.
-**login** | The user login of the user who sent the subscription gift.
-**name** | The user display name of the user who sent the subscription gift.
-**tier** | The tier of subscriptions in the subscription gift. `1`, `2`, or `3` depending on what subscription tier the user is.
+**id** | The user id of the user who sent the resubscription chat message.
+**login** | The user login of the user who sent the resubscription chat message.
+**name** | The user display name of the user who sent the resubscription chat message.
+**tier** | The tier of subscription in the resubscription chat message. `1`, `2`, or `3` depending on what subscription tier the user is.
 **message** | The resubscription message.
 **months** | The total number of months the user has been subscribed to the channel.
 **streak** | The number of consecutive months the user’s current subscription has been active. This value is empty if the user has opted out of sharing this information.
