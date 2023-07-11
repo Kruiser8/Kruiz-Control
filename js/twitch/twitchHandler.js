@@ -346,7 +346,7 @@ class TwitchHandler extends Handler {
             name: event.user_name,
             is_anonymous: event.is_anonymous,
             message: event.message,
-            amount: events.bits
+            amount: event.bits
           });
         });
         break;
@@ -357,7 +357,7 @@ class TwitchHandler extends Handler {
             id: event.from_broadcaster_user_id,
             login: event.from_broadcaster_user_login,
             name: event.from_broadcaster_user_name,
-            raiders: events.viewers
+            raiders: event.viewers
           });
         });
         break;
