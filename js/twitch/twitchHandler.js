@@ -67,7 +67,11 @@ class TwitchHandler extends Handler {
         console.error(JSON.stringify(error));
       }
     }
-    await connectEventSubWebsocket(this.channelId, clientId, clientSecret, accessToken, refreshToken, this.onEventMessage.bind(this));
+    try {
+      await connectEventSubWebsocket(this.channelId, clientId, clientSecret, accessToken, refreshToken, this.onEventMessage.bind(this));
+    } catch (error) {
+      console.error(JSON.stringify(error));
+    }
     this.success();
   }
 
