@@ -87,7 +87,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [List Index](#list-index)
     + [List Join](#list-join)
     + [List Remove](#list-remove)
-    + [List Set](#list-remove)
+    + [List Set](#list-set)
 - [Message](#message)
   * [Triggers](#message-triggers)
     + [OnMessage](#onmessage)
@@ -297,6 +297,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Twitch Complete](#twitch-complete)
     + [Twitch Copy](#twitch-copy)
     + [Twitch CreateClip](#twitch-createclip)
+    + [Twitch CreateReward](#twitch-createreward)
     + [Twitch DeleteMessage](#twitch-deletemessage)
     + [Twitch Description](#twitch-description)
     + [Twitch EmoteOnly](#twitch-emoteonly)
@@ -3714,10 +3715,10 @@ _Note: Bit voting is not currently supported, however Twitch provides these valu
 ##### Parameters
 | | |
 ------------ | -------------
-**id** | The user id of the user who sent the subscription gift.
-**login** | The user login of the user who sent the subscription gift.
-**name** | The user display name of the user who sent the subscription gift.
-**tier** | The tier of subscriptions in the subscription gift. `1`, `2`, or `3` depending on what subscription tier the user is.
+**id** | The user id of the user who sent the resubscription chat message.
+**login** | The user login of the user who sent the resubscription chat message.
+**name** | The user display name of the user who sent the resubscription chat message.
+**tier** | The tier of subscription in the resubscription chat message. `1`, `2`, or `3` depending on what subscription tier the user is.
 **message** | The resubscription message.
 **months** | The total number of months the user has been subscribed to the channel.
 **streak** | The number of consecutive months the user’s current subscription has been active. This value is empty if the user has opted out of sharing this information.
@@ -4024,6 +4025,23 @@ _Note: Due to a Twitch API restriction, in order for Kruiz Control to interact w
 **Format** | `Twitch CreateClip <optional_should_delay>`
 **Example** | `Twitch CreateClip`
 **Example w/ optional_should_delay** | `Twitch CreateClip true`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Create Clip API.
+**url** | The url of the created clip.
+**id** | The ID of the created clip.
+
+***
+
+#### Twitch CreateReward
+| | |
+------------ | -------------
+**Info** | Creates a channel point reward in the broadcaster's stream. `<name>` is the name of the channel point reward. `<optional_cost>` is an optional input to set the cost of the reward (default: 1000).
+**Format** | `Twitch CreateReward <name> <optional_cost>`
+**Example** | `Twitch CreateReward Waldo`
+**Example w/ optional_cost** | `Twitch CreateReward Waldo 1234`
 
 ***
 

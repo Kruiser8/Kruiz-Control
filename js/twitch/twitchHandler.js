@@ -3,7 +3,7 @@ class TwitchHandler extends Handler {
    * Create a new Timer handler.
    */
   constructor() {
-    super('Twitch', ['OnTWCommunityGoalStart', 'OnTWCommunityGoalProgress', 'OnTWCommunityGoalComplete', 'OnTWChannelUpdate', 'OnTWFollow', 'OnTWSub', 'OnTWSubEnd', 'OnTWSubGift', 'OnTWSubMessage', 'OnTWCheer', 'OnTWRaid', 'OnTWBan', 'OnTWTimeout', 'OnTWUnban', 'OnTWModAdd', 'OnTWModRemove', 'OnTWChannelPoint', 'OnTWChannelPointCompleted', 'OnTWChannelPointRejected', 'OnTWPoll', 'OnTWPollUpdate', 'OnTWPollEnd', 'OnTWPrediction', 'OnTWPredictionUpdate', 'OnTWPredictionLock', 'OnTWPredictionEnd', 'OnTWHypeTrainStart', 'OnTWHypeTrainProgress', 'OnTWHypeTrainEnd', 'OnTWCharityDonation', 'OnTWCharityStarted', 'OnTWCharityProgress', 'OnTWCharityStopped', 'OnTWShieldStarted', 'OnTWShieldStopped', 'OnTWShoutout', 'OnTWShoutoutReceived', 'OnTWGoalStarted', 'OnTWGoalProgress', 'OnTWGoalCompleted', 'OnTWGoalFailed', 'OnTWStreamStarted', 'OnTWStreamStopped']);
+    super('Twitch', ['OnTWCommunityGoalStart', 'OnTWCommunityGoalProgress', 'OnTWCommunityGoalComplete', 'OnTWChannelUpdate', 'OnTWFollow', 'OnTWSub', 'OnTWSubEnd', 'OnTWSubGift', 'OnTWSubMessage', 'OnTWCheer', 'OnTWRaid', 'OnTWBan', 'OnTWTimeout', 'OnTWUnban', 'OnTWModAdd', 'OnTWModRemove', 'OnTWChannelPoint', 'OnTWChannelPointCompleted', 'OnTWChannelPointRejected', 'OnTWPoll', 'OnTWPollUpdate', 'OnTWPollEnd', 'OnTWPrediction', 'OnTWPredictionUpdate', 'OnTWPredictionLock', 'OnTWPredictionEnd', 'OnTWHypeTrainStart', 'OnTWHypeTrainConductor', 'OnTWHypeTrainProgress', 'OnTWHypeTrainLevel', 'OnTWHypeTrainEnd', 'OnTWCharityDonation', 'OnTWCharityStarted', 'OnTWCharityProgress', 'OnTWCharityStopped', 'OnTWShieldStart', 'OnTWShieldStop', 'OnTWShoutout', 'OnTWShoutoutReceived', 'OnTWGoalStarted', 'OnTWGoalProgress', 'OnTWGoalCompleted', 'OnTWGoalFailed', 'OnTWStreamStarted', 'OnTWStreamStopped']);
     this.rewards = [];
     this.rewardsTrigger = {};
     this.completedRewards = [];
@@ -67,7 +67,11 @@ class TwitchHandler extends Handler {
         console.error(JSON.stringify(error));
       }
     }
-    await connectEventSubWebsocket(this.channelId, clientId, clientSecret, accessToken, refreshToken, this.onEventMessage.bind(this));
+    try {
+      await connectEventSubWebsocket(this.channelId, clientId, clientSecret, accessToken, refreshToken, this.onEventMessage.bind(this));
+    } catch (error) {
+      console.error(JSON.stringify(error));
+    }
     this.success();
   }
 
@@ -346,7 +350,7 @@ class TwitchHandler extends Handler {
             name: event.user_name,
             is_anonymous: event.is_anonymous,
             message: event.message,
-            amount: events.bits
+            amount: event.bits
           });
         });
         break;
@@ -357,7 +361,7 @@ class TwitchHandler extends Handler {
             id: event.from_broadcaster_user_id,
             login: event.from_broadcaster_user_login,
             name: event.from_broadcaster_user_name,
-            raiders: events.viewers
+            raiders: event.viewers
           });
         });
         break;
@@ -829,7 +833,7 @@ class TwitchHandler extends Handler {
         });
         break;
       case 'channel.shield_mode.begin':
-        this.eventSubTrigger['ontwshieldstarted']?.forEach(triggerId => {
+        this.eventSubTrigger['ontwshieldstart']?.forEach(triggerId => {
           controller.handleData(triggerId, {
             data: event,
             mod: event.moderator_user_name,
@@ -839,7 +843,7 @@ class TwitchHandler extends Handler {
         });
         break;
       case 'channel.shield_mode.end':
-        this.eventSubTrigger['ontwshieldstopped']?.forEach(triggerId => {
+        this.eventSubTrigger['ontwshieldstop']?.forEach(triggerId => {
           controller.handleData(triggerId, {
             data: event,
             mod: event.moderator_user_name,
@@ -1194,12 +1198,32 @@ class TwitchHandler extends Handler {
         }
         break;
       case 'createclip':
-        var { delay = "false" } = Parser.getInputs(triggerData, ['action', 'delay' ], false, 1);
+        var { delay = "false" } = Parser.getInputs(triggerData, ['action', 'delay'], false, 1);
         var should_delay = false;
         if (delay.toLowerCase() === 'true') {
           should_delay = true;
         }
-        await this.api.createClip(this.channelId, should_delay);
+        var response = await this.api.createClip(this.channelId, should_delay);
+        return {
+          data: response,
+          id: response.data[0].id,
+          url: `https://clips.twitch.tv/${response.data[0].id}`
+        };
+        break;
+      case 'createreward':
+        var { name, cost = 1000 } = Parser.getInputs(triggerData, ['action', 'name', 'cost'], false, 1);
+
+        var reward_cost = 1000;
+        if (isNumeric(cost)) {
+          reward_cost = parseInt(cost);
+        }
+
+        var data = {
+          "title": name,
+          "cost": reward_cost,
+          "is_enabled": false,
+        }
+        await this.api.createCustomRewards(this.channelId, data);
         break;
       case 'deletemessage':
         var { message_id } = Parser.getInputs(triggerData, ['action', 'message_id']);
