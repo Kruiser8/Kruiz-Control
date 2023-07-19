@@ -244,18 +244,25 @@ class Controller {
           }
 
           if (runParams.loops && runParams.lines) {
+            var loopId = uuidv4();
             var toLoop = triggerSequence.slice(i + 1, i + runParams.lines + 1);
             triggerSequence.splice(i+1, 0,
+              ['Ignore', 'Param', 'Copy', 'loop_i', `loop_i_${loopId}`],
+              ['Ignore', 'Param', 'Copy', 'loop', `loop_${loopId}`],
               ['Ignore', 'Param', 'Create', 'loop_i', '0'],
               ['Ignore', 'Param', 'Create', 'loop', '1']
             );
-            triggerSequence.splice(i+2, 0, );
-            for (var loopLine = 0; loopLine < runParams.loops - 1; loopLine++) {
-              triggerSequence.splice(i+3, 0, ...toLoop,
-                ['Ignore', 'Param', 'Add', 'loop_i', '1'],
-                ['Ignore', 'Param', 'Add', 'loop', '1']
+            for (var loopLine = 1; loopLine < runParams.loops; loopLine++) {
+              triggerSequence.splice(i+3+(loopLine*(runParams.lines+2)), 0,
+                ['Ignore', 'Param', 'Create', 'loop_i', String(loopLine)],
+                ['Ignore', 'Param', 'Create', 'loop', String(loopLine + 1)],
+                ...toLoop,
               );
             }
+            triggerSequence.splice(i+3+(runParams.loops*(runParams.lines+2)), 0,
+              ['Ignore', 'Param', 'Copy', `loop_i_${loopId}`, 'loop_i'],
+              ['Ignore', 'Param', 'Copy', `loop_${loopId}`, 'loop']
+            );
             delete runParams.loops;
             delete runParams.lines;
           }
