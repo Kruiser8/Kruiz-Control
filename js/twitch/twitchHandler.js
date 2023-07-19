@@ -1199,7 +1199,12 @@ class TwitchHandler extends Handler {
         if (delay.toLowerCase() === 'true') {
           should_delay = true;
         }
-        await this.api.createClip(this.channelId, should_delay);
+        var response = await this.api.createClip(this.channelId, should_delay);
+        return {
+          data: response,
+          id: response.data[0].id,
+          url: `https://clips.twitch.tv/${response.data[0].id}`
+        }
         break;
       case 'deletemessage':
         var { message_id } = Parser.getInputs(triggerData, ['action', 'message_id']);

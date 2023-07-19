@@ -4025,6 +4025,13 @@ _Note: Due to a Twitch API restriction, in order for Kruiz Control to interact w
 **Example** | `Twitch CreateClip`
 **Example w/ optional_should_delay** | `Twitch CreateClip true`
 
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Create Clip API.
+**url** | The url of the created clip.
+**id** | The ID of the created clip.
+
 ***
 
 #### Twitch DeleteMessage
