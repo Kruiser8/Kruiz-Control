@@ -1198,7 +1198,7 @@ class TwitchHandler extends Handler {
         }
         break;
       case 'createclip':
-        var { delay = "false" } = Parser.getInputs(triggerData, ['action', 'delay' ], false, 1);
+        var { delay = "false" } = Parser.getInputs(triggerData, ['action', 'delay'], false, 1);
         var should_delay = false;
         if (delay.toLowerCase() === 'true') {
           should_delay = true;
@@ -1208,7 +1208,22 @@ class TwitchHandler extends Handler {
           data: response,
           id: response.data[0].id,
           url: `https://clips.twitch.tv/${response.data[0].id}`
+        };
+        break;
+      case 'createreward':
+        var { name, cost = 1000 } = Parser.getInputs(triggerData, ['action', 'name', 'cost'], false, 1);
+
+        var reward_cost = 1000;
+        if (isNumeric(cost)) {
+          reward_cost = parseInt(cost);
         }
+
+        var data = {
+          "title": name,
+          "cost": reward_cost,
+          "is_enabled": false,
+        }
+        await this.api.createCustomRewards(this.channelId, data);
         break;
       case 'deletemessage':
         var { message_id } = Parser.getInputs(triggerData, ['action', 'message_id']);

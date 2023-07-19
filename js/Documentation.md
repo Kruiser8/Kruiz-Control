@@ -297,6 +297,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Twitch Complete](#twitch-complete)
     + [Twitch Copy](#twitch-copy)
     + [Twitch CreateClip](#twitch-createclip)
+    + [Twitch CreateReward](#twitch-createreward)
     + [Twitch DeleteMessage](#twitch-deletemessage)
     + [Twitch Description](#twitch-description)
     + [Twitch EmoteOnly](#twitch-emoteonly)
@@ -4031,6 +4032,16 @@ _Note: Due to a Twitch API restriction, in order for Kruiz Control to interact w
 **data** | The complete response from the Twitch Create Clip API.
 **url** | The url of the created clip.
 **id** | The ID of the created clip.
+
+***
+
+#### Twitch CreateReward
+| | |
+------------ | -------------
+**Info** | Creates a channel point reward in the broadcaster's stream. `<name>` is the name of the channel point reward. `<optional_cost>` is an optional input to set the cost of the reward (default: 1000).
+**Format** | `Twitch CreateReward <name> <optional_cost>`
+**Example** | `Twitch CreateReward Waldo`
+**Example w/ optional_cost** | `Twitch CreateReward Waldo 1234`
 
 ***
 
