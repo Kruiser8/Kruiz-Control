@@ -129,7 +129,7 @@ To capture Twitch events, you'll need a **Client Id** and **Client Secret**. To 
 - Login with your Twitch account
 - Once logged in, on the left sidebar click `Applications`.
 - Click the `+ Register Your Application` button and enter the following details:
-  - Name: `YOUR_USERNAME Kruiz Control`
+  - Name: `YOUR_USERNAME Kruiz Control` (Any name works, as long as it is unique)
   - OAuth Redirect URLs: `http://localhost`
   - Category: `Chat Bot`
 - Click the `Create` button at the bottom.
