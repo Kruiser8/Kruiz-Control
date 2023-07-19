@@ -25,7 +25,7 @@ function connectVoicemodWebsocket(address, apiKey) {
 
   websocket.onerror = (err) => {
     console.error('Voicemod websocket error');
-    console.error(err);
+    console.error(JSON.stringify(err));
   };
 
   websocket.onmessage = (e) => {
