@@ -4057,7 +4057,7 @@ _Note: Due to a Twitch API restriction, in order for Kruiz Control to interact w
 #### Twitch Description
 | | |
 ------------ | -------------
-**Info** | Deletes a chat message by the provided id. `<description>` The string to update the channel's description to. The description is limited to a maximum of 300 characters.
+**Info** | Updates the specified broadcaster's channel description. `<description>` is the text to update the channel's description to. The description is limited to a maximum of 300 characters.
 **Format** | `Twitch Description <description>`
 **Example** | `Twitch Description "Hey there -- Welcome to the Krew!"`
 
@@ -4691,6 +4691,15 @@ _Note: Due to a Twitch API restriction, in order for Kruiz Control to interact w
 **Info** | Remove moderator status from a user in the broadcaster's chat room. `<user>` is the Twitch user to update.
 **Format** | `Twitch Unmod <user>`
 **Example** | `Twitch Unmod testUser`
+
+***
+
+#### Twitch Unraid
+| | |
+------------ | -------------
+**Info** | Cancel a pending raid in the broadcaster's chat room. You can cancel a raid at any point up until the broadcaster clicks _Raid Now_ on Twitch or the 90-second countdown expires.
+**Format** | `Twitch Unraid`
+**Example** | `Twitch Unraid`
 
 ***
 
