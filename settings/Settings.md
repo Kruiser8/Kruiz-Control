@@ -169,11 +169,11 @@ wasdfe23r9yujasbnvo9qhfiuqa328
 ```
 
 ### clientSecret.txt
-**Location:** `settings/twitch/clientId.txt`
+**Location:** `settings/twitch/clientSecret.txt`
 
-Specify the Twitch Client ID to use when making API calls.
+Specify the Twitch Client Secret to use when making API calls.
 ```
-wasdfe23r9yujasbnvo9qhfiuqa328
+h30984thfa9uegh90awiejhtgfqgq3
 ```
 
 ### code.txt
