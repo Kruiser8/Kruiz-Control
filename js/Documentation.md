@@ -4543,13 +4543,6 @@ _Note: Due to a Twitch API restriction, in order for Kruiz Control to interact w
 **Format** | `Twitch SlowOff`
 **Example** | `Twitch SlowOff`
 
-##### Parameters
-| | |
------------- | -------------
-**data** | The complete response from the Twitch Soundtrack API.
-**artist** | The artist(s) included on the current track.
-**title** | The title of the current track.
-
 ***
 
 #### Twitch Streams
