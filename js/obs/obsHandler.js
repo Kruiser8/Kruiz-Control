@@ -358,6 +358,7 @@ class OBSHandler extends Handler {
         var { source, path } = Parser.getInputs(triggerData, ['action', 'source', 'path']);
         var imageSettings = { file: path };
         await this.obs.setInputSettings(source, imageSettings)
+        break;
       case 'media':
         var { media, source, path } = Parser.getInputs(triggerData, ['action', 'media', 'source', 'path'], false, 1);
         var mediaAction = '';
