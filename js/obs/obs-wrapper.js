@@ -520,5 +520,38 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
     });
   }
 
+  obs.getSceneItemIndex = async function(scene, source) {
+    var data = await this.call('GetSceneItemIndex', {
+      'sceneName': scene,
+      'sceneItemId': await this.getSceneItemId(scene, source)
+    }).catch(async err => {
+      if (err.code === 600) {
+        var group = await this.getSourceGroupName(scene, source);
+        if (group) {
+          return await this.getSceneItemIndex(group, source);
+        }
+      }
+      console.error(JSON.stringify(err));
+    });
+    return data;
+  }
+
+  obs.setSceneItemIndex = async function(scene, source, index) {
+    await this.call('SetSceneItemIndex', {
+      'sceneName': scene,
+      'sceneItemId': await this.getSceneItemId(scene, source),
+      'sceneItemIndex': index
+    }).catch(async err => {
+      if (err.code === 600) {
+        var group = await this.getSourceGroupName(scene, source);
+        if (group) {
+          await this.setSceneItemIndex(group, source, index);
+          return;
+        }
+      }
+      console.error(JSON.stringify(err));
+    });
+  };
+
   return obs;
 }

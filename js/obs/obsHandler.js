@@ -404,6 +404,23 @@ class OBSHandler extends Handler {
           await this.obs.setMute(source, status);
         }
         break;
+      case 'order':
+        var { scene, source, direction } = Parser.getInputs(triggerData, ['action', 'scene', 'source', 'direction']);
+        if (scene === '{current}') {
+          scene = await this.obs.getCurrentScene();
+        }
+        var { sceneItemIndex } = await this.obs.getSceneItemIndex(scene, source);
+
+        if (direction.toLowerCase() === 'down') {
+          sceneItemIndex--;
+        } else {
+          sceneItemIndex++;
+        }
+
+        if (sceneItemIndex >= 0) {
+          await this.obs.setSceneItemIndex(scene, source, sceneItemIndex);
+        }
+        break;
       case 'position':
         var { scene, item, x, y } = Parser.getInputs(triggerData, ['action', 'scene', 'item', 'x', 'y']);
         if (scene === '{current}') {
