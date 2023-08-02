@@ -133,6 +133,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OBS Media Restart](#obs-media-restart)
     + [OBS Media Stop](#obs-media-stop)
     + [OBS Mute](#obs-mute)
+    + [OBS Order](#obs-order)
     + [OBS Position](#obs-position)
     + [OBS Refresh](#obs-refresh)
     + [OBS Rotate](#obs-rotate)
