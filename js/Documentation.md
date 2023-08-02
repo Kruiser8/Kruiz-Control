@@ -1794,6 +1794,15 @@ Enables the ability to interact with and respond to OBS.
 
 ***
 
+#### OBS Order
+| | |
+------------ | -------------
+**Info** | Use this to move an OBS source up or down with the scene's source list. `<up/down>` is the direction to move the source.
+**Format** | `OBS Order <scene> <source> <up/down>`
+**Example** | `OBS Order BRB Webcam up`
+
+***
+
 #### OBS Position
 | | |
 ------------ | -------------
