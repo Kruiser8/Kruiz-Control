@@ -358,6 +358,7 @@ class OBSHandler extends Handler {
         var { source, path } = Parser.getInputs(triggerData, ['action', 'source', 'path']);
         var imageSettings = { file: path };
         await this.obs.setInputSettings(source, imageSettings)
+        break;
       case 'media':
         var { media, source, path } = Parser.getInputs(triggerData, ['action', 'media', 'source', 'path'], false, 1);
         var mediaAction = '';
@@ -401,6 +402,23 @@ class OBSHandler extends Handler {
         } else {
           status = status === 'on' ? true : false;
           await this.obs.setMute(source, status);
+        }
+        break;
+      case 'order':
+        var { scene, source, direction } = Parser.getInputs(triggerData, ['action', 'scene', 'source', 'direction']);
+        if (scene === '{current}') {
+          scene = await this.obs.getCurrentScene();
+        }
+        var { sceneItemIndex } = await this.obs.getSceneItemIndex(scene, source);
+
+        if (direction.toLowerCase() === 'down') {
+          sceneItemIndex--;
+        } else {
+          sceneItemIndex++;
+        }
+
+        if (sceneItemIndex >= 0) {
+          await this.obs.setSceneItemIndex(scene, source, sceneItemIndex);
         }
         break;
       case 'position':

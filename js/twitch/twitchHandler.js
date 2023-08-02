@@ -313,7 +313,7 @@ class TwitchHandler extends Handler {
           });
         });
         break;
-      case 'channel.subscribe.gift':
+      case 'channel.subscription.gift':
         this.eventSubTrigger['ontwsubgift']?.forEach(triggerId => {
           controller.handleData(triggerId, {
             data: event,
@@ -327,7 +327,7 @@ class TwitchHandler extends Handler {
           });
         });
         break;
-      case 'channel.subscribe.message':
+      case 'channel.subscription.message':
         this.eventSubTrigger['ontwsubmessage']?.forEach(triggerId => {
           controller.handleData(triggerId, {
             data: event,

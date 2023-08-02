@@ -133,6 +133,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OBS Media Restart](#obs-media-restart)
     + [OBS Media Stop](#obs-media-stop)
     + [OBS Mute](#obs-mute)
+    + [OBS Order](#obs-order)
     + [OBS Position](#obs-position)
     + [OBS Refresh](#obs-refresh)
     + [OBS Rotate](#obs-rotate)
@@ -1790,6 +1791,15 @@ Enables the ability to interact with and respond to OBS.
 **Info** | Used to mute or unmute the specified audio source in OBS. Using `toggle` alternates the mute setting.
 **Format** | `OBS Mute <source> <on/off/toggle>`
 **Example** | `OBS Mute Mic/Aux on`
+
+***
+
+#### OBS Order
+| | |
+------------ | -------------
+**Info** | Use this to move an OBS source up or down with the scene's source list. `<up/down>` is the direction to move the source.
+**Format** | `OBS Order <scene> <source> <up/down>`
+**Example** | `OBS Order BRB Webcam up`
 
 ***
 
@@ -4542,13 +4552,6 @@ _Note: Due to a Twitch API restriction, in order for Kruiz Control to interact w
 **Info** | Disable slow mode in the broadcaster's chat.
 **Format** | `Twitch SlowOff`
 **Example** | `Twitch SlowOff`
-
-##### Parameters
-| | |
------------- | -------------
-**data** | The complete response from the Twitch Soundtrack API.
-**artist** | The artist(s) included on the current track.
-**title** | The title of the current track.
 
 ***
 
