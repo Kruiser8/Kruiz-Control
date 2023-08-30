@@ -1073,7 +1073,6 @@ None at the moment.
 **Info** | Used to send a message to discord, using any embed data currently set. `<name>` is the id that was used to register the webhook in a [`Discord Create`](#discord-create).
 **Format** | `Discord Send <name>`
 **Example** | `Discord Send "GeneralChannel"`
-**Example w/ Message** | `Discord Send "GeneralChannel" "Hey folks!"`
 
 ##### Parameters
 | | |
