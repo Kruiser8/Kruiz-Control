@@ -30,6 +30,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Triggers](#chat-triggers)
     + [OnCommand](#oncommand)
     + [OnEveryChatMessage](#oneverychatmessage)
+    + [OnHypeChat](#onhypechat)
     + [OnKeyword](#onkeyword)
     + [OnSpeak](#onspeak)
   * [Actions](#chat-actions)
@@ -744,7 +745,7 @@ _WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mi
 **amount** | The value of the Hype Chat sent by the user.
 **currency** | The [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217#List_of_ISO_4217_currency_codes) alphabetic currency code the user has sent the Hype Chat in.
 **exponent** | Indicates how many decimal points this currency represents partial amounts in. Decimal points start from the right side of the value defined in `amount`.
-**level** | The level of the Hype Chat, in English. Possible values are ONE, TWO, ..., TEN, written in all caps.
+**level** | The level of the Hype Chat, in English. Possible values are [`ONE`, `TWO`, ..., `TEN`], written in all caps.
 **is_system_message** | A boolean value that determines if the message sent with the Hype Chat was filled in by the system.
 **data** | An object with all metadata about the message (for use with [Function](#function)).
 
