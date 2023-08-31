@@ -3804,6 +3804,7 @@ _Note: Bit voting is not currently supported, however Twitch provides these valu
 ##### Parameters
 | | |
 ------------ | -------------
+**channel_id** | The broadcaster's Twitch channel ID.
 **client_id** | The Twitch client ID.
 **client_secret** | The Twitch client secret.
 **access_token** | The current Twitch OAuth access token (The _bearer_ token).

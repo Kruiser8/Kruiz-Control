@@ -966,6 +966,7 @@ class TwitchHandler extends Handler {
         break;
       case 'auth':
         return {
+          channel_id: this.channelId,
           client_id: this.api.clientId,
           client_secret: this.api.clientSecret,
           access_token: this.api.accessToken
