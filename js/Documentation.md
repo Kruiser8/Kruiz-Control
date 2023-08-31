@@ -726,6 +726,30 @@ _WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mi
 
 ***
 
+#### OnHypeChat
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when a user sends a hype chat. Using `*` as the `<name>` will execute the trigger for all users.
+**Format** | `OnHypeChat <name>`
+**Format w/ Aliases** | `OnHypeChat <name1> <name2> <name3>`
+**Example** | `OnHypeChat Kruiser8`
+**Example w/ Aliases** | `OnHypeChat Kruiser8 Kruizbot`
+
+##### Parameters
+| | |
+------------ | -------------
+**user** | The display name of the user that sent the command.
+**message** | The entire chat message, including the command.
+**message_id** | The id of the message (used with [Twitch DeleteMessage](#twitch-deletemessage)). If the message was sent by Kruiz Control, the id will be an empty string (`""`).
+**amount** | The value of the Hype Chat sent by the user.
+**currency** | The [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217#List_of_ISO_4217_currency_codes) alphabetic currency code the user has sent the Hype Chat in.
+**exponent** | Indicates how many decimal points this currency represents partial amounts in. Decimal points start from the right side of the value defined in `amount`.
+**level** | The level of the Hype Chat, in English. Possible values are ONE, TWO, ..., TEN, written in all caps.
+**is_system_message** | A boolean value that determines if the message sent with the Hype Chat was filled in by the system.
+**data** | An object with all metadata about the message (for use with [Function](#function)).
+
+***
+
 #### OnKeyword
 _WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mindful of your commands, keywords, and messages so that you do not trigger an infinite loop of messages. Twitch has [chat limits](https://dev.twitch.tv/docs/irc/guide#command--message-limits) and will block you from chatting._
 
