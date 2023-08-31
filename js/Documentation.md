@@ -742,7 +742,8 @@ _WARNING: Kruiz Control responds to messages sent by Kruiz Control. Please be mi
 **user** | The display name of the user that sent the command.
 **message** | The entire chat message, including the command.
 **message_id** | The id of the message (used with [Twitch DeleteMessage](#twitch-deletemessage)). If the message was sent by Kruiz Control, the id will be an empty string (`""`).
-**amount** | The value of the Hype Chat sent by the user.
+**amount** | The value of the Hype Chat sent by the user. Example: `500` if $5 was tipped.
+**formatted_amount** | The formatted value of the Hype Chat sent by the user. Example: `5.00` is $5 was tipped.
 **currency** | The [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217#List_of_ISO_4217_currency_codes) alphabetic currency code the user has sent the Hype Chat in.
 **exponent** | Indicates how many decimal points this currency represents partial amounts in. Decimal points start from the right side of the value defined in `amount`.
 **level** | The level of the Hype Chat, in English. Possible values are [`ONE`, `TWO`, ..., `TEN`], written in all caps.

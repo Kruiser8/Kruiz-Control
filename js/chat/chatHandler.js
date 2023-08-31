@@ -468,6 +468,7 @@ class ChatHandler extends Handler {
         var userState = data.data.extra.userState;
         var hypeChatData = {
           amount: userState["pinned-chat-paid-amount"],
+          formatted_amount: (userState["pinned-chat-paid-amount"] / Math.pow(10, userState["pinned-chat-paid-exponent"])).toFixed(userState["pinned-chat-paid-exponent"]),
           currency: userState["pinned-chat-paid-currency"],
           exponent: userState["pinned-chat-paid-exponent"],
           level: userState["pinned-chat-paid-level"],
