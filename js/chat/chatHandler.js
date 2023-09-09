@@ -3,7 +3,7 @@ class ChatHandler extends Handler {
    * Create a new Chat handler.
    */
   constructor() {
-    super('Chat', ['OnCommand','OnKeyword','OnEveryChatMessage','OnSpeak']);
+    super('Chat', ['OnCommand','OnKeyword','OnEveryChatMessage','OnHypeChat', 'OnSpeak']);
 
     /* OnCommand */
     this.commands = [];
@@ -22,6 +22,10 @@ class ChatHandler extends Handler {
 
     /* OnEveryChatMessage */
     this.chatTriggers = [];
+
+    /* OnHypeChat */
+    this.onHypeChats = [];
+    this.onHypeChatsInfo = {};
 
     this.init.bind(this);
     this.checkPermissions.bind(this);
@@ -148,6 +152,17 @@ class ChatHandler extends Handler {
         break;
       case 'oneverychatmessage':
         this.chatTriggers.push(triggerId);
+        break;
+      case 'onhypechat':
+        var { users } = Parser.getInputs(triggerLine, ['users'], true);
+        users.forEach(user => {
+          user = user.toLowerCase();
+          if (this.onHypeChats.indexOf(user) === -1) {
+            this.onHypeChats.push(user);
+            this.onHypeChatsInfo[user] = [];
+          }
+          this.onHypeChatsInfo[user].push(triggerId);
+        });
         break;
       default:
         // do nothing
@@ -438,6 +453,35 @@ class ChatHandler extends Handler {
     this.chatTriggers.forEach(triggerId => {
       controller.handleData(triggerId, data);
     });
+
+    // Check for OnHypeChat
+    if ("pinned-chat-paid-amount" in data.data.extra.userState) {
+      var userLower = user.toLowerCase();
+      var onHypeChatTriggers = [];
+      if (this.onHypeChats.indexOf(userLower) !== -1) {
+        onHypeChatTriggers.push(...this.onHypeChatsInfo[userLower]);
+      }
+      if (this.onHypeChats.indexOf('*') !== -1) {
+        onHypeChatTriggers.push(...this.onHypeChatsInfo['*']);
+      }
+      if (onHypeChatTriggers.length > 0) {
+        var userState = data.data.extra.userState;
+        var hypeChatData = {
+          amount: userState["pinned-chat-paid-amount"],
+          formatted_amount: (userState["pinned-chat-paid-amount"] / Math.pow(10, userState["pinned-chat-paid-exponent"])).toFixed(userState["pinned-chat-paid-exponent"]),
+          currency: userState["pinned-chat-paid-currency"],
+          exponent: userState["pinned-chat-paid-exponent"],
+          level: userState["pinned-chat-paid-level"],
+          is_system_message: userState["pinned-chat-paid-is-system-message"],
+          ...data
+        };
+        
+        onHypeChatTriggers.sort((a, b) => a-b);
+        onHypeChatTriggers.forEach(triggerId => {
+          controller.handleData(triggerId, hypeChatData);
+        });
+      }
+    }
 
     // Check for OnSpeak Event
     var userLower = user.toLowerCase();

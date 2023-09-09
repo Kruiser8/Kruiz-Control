@@ -89,6 +89,9 @@ class TwitchAPI {
           var response = 'Error with Twitch API';
           if (!this.triedRefresh && error.status === 401) {
             this.triedRefresh = true;
+            setTimeout(() => {
+              this.triedRefresh = false;
+            }, 600000);
             response = await this.refreshAuthToken({ method, endpoint, headers, params, data });
           }
           resolve(response);
