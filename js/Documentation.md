@@ -262,8 +262,8 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnTWModAdd](#ontwmodadd)
     + [OnTWModRemove](#ontwmodremove)
     + [OnTWPoll](#ontwpoll)
-    + [OnTWPollUpdate](#ontwpollupdate)
     + [OnTWPollEnd](#ontwpollend)
+    + [OnTWPollUpdate](#ontwpollupdate)
     + [OnTWPrediction](#ontwprediction)
     + [OnTWPredictionEnd](#ontwpollend)
     + [OnTWPredictionLock](#ontwpredictionlock)
@@ -3443,19 +3443,20 @@ _Note: Bit voting is not currently supported, however Twitch provides these valu
 
 ***
 
-#### OnTWPollUpdate
+#### OnTWPollEnd
 | | |
 ------------ | -------------
-**Info** | Triggers when any user votes in the poll.
-**Format** | `OnTWPollUpdate`
-**Example** | `OnTWPollUpdate`
+**Info** | Triggers when a poll ends in the channel. Canceled or deleted polls do not trigger this.
+**Format** | `OnTWPollEnd`
+**Example** | `OnTWPollEnd`
 
 ##### Parameters
 | | |
 ------------ | -------------
 **title** | The title of the poll.
 **duration** | The duration (in seconds) of the poll.
-**time_left** | The time left (in seconds) for the poll.
+**winner** | The winning option in the poll.
+**votes** | The number of votes cast for the winning option.
 **bits_enabled** | [true/false] `true` if voting with bits is enabled. Otherwise, `false`.
 **bits_amount** | The number of bits required to vote once.
 **points_enabled** | [true/false] `true` if voting with channel points is enabled. Otherwise, `false`.
@@ -3470,10 +3471,10 @@ _Note: Bit voting is not currently supported, however Twitch provides these valu
 
 ***
 
-#### OnTWPollEnd
+#### OnTWPollUpdate
 | | |
 ------------ | -------------
-**Info** | Triggers when a poll ends in the channel. Canceled or deleted polls do not trigger this.
+**Info** | Triggers when any user votes in the poll.
 **Format** | `OnTWPollUpdate`
 **Example** | `OnTWPollUpdate`
 
@@ -3482,6 +3483,7 @@ _Note: Bit voting is not currently supported, however Twitch provides these valu
 ------------ | -------------
 **title** | The title of the poll.
 **duration** | The duration (in seconds) of the poll.
+**time_left** | The time left (in seconds) for the poll.
 **bits_enabled** | [true/false] `true` if voting with bits is enabled. Otherwise, `false`.
 **bits_amount** | The number of bits required to vote once.
 **points_enabled** | [true/false] `true` if voting with channel points is enabled. Otherwise, `false`.
