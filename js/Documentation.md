@@ -1322,6 +1322,15 @@ _Note: The above example, `List Export MyList`, would return the parameter **MyL
 
 ***
 
+#### List Unique
+| | |
+------------ | -------------
+**Info** | Remove any duplicates from the list.  `<list>` is the name of the list to update.
+**Format** | `List Unique <list>`
+**Example** | `List Unique MyList`
+
+***
+
 ## Message
 A small handler to allow you to trigger events from another event without using an external application (like OBS or Chat).
 
