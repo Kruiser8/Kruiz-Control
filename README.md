@@ -93,9 +93,6 @@ Before the script will work, you'll need to fill out all of the settings files. 
 - Recommended to set the width/height to 100 or less to reduce the size of the source.
 
 ### OBS Websocket
-_Note: Only if using OBS v27 or below!_
-To use this script with OBS, install the [obs-websocket](https://github.com/Palakis/obs-websocket/releases/latest) plugin (version 5.0.0 or above). Reopen OBS after installing.
-
 In OBS, click **Tools** > **WebSockets Server Settings** and enable the websocket server.
 
 It is **highly recommended** to use a password!
