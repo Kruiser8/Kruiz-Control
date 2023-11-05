@@ -119,6 +119,11 @@ class ListHandler extends Handler {
         this.initialize(name);
         return this.set(name, parseInt(index), value);
         break;
+      case 'unique':
+        var { name } = Parser.getInputs(triggerData, ['action', 'name']);
+        this.initialize(name);
+        this.lists[name] = [...new Set(this.lists[name])];
+        break;
       default:
         // do nothing
         break;

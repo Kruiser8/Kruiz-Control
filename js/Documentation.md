@@ -1157,7 +1157,7 @@ None at the moment.
 #### List Add
 | | |
 ------------ | -------------
-**Info** | Adds an item to the list. `<index>` is optional to add at a specific index.
+**Info** | Adds an item to the list. `<list>` is the name of the list to update. `<value>` is what gets added to the list. `<index>` is optional to add at a specific index.
 **Format** | `List Add <list> <value> <index>`
 **Example** | `List Add MyList {user}`
 **Example with index** | `List Add MyList {user} 2`
@@ -1173,7 +1173,7 @@ None at the moment.
 #### List Contains
 | | |
 ------------ | -------------
-**Info** | Check if an item exists in a list.
+**Info** | Check if an item exists in a list. `<list>` is the name of the list to check. `<value>` is the item being checked.
 **Format** | `List Contains <list> <value>`
 **Example** | `List Contains MyList {user}`
 
@@ -1187,7 +1187,7 @@ None at the moment.
 #### List Count
 | | |
 ------------ | -------------
-**Info** | Check how many items are in a list.
+**Info** | Check how many items are in a list. `<list>` is the name of the list.
 **Format** | `List Count <list>`
 **Example** | `List Count MyList`
 
@@ -1201,7 +1201,7 @@ None at the moment.
 #### List Empty
 | | |
 ------------ | -------------
-**Info** | Removes all items from a list.
+**Info** | Removes all items from a list. `<list>` is the name of the list to update.
 **Format** | `List Empty <list>`
 **Example** | `List Empty MyList`
 
@@ -1210,7 +1210,7 @@ None at the moment.
 #### List Export
 | | |
 ------------ | -------------
-**Info** | Returns the list as a string using `JSON.stringify`.
+**Info** | Returns the list as a string using `JSON.stringify`. `<list>` is the name of the list to export.
 **Format** | `List Export <list>`
 **Example** | `List Export MyList`
 
@@ -1226,7 +1226,7 @@ _Note: The above example, `List Export MyList`, would return the parameter **MyL
 #### List Get
 | | |
 ------------ | -------------
-**Info** | Returns a value from the list. `<index>` is an optional index. If no index is included, a random element is returned. "First" and "Last" are valid `<index>` values.
+**Info** | Returns a value from the list. `<list>` is the name of the list. `<index>` is an optional index. If no index is included, a random element is returned. "First" and "Last" are valid `<index>` values.
 **Format** | `List Get <list> <index/First/Last>`
 **Example** | `List Get MyList`
 **Example with Index** | `List Get MyList 1`
@@ -1244,7 +1244,7 @@ _Note: The above example, `List Export MyList`, would return the parameter **MyL
 #### List Global
 | | |
 ------------ | -------------
-**Info** | Designates a list as global so that it will persist between sessions (i.e. the list remains after a reset). `<on/off>` determines whether to make the list global (`on`) or remove it as a global list (`off`).
+**Info** | Designates a list as global so that it will persist between sessions (i.e. the list remains after a reset). `<list>` is the name of the list. `<on/off>` determines whether to make the list global (`on`) or remove it as a global list (`off`).
 **Format** | `List Global <list> <on/off>`
 **Example** | `List Global MyList on`
 
@@ -1253,7 +1253,7 @@ _Note: The above example, `List Export MyList`, would return the parameter **MyL
 #### List Import
 | | |
 ------------ | -------------
-**Info** | Used to import a list from an input `JSON.stringify`'d array.
+**Info** | Used to import a list from an input `JSON.stringify`'d array. `<list>` is the name of the list.
 **Format** | `List Import <list> <import>`
 **Example** | `List Import MyList '["item 1","item 2","item 3"]'`
 
@@ -1262,7 +1262,7 @@ _Note: The above example, `List Export MyList`, would return the parameter **MyL
 #### List Index
 | | |
 ------------ | -------------
-**Info** | Returns the position and index (0-based) of a value in the list.
+**Info** | Returns the position and index (0-based) of a value in the list. `<list>` is the name of the list.
 **Format** | `List Index <list> <value>`
 **Example** | `List Index MyList {user}`
 
@@ -1277,7 +1277,7 @@ _Note: The above example, `List Export MyList`, would return the parameter **MyL
 #### List Join
 | | |
 ------------ | -------------
-**Info** | Used to combine all items in a list into a text value with the specified `<delimiter>` as a separator.
+**Info** | Used to combine all items in a list into a text value with the specified `<delimiter>` as a separator. `<list>` is the name of the list. 
 **Format** | `List Join <list> <delimiter>`
 **Example** | `List Join MyList ", "`
 
@@ -1291,7 +1291,7 @@ _Note: The above example, `List Export MyList`, would return the parameter **MyL
 #### List Remove
 | | |
 ------------ | -------------
-**Info** | Used to remove and return an item from a list. `<index>` is an optional index. If no index is included, a random element is returned. "First" and "Last" are valid `<index>` values.
+**Info** | Used to remove and return an item from a list. `<list>` is the name of the list. `<index>` is an optional index. If no index is included, a random element is returned. "First" and "Last" are valid `<index>` values.
 **Format** | `List Remove <list> <index/First/Last>`
 **Example** | `List Remove MyList`
 **Example with Index** | `List Remove MyList 1`
@@ -1309,7 +1309,7 @@ _Note: The above example, `List Export MyList`, would return the parameter **MyL
 #### List Set
 | | |
 ------------ | -------------
-**Info** | Adds an item to the list. `<index>` is optional to add at a specific index.
+**Info** | Adds an item to the list. `<list>` is the name of the list. `<index>` is optional to add at a specific index. `<value>` is the item to add.
 **Format** | `List Set <list> <index> <value>`
 **Example** | `List Set MyList 1 {user}`
 
@@ -1319,6 +1319,15 @@ _Note: The above example, `List Export MyList`, would return the parameter **MyL
 **position** | The position of the value in the list (starting from 1) or `-1` if not found.
 **index** | The index of the value in the list (starting from 0) or `-1` if not found.
 **value** | The value added to the list.
+
+***
+
+#### List Unique
+| | |
+------------ | -------------
+**Info** | Remove any duplicates from the list.  `<list>` is the name of the list to update.
+**Format** | `List Unique <list>`
+**Example** | `List Unique MyList`
 
 ***
 
