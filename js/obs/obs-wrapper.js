@@ -520,6 +520,14 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
     });
   }
 
+  obs.getStreamStatus = async function() {
+    return await this.call('GetStreamStatus').then(data => {
+      return data;
+    }).catch(err => {
+      console.error(JSON.stringify(err));
+    });
+  }
+
   obs.getSceneItemIndex = async function(scene, source) {
     var data = await this.call('GetSceneItemIndex', {
       'sceneName': scene,

@@ -542,6 +542,16 @@ class OBSHandler extends Handler {
       case 'stopstream':
         await this.obs.stopStream();
         break;
+      case 'streamstatus':
+        var data = await this.obs.getStreamStatus();
+        return {
+          is_active: data.outputActive,
+          is_reconnecting: data.outputReconnecting,
+          output_skipped_frames: data.outputSkippedFrames,
+          output_total_frames: data.outputTotalFrames,
+          data: data
+        }
+        break;
       case 'takesourcescreenshot':
         var { source, filePath } = Parser.getInputs(triggerData, ['action', 'source', 'filePath']);
         await this.obs.takeSourceScreenshot(source, filePath);

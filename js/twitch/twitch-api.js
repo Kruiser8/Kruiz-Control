@@ -26,6 +26,7 @@ class TwitchAPI {
       'channel:manage:redemptions',
       'channel:manage:vips',
       'channel:moderate',
+      'channel:read:ads',
       'channel:read:charity',
       'channel:read:goals',
       'channel:read:hype_train',
@@ -39,6 +40,7 @@ class TwitchAPI {
       'moderator:manage:chat_settings',
       'moderator:manage:shield_mode',
       'moderator:manage:shoutouts',
+      'moderator:manage:warnings',
       'moderator:read:chatters',
       'moderator:read:followers',
       'user:edit',
@@ -754,6 +756,20 @@ class TwitchAPI {
       params: {
         broadcaster_id,
         moderator_id
+      }
+    });
+  }
+
+  async warnChatUser(broadcaster_id, moderator_id, data) {
+    await this.callTwitchApi({
+      method: 'POST',
+      endpoint: 'https://api.twitch.tv/helix/moderation/warnings',
+      params: {
+        broadcaster_id,
+        moderator_id
+      },
+      data: {
+        data
       }
     });
   }

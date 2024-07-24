@@ -85,7 +85,7 @@ class ParamHandler extends Handler {
       case 'replace':
         var { name, toReplace, replacement } = Parser.getInputs(triggerData, ['action', 'name', 'toReplace', 'replacement']);
         if (parameters.hasOwnProperty(name)) {
-          return { [name]: parameters[name].replace(new RegExp(escapeRegExp(toReplace), 'g'), replacement) };
+          return { [name]: parameters[name].replace(new RegExp(escapeRegExp(toReplace), 'g'), () => replacement) };
         }
         break;
       case 'keyword':

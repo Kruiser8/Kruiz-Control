@@ -40,6 +40,11 @@ async function connectEventSubWebsocket(
       version: "2"
     },
     {
+      type: 'channel.ad_break.begin',
+      data: { broadcaster_user_id: channelId },
+      version: 1
+    },
+    {
       type: 'channel.subscribe',
       data: { broadcaster_user_id: channelId },
       version: 1

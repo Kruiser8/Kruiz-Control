@@ -3,7 +3,7 @@ class TwitchHandler extends Handler {
    * Create a new Timer handler.
    */
   constructor() {
-    super('Twitch', ['OnTWCommunityGoalStart', 'OnTWCommunityGoalProgress', 'OnTWCommunityGoalComplete', 'OnTWChannelUpdate', 'OnTWFollow', 'OnTWSub', 'OnTWSubEnd', 'OnTWSubGift', 'OnTWSubMessage', 'OnTWCheer', 'OnTWRaid', 'OnTWBan', 'OnTWTimeout', 'OnTWUnban', 'OnTWModAdd', 'OnTWModRemove', 'OnTWChannelPoint', 'OnTWChannelPointCompleted', 'OnTWChannelPointRejected', 'OnTWPoll', 'OnTWPollUpdate', 'OnTWPollEnd', 'OnTWPrediction', 'OnTWPredictionUpdate', 'OnTWPredictionLock', 'OnTWPredictionEnd', 'OnTWHypeTrainStart', 'OnTWHypeTrainConductor', 'OnTWHypeTrainProgress', 'OnTWHypeTrainLevel', 'OnTWHypeTrainEnd', 'OnTWCharityDonation', 'OnTWCharityStarted', 'OnTWCharityProgress', 'OnTWCharityStopped', 'OnTWShieldStart', 'OnTWShieldStop', 'OnTWShoutout', 'OnTWShoutoutReceived', 'OnTWGoalStarted', 'OnTWGoalProgress', 'OnTWGoalCompleted', 'OnTWGoalFailed', 'OnTWStreamStarted', 'OnTWStreamStopped']);
+    super('Twitch', ['OnTWCommunityGoalStart', 'OnTWCommunityGoalProgress', 'OnTWCommunityGoalComplete', 'OnTWChannelUpdate', 'OnTWFollow', 'OnTWAd', 'OnTWSub', 'OnTWSubEnd', 'OnTWSubGift', 'OnTWSubMessage', 'OnTWCheer', 'OnTWRaid', 'OnTWBan', 'OnTWTimeout', 'OnTWUnban', 'OnTWModAdd', 'OnTWModRemove', 'OnTWChannelPoint', 'OnTWChannelPointCompleted', 'OnTWChannelPointRejected', 'OnTWPoll', 'OnTWPollUpdate', 'OnTWPollEnd', 'OnTWPrediction', 'OnTWPredictionUpdate', 'OnTWPredictionLock', 'OnTWPredictionEnd', 'OnTWHypeTrainStart', 'OnTWHypeTrainConductor', 'OnTWHypeTrainProgress', 'OnTWHypeTrainLevel', 'OnTWHypeTrainEnd', 'OnTWCharityDonation', 'OnTWCharityStarted', 'OnTWCharityProgress', 'OnTWCharityStopped', 'OnTWShieldStart', 'OnTWShieldStop', 'OnTWShoutout', 'OnTWShoutoutReceived', 'OnTWGoalStarted', 'OnTWGoalProgress', 'OnTWGoalCompleted', 'OnTWGoalFailed', 'OnTWStreamStarted', 'OnTWStreamStopped']);
     this.rewards = [];
     this.rewardsTrigger = {};
     this.completedRewards = [];
@@ -298,6 +298,15 @@ class TwitchHandler extends Handler {
             id: event.user_id,
             login: event.user_login,
             name: event.user_name
+          });
+        });
+        break;
+      case 'channel.ad_break.begin':
+        this.eventSubTrigger['ontwad']?.forEach(triggerId => {
+          controller.handleData(triggerId, {
+            data: event,
+            duration: event.duration_seconds,
+            is_automatic: event.is_automatic
           });
         });
         break;
@@ -978,11 +987,15 @@ class TwitchHandler extends Handler {
         };
         break;
       case 'ban':
-        var { user } = Parser.getInputs(triggerData, ['action', 'user', 'duration', 'reason'], false, 2);
+        var { user, reason } = Parser.getInputs(triggerData, ['action', 'user', 'reason'], false, 1);
 
         var user_id = await getIdFromUser(user);
 
-        await this.api.banUser(this.channelId, this.channelId, { user_id });
+        var data = { user_id };
+        if (reason) {
+          data['reason'] = reason;
+        }
+        await this.api.banUser(this.channelId, this.channelId, data);
         break;
       case 'bitsleaderboard':
         var { count = 10, period = 'all' } = Parser.getInputs(triggerData, ['action', 'count', 'period'], false, 2);
@@ -1460,6 +1473,58 @@ class TwitchHandler extends Handler {
           }
         }
         break;
+      case 'rewardcost':
+        var { reward, cost } = Parser.getInputs(triggerData, ['action', 'reward', 'cost']);
+
+        reward_cost = 1000;
+        if (isNumeric(cost)) {
+          reward_cost = parseInt(cost);
+          if (reward_cost == 0) {
+            reward_cost = 1000;
+          } else if (reward_cost < 0) {
+            reward_cost = -1 * reward_cost;
+          }
+        }
+        
+        var response = await this.api.getCustomReward(this.channelId);
+        if (response?.data) {
+          for (var i = 0; i < response.data.length; i++) {
+            var customReward = response.data[i];
+            if (customReward.title === reward) {
+              await this.api.updateCustomReward(this.channelId, customReward.id, { cost: reward_cost });
+              break;
+            }
+          }
+        }
+        break;
+      case 'rewarddescription':
+        var { reward, description } = Parser.getInputs(triggerData, ['action', 'reward', 'description']);
+
+        var response = await this.api.getCustomReward(this.channelId);
+        if (response?.data) {
+          for (var i = 0; i < response.data.length; i++) {
+            var customReward = response.data[i];
+            if (customReward.title === reward) {
+              await this.api.updateCustomReward(this.channelId, customReward.id, { prompt: description });
+              break;
+            }
+          }
+        }
+        break;
+      case 'rewardname':
+        var { reward, name } = Parser.getInputs(triggerData, ['action', 'reward', 'name']);
+
+        var response = await this.api.getCustomReward(this.channelId);
+        if (response?.data) {
+          for (var i = 0; i < response.data.length; i++) {
+            var customReward = response.data[i];
+            if (customReward.title === reward) {
+              await this.api.updateCustomReward(this.channelId, customReward.id, { title: name });
+              break;
+            }
+          }
+        }
+        break;
       case 'shield':
         var { status } = Parser.getInputs(triggerData, ['action', 'status']);
         status = status.toLowerCase();
@@ -1706,6 +1771,13 @@ class TwitchHandler extends Handler {
           vip_count: vips.length,
           ...vipArgs
         };
+        break;
+      case 'warn':
+        var { user, reason } = Parser.getInputs(triggerData, ['action', 'user', 'reason'], false, 1);
+
+        var user_id = await getIdFromUser(user);
+
+        await this.api.warnChatUser(this.channelId, this.channelId, { user_id, reason });
         break;
     }
   }

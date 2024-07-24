@@ -153,6 +153,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OBS Stats](#obs-stats)
     + [OBS StopReplayBuffer](#obs-stopreplaybuffer)
     + [OBS StopStream](#obs-stopstream)
+    + [OBS StreamStatus](#obs-streamstatus)
     + [OBS TakeSourceScreenshot](#obs-takesourcescreenshot)
     + [OBS Transition](#obs-transition)
     + [OBS Version](#obs-version)
@@ -240,6 +241,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnTWCommunityGoalComplete](#ontwcommunitygoalcomplete)
     + [OnTWCommunityGoalProgress](#ontwcommunitygoalprogress)
     + [OnTWCommunityGoalStart](#ontwcommunitygoalstart)
+    + [OnTWAd](#ontwad)
     + [OnTWBan](#ontwban)
     + [OnTWChannelPoint](#ontwchannelpoint)
     + [OnTWChannelPointCompleted](#ontwchannelpointcompleted)
@@ -337,6 +339,9 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Twitch Reject](#twitch-reject)
     + [Twitch RemoveBlockedTerm](#twitch-removeblockedterm)
     + [Twitch Reward](#twitch-reward)
+    + [Twitch RewardCost](#twitch-rewardcost)
+    + [Twitch RewardDescription](#twitch-rewarddescription)
+    + [Twitch RewardName](#twitch-rewardname)
     + [Twitch Shield](#twitch-shield)
     + [Twitch Shoutout](#twitch-shoutout)
     + [Twitch Slow](#twitch-slow)
@@ -361,6 +366,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Twitch Videos](#twitch-videos)
     + [Twitch VIP](#twitch-vip)
     + [Twitch VIPs](#twitch-vips)
+    + [Twitch Warn](#twitch-warn)
 - [Variable](#variable)
   * [Triggers](#variable-triggers)
   * [Actions](#variable-actions)
@@ -844,7 +850,7 @@ None at the moment.
 ##### Parameters
 | | |
 ------------ | -------------
-**\<name\>** | [True/False] Whether or not the cooldown is active where **\<name\>** is the name of the cooldown.
+**\<name\>** | [true/false] Whether or not the cooldown is active where **\<name\>** is the name of the cooldown.
 **cooldown** | The number of seconds (rounded to a whole number) left on the cooldown. This is only returned if the cooldown is active (`<name>` is True).
 **cooldown_real** | The decimal number of seconds left on the cooldown. This is only returned if the cooldown is active (`<name>` is True).
 
@@ -880,7 +886,7 @@ _Note: The above example, `Cooldown Check MyCustomTrigger`, would return the par
 ##### Parameters
 | | |
 ------------ | -------------
-**\<name\>** | [True/False] Whether or not the cooldown is active where **\<name\>** is the name of the cooldown.
+**\<name\>** | [true/false] Whether or not the cooldown is active where **\<name\>** is the name of the cooldown.
 **cooldown** | The number of seconds (rounded to a whole number) left on the cooldown. This is only returned if the cooldown is active (`<name>` is True).
 **cooldown_real** | The decimal number of seconds left on the cooldown. This is only returned if the cooldown is active (`<name>` is True).
 
@@ -2056,6 +2062,24 @@ Error "OBS is rendering {fps} FPS, skipping {render_skipped_frames} frames total
 
 ***
 
+#### OBS StreamStatus
+| | |
+------------ | -------------
+**Info** | Used to retrieve OBS statistics.
+**Format** | `OBS StreamStatus`
+**Example** | `OBS StreamStatus`
+
+##### Parameters
+| | |
+------------ | -------------
+**is_active** | [true/false] Whether or not the stream is active.
+**is_reconnecting** | [true/false] Whether or not the stream is currently reconnecting.
+**output_skipped_frames** | Number of output frames skipped by OBS (the frames being streamed).
+**output_total_frames** | Total number of frames delivered by the stream.
+**data** | The entire [OBS Websocket getStreamStatus output](https://github.com/obsproject/obs-websocket/blob/master/docs/generated/protocol.md#getstreamstatus).
+
+***
+
 #### OBS TakeSourceScreenshot
 | | |
 ------------ | -------------
@@ -2170,7 +2194,7 @@ None at the moment.
 ##### Parameters
 | | |
 ------------ | -------------
-**exists** | [True/False] Whether or not the parameter has a value.
+**exists** | [true/false] Whether or not the parameter has a value.
 
 ***
 
@@ -2186,7 +2210,7 @@ None at the moment.
 ##### Parameters
 | | |
 ------------ | -------------
-**matched** | [True/False] Whether or not the keyword was found in the parameter.
+**matched** | [true/false] Whether or not the keyword was found in the parameter.
 **match** | If `matched`, `match` will have the first keyword found in the parameter.
 **keywords** | If `matched`, keywords will have the list of all keywords found in the parameter.
 
@@ -3009,6 +3033,22 @@ Enables the ability to run actions when channel point rewards are redeemed.
 ------------ | -------------
 **goal** | The title of the community goal.
 **data** | The complete json community goal message (for use with [Function](#function)).
+
+***
+
+#### OnTWAd
+| | |
+------------ | -------------
+**Info** | Triggers when a stream runs a midroll commercial break, either manually or automatically via ads manager..
+**Format** | `OnTWAd`
+**Example** | `OnTWAd`
+
+##### Parameters
+| | |
+------------ | -------------
+**duration** | The duration of the advertisement in seconds.
+**is_automatic** | [true/false] `true` if the ad was run automatically. Otherwise, `false`..
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
 
 ***
 
@@ -3866,9 +3906,10 @@ _Note: Bit voting is not currently supported, however Twitch provides these valu
 #### Twitch Ban
 | | |
 ------------ | -------------
-**Info** | Ban a user from participating in the specified broadcaster's chat room. `<user>` is the Twitch user to ban.
-**Format** | `Twitch Ban <user>`
+**Info** | Ban a user from participating in the specified broadcaster's chat room. `<user>` is the Twitch user to ban. `<optional_reason>` is text to define the reason for the ban.
+**Format** | `Twitch Ban <user> <optional_reason>`
 **Example** | `Twitch Ban testUser`
+**Example w/ Reason** | `Twitch Ban testUser "Inappropriate behavior"`
 
 ***
 
@@ -4556,6 +4597,39 @@ _Note: Due to a Twitch API restriction, in order for Kruiz Control to interact w
 
 ***
 
+#### Twitch RewardCost
+| | |
+------------ | -------------
+**Info** | Used to update the cost of a channel point reward. `<reward>` is the current name of the reward to update. `<cost>` is the new cost to apply.
+**Format** | `Twitch RewardCost <reward> cost`
+**Example** | `Twitch RewardCost HeadPat 300`
+
+_Note: Due to a Twitch API restriction, in order for Kruiz Control to interact with Channel Point rewards, Kruiz Control has to create the reward. Use [Twitch Copy](#twitch-copy) to create duplicates of existing channel point rewards._
+
+***
+
+#### Twitch RewardDescription
+| | |
+------------ | -------------
+**Info** | Used to update the description of a channel point reward. `<reward>` is the current name of the reward to update. `<description>` is the new description to apply.
+**Format** | `Twitch RewardDescription <reward> <description>`
+**Example** | `Twitch RewardDescription HeadPat "[Disabled while the camera is not shown]"`
+
+_Note: Due to a Twitch API restriction, in order for Kruiz Control to interact with Channel Point rewards, Kruiz Control has to create the reward. Use [Twitch Copy](#twitch-copy) to create duplicates of existing channel point rewards._
+
+***
+
+#### Twitch RewardName
+| | |
+------------ | -------------
+**Info** | Used to update the name of a channel point reward. `<reward>` is the current name of the reward to update. `<name>` is the new name to apply.
+**Format** | `Twitch RewardName <reward> <name>`
+**Example** | `Twitch RewardName HeadPat HeadBoop`
+
+_Note: Due to a Twitch API restriction, in order for Kruiz Control to interact with Channel Point rewards, Kruiz Control has to create the reward. Use [Twitch Copy](#twitch-copy) to create duplicates of existing channel point rewards._
+
+***
+
 #### Twitch Shield
 | | |
 ------------ | -------------
@@ -4830,6 +4904,15 @@ _Note: Due to a Twitch API restriction, in order for Kruiz Control to interact w
 **vip_count** | The number of moderators retrieved.
 **vip#** | The name of the VIP. Replace `#` with a number, starting at 1 and ending at `vip_count`.
 **id#** | The user id (login) of the VIP. Replace `#` with a number, starting at 1 and ending at `vip_count`.
+
+***
+
+#### Twitch Warn
+| | |
+------------ | -------------
+**Info** | Warns a user in the broadcaster’s chat room, preventing them from chat interaction until the warning is acknowledged. `<user>` is the Twitch user to warn. `<reason>` is text to define the reason for the warning..
+**Format** | `Twitch Warn <user> <reason>`
+**Example** | `Twitch Warn testUser "This channel does not tolerate that type of language. This is your only warning."`
 
 ***
 

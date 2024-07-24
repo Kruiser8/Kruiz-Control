@@ -192,9 +192,9 @@ class Controller {
               result.forEach(match => {
                 if (match.charAt(0) === '[') {
                   var replacement = JSON.stringify(triggerParams[match.substring(1, match.length - 1)]);
-                  run_data[j] = run_data[j].replace(match, replacement);
+                  run_data[j] = run_data[j].replace(match, () => replacement);
                 } else {
-                  run_data[j] = run_data[j].replace(match, triggerParams[match.substring(1, match.length - 1)]);
+                  run_data[j] = run_data[j].replace(match, () => triggerParams[match.substring(1, match.length - 1)]);
                 }
               });
               result = run_data[j].match(triggerRegex);
