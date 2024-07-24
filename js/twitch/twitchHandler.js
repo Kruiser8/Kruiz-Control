@@ -1469,6 +1469,58 @@ class TwitchHandler extends Handler {
           }
         }
         break;
+      case 'rewardcost':
+        var { reward, cost } = Parser.getInputs(triggerData, ['action', 'reward', 'cost']);
+
+        reward_cost = 1000;
+        if (isNumeric(cost)) {
+          reward_cost = parseInt(cost);
+          if (reward_cost == 0) {
+            reward_cost = 1000;
+          } else if (reward_cost < 0) {
+            reward_cost = -1 * reward_cost;
+          }
+        }
+        
+        var response = await this.api.getCustomReward(this.channelId);
+        if (response?.data) {
+          for (var i = 0; i < response.data.length; i++) {
+            var customReward = response.data[i];
+            if (customReward.title === reward) {
+              await this.api.updateCustomReward(this.channelId, customReward.id, { cost: reward_cost });
+              break;
+            }
+          }
+        }
+        break;
+      case 'rewarddescription':
+        var { reward, description } = Parser.getInputs(triggerData, ['action', 'reward', 'description']);
+
+        var response = await this.api.getCustomReward(this.channelId);
+        if (response?.data) {
+          for (var i = 0; i < response.data.length; i++) {
+            var customReward = response.data[i];
+            if (customReward.title === reward) {
+              await this.api.updateCustomReward(this.channelId, customReward.id, { prompt: description });
+              break;
+            }
+          }
+        }
+        break;
+      case 'rewardname':
+        var { reward, name } = Parser.getInputs(triggerData, ['action', 'reward', 'name']);
+
+        var response = await this.api.getCustomReward(this.channelId);
+        if (response?.data) {
+          for (var i = 0; i < response.data.length; i++) {
+            var customReward = response.data[i];
+            if (customReward.title === reward) {
+              await this.api.updateCustomReward(this.channelId, customReward.id, { title: name });
+              break;
+            }
+          }
+        }
+        break;
       case 'shield':
         var { status } = Parser.getInputs(triggerData, ['action', 'status']);
         status = status.toLowerCase();

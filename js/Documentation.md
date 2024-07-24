@@ -339,6 +339,9 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Twitch Reject](#twitch-reject)
     + [Twitch RemoveBlockedTerm](#twitch-removeblockedterm)
     + [Twitch Reward](#twitch-reward)
+    + [Twitch RewardCost](#twitch-rewardcost)
+    + [Twitch RewardDescription](#twitch-rewarddescription)
+    + [Twitch RewardName](#twitch-rewardname)
     + [Twitch Shield](#twitch-shield)
     + [Twitch Shoutout](#twitch-shoutout)
     + [Twitch Slow](#twitch-slow)
@@ -4587,6 +4590,39 @@ _Note: Due to a Twitch API restriction, in order for Kruiz Control to interact w
 **Info** | Used to update the status of a channel point reward. `<reward>` is the title of the reward to update. `<off/on/pause/toggle/unpause>` are the status options. `off`, `on`, and `toggle` enable or disable the reward. `pause` and `unpause` will pause or resume the ability for viewers to redeem the reward.
 **Format** | `Twitch Reward <reward> <off/on/pause/toggle/unpause>`
 **Example** | `Twitch Reward HeadPat off`
+
+_Note: Due to a Twitch API restriction, in order for Kruiz Control to interact with Channel Point rewards, Kruiz Control has to create the reward. Use [Twitch Copy](#twitch-copy) to create duplicates of existing channel point rewards._
+
+***
+
+#### Twitch RewardCost
+| | |
+------------ | -------------
+**Info** | Used to update the cost of a channel point reward. `<reward>` is the current name of the reward to update. `<cost>` is the new cost to apply.
+**Format** | `Twitch RewardCost <reward> cost`
+**Example** | `Twitch RewardCost HeadPat 300`
+
+_Note: Due to a Twitch API restriction, in order for Kruiz Control to interact with Channel Point rewards, Kruiz Control has to create the reward. Use [Twitch Copy](#twitch-copy) to create duplicates of existing channel point rewards._
+
+***
+
+#### Twitch RewardDescription
+| | |
+------------ | -------------
+**Info** | Used to update the description of a channel point reward. `<reward>` is the current name of the reward to update. `<description>` is the new description to apply.
+**Format** | `Twitch RewardDescription <reward> <description>`
+**Example** | `Twitch RewardDescription HeadPat "[Disabled while the camera is not shown]"`
+
+_Note: Due to a Twitch API restriction, in order for Kruiz Control to interact with Channel Point rewards, Kruiz Control has to create the reward. Use [Twitch Copy](#twitch-copy) to create duplicates of existing channel point rewards._
+
+***
+
+#### Twitch RewardName
+| | |
+------------ | -------------
+**Info** | Used to update the name of a channel point reward. `<reward>` is the current name of the reward to update. `<name>` is the new name to apply.
+**Format** | `Twitch RewardName <reward> <name>`
+**Example** | `Twitch RewardName HeadPat HeadBoop`
 
 _Note: Due to a Twitch API restriction, in order for Kruiz Control to interact with Channel Point rewards, Kruiz Control has to create the reward. Use [Twitch Copy](#twitch-copy) to create duplicates of existing channel point rewards._
 
