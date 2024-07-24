@@ -1768,6 +1768,13 @@ class TwitchHandler extends Handler {
           ...vipArgs
         };
         break;
+      case 'warn':
+        var { user, reason } = Parser.getInputs(triggerData, ['action', 'user', 'reason'], false, 1);
+
+        var user_id = await getIdFromUser(user);
+
+        await this.api.warnChatUser(this.channelId, this.channelId, { user_id, reason });
+        break;
     }
   }
 

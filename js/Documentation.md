@@ -366,6 +366,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Twitch Videos](#twitch-videos)
     + [Twitch VIP](#twitch-vip)
     + [Twitch VIPs](#twitch-vips)
+    + [Twitch Warn](#twitch-warn)
 - [Variable](#variable)
   * [Triggers](#variable-triggers)
   * [Actions](#variable-actions)
@@ -4902,6 +4903,15 @@ _Note: Due to a Twitch API restriction, in order for Kruiz Control to interact w
 **vip_count** | The number of moderators retrieved.
 **vip#** | The name of the VIP. Replace `#` with a number, starting at 1 and ending at `vip_count`.
 **id#** | The user id (login) of the VIP. Replace `#` with a number, starting at 1 and ending at `vip_count`.
+
+***
+
+#### Twitch Warn
+| | |
+------------ | -------------
+**Info** | Warns a user in the broadcaster’s chat room, preventing them from chat interaction until the warning is acknowledged. `<user>` is the Twitch user to warn. `<reason>` is text to define the reason for the warning..
+**Format** | `Twitch Warn <user> <reason>`
+**Example** | `Twitch Warn testUser "This channel does not tolerate that type of language. This is your only warning."`
 
 ***
 
