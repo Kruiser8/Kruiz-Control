@@ -26,6 +26,7 @@ class TwitchAPI {
       'channel:manage:redemptions',
       'channel:manage:vips',
       'channel:moderate',
+      'channel:read:ads',
       'channel:read:charity',
       'channel:read:goals',
       'channel:read:hype_train',

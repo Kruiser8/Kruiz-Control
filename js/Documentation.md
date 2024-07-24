@@ -241,6 +241,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnTWCommunityGoalComplete](#ontwcommunitygoalcomplete)
     + [OnTWCommunityGoalProgress](#ontwcommunitygoalprogress)
     + [OnTWCommunityGoalStart](#ontwcommunitygoalstart)
+    + [OnTWAd](#ontwad)
     + [OnTWBan](#ontwban)
     + [OnTWChannelPoint](#ontwchannelpoint)
     + [OnTWChannelPointCompleted](#ontwchannelpointcompleted)
@@ -3028,6 +3029,22 @@ Enables the ability to run actions when channel point rewards are redeemed.
 ------------ | -------------
 **goal** | The title of the community goal.
 **data** | The complete json community goal message (for use with [Function](#function)).
+
+***
+
+#### OnTWAd
+| | |
+------------ | -------------
+**Info** | Triggers when a stream runs a midroll commercial break, either manually or automatically via ads manager..
+**Format** | `OnTWAd`
+**Example** | `OnTWAd`
+
+##### Parameters
+| | |
+------------ | -------------
+**duration** | The duration of the advertisement in seconds.
+**is_automatic** | [true/false] `true` if the ad was run automatically. Otherwise, `false`..
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
 
 ***
 
