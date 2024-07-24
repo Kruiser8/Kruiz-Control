@@ -987,11 +987,15 @@ class TwitchHandler extends Handler {
         };
         break;
       case 'ban':
-        var { user } = Parser.getInputs(triggerData, ['action', 'user', 'duration', 'reason'], false, 2);
+        var { user, reason } = Parser.getInputs(triggerData, ['action', 'user', 'reason'], false, 1);
 
         var user_id = await getIdFromUser(user);
 
-        await this.api.banUser(this.channelId, this.channelId, { user_id });
+        var data = { user_id };
+        if (reason) {
+          data['reason'] = reason;
+        }
+        await this.api.banUser(this.channelId, this.channelId, data);
         break;
       case 'bitsleaderboard':
         var { count = 10, period = 'all' } = Parser.getInputs(triggerData, ['action', 'count', 'period'], false, 2);

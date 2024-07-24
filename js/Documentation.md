@@ -3906,9 +3906,10 @@ _Note: Bit voting is not currently supported, however Twitch provides these valu
 #### Twitch Ban
 | | |
 ------------ | -------------
-**Info** | Ban a user from participating in the specified broadcaster's chat room. `<user>` is the Twitch user to ban.
-**Format** | `Twitch Ban <user>`
+**Info** | Ban a user from participating in the specified broadcaster's chat room. `<user>` is the Twitch user to ban. `<optional_reason>` is text to define the reason for the ban.
+**Format** | `Twitch Ban <user> <optional_reason>`
 **Example** | `Twitch Ban testUser`
+**Example w/ Reason** | `Twitch Ban testUser "Inappropriate behavior"`
 
 ***
 
