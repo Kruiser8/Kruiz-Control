@@ -850,7 +850,7 @@ None at the moment.
 ##### Parameters
 | | |
 ------------ | -------------
-**\<name\>** | [True/False] Whether or not the cooldown is active where **\<name\>** is the name of the cooldown.
+**\<name\>** | [true/false] Whether or not the cooldown is active where **\<name\>** is the name of the cooldown.
 **cooldown** | The number of seconds (rounded to a whole number) left on the cooldown. This is only returned if the cooldown is active (`<name>` is True).
 **cooldown_real** | The decimal number of seconds left on the cooldown. This is only returned if the cooldown is active (`<name>` is True).
 
@@ -886,7 +886,7 @@ _Note: The above example, `Cooldown Check MyCustomTrigger`, would return the par
 ##### Parameters
 | | |
 ------------ | -------------
-**\<name\>** | [True/False] Whether or not the cooldown is active where **\<name\>** is the name of the cooldown.
+**\<name\>** | [true/false] Whether or not the cooldown is active where **\<name\>** is the name of the cooldown.
 **cooldown** | The number of seconds (rounded to a whole number) left on the cooldown. This is only returned if the cooldown is active (`<name>` is True).
 **cooldown_real** | The decimal number of seconds left on the cooldown. This is only returned if the cooldown is active (`<name>` is True).
 
@@ -2072,8 +2072,8 @@ Error "OBS is rendering {fps} FPS, skipping {render_skipped_frames} frames total
 ##### Parameters
 | | |
 ------------ | -------------
-**is_active** | [True/False] Whether or not the stream is active.
-**is_reconnecting** | [True/False] Whether or not the stream is currently reconnecting.
+**is_active** | [true/false] Whether or not the stream is active.
+**is_reconnecting** | [true/false] Whether or not the stream is currently reconnecting.
 **output_skipped_frames** | Number of output frames skipped by OBS (the frames being streamed).
 **output_total_frames** | Total number of frames delivered by the stream.
 **data** | The entire [OBS Websocket getStreamStatus output](https://github.com/obsproject/obs-websocket/blob/master/docs/generated/protocol.md#getstreamstatus).
@@ -2194,7 +2194,7 @@ None at the moment.
 ##### Parameters
 | | |
 ------------ | -------------
-**exists** | [True/False] Whether or not the parameter has a value.
+**exists** | [true/false] Whether or not the parameter has a value.
 
 ***
 
@@ -2210,7 +2210,7 @@ None at the moment.
 ##### Parameters
 | | |
 ------------ | -------------
-**matched** | [True/False] Whether or not the keyword was found in the parameter.
+**matched** | [true/false] Whether or not the keyword was found in the parameter.
 **match** | If `matched`, `match` will have the first keyword found in the parameter.
 **keywords** | If `matched`, keywords will have the list of all keywords found in the parameter.
 
