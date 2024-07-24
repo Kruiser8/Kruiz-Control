@@ -153,6 +153,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OBS Stats](#obs-stats)
     + [OBS StopReplayBuffer](#obs-stopreplaybuffer)
     + [OBS StopStream](#obs-stopstream)
+    + [OBS StreamStatus](#obs-streamstatus)
     + [OBS TakeSourceScreenshot](#obs-takesourcescreenshot)
     + [OBS Transition](#obs-transition)
     + [OBS Version](#obs-version)
@@ -2053,6 +2054,24 @@ Error "OBS is rendering {fps} FPS, skipping {render_skipped_frames} frames total
 **Info** | Used to stop the stream in OBS. If the stream is already stopped, nothing will happen.
 **Format** | `OBS StopStream`
 **Example** | `OBS StopStream`
+
+***
+
+#### OBS StreamStatus
+| | |
+------------ | -------------
+**Info** | Used to retrieve OBS statistics.
+**Format** | `OBS StreamStatus`
+**Example** | `OBS StreamStatus`
+
+##### Parameters
+| | |
+------------ | -------------
+**is_active** | [True/False] Whether or not the stream is active.
+**is_reconnecting** | [True/False] Whether or not the stream is currently reconnecting.
+**output_skipped_frames** | Number of output frames skipped by OBS (the frames being streamed).
+**output_total_frames** | Total number of frames delivered by the stream.
+**data** | The entire [OBS Websocket getStreamStatus output](https://github.com/obsproject/obs-websocket/blob/master/docs/generated/protocol.md#getstreamstatus).
 
 ***
 
