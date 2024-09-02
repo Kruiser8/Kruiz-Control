@@ -285,6 +285,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnTWUnban](#ontwunban)
   * [Actions](#twitch-actions)
     + [Twitch AddBlockedTerm](#twitch-addblockedterm)
+    + [Twitch AdSchedule](#twitch-adschedule)
     + [Twitch Announcement](#twitch-announcement)
     + [Twitch Auth](#twitch-auth)
     + [Twitch Authenticate](#twitch-authenticate)
@@ -3859,6 +3860,26 @@ _Note: Bit voting is not currently supported, however Twitch provides these valu
 **Format** | `Twitch AddBlockedTerm <term>`
 **Example** | `Twitch AddBlockedTerm "bad word"`
 **Example w/ Aliases** | `Twitch AddBlockedTerm "phrase to block" "bad term"`
+
+***
+
+#### Twitch AdSchedule
+| | |
+------------ | -------------
+**Info** | Used to retrieve upcoming scheduled ad, snooze, and pre-roll related information.
+**Format** | `Twitch AdSchedule`
+**Example** | `Twitch AdSchedule`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Ad Schedule API.
+**next_ad_time** | The number of seconds until the next scheduled ad.
+**next_ad_duration** | The duration (in seconds) of the next scheduled ad.
+**preroll_free_time** | The amount (in seconds) of pre-roll free time remaining for the channel.
+**next_snooze_time** | The number of seconds until the broadcaster receives an additional ad snooze.
+**snooze_count** | The number of snoozes available for the broadcaster.
+
 
 ***
 

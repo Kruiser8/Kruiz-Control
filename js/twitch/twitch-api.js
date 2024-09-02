@@ -246,6 +246,16 @@ class TwitchAPI {
     });
   }
 
+  async getAdSchedule(broadcaster_id) {
+    return await this.callTwitchApi({
+      method: 'GET',
+      endpoint: 'https://api.twitch.tv/helix/channels/ads',
+      params: {
+        broadcaster_id
+      }
+    });
+  }
+
   async getBitsLeaderboard(params) {
     return await this.callTwitchApi({
       method: 'GET',
