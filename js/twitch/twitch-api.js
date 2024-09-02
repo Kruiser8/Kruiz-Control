@@ -238,7 +238,7 @@ class TwitchAPI {
     });
   }
 
-  async startCommercial(broadcaster_id, length) {
+  async startCommercial(data) {
     await this.callTwitchApiJson({
       method: 'POST',
       endpoint: 'https://api.twitch.tv/helix/channels/commercial',
