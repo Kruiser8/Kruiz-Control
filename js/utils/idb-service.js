@@ -37,6 +37,18 @@
   }
 
   /**
+   * Retrieve all entries from IndexedDB.
+   */
+  static async entries() {
+    await IDBService.awaitModuleLoad();
+    var entries = await idbKeyval.entries()
+    return entries.reduce(
+      (prev, cur) => ({ ...prev, [cur[0]]: cur[1] }),
+      {}
+    );
+  }
+
+  /**
    * Set a key-value pair in IndexedDB.
    * @param {string} key id of the entry to store
    * @param {object} value object to store in the entry
