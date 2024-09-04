@@ -1,6 +1,13 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
+		<!-- IndexedDB -->
+		<script>
+			async function loadKeyval() {
+				idbKeyval = await import('https://cdn.jsdelivr.net/npm/idb-keyval@6.2.1/dist/index.min.js');
+			}
+			loadKeyval()
+		</script>
 		<!-- JQuery -->
 		<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 		<!-- SockJS for SLOBS -->
@@ -9,8 +16,6 @@
 		<script src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js' type='text/javascript'></script>
 		<!-- Twitch Chat -->
 		<script src="https://cdn.jsdelivr.net/npm/comfy.js@latest/dist/comfy.min.js"></script>
-		<!-- IndexedDB -->
-		<script src="https://cdn.jsdelivr.net/npm/idb-keyval@3/dist/idb-keyval-iife.min.js"></script>
 		<!-- UUID -->
 		<script src="https://cdn.jsdelivr.net/npm/uuid@latest/dist/umd/uuidv4.min.js"></script>
 		<!-- TES (Twitch EventSub) -->
