@@ -433,6 +433,45 @@ OBS Scene "Starting Soon"
 
 ***
 
+### Multi-line Inputs
+As of Kruiz Control v2.0.6, the inputs to triggers and actions can be split over multiple lines. For example, the below action provides a [`Function`](#function) input via multiple lines.
+```
+OnInit
+Function "
+  var data = 4; 
+  return { value: data * 2 };
+"
+Error {data}
+```
+
+_Note: An individual input can be multiple lines, however, inputs cannot be distributed over multiple lines._
+
+The below events are **NOT** valid.
+
+```
+# Invalid because the inputs are provided on the following lines.
+OnInit
+Random 
+  "Chat Send 'Option 1'"
+  "Chat Send 'Option 2'"
+
+# Invalid because the first input ends on the first line.
+OnInit
+Random "Chat Send 'Option 1'"
+  "Chat Send 'Option 2'"
+```
+
+The below is technically valid, albeit funky looking. As long as a quote is not terminated until the following line, it will be parsed as a multi-line input.
+
+```
+# Since the end double quote for the first input is on the second line, the second line is included when processing the action.
+OnInit
+Random "Chat Send 'Option 1'
+  " "Chat Send 'Option 2'"
+```
+
+***
+
 ### Comments
 Trigger files support comments using the **#** character. This allows you to leave text in the trigger file that is not treated as a trigger or action.
 
@@ -1433,16 +1472,53 @@ A small selection of actions that are included for increased usability.
 **Format** | `Function <function>`
 **Example** | `Function 'return {total: {total} + 1}'`
 
-`<function>` is a javascript function body. For reference, please see this [documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/Function). If the function returns an object, each property of the Object is usable as a parameter in the rest of the trigger.
+`<function>` is a javascript function body. For reference, please see this [documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/Function). 
 
-The below returns a random element from an array in _api_data_.
-```js
+If the function returns an object, each property of the Object is usable as a parameter in the rest of the trigger.
+
+- If a `continue` parameter is returned and the value is `false`, the trigger will exit and not continue processing actions.
+
+- If an `actions` array parameter is returned, each item of the array will be inserted into the event and processed.
+
+##### Example Usage
+
+<table>
+<tr>
+<td>The below returns a random element from an array in <code>api_data</code>.</td>
+</tr>
+<tr>
+<td>
+
+```m
 Function 'var arr = [api_data]; return {random: arr[Math.floor(Math.random() * arr.length)]}'
 ```
 
-If a `continue` parameter is returned and the value is `false`, the trigger will exit and not continue processing actions.
+</td>
+</tr>
+</table>
 
-If an `actions` array parameter is returned, each item of the array will be inserted into the event and processed.
+<table>
+<tr>
+<td><em>Note: As of Kruiz Control v2.0.6, multi-line inputs are now supported.</em>
+
+The above example can be rewritten as the multi-line <code>function</code> below.</td>
+</tr>
+<tr>
+<td>
+
+```m
+OnInit
+Function "
+  var arr = [api_data];
+  return {
+    random: arr[Math.floor(Math.random() * arr.length)]
+  };
+"
+```
+
+</td>
+</tr>
+</table>
 
 ***
 
@@ -4862,6 +4938,7 @@ _Note: Due to a Twitch API restriction, in order for Kruiz Control to interact w
 **data** | The complete response from the Twitch User API.
 **user** | The user's display name.
 **description** | The user's channel description.
+**profile_image** | The URL to the user's profile image.
 
 ***
 
