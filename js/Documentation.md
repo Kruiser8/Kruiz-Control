@@ -6,6 +6,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
 - [General](#general)
   * [Case Sensitivity](#case-sensitivity)
   * [Quotes](#quotes)
+  * [Multi-line Inputs](#multi-line-inputs)
   * [Comments](#comments)
   * [Parameters](#parameters)
   * [Aliases](#aliases)
