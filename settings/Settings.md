@@ -14,6 +14,7 @@ This script uses text files to improve the average user experience.
 - [StreamElements](#streamelements)
 - [Streamlabs](#streamlabs)
 - [Twitch](#twitch)
+- [Variable](#variable)
 - [Voicemod](#voicemod)
 
 ***
@@ -190,6 +191,25 @@ Specify the Twitch auth code generated after logging in to your Twitch account.
 Specify the Twitch channel that Kruiz Control will react to and control through triggers and actions.
 ```
 kruiser8
+```
+
+***
+
+## Variable
+Use the below settings to toggle how Variables are configured in Kruiz Control.
+
+### autoload.txt
+**Location:** `settings/variable/autoload.txt`
+
+**Format:** `<on/off>`
+
+Specify whether or not Kruiz Control should automatically load all variables (session and global) without having to use [`Variable Load`](https://github.com/Kruiser8/Kruiz-Control/blob/master/js/Documentation.md#variable-load) or [`Variable Global Load`](https://github.com/Kruiser8/Kruiz-Control/blob/master/js/Documentation.md#variable-global-load).
+
+(Default) If set to `off`, variables must be loaded before they can be used.
+
+If set to `on`, all variables are usable as soon as they are set or Kruiz Control initializes.
+```
+off
 ```
 
 ***

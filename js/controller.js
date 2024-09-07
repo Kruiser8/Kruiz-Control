@@ -121,12 +121,17 @@ class Controller {
   /**
    * Setup async queue for given trigger id
    * @param {string} triggerId id of the trigger to run
-   * @param {object} triggerParams initial parameters for this event
+   * @param {object} initialTriggerParams initial parameters for this event
    * @param {string} actionsToInsert actions to add at the start of the event
    */
-  async handleData(triggerId, triggerParams, actionsToInsert) {
-    triggerParams = triggerParams || {};
-    triggerParams['_kc_event_id_'] = uuidv4();
+  async handleData(triggerId, initialTriggerParams, actionsToInsert) {
+    initialTriggerParams = initialTriggerParams || {};
+    var variables = await this.getParser('Variable').getVariables();
+    var triggerParams = { 
+      "_kc_event_id_": uuidv4,
+      ...variables,
+      ...initialTriggerParams
+    };
     actionsToInsert = actionsToInsert || [];
 
     if (typeof(this.triggerAsyncMap[triggerId]) !== "undefined") {
@@ -523,40 +528,38 @@ class Controller {
     var triggerSequence = [];
     data = data.trim();
     var lines = data.split(/\r\n|\n/);
+    var allLineData = Parser.parseCommands(lines);
 
     // Parse all lines
-    for (var i = 0; i < lines.length; i++) {
-      var line = lines[i].trim();
-      if (!line.startsWith('#')) {
-        var lineData = Parser.splitLine(line);
-        var dataLength = lineData.length;
+    for (var i = 0; i < allLineData.length; i++) {
+      var lineData = allLineData[i];
+      var dataLength = lineData.length;
 
-        // Get new trigger value
-        if (dataLength > 0 && !currentParser) {
-          currentParser = this.getTrigger(lineData[0]);
-          triggerSequence = [lineData];
+      // Get new trigger value
+      if (dataLength > 0 && !currentParser) {
+        currentParser = this.getTrigger(lineData[0]);
+        triggerSequence = [lineData];
+      }
+      // Combine trigger data together
+      else if (dataLength > 0 && currentParser) {
+        triggerSequence.push(lineData);
+      }
+      // Clear trigger if found empty line
+      else if (dataLength === 0 && currentParser) {
+        var parser = this.getParser(currentParser)
+        if (parser) {
+          parser.addTriggerData(triggerSequence[0][0], triggerSequence[0], this.triggerCount);
+          triggerIds.push(this.triggerCount);
+          this.triggerData[this.triggerCount] = triggerSequence.slice(1);
+          this.triggerCount = this.triggerCount + 1;
         }
-        // Combine trigger data together
-        else if (dataLength > 0 && currentParser) {
-          triggerSequence.push(lineData);
-        }
-        // Clear trigger if found empty line
-        else if (dataLength === 0 && currentParser) {
-          var parser = this.getParser(currentParser)
-          if (parser) {
-            parser.addTriggerData(triggerSequence[0][0], triggerSequence[0], this.triggerCount);
-            triggerIds.push(this.triggerCount);
-            this.triggerData[this.triggerCount] = triggerSequence.slice(1);
-            this.triggerCount = this.triggerCount + 1;
-          }
 
-          currentParser = null;
-          triggerSequence = [];
-        }
-        // Ensure clear trigger data if no trigger
-        else if (!currentParser) {
-          triggerSequence = [];
-        }
+        currentParser = null;
+        triggerSequence = [];
+      }
+      // Ensure clear trigger data if no trigger
+      else if (!currentParser) {
+        triggerSequence = [];
       }
     }
     // Add data if no trailing newline in file

@@ -238,11 +238,21 @@ class TwitchAPI {
     });
   }
 
-  async startCommercial(broadcaster_id, length) {
+  async startCommercial(data) {
     await this.callTwitchApiJson({
       method: 'POST',
       endpoint: 'https://api.twitch.tv/helix/channels/commercial',
       data
+    });
+  }
+
+  async getAdSchedule(broadcaster_id) {
+    return await this.callTwitchApi({
+      method: 'GET',
+      endpoint: 'https://api.twitch.tv/helix/channels/ads',
+      params: {
+        broadcaster_id
+      }
     });
   }
 

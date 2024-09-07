@@ -6,6 +6,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
 - [General](#general)
   * [Case Sensitivity](#case-sensitivity)
   * [Quotes](#quotes)
+  * [Multi-line Inputs](#multi-line-inputs)
   * [Comments](#comments)
   * [Parameters](#parameters)
   * [Aliases](#aliases)
@@ -285,6 +286,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnTWUnban](#ontwunban)
   * [Actions](#twitch-actions)
     + [Twitch AddBlockedTerm](#twitch-addblockedterm)
+    + [Twitch AdSchedule](#twitch-adschedule)
     + [Twitch Announcement](#twitch-announcement)
     + [Twitch Auth](#twitch-auth)
     + [Twitch Authenticate](#twitch-authenticate)
@@ -428,6 +430,46 @@ It is **highly recommended** to use quotes when providing multi-word arguments. 
 ```
 Chat Send "Some really long message"
 OBS Scene "Starting Soon"
+```
+
+***
+
+### Multi-line Inputs
+As of Kruiz Control v2.0.6, the inputs to triggers and actions can be split over multiple lines. For example, the below action provides a [`Function`](#function) input via multiple lines.
+```
+OnInit
+Function "
+  var data = 4; 
+  return { value: data * 2 };
+"
+Error {data}
+```
+
+_Note: While an individual input can be multiple lines, inputs cannot be distributed over multiple lines._
+
+The below events are **NOT** valid.
+
+```
+# Invalid because the inputs are provided on the following lines.
+OnInit
+Random 
+  "Chat Send 'Option 1'"
+  "Chat Send 'Option 2'"
+
+# Invalid because the first input ends on the first line.
+# The second option will be skipped.
+OnInit
+Random "Chat Send 'Option 1'"
+  "Chat Send 'Option 2'"
+```
+
+The below is technically valid, albeit funky looking. As long as a quote is not terminated until the following line, it will be parsed as a multi-line input.
+
+```
+# Since the end double quote for the first input is on the second line, the second line is included when processing the action.
+OnInit
+Random "Chat Send 'Option 1'
+  " "Chat Send 'Option 2'"
 ```
 
 ***
@@ -1432,16 +1474,53 @@ A small selection of actions that are included for increased usability.
 **Format** | `Function <function>`
 **Example** | `Function 'return {total: {total} + 1}'`
 
-`<function>` is a javascript function body. For reference, please see this [documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/Function). If the function returns an object, each property of the Object is usable as a parameter in the rest of the trigger.
+`<function>` is a javascript function body. For reference, please see this [documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/Function). 
 
-The below returns a random element from an array in _api_data_.
-```js
+If the function returns an object, each property of the Object is usable as a parameter in the rest of the trigger.
+
+- If a `continue` parameter is returned and the value is `false`, the trigger will exit and not continue processing actions.
+
+- If an `actions` array parameter is returned, each item of the array will be inserted into the event and processed.
+
+##### Example Usage
+
+<table>
+<tr>
+<td>The below returns a random element from an array in <code>api_data</code>.</td>
+</tr>
+<tr>
+<td>
+
+```m
 Function 'var arr = [api_data]; return {random: arr[Math.floor(Math.random() * arr.length)]}'
 ```
 
-If a `continue` parameter is returned and the value is `false`, the trigger will exit and not continue processing actions.
+</td>
+</tr>
+</table>
 
-If an `actions` array parameter is returned, each item of the array will be inserted into the event and processed.
+<table>
+<tr>
+<td><em>Note: As of Kruiz Control v2.0.6, multi-line inputs are now supported.</em>
+
+The above example can be rewritten as the multi-line <code>function</code> below.</td>
+</tr>
+<tr>
+<td>
+
+```m
+OnInit
+Function "
+  var arr = [api_data];
+  return {
+    random: arr[Math.floor(Math.random() * arr.length)]
+  };
+"
+```
+
+</td>
+</tr>
+</table>
 
 ***
 
@@ -1509,7 +1588,7 @@ The following `<comparator>` values are valid: `=`, `<`, `>`, `<=`, `>=`, `!=` (
 
 Multiple comparisons can be combined in one **If** line using the following `<conjunction>` values: `and`, `or`.
 
-The `<optional_skip>` value allows you to specify the number of lines to skip if the criteria is not met. This value is completely optional and allows for advanced logic handling.
+The `<optional_skip>` value allows you to specify the number of lines to skip if the criteria is not met. This value is completely optional and allows for advanced logic handling. When skipping lines, multi-line inputs are considered one line and comments are not considered.
 
 
 | | |
@@ -1547,7 +1626,7 @@ The `<optional_skip>` value allows you to specify the number of lines to skip if
 #### Loop
 | | |
 ------------ | -------------
-**Info** | Used to repeat a set of actions a specified number of times. `<lines>` is the number of actions/lines to repeat. `<times>` is the number of times to repeat the actions/lines.
+**Info** | Used to repeat a set of actions a specified number of times. `<lines>` is the number of actions/lines to repeat. When counting lines, multi-line inputs are considered one line and comments are not considered. `<times>` is the number of times to repeat the actions/lines.
 **Format** | `Loop <lines> <times>`
 **Example** | `Loop 8 10`
 
@@ -1589,7 +1668,7 @@ The `<optional_skip>` value allows you to specify the number of lines to skip if
 #### Skip
 | | |
 ------------ | -------------
-**Info** | Used to skip over the next `<number>` of lines in an event.
+**Info** | Used to skip over the next `<number>` of lines in an event. When skipping lines, multi-line inputs are considered one line and comments are not considered.
 **Format** | `Skip <number>`
 **Example** | `Skip 3`
 
@@ -3862,6 +3941,26 @@ _Note: Bit voting is not currently supported, however Twitch provides these valu
 
 ***
 
+#### Twitch AdSchedule
+| | |
+------------ | -------------
+**Info** | Used to retrieve upcoming scheduled ad, snooze, and pre-roll related information.
+**Format** | `Twitch AdSchedule`
+**Example** | `Twitch AdSchedule`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Ad Schedule API.
+**next_ad_time** | The number of seconds until the next scheduled ad.
+**next_ad_duration** | The duration (in seconds) of the next scheduled ad.
+**preroll_free_time** | The amount (in seconds) of pre-roll free time remaining for the channel.
+**next_snooze_time** | The number of seconds until the broadcaster receives an additional ad snooze.
+**snooze_count** | The number of snoozes available for the broadcaster.
+
+
+***
+
 #### Twitch Announcement
 | | |
 ------------ | -------------
@@ -4841,6 +4940,7 @@ _Note: Due to a Twitch API restriction, in order for Kruiz Control to interact w
 **data** | The complete response from the Twitch User API.
 **user** | The user's display name.
 **description** | The user's channel description.
+**profile_image** | The URL to the user's profile image.
 
 ***
 

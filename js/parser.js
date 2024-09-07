@@ -15,6 +15,57 @@ class Parser {
   }
 
   /**
+   * Parse the file contents into a list of commands. 
+   * Primarily to account for multi-line strings in trigger files.
+   * @param {array} lines file content containing commands
+   */
+  static parseCommands(lines) {
+    var compiledLineData = [];
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i].trim();
+      if (!line.startsWith('#')) {
+        var [isParsed, lineData] = Parser.tryParseCommand(line);
+
+        // If failed to parse, look for a multi-line input
+        if (!isParsed) {
+          var j = i;
+          var compiledLine = lines[i];
+          while(!isParsed && j < lines.length) {
+            j++;
+            var compiledLine = `${compiledLine}\n${lines[j]}`;
+            [isParsed, lineData] = Parser.tryParseCommand(compiledLine);
+          }
+
+          // If no multi-line string found, simply split the line
+          if (!isParsed) {
+            lineData = line.split(' ');
+          } else {
+            // Skip all lines in the multi-line string
+            i = j;
+          }
+        }
+
+        compiledLineData.push(lineData);
+      }
+    }
+
+    return compiledLineData;
+  }
+
+  /**
+   * Try to parse the input string using the shlex parsing library.
+   * @param {string} data input string to parse for commands
+   */
+  static tryParseCommand(data) {
+    try {
+      var commandData = shlexSplit(data);
+      return [true, commandData];
+    } catch (err) {
+      return [false, null];
+    }
+  }
+
+  /**
    * Get the action from the input line information.
    * @param {array} lineData input to grab the action
    * @param {string} handler the name of the handler retrieving the action

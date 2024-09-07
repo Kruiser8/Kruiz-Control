@@ -5,7 +5,20 @@ class VariableHandler extends Handler {
   constructor() {
     super('Variable', []);
     this.success();
+    this.autoload = false;
+    this.globals = {};
     this.variables = {};
+  }
+
+  /**
+   * Initialize the variable handler with the input settings.
+   * @param {string} autoload on/off to toggle variables autoloading
+   */
+  init(autoload) {
+    this.autoload = autoload.toLowerCase() === "on" ? true : false;
+    if (this.autoload) {
+      this.loadGlobalVariables();
+    }
   }
 
   /**
@@ -20,24 +33,29 @@ class VariableHandler extends Handler {
       if (action === 'load') {
         var { varName } = Parser.getInputs(triggerData, ['global', 'action', 'varName']);
         var variable = await IDBService.get(varName) || 'No variable found';
+        this.globals[varName] = variable;
         return {[varName]: variable};
       }
       // Clears all global variables
       else if (action === 'clear') {
+        this.globals = {};
         IDBService.clear();
       }
       // Remove a global variable
       else if (action === 'remove') {
         var { varName } = Parser.getInputs(triggerData, ['global', 'action', 'varName']);
+        delete this.globals[varName];
         IDBService.delete(varName);
       }
       // Set a global variable
       else if (action === 'set') {
         var { varName, variable } = Parser.getInputs(triggerData, ['global', 'action', 'varName', 'variable']);
+        this.globals[varName] = variable;
         IDBService.set(varName, variable);
         return {[varName]: variable};
       }
     } else {
+      // Load a variable
       if (action === 'load') {
         var { varName } = Parser.getInputs(triggerData, ['action', 'varName']);
         var variable = this.variables[varName] || 'No variable found';
@@ -58,12 +76,35 @@ class VariableHandler extends Handler {
       }
     }
   }
+
+  /**
+   * Retrieve all variables (session and global).
+   */
+  async getVariables() {
+    if (this.autoload) {
+      return {
+        ...this.globals,
+        ...this.variables
+      };
+    }
+
+    return {};
+  }
+
+  /**
+   * Load all global variables from storage.
+   */
+  async loadGlobalVariables() {
+    this.globals = await IDBService.entries();
+  }
 }
 
 /**
  * Create a handler
  */
-function variableHandlerExport() {
+async function variableHandlerExport() {
   var variable = new VariableHandler();
+  var autoload = await readFile('settings/variable/autoload.txt');
+  variable.init(autoload.trim());
 }
 variableHandlerExport();
