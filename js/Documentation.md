@@ -457,6 +457,7 @@ Random
   "Chat Send 'Option 2'"
 
 # Invalid because the first input ends on the first line.
+# The second option will be skipped.
 OnInit
 Random "Chat Send 'Option 1'"
   "Chat Send 'Option 2'"
