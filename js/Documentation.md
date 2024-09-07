@@ -1588,7 +1588,7 @@ The following `<comparator>` values are valid: `=`, `<`, `>`, `<=`, `>=`, `!=` (
 
 Multiple comparisons can be combined in one **If** line using the following `<conjunction>` values: `and`, `or`.
 
-The `<optional_skip>` value allows you to specify the number of lines to skip if the criteria is not met. This value is completely optional and allows for advanced logic handling.
+The `<optional_skip>` value allows you to specify the number of lines to skip if the criteria is not met. This value is completely optional and allows for advanced logic handling. When skipping lines, multi-line inputs are considered one line and comments are not considered.
 
 
 | | |
@@ -1626,7 +1626,7 @@ The `<optional_skip>` value allows you to specify the number of lines to skip if
 #### Loop
 | | |
 ------------ | -------------
-**Info** | Used to repeat a set of actions a specified number of times. `<lines>` is the number of actions/lines to repeat. `<times>` is the number of times to repeat the actions/lines.
+**Info** | Used to repeat a set of actions a specified number of times. `<lines>` is the number of actions/lines to repeat. When counting lines, multi-line inputs are considered one line and comments are not considered. `<times>` is the number of times to repeat the actions/lines.
 **Format** | `Loop <lines> <times>`
 **Example** | `Loop 8 10`
 
@@ -1668,7 +1668,7 @@ The `<optional_skip>` value allows you to specify the number of lines to skip if
 #### Skip
 | | |
 ------------ | -------------
-**Info** | Used to skip over the next `<number>` of lines in an event.
+**Info** | Used to skip over the next `<number>` of lines in an event. When skipping lines, multi-line inputs are considered one line and comments are not considered.
 **Format** | `Skip <number>`
 **Example** | `Skip 3`
 
