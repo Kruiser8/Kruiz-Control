@@ -121,12 +121,17 @@ class Controller {
   /**
    * Setup async queue for given trigger id
    * @param {string} triggerId id of the trigger to run
-   * @param {object} triggerParams initial parameters for this event
+   * @param {object} initialTriggerParams initial parameters for this event
    * @param {string} actionsToInsert actions to add at the start of the event
    */
-  async handleData(triggerId, triggerParams, actionsToInsert) {
-    triggerParams = triggerParams || {};
-    triggerParams['_kc_event_id_'] = uuidv4();
+  async handleData(triggerId, initialTriggerParams, actionsToInsert) {
+    initialTriggerParams = initialTriggerParams || {};
+    var variables = await this.getParser('Variable').getVariables();
+    var triggerParams = { 
+      "_kc_event_id_": uuidv4,
+      ...variables,
+      ...initialTriggerParams
+    };
     actionsToInsert = actionsToInsert || [];
 
     if (typeof(this.triggerAsyncMap[triggerId]) !== "undefined") {

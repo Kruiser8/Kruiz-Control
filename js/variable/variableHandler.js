@@ -5,15 +5,20 @@ class VariableHandler extends Handler {
   constructor() {
     super('Variable', []);
     this.success();
+    this.autoload = false;
     this.globals = {};
     this.variables = {};
   }
 
   /**
-   * Called after parsing all user input.
+   * Initialize the variable handler with the input settings.
+   * @param {string} autoload on/off to toggle variables autoloading
    */
-  postParse() {
-    this.loadGlobalVariables();
+  init(autoload) {
+    this.autoload = autoload.toLowerCase() === "on" ? true : false;
+    if (this.autoload) {
+      this.loadGlobalVariables();
+    }
   }
 
   /**
@@ -50,6 +55,7 @@ class VariableHandler extends Handler {
         return {[varName]: variable};
       }
     } else {
+      // Load a variable
       if (action === 'load') {
         var { varName } = Parser.getInputs(triggerData, ['action', 'varName']);
         var variable = this.variables[varName] || 'No variable found';
@@ -72,6 +78,20 @@ class VariableHandler extends Handler {
   }
 
   /**
+   * Retrieve all variables (session and global).
+   */
+  async getVariables() {
+    if (this.autoload) {
+      return {
+        ...this.globals,
+        ...this.variables
+      };
+    }
+
+    return {};
+  }
+
+  /**
    * Load all global variables from storage.
    */
   async loadGlobalVariables() {
@@ -82,7 +102,9 @@ class VariableHandler extends Handler {
 /**
  * Create a handler
  */
-function variableHandlerExport() {
+async function variableHandlerExport() {
   var variable = new VariableHandler();
+  var autoload = await readFile('settings/variable/autoload.txt');
+  variable.init(autoload.trim());
 }
 variableHandlerExport();
