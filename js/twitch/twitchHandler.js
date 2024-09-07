@@ -1721,7 +1721,8 @@ class TwitchHandler extends Handler {
           return {
             data: response,
             user: response.data[0].display_name,
-            description: response.data[0].description
+            description: response.data[0].description,
+            profile_image: response.data[0].profile_image_url
           }
         }
         break;
