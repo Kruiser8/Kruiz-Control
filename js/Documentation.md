@@ -445,7 +445,7 @@ Function "
 Error {data}
 ```
 
-_Note: An individual input can be multiple lines, however, inputs cannot be distributed over multiple lines._
+_Note: While an individual input can be multiple lines, inputs cannot be distributed over multiple lines._
 
 The below events are **NOT** valid.
 
