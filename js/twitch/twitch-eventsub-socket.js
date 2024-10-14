@@ -3,26 +3,23 @@
 *
 * @param {string} channelId twitch channel id
 * @param {string} clientId twitch client id
-* @param {string} clientSecret twitch client secret
 * @param {string} accessToken twitch access token
-* @param {string} refreshToken twitch refresh token
+* @param {function} getNewAccessToken retrieve a new access token
 * @param {function} onMessage method to call when events are received
 */
 async function connectEventSubWebsocket(
   channelId,
   clientId,
-  clientSecret,
   accessToken,
-  refreshToken,
+  getNewAccessToken,
   onMessage
 ) {
   // Create the websocket connection
   const config = {
     identity: {
       id: clientId,
-      secret: clientSecret,
       accessToken: accessToken,
-      refreshToken: refreshToken
+      onAuthenticationFailure: getNewAccessToken
     },
     listener: { type: 'websocket' },
   };
