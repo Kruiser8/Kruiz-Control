@@ -34,7 +34,12 @@ class TwitchHandler extends Handler {
   }
 
   /**
-   * Initialize the oauth tokens
+   * Initialize the Twitch Handler.
+   * @param {string} user name of the twitch user
+   * @param {string} clientId client ID for the Twitch API
+   * @param {string} clientSecret client secret for the Twitch API
+   * @param {string} code the Twitch API authorization code
+   * @param {string} channelId the user ID of the twitch user
    */
   async init(user, clientId, clientSecret, code, channelId) {
     connectPubSubWebsocket(channelId, this.onMessage.bind(this));
@@ -84,6 +89,15 @@ class TwitchHandler extends Handler {
     return accessToken;
   }
 
+  /**
+   * Update the internally stored tokens with updates.
+   * @param {string} clientId client ID for the Twitch API
+   * @param {string} clientSecret client secret for the Twitch API
+   * @param {string} code the Twitch API authorization code
+   * @param {string} accessToken the Twitch API access token
+   * @param {string} refreshToken the Twitch API refresh token
+   * @param {string} updateInitial whether or not to update the initial stored values
+   */
   updateTokens(clientId, clientSecret, code, accessToken, refreshToken, updateInitial) {
     if (updateInitial) {
       IDBService.set('INTWC', clientId);
