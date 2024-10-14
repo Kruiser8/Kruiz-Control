@@ -51,9 +51,9 @@ class TwitchHandler extends Handler {
     var initCode = await IDBService.get('INTWCD');
     if (clientId != initClientId || clientSecret != initClientSecret || code != initCode) {
       try {
-        var { accessToken: newAccessToken, refreshToken: newRrefreshToken } = await this.api.requestAuthToken();
+        var { accessToken: newAccessToken, refreshToken: newRefreshToken } = await this.api.requestAuthToken();
         accessToken = newAccessToken;
-        refreshToken = newRrefreshToken;
+        refreshToken = newRefreshToken;
         this.updateTokens(clientId, clientSecret, code, accessToken, refreshToken, true);
       } catch (error) {
         console.error(JSON.stringify(error));
