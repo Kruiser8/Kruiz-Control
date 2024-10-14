@@ -970,12 +970,12 @@ class TwitchHandler extends Handler {
         var schedule_data = response.data[0];
 
         var next_ad_seconds = -1;
-        if (schedule_data.next_ad_at) {
-          var next_ad_time = new Date(schedule_data.next_ad_at).getTime();
+        if (!!schedule_data.next_ad_at) {
+          var next_ad_time = new Date(schedule_data.next_ad_at * 1000).getTime();
           var next_ad_seconds = Math.round((next_ad_time - current_time) / 1000);
         }
         
-        var next_snooze_time = new Date(schedule_data.snooze_refresh_at).getTime();
+        var next_snooze_time = new Date(schedule_data.snooze_refresh_at * 1000).getTime();
         var next_snooze_seconds = Math.round((next_snooze_time - current_time) / 1000);
 
         return {
