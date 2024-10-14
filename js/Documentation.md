@@ -3952,12 +3952,11 @@ _Note: Bit voting is not currently supported, however Twitch provides these valu
 | | |
 ------------ | -------------
 **data** | The complete response from the Twitch Ad Schedule API.
-**next_ad_time** | The number of seconds until the next scheduled ad.
+**next_ad_time** | The number of seconds until the next scheduled ad. The value is `-1` if no upcoming ad is scheduled.
 **next_ad_duration** | The duration (in seconds) of the next scheduled ad.
 **preroll_free_time** | The amount (in seconds) of pre-roll free time remaining for the channel.
 **next_snooze_time** | The number of seconds until the broadcaster receives an additional ad snooze.
 **snooze_count** | The number of snoozes available for the broadcaster.
-
 
 ***
 
