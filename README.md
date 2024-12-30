@@ -111,7 +111,7 @@ As an example, if the below is in the _triggers.txt_ file, then both sounds can 
 
 #### triggers.txt
 ```
-OnChannelPoint SHIKAKA
+OnTWChannelPoint SHIKAKA
 Play 30 wait Shikaka.mp3
 
 OnCommand sbvm 0 !intervention
