@@ -94,20 +94,31 @@ class TwitchAPI {
           }
           var response = 'Error with Twitch API';
           if (!this.triedRefresh && error.status === 401) {
+            this.refreshingToken = true;
             this.triedRefresh = true;
             setTimeout(() => {
               this.triedRefresh = false;
             }, 600000);
             response = await this.refreshAuthToken({ method, endpoint, headers, params, data });
+          } else if (this.refreshingToken && error.status === 401) {
+            console.error("Looping until auth token is ready for Twitch API call: " + JSON.stringify({
+              url: endpointWithParams.href,
+              data: data,
+              headers: headers,
+              type: method,
+            }));
+            await new Promise((resolve) => {
+              const loop = () => this.refreshingToken ? setTimeout(loop, 50) : resolve()
+              loop();
+            });
+            console.error("Done looping twitch call")
+            response = await this.callTwitchApi({ method, endpoint, headers, params, data })
           }
           resolve(response);
         }
       });
     });
 
-    if (Debug.Twitch || Debug.All) {
-      console.error(`Received response for (${endpointWithParams.href}): ${JSON.stringify(result)}`);
-    }
     return result;
   }
 
@@ -229,11 +240,13 @@ class TwitchAPI {
             delete headers['Authorization'];
 
             var result = await this.callTwitchApi({ method, endpoint, headers, params, data });
+            this.refreshingToken = false;
             resolve(result);
           }
           resolve();
         },
         error: function(error) {
+          this.refreshingToken = false;
           console.error('Error refreshing your twitch token.');
           console.error(JSON.stringify(error));
           resolve('Error with Twitch API');
