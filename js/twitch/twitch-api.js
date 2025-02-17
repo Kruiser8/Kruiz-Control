@@ -31,6 +31,8 @@ class TwitchAPI {
       'channel:read:goals',
       'channel:read:hype_train',
       'channel:read:subscriptions',
+      'chat:edit',
+      'chat:read',
       'clips:edit',
       'moderation:read',
       'moderator:manage:announcements',
@@ -44,9 +46,12 @@ class TwitchAPI {
       'moderator:read:chatters',
       'moderator:read:followers',
       'user:edit',
-      'user:manage:chat_color',
       'user:manage:blocked_users',
-      'user:read:follows'
+      'user:manage:chat_color',
+      'user:manage:whispers',
+      'user:read:chat',
+      'user:read:follows',
+      'user:write:chat'
     ].map(scope => encodeURIComponent(scope));
     return `https://id.twitch.tv/oauth2/authorize?response_type=code&client_id=${this.clientId}&redirect_uri=http://localhost&scope=${scopes.join('%20')}`;
   }

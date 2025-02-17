@@ -252,6 +252,8 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnTWCharityProgress](#ontwcharityprogress)
     + [OnTWCharityStarted](#ontwcharitystarted)
     + [OnTWCharityStopped](#ontwcharitystopped)
+    + [OnTWChatClear](#ontwchatclear)
+    + [OnTWChatClearUser](#ontwchatclearuser)
     + [OnTWCheer](#ontwcheer)
     + [OnTWFollow](#ontwfollow)
     + [OnTWGoalCompleted](#ontwgoalcompleted)
@@ -3310,6 +3312,37 @@ Enables the ability to run actions when channel point rewards are redeemed.
 **website** | A URL to the charity's website.
 **current** | The current amount of donations that the campaign has received.
 **target** | The campaign's target fundraising goal.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWChatClear
+| | |
+------------ | -------------
+**Info** | Triggers when a moderator or bot clears all messages from the chat room.
+**Format** | `OnTWChatClear`
+**Example** | `OnTWChatClear`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWChatClearUser
+| | |
+------------ | -------------
+**Info** | Triggers when a moderator or bot clears all messages for a specific user.
+**Format** | `OnTWChatClearUser`
+**Example** | `OnTWChatClearUser`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user ID of the user that redeemed the reward.
+**login** | The user login of the user that redeemed the reward.
+**name** | The user display name of the user that redeemed the reward.
 **data** | The complete Twitch EventSub event data (for use with [Function](#function)).
 
 ***
