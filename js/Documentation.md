@@ -284,6 +284,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnTWSub](#ontwsub)
     + [OnTWSubGift](#ontwsubgift)
     + [OnTWSubMessage](#ontwsubmessage)
+    + [OnTWSuspiciousUser](#ontwsuspicioususer)
     + [OnTWTimeout](#ontwtimeout)
     + [OnTWUnban](#ontwunban)
   * [Actions](#twitch-actions)
@@ -3921,6 +3922,24 @@ _Note: Bit voting is not currently supported, however Twitch provides these valu
 **message** | The resubscription message.
 **months** | The total number of months the user has been subscribed to the channel.
 **streak** | The number of consecutive months the user’s current subscription has been active. This value is empty if the user has opted out of sharing this information.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWSuspiciousUser
+| | |
+------------ | -------------
+**Info** | Triggers when a chat message has been sent from a suspicious user.
+**Format** | `OnTWSuspiciousUser`
+**Example** | `OnTWSuspiciousUser`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user id of the user who sent the resubscription chat message.
+**login** | The user login of the user who sent the resubscription chat message.
+**name** | The user display name of the user who sent the resubscription chat message.
+**type** | The type of suspicious user, i.e. `ban_evader`. `unknown` if no type provided by Twitch.
 **data** | The complete Twitch EventSub event data (for use with [Function](#function)).
 
 ***

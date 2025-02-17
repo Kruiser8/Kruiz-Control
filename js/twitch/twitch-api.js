@@ -45,6 +45,7 @@ class TwitchAPI {
       'moderator:manage:warnings',
       'moderator:read:chatters',
       'moderator:read:followers',
+      'moderator:read:suspicious_users',
       'user:edit',
       'user:manage:blocked_users',
       'user:manage:chat_color',
