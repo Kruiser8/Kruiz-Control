@@ -82,12 +82,16 @@ class TwitchAPI {
         data: data,
         headers: headers,
         type: method,
-        success: function(data) {
+        success: function(data, _, xjr) {
+          if (Debug.Twitch || Debug.All) {
+            console.error(`Received successful [${xjr.status}] response for (${endpointWithParams.href}): ${JSON.stringify(data)}`);
+          }
           resolve(data);
         },
         error: async function(error) {
-          console.error(`Error calling ${endpoint}!`);
-          console.error(JSON.stringify(error));
+          if (Debug.Twitch || Debug.All) {
+            console.error(`Received error [${error.status}] response for (${endpointWithParams.href}): ${JSON.stringify(error)}`);
+          }
           var response = 'Error with Twitch API';
           if (!this.triedRefresh && error.status === 401) {
             this.triedRefresh = true;
