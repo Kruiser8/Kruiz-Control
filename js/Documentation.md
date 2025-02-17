@@ -3343,9 +3343,9 @@ Enables the ability to run actions when channel point rewards are redeemed.
 ##### Parameters
 | | |
 ------------ | -------------
-**id** | The user ID of the user that redeemed the reward.
-**login** | The user login of the user that redeemed the reward.
-**name** | The user display name of the user that redeemed the reward.
+**id** | The user ID of the user that had their messages cleared.
+**login** | The user login of the user that had their messages cleared.
+**name** | The user display name of the user that had their messages cleared.
 **data** | The complete Twitch EventSub event data (for use with [Function](#function)).
 
 ***
@@ -3938,9 +3938,9 @@ _Note: Bit voting is not currently supported, however Twitch provides these valu
 ##### Parameters
 | | |
 ------------ | -------------
-**id** | The user id of the user who sent the resubscription chat message.
-**login** | The user login of the user who sent the resubscription chat message.
-**name** | The user display name of the user who sent the resubscription chat message.
+**id** | The user id of the suspicious user that sent the message.
+**login** | The user login of the suspicious user that sent the message.
+**name** | The user display name of the suspicious user that sent the message.
 **type** | The type of suspicious user, i.e. `ban_evader`. `unknown` if no type provided by Twitch.
 **data** | The complete Twitch EventSub event data (for use with [Function](#function)).
 
