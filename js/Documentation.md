@@ -287,6 +287,8 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnTWSuspiciousUser](#ontwsuspicioususer)
     + [OnTWTimeout](#ontwtimeout)
     + [OnTWUnban](#ontwunban)
+    + [OnTWUnVIP](#ontwunvip)
+    + [OnTWVIP](#ontwvip)
   * [Actions](#twitch-actions)
     + [Twitch AddBlockedTerm](#twitch-addblockedterm)
     + [Twitch AdSchedule](#twitch-adschedule)
@@ -3977,6 +3979,40 @@ _Note: Bit voting is not currently supported, however Twitch provides these valu
 **login** | The user login of the user who was unbanned.
 **name** | The user display name of the user who was unbanned.
 **mod** | The user name of the issuer of the unban.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWUnVIP
+| | |
+------------ | -------------
+**Info** | Triggers when a VIP is removed from the channel.
+**Format** | `OnTWUnVIP`
+**Example** | `OnTWUnVIP`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user id of the user who was removed as a VIP.
+**login** | The user login of the user who was removed as a VIP.
+**name** | The user display name of the user who was removed as a VIP.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWVIP
+| | |
+------------ | -------------
+**Info** | Triggers when a VIP is added to the channel.
+**Format** | `OnTWVIP`
+**Example** | `OnTWVIP`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user id of the user who was added as a VIP.
+**login** | The user login of the user who was added as a VIP.
+**name** | The user display name of the user who was added as a VIP.
 **data** | The complete Twitch EventSub event data (for use with [Function](#function)).
 
 ***

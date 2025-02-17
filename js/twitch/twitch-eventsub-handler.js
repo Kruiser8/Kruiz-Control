@@ -232,6 +232,16 @@ class EventSubHandler {
         version: 1
       },
       {
+        type: 'channel.vip.add',
+        data: { broadcaster_user_id: this.channelId },
+        version: 1
+      },
+      {
+        type: 'channel.vip.remove',
+        data: { broadcaster_user_id: this.channelId },
+        version: 1
+      },
+      {
         type: 'channel.charity_campaign.donate',
         data: { broadcaster_user_id: this.channelId },
         version: 1

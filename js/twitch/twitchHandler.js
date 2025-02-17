@@ -3,7 +3,7 @@ class TwitchHandler extends Handler {
    * Create a new Timer handler.
    */
   constructor() {
-    super('Twitch', ['OnTWCommunityGoalStart', 'OnTWCommunityGoalProgress', 'OnTWCommunityGoalComplete', 'OnTWChannelUpdate', 'OnTWFollow', 'OnTWAd', 'OnTWChatClear', 'OnTWChatClearUser', 'OnTWSub', 'OnTWSubEnd', 'OnTWSubGift', 'OnTWSubMessage', 'OnTWCheer', 'OnTWRaid', 'OnTWBan', 'OnTWTimeout', 'OnTWUnban', 'OnTWModAdd', 'OnTWModRemove', 'OnTWChannelPoint', 'OnTWChannelPointCompleted', 'OnTWChannelPointRejected', 'OnTWPoll', 'OnTWPollUpdate', 'OnTWPollEnd', 'OnTWPrediction', 'OnTWPredictionUpdate', 'OnTWPredictionLock', 'OnTWPredictionEnd', 'OnTWSuspiciousUser', 'OnTWHypeTrainStart', 'OnTWHypeTrainConductor', 'OnTWHypeTrainProgress', 'OnTWHypeTrainLevel', 'OnTWHypeTrainEnd', 'OnTWCharityDonation', 'OnTWCharityStarted', 'OnTWCharityProgress', 'OnTWCharityStopped', 'OnTWShieldStart', 'OnTWShieldStop', 'OnTWShoutout', 'OnTWShoutoutReceived', 'OnTWGoalStarted', 'OnTWGoalProgress', 'OnTWGoalCompleted', 'OnTWGoalFailed', 'OnTWStreamStarted', 'OnTWStreamStopped']);
+    super('Twitch', ['OnTWCommunityGoalStart', 'OnTWCommunityGoalProgress', 'OnTWCommunityGoalComplete', 'OnTWChannelUpdate', 'OnTWFollow', 'OnTWAd', 'OnTWChatClear', 'OnTWChatClearUser', 'OnTWSub', 'OnTWSubEnd', 'OnTWSubGift', 'OnTWSubMessage', 'OnTWCheer', 'OnTWRaid', 'OnTWBan', 'OnTWTimeout', 'OnTWUnban', 'OnTWModAdd', 'OnTWModRemove', 'OnTWChannelPoint', 'OnTWChannelPointCompleted', 'OnTWChannelPointRejected', 'OnTWPoll', 'OnTWPollUpdate', 'OnTWPollEnd', 'OnTWPrediction', 'OnTWPredictionUpdate', 'OnTWPredictionLock', 'OnTWPredictionEnd', 'OnTWSuspiciousUser', 'OnTWVIP', 'OnTWUnVIP', 'OnTWHypeTrainStart', 'OnTWHypeTrainConductor', 'OnTWHypeTrainProgress', 'OnTWHypeTrainLevel', 'OnTWHypeTrainEnd', 'OnTWCharityDonation', 'OnTWCharityStarted', 'OnTWCharityProgress', 'OnTWCharityStopped', 'OnTWShieldStart', 'OnTWShieldStop', 'OnTWShoutout', 'OnTWShoutoutReceived', 'OnTWGoalStarted', 'OnTWGoalProgress', 'OnTWGoalCompleted', 'OnTWGoalFailed', 'OnTWStreamStarted', 'OnTWStreamStopped']);
     this.rewards = [];
     this.rewardsTrigger = {};
     this.completedRewards = [];
@@ -713,6 +713,26 @@ class TwitchHandler extends Handler {
             login: event.user_login,
             name: event.user_name,
             type: event.types.length > 0 ? event.types[0] : 'unknown'
+          });
+        });
+        break;
+      case 'channel.vip.add':
+        this.eventSubTrigger['ontwvip']?.forEach(triggerId => {
+          controller.handleData(triggerId, {
+            data: event,
+            id: event.user_id,
+            login: event.user_login,
+            name: event.user_name
+          });
+        });
+        break;
+      case 'channel.vip.remove':
+        this.eventSubTrigger['ontwunvip']?.forEach(triggerId => {
+          controller.handleData(triggerId, {
+            data: event,
+            id: event.user_id,
+            login: event.user_login,
+            name: event.user_name
           });
         });
         break;
