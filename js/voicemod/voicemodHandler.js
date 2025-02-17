@@ -1,6 +1,6 @@
 class VoicemodHandler extends Handler {
   /**
-   * Create a new Timer handler.
+   * Create a new Voicemod handler.
    */
   constructor() {
     super('Voicemod', []);
@@ -8,9 +8,9 @@ class VoicemodHandler extends Handler {
   }
 
   /**
-   * Initialize the connection to obs with the input settings.
-   * @param {string} address obs websocket address
-   * @param {string} password obs websocket password
+   * Initialize the connection to voicemod with the input settings.
+   * @param {string} address voicemod websocket address
+   * @param {string} password voicemod websocket password
    */
   init(address, apiKey) {
     this.api = connectVoicemodWebsocket(
