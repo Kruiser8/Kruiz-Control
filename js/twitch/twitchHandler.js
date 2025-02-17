@@ -73,20 +73,12 @@ class TwitchHandler extends Handler {
       }
     }
     try {
-      await connectEventSubWebsocket(this.channelId, clientId, accessToken, this.getAccessToken.bind(this), this.onEventMessage.bind(this));
+      this.eventSub = new EventSubHandler(this.api, this.channelId, this.onEventMessage.bind(this));
     } catch (error) {
       console.error(JSON.stringify(error));
+      console.error(error);
     }
     this.success();
-  }
-
-  /**
-   * Retrieve the existing access token (or generate a new one).
-   */
-  async getAccessToken() {
-    await this.api.getChannelInformation(this.channelId);
-    accessToken = await IDBService.get('CUTWAT');
-    return accessToken;
   }
 
   /**
