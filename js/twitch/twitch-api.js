@@ -507,6 +507,39 @@ class TwitchAPI {
     return await this.getClips({ id });
   }
 
+  async createEventSubSubscription(type, version, condition, session) {
+    return await this.callTwitchApiJson({
+      method: 'POST',
+      endpoint: 'https://api.twitch.tv/helix/eventsub/subscriptions',
+      data: {
+        type,
+        version,
+        condition,
+        transport: {
+          method: "websocket",
+          session_id: session
+        },
+      }
+    });
+  }
+
+  async deleteEventSubSubscription(id) {
+    return await this.callTwitchApi({
+      method: 'DELETE',
+      endpoint: 'https://api.twitch.tv/helix/eventsub/subscriptions',
+      params: {
+        id
+      }
+    });
+  }
+
+  async getEventSubSubscriptions() {
+    return await this.callTwitchApi({
+      method: 'GET',
+      endpoint: 'https://api.twitch.tv/helix/eventsub/subscriptions'
+    });
+  }
+
   async getGameId(name) {
     var response = await this.callTwitchApi({
       method: 'GET',
