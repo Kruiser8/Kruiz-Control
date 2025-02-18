@@ -9,6 +9,7 @@ This script uses text files to improve the average user experience.
 ## Table of Contents
 
 - [Chat](#chat)
+- [MQTT](#mqtt)
 - [OBS](#obs)
 - [SLOBS](#slobs)
 - [StreamElements](#streamelements)
@@ -31,8 +32,22 @@ kruiser8
 
 ***
 
+## MQTT
+Specify the IP (or hostname) + port to use for the MQTT websocket.
 ### code.txt
 **Location:** `settings/chat/code.txt`
+
+### websocket.txt
+**Location:** `settings/mqtt/websocket.txt`
+
+```
+ws://localhost:8883
+```
+
+***
+
+### user.txt
+**Location:** `settings/chat/user.txt`
 
 _**NOTE: Leave this file blank if you want Kruiz Control to send messages as your main Twitch account. That is, only use this if you want to send messages as a separate bot account.**_
 

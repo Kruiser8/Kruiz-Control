@@ -114,6 +114,9 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Play Stop](#play-stop)
     + [Reset](#reset)
     + [Skip](#skip)
+- [MQTT](#mqtt)
+  * [Actions](#mqtt-actions)
+    + [MQTT Publish](#mqtt-publish)
 - [OBS](#obs)
   * [Triggers](#obs-triggers)
     + [OnOBSCustomMessage](#onobscustommessage)
@@ -1685,6 +1688,24 @@ The `<optional_skip>` value allows you to specify the number of lines to skip if
 **Info** | Used to skip over the next `<number>` of lines in an event. When skipping lines, multi-line inputs are considered one line and comments are not considered.
 **Format** | `Skip <number>`
 **Example** | `Skip 3`
+
+***
+
+## MQTT
+Enables the ability to publish messages to an MQTT broker.
+
+### MQTT Triggers
+
+None at the moment.
+
+### MQTT Actions
+
+#### MQTT Publish
+| | |
+------------ | -------------
+**Info** | Used to publish a message to an MQTT broker. `<topic>` is the topic to publish to. `<message>` is the message to send.
+**Format** | `MQTT Publish <topic> <message>`
+**Example** | `MQTT Publish "chat/notification" "New follower !"`
 
 ***
 
