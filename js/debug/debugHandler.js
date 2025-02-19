@@ -6,6 +6,7 @@ class DebugHandler extends Handler {
     super('Debug', []);
     this.success();
     this.All = false;
+    this.Chat = false;
     this.OBS = false;
     this.Parser = false;
     this.SLOBS = false;
@@ -24,6 +25,9 @@ class DebugHandler extends Handler {
     if (handler) {
       handler = handler.toLowerCase();
       switch (handler) {
+        case 'chat':
+          this.Chat = true;
+          break;
         case 'obs':
           this.OBS = true;
           break;

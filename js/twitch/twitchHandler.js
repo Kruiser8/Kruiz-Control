@@ -72,6 +72,9 @@ class TwitchHandler extends Handler {
         console.error(JSON.stringify(error));
       }
     }
+
+    Storage.set("ChatOAuth", accessToken);
+
     try {
       this.eventSub = new EventSubHandler(this.api, this.channelId, this.onEventMessage.bind(this));
     } catch (error) {
@@ -101,6 +104,8 @@ class TwitchHandler extends Handler {
     IDBService.set('CUTWCD', code);
     IDBService.set('CUTWAT', accessToken);
     IDBService.set('CUTWRT', refreshToken);
+
+    Storage.set("ChatOAuth", accessToken);
   }
 
   /**

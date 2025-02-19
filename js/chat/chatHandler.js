@@ -35,23 +35,31 @@ class ChatHandler extends Handler {
 
   /**
    * Initialize the chat connection with the input user.
-   * @param {string} user twitch channel to connect
-   * @param {string} oauth twitch irc oauth to send messages
+   * @param {string} channel twitch channel to connect
    */
-  init(user, oauth) {
-    this.channel = user.toLowerCase();
+  init(channel) {
+    this.channel = channel.toLowerCase();
     ComfyJS.onConnected = ( address, port, isFirstConnect ) => {
       if (isFirstConnect) {
         this.success();
       }
     }
-    if (user) {
-      if (oauth) {
-        ComfyJS.Init(user, oauth);
-      } else {
-        ComfyJS.Init(user);
+
+    Storage.onChange("ChatOAuth", (_, value) => {
+      if (Debug.All || Debug.Chat) {
+        console.error("New chat oauth value detected")
       }
-    }
+      if (ComfyJS.GetClient() !== null) {
+        if (Debug.All || Debug.Chat) {
+          console.error("Disconnecting ComfyJS")
+        }
+        ComfyJS.Disconnect();
+      }
+      if (Debug.All || Debug.Chat) {
+        console.error("Initializing ComfyJS")
+      }
+      ComfyJS.Init(channel, `oauth:${value}`);
+    }, true);
   }
 
   /**
@@ -509,8 +517,7 @@ class ChatHandler extends Handler {
  */
 async function chatHandlerExport() {
   var chat = new ChatHandler();
-  var user = await readFile('settings/chat/user.txt');
-  var oauth = await readFile('settings/chat/oauth.txt');
-  chat.init(user.trim(), oauth.trim());
+  var channel = await readFile('settings/chat/channel.txt');
+  chat.init(channel.trim());
 }
 chatHandlerExport();
