@@ -10,7 +10,7 @@ Kruiz Control enables a pseudo code approach to manage and automatically handle 
 <p align="center"><b>
   <a href="https://youtu.be/BwDzVOh1MCM">Tutorial</a> |
   <a href="https://github.com/Kruiser8/Kruiz-Control/archive/master.zip">Download</a> |
-  <a href="https://github.com/Kruiser8/Kruiz-Control/blob/master/js/Documentation.md#kruiz-control-documentation">Documentation</a> |
+  <a href="js/Documentation.md#kruiz-control-documentation">Documentation</a> |
   <a href="https://github.com/Kruiser8/Kruiz-Control/blob/master/settings/Settings.md#kruiz-control-settings">Settings</a>
 </b></p>
 
