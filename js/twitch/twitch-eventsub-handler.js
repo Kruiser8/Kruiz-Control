@@ -86,6 +86,13 @@ class EventSubHandler {
     ws.onclose = (event) => {
         const { code, reason } = event;
         console.error(`Twitch EventSub WebSocket connection closed. ${code}:${reason}`);
+        this.addConnection((newId) => {
+          console.error("Twitch EventSub reconnected after connection closed.")
+          clearTimeout(ws.keepaliveTimeout);
+          this.wsId = newId;
+          this.deleteOldSubscriptions();
+          this.addSubscriptions();
+        });
     };
   }
 
