@@ -11,7 +11,7 @@ Kruiz Control enables a pseudo code approach to manage and automatically handle 
   <a href="https://youtu.be/BwDzVOh1MCM">Tutorial</a> |
   <a href="https://github.com/Kruiser8/Kruiz-Control/archive/master.zip">Download</a> |
   <a href="js/Documentation.md#kruiz-control-documentation">Documentation</a> |
-  <a href="https://github.com/Kruiser8/Kruiz-Control/blob/master/settings/Settings.md#kruiz-control-settings">Settings</a>
+  <a href="settings/Settings.md#kruiz-control-settings">Settings</a>
 </b></p>
 
 <p align="center"><i><b>
@@ -48,9 +48,9 @@ Kruiz Control enables a pseudo code approach to manage and automatically handle 
 ## Setup Guide
 
 - Add the **index.html** to OBS or SLOBS as a browser source.
-- Fill out [the settings files](https://github.com/Kruiser8/Kruiz-Control/blob/master/settings/Settings.md) in the settings folder.
+- Fill out [the settings files](settings/Settings.md) in the settings folder.
 - Type `!example` in your twitch chat. If your user responds with `Success! It worked!`, you're good to go!
-- Customize the _triggers.txt_ with your own triggers from the [the documentation](https://github.com/Kruiser8/Kruiz-Control/blob/master/js/Documentation.md).
+- Customize the _triggers.txt_ with your own triggers from the [the documentation](js/Documentation.md).
 
 _Note: If you're on OBS v27 or lower, you'll also have to install the [OBS Websocket Plugin](https://github.com/Palakis/obs-websocket/releases/latest). Reopen OBS after installing._
 
@@ -71,7 +71,7 @@ Kruiz Control supports
 - Timers (triggering on an interval)
 - Sending API calls
 
-and more in [the documentation](https://github.com/Kruiser8/Kruiz-Control/blob/master/js/Documentation.md)!
+and more in [the documentation](js/Documentation.md)!
 
 The script should run on any broadcast software that supports browser sources, however only OBS and SLOBS support changing scenes and sources. OBS.Live is supported.
 
@@ -83,7 +83,7 @@ The script should run on any broadcast software that supports browser sources, h
 Add the **index.html** file as a browser source within your broadcast software. It is *recommended* to add this source to one scene that is included in all other scenes (like your alert scene) rather than recreate this source in every scene.
 
 ### Settings
-Before the script will work, you'll need to fill out all of the settings files. Please see the [settings description](https://github.com/Kruiser8/Kruiz-Control/blob/master/settings/Settings.md) for more information.
+Before the script will work, you'll need to fill out all of the settings files. Please see the [settings description](settings/Settings.md) for more information.
 
 #### Steps for adding to OBS/SLOBS
 - In OBS, under **Sources** click the + icon to add a new **Browser** source.
@@ -102,7 +102,7 @@ It is **highly recommended** to use a password!
 ## Usage
 
 ### Pseudo Code Format
-For information on the pseudo code format, please see [the documentation](https://github.com/Kruiser8/Kruiz-Control/blob/master/js/Documentation.md).
+For information on the pseudo code format, please see [the documentation](js/Documentation.md).
 
 ### triggers.txt
 Setup your triggers inside of this file if you do not need actions to be run one after another.
@@ -139,7 +139,7 @@ Delay 5
 ```
 
 ### sounds folder
-In order to use a sound with [`Play`](https://github.com/Kruiser8/Kruiz-Control/blob/master/js/Documentation.md#play), add the sound file to the *sounds* folder. The supported audio formats are mp3, wav, and ogg.
+In order to use a sound with [`Play`](js/Documentation.md#play), add the sound file to the *sounds* folder. The supported audio formats are mp3, wav, and ogg.
 
 ***
 

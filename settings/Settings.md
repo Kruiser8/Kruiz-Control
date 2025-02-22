@@ -205,7 +205,7 @@ Use the below settings to toggle how Variables are configured in Kruiz Control.
 
 **Format:** `<on/off>`
 
-Specify whether or not Kruiz Control should automatically load all variables (session and global) without having to use [`Variable Load`](https://github.com/Kruiser8/Kruiz-Control/blob/master/js/Documentation.md#variable-load) or [`Variable Global Load`](https://github.com/Kruiser8/Kruiz-Control/blob/master/js/Documentation.md#variable-global-load).
+Specify whether or not Kruiz Control should automatically load all variables (session and global) without having to use [`Variable Load`](js/Documentation.md#variable-load) or [`Variable Global Load`](js/Documentation.md#variable-global-load).
 
 (Default) If set to `off`, variables must be loaded before they can be used.
 
