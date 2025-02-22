@@ -4,6 +4,7 @@ class TwitchHandler extends Handler {
    */
   constructor() {
     super('Twitch', ['OnTWCommunityGoalStart', 'OnTWCommunityGoalProgress', 'OnTWCommunityGoalComplete', 'OnTWChannelUpdate', 'OnTWFollow', 'OnTWAd', 'OnTWChatClear', 'OnTWChatClearUser', 'OnTWSub', 'OnTWSubEnd', 'OnTWSubGift', 'OnTWSubMessage', 'OnTWCheer', 'OnTWRaid', 'OnTWBan', 'OnTWTimeout', 'OnTWUnban', 'OnTWModAdd', 'OnTWModRemove', 'OnTWChannelPoint', 'OnTWChannelPointCompleted', 'OnTWChannelPointRejected', 'OnTWPoll', 'OnTWPollUpdate', 'OnTWPollEnd', 'OnTWPrediction', 'OnTWPredictionUpdate', 'OnTWPredictionLock', 'OnTWPredictionEnd', 'OnTWSuspiciousUser', 'OnTWVIP', 'OnTWUnVIP', 'OnTWHypeTrainStart', 'OnTWHypeTrainConductor', 'OnTWHypeTrainProgress', 'OnTWHypeTrainLevel', 'OnTWHypeTrainEnd', 'OnTWCharityDonation', 'OnTWCharityStarted', 'OnTWCharityProgress', 'OnTWCharityStopped', 'OnTWShieldStart', 'OnTWShieldStop', 'OnTWShoutout', 'OnTWShoutoutReceived', 'OnTWGoalStarted', 'OnTWGoalProgress', 'OnTWGoalCompleted', 'OnTWGoalFailed', 'OnTWStreamStarted', 'OnTWStreamStopped']);
+    this.useChatAuth = false;
     this.rewards = [];
     this.rewardsTrigger = {};
     this.completedRewards = [];
@@ -41,14 +42,16 @@ class TwitchHandler extends Handler {
    * @param {string} code the Twitch API authorization code
    * @param {string} channelId the user ID of the twitch user
    */
-  async init(user, clientId, clientSecret, code, channelId) {
-    connectPubSubWebsocket(channelId, this.onMessage.bind(this));
+  init = async (user, clientId, clientSecret, code, channelId, chatCode) => {
+    connectPubSubWebsocket(channelId, this.onMessage);
     this.user = user;
     this.channelId = channelId;
     this.initializePoll();
     this.initializePrediction();
     var accessToken = await IDBService.get('CUTWAT');
     var refreshToken = await IDBService.get('CUTWRT');
+    var chatAccessToken = await IDBService.get('CUTWCAT');
+    var chatRefreshToken = await IDBService.get('CUTWCRT');
 
     this.api = new TwitchAPI(clientId, clientSecret, code, accessToken, refreshToken, this.updateTokens);
     var initClientId = await IDBService.get('INTWC');
@@ -66,17 +69,47 @@ class TwitchHandler extends Handler {
     } else {
       try {
         await this.api.getChannelInformation(this.channelId);
-        accessToken = await IDBService.get('CUTWAT');
-        refreshToken = await IDBService.get('CUTWRT');
       } catch (error) {
         console.error(JSON.stringify(error));
       }
     }
 
-    Storage.set("ChatOAuth", accessToken);
+    if (chatCode) {
+      this.useChatAuth = true;
+      this.chatApi = new TwitchAPI(clientId, clientSecret, chatCode, chatAccessToken, chatRefreshToken, this.updateChatTokens);
+      var initChatCode = await IDBService.get('INTWCCD');
+
+      if (clientId != initClientId || clientSecret != initClientSecret || chatCode != initChatCode) {
+        console.error("New chat code detected. Requesting new chat auth token.");
+        try {
+          var { accessToken: newChatAccessToken, refreshToken: newChatRefreshToken } = await this.chatApi.requestAuthToken();
+          chatAccessToken = newChatAccessToken;
+          this.updateChatTokens(clientId, clientSecret, chatCode, newChatAccessToken, newChatRefreshToken, true);
+        } catch (error) {
+          console.error(JSON.stringify(error));
+        }
+      } else {
+        try {
+          await this.chatApi.getChannelInformation(this.channelId);
+          chatAccessToken = await IDBService.get('CUTWCAT');
+        } catch (error) {
+          console.error(JSON.stringify(error));
+        }
+      }
+
+      this.chatApiTimeout = setInterval(async () => {
+        console.error("Checking Chat API permissions...");
+        this.chatApi.getChannelInformation(this.channelId);
+      }, 300000);
+    }
+
+    if (Debug.All || Debug.Twitch) {
+      console.error(`Updating chat oauth from ${this.useChatAuth ? "chat" : "twitch"} setting`);
+    }
+    Storage.set("ChatOAuth", this.useChatAuth ? chatAccessToken : accessToken);
 
     try {
-      this.eventSub = new EventSubHandler(this.api, this.channelId, this.onEventMessage.bind(this));
+      this.eventSub = new EventSubHandler(this.api, this.channelId, this.onEventMessage);
     } catch (error) {
       console.error(JSON.stringify(error));
       console.error(error);
@@ -104,6 +137,28 @@ class TwitchHandler extends Handler {
     IDBService.set('CUTWCD', code);
     IDBService.set('CUTWAT', accessToken);
     IDBService.set('CUTWRT', refreshToken);
+
+    if (!this.useChatAuth) {
+      Storage.set("ChatOAuth", accessToken);
+    }
+  }
+
+  /**
+   * Update the internally stored tokens with updates.
+   * @param {string} clientId unused
+   * @param {string} clientSecret unused
+   * @param {string} code the Twitch API authorization code
+   * @param {string} accessToken the Twitch API access token
+   * @param {string} refreshToken the Twitch API refresh token
+   * @param {string} updateInitial whether or not to update the initial stored values
+   */
+  updateChatTokens = (clientId, clientSecret, code, accessToken, refreshToken, updateInitial) => {
+    if (updateInitial) {
+      IDBService.set('INTWCCD', code);
+    }
+    IDBService.set('CUTWCCD', code);
+    IDBService.set('CUTWCAT', accessToken);
+    IDBService.set('CUTWCRT', refreshToken);
 
     Storage.set("ChatOAuth", accessToken);
   }
@@ -2087,7 +2142,8 @@ async function twitchHandlerExport() {
  var clientSecret = await readFile('settings/twitch/clientSecret.txt');
  var code = await readFile('settings/twitch/code.txt');
  var user = await readFile('settings/twitch/user.txt');
+ var chatCode = await readFile('settings/chat/code.txt');
  var id = await getIdFromUser(user.trim());
- twitch.init(user.trim(), clientId.trim(), clientSecret.trim(), code.trim(), id.trim());
+ twitch.init(user.trim(), clientId.trim(), clientSecret.trim(), code.trim(), id.trim(), chatCode.trim());
 }
 twitchHandlerExport();

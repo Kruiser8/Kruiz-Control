@@ -40,6 +40,7 @@ class ChatHandler extends Handler {
   init(channel) {
     this.channel = channel.toLowerCase();
     ComfyJS.onConnected = ( address, port, isFirstConnect ) => {
+      console.error("Chat connected successfully");
       if (isFirstConnect) {
         this.success();
       }
