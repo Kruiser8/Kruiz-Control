@@ -13,9 +13,6 @@ class EventSubHandler {
     this.onMessage = onMessage;
     this.wsId = "";
 
-    this.addConnection.bind(this);
-    this.addSubscriptions.bind(this);
-
     this.addConnection((id) => {
       this.wsId = id;
       this.deleteOldSubscriptions();
@@ -23,7 +20,7 @@ class EventSubHandler {
     }, this.wsUrl);
   }
 
-  addConnection(onWelcome, url = this.wsUrl) {
+  addConnection = (onWelcome, url = this.wsUrl) => {
     const ws = new WebSocket(url);
     ws.onmessage = (event) => {
       if (Debug.Twitch || Debug.All) {
@@ -96,7 +93,7 @@ class EventSubHandler {
     };
   }
 
-  async resubscribe(type, version, condition) {
+  resubscribe = async (type, version, condition) => {
     if (Debug.Twitch || Debug.All) {
         console.error(`Resubscribing to ${type}`);
     }
@@ -106,7 +103,7 @@ class EventSubHandler {
     }
   }
 
-  async addSubscriptions() {
+  addSubscriptions = async () => {
     const subscriptions = [
       {
         type: 'channel.update',
@@ -339,7 +336,7 @@ class EventSubHandler {
     }
   }
 
-  async deleteOldSubscriptions() {
+  deleteOldSubscriptions = async () => {
     var { total, data} = await this.api.getEventSubSubscriptions();
     if (total > 0) {
       for (var i = 0; i < data.length; i++) {

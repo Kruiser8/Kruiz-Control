@@ -4,7 +4,7 @@ class StorageEmitter {
         this.events = new Map();
     }
 
-    onChange(key, callback, fireOnInit) {
+    onChange = (key, callback, fireOnInit) => {
         if (this.events.has(key)) {
             this.events.get(key).push(callback);
         } else {
@@ -16,7 +16,7 @@ class StorageEmitter {
         }
     }
 
-    set(key, value) {
+    set = (key, value) => {
         if (
             !this.data.has(key) || this.data.get(key) !== value
         ) {

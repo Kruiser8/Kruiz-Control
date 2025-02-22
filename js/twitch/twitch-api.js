@@ -6,15 +6,9 @@ class TwitchAPI {
     this.accessToken = accessToken;
     this.refreshToken = refreshToken;
     this.updateTokens = tokensUpdatedCallback;
-
-    this.getAuthUrl.bind(this);
-    this.callTwitchApi.bind(this);
-    this.callTwitchApiJson.bind(this);
-    this.requestAuthToken.bind(this);
-    this.refreshAuthToken.bind(this);
   }
 
-  getAuthUrl() {
+  getAuthUrl = () => {
     var scopes = [
       'bits:read',
       'channel:edit:commercial',
@@ -57,7 +51,7 @@ class TwitchAPI {
     return `https://id.twitch.tv/oauth2/authorize?response_type=code&client_id=${this.clientId}&redirect_uri=http://localhost&scope=${scopes.join('%20')}`;
   }
 
-  async callTwitchApi({ method, endpoint, headers, params, data }) {
+  callTwitchApi = async ({ method, endpoint, headers, params, data }) => {
     headers = headers || {};
     headers = {
       'Authorization': `Bearer ${this.accessToken}`,
@@ -128,7 +122,7 @@ class TwitchAPI {
     return result;
   }
 
-  async callTwitchApiJson({ method, endpoint, headers, params, data }) {
+  callTwitchApiJson = async ({ method, endpoint, headers, params, data }) => {
     headers = {
       "Content-Type": "application/json",
       ...headers
@@ -137,7 +131,7 @@ class TwitchAPI {
     return await this.callTwitchApi({ method, endpoint, headers, params, data })
   }
 
-  async requestAuthToken() {
+  requestAuthToken = async () => {
     var response;
 
     var details = {
@@ -197,7 +191,7 @@ class TwitchAPI {
     return response;
   }
 
-  async refreshAuthToken({ method, endpoint, headers, params, data }) {
+  refreshAuthToken = async ({ method, endpoint, headers, params, data }) => {
     var details = {
       'client_id': this.clientId,
       'client_secret': this.clientSecret,
@@ -261,7 +255,7 @@ class TwitchAPI {
     });
   }
 
-  async startCommercial(data) {
+  startCommercial = async (data) => {
     await this.callTwitchApiJson({
       method: 'POST',
       endpoint: 'https://api.twitch.tv/helix/channels/commercial',
@@ -269,7 +263,7 @@ class TwitchAPI {
     });
   }
 
-  async getAdSchedule(broadcaster_id) {
+  getAdSchedule = async (broadcaster_id) => {
     return await this.callTwitchApi({
       method: 'GET',
       endpoint: 'https://api.twitch.tv/helix/channels/ads',
@@ -279,7 +273,7 @@ class TwitchAPI {
     });
   }
 
-  async getBitsLeaderboard(params) {
+  getBitsLeaderboard = async (params) => {
     return await this.callTwitchApi({
       method: 'GET',
       endpoint: 'https://api.twitch.tv/helix/bits/leaderboard',
@@ -287,7 +281,7 @@ class TwitchAPI {
     });
   }
 
-  async getChannelInformation(broadcaster_id) {
+  getChannelInformation = async (broadcaster_id) => {
     return await this.callTwitchApi({
       method: 'GET',
       endpoint: 'https://api.twitch.tv/helix/channels',
@@ -297,7 +291,7 @@ class TwitchAPI {
     });
   }
 
-  async modifyChannelInformation(broadcaster_id, data) {
+  modifyChannelInformation = async (broadcaster_id, data) => {
     await this.callTwitchApiJson({
       method: 'PATCH',
       endpoint: 'https://api.twitch.tv/helix/channels',
@@ -308,7 +302,7 @@ class TwitchAPI {
     });
   }
 
-  async getChannelFollowers(broadcaster_id, user_id) {
+  getChannelFollowers = async (broadcaster_id, user_id) => {
     return await this.callTwitchApi({
       method: 'GET',
       endpoint: 'https://api.twitch.tv/helix/channels/followers',
@@ -319,7 +313,7 @@ class TwitchAPI {
     });
   }
 
-  async createCustomRewards(broadcaster_id, data) {
+  createCustomRewards = async (broadcaster_id, data) => {
     await this.callTwitchApiJson({
       method: 'POST',
       endpoint: 'https://api.twitch.tv/helix/channel_points/custom_rewards',
@@ -330,7 +324,7 @@ class TwitchAPI {
     });
   }
 
-  async getCustomReward(broadcaster_id, only_manageable_rewards) {
+  getCustomReward = async (broadcaster_id, only_manageable_rewards) => {
     only_manageable_rewards = only_manageable_rewards || false;
     return await this.callTwitchApi({
       method: 'GET',
@@ -342,7 +336,7 @@ class TwitchAPI {
     });
   }
 
-  async updateCustomReward(broadcaster_id, reward_id, data) {
+  updateCustomReward = async (broadcaster_id, reward_id, data) => {
     await this.callTwitchApiJson({
       method: 'PATCH',
       endpoint: 'https://api.twitch.tv/helix/channel_points/custom_rewards',
@@ -354,7 +348,7 @@ class TwitchAPI {
     });
   }
 
-  async updateRedemptionStatus(broadcaster_id, reward_id, redemption_id, status) {
+  updateRedemptionStatus = async (broadcaster_id, reward_id, redemption_id, status) => {
     await this.callTwitchApiJson({
       method: 'PATCH',
       endpoint: 'https://api.twitch.tv/helix/channel_points/custom_rewards/redemptions',
@@ -369,7 +363,7 @@ class TwitchAPI {
     });
   }
 
-  async getChatters(broadcaster_id, moderator_id, first, after) {
+  getChatters = async (broadcaster_id, moderator_id, first, after) => {
     var params = {
       broadcaster_id,
       moderator_id,
@@ -386,7 +380,7 @@ class TwitchAPI {
     });
   }
 
-  async getAllChatters(broadcaster_id, moderator_id) {
+  getAllChatters = async (broadcaster_id, moderator_id) => {
     var first = 100;
     var cursor = '';
     var isComplete = false;
@@ -409,7 +403,7 @@ class TwitchAPI {
     return result;
   }
 
-  async getChannelEmotes(broadcaster_id) {
+  getChannelEmotes = async (broadcaster_id) => {
     return await this.callTwitchApi({
       method: 'GET',
       endpoint: 'https://api.twitch.tv/helix/chat/emotes',
@@ -419,7 +413,7 @@ class TwitchAPI {
     });
   }
 
-  async getChatSettings(broadcaster_id) {
+  getChatSettings = async (broadcaster_id) => {
     return await this.callTwitchApi({
       method: 'GET',
       endpoint: 'https://api.twitch.tv/helix/chat/settings',
@@ -429,7 +423,7 @@ class TwitchAPI {
     });
   }
 
-  async updateChatSettings(broadcaster_id, moderator_id, data) {
+  updateChatSettings = async (broadcaster_id, moderator_id, data) => {
     return await this.callTwitchApiJson({
       method: 'PATCH',
       endpoint: 'https://api.twitch.tv/helix/chat/settings',
@@ -441,7 +435,7 @@ class TwitchAPI {
     });
   }
 
-  async sendChatAnnouncement(broadcaster_id, moderator_id, data) {
+  sendChatAnnouncement = async (broadcaster_id, moderator_id, data) => {
     return await this.callTwitchApiJson({
       method: 'POST',
       endpoint: 'https://api.twitch.tv/helix/chat/announcements',
@@ -453,7 +447,7 @@ class TwitchAPI {
     });
   }
 
-  async sendShoutout(from_broadcaster_id, to_broadcaster_id, moderator_id) {
+  sendShoutout = async (from_broadcaster_id, to_broadcaster_id, moderator_id) => {
     return await this.callTwitchApi({
       method: 'POST',
       endpoint: 'https://api.twitch.tv/helix/chat/shoutouts',
@@ -465,7 +459,7 @@ class TwitchAPI {
     });
   }
 
-  async getUserChatColor(user_id) {
+  getUserChatColor = async (user_id) => {
     return await this.callTwitchApi({
       method: 'GET',
       endpoint: 'https://api.twitch.tv/helix/chat/color',
@@ -475,7 +469,7 @@ class TwitchAPI {
     });
   }
 
-  async updateUserChatColor(user_id, color) {
+  updateUserChatColor = async (user_id, color) => {
     await this.callTwitchApi({
       method: 'PUT',
       endpoint: 'https://api.twitch.tv/helix/chat/color',
@@ -486,7 +480,7 @@ class TwitchAPI {
     });
   }
 
-  async createClip(broadcaster_id, has_delay) {
+  createClip = async (broadcaster_id, has_delay) => {
     return await this.callTwitchApi({
       method: 'POST',
       endpoint: 'https://api.twitch.tv/helix/clips',
@@ -497,7 +491,7 @@ class TwitchAPI {
     });
   }
 
-  async getClips(params) {
+  getClips = async (params) => {
     return await this.callTwitchApi({
       method: 'GET',
       endpoint: 'https://api.twitch.tv/helix/clips',
@@ -505,15 +499,15 @@ class TwitchAPI {
     });
   }
 
-  async getClipsByBroadcasterId(broadcaster_id, first) {
+  getClipsByBroadcasterId = async (broadcaster_id, first) => {
     return await this.getClips({ broadcaster_id, first });
   }
 
-  async getClipsById(id) {
+  getClipsById = async (id) => {
     return await this.getClips({ id });
   }
 
-  async createEventSubSubscription(type, version, condition, session) {
+  createEventSubSubscription = async (type, version, condition, session) => {
     return await this.callTwitchApiJson({
       method: 'POST',
       endpoint: 'https://api.twitch.tv/helix/eventsub/subscriptions',
@@ -529,7 +523,7 @@ class TwitchAPI {
     });
   }
 
-  async deleteEventSubSubscription(id) {
+  deleteEventSubSubscription = async (id) => {
     return await this.callTwitchApi({
       method: 'DELETE',
       endpoint: 'https://api.twitch.tv/helix/eventsub/subscriptions',
@@ -539,14 +533,14 @@ class TwitchAPI {
     });
   }
 
-  async getEventSubSubscriptions() {
+  getEventSubSubscriptions = async () => {
     return await this.callTwitchApi({
       method: 'GET',
       endpoint: 'https://api.twitch.tv/helix/eventsub/subscriptions'
     });
   }
 
-  async getGameId(name) {
+  getGameId = async (name) => {
     var response = await this.callTwitchApi({
       method: 'GET',
       endpoint: 'https://api.twitch.tv/helix/games',
@@ -562,7 +556,7 @@ class TwitchAPI {
     throw Error(`Unable to retrieve Twitch game id with name: ${name}`);
   }
 
-  async getCreatorGoals(broadcaster_id) {
+  getCreatorGoals = async (broadcaster_id) => {
     return await this.callTwitchApi({
       method: 'GET',
       endpoint: 'https://api.twitch.tv/helix/goals',
@@ -572,7 +566,7 @@ class TwitchAPI {
     });
   }
 
-  async banUser(broadcaster_id, moderator_id, data) {
+  banUser = async (broadcaster_id, moderator_id, data) => {
     await this.callTwitchApiJson({
       method: 'POST',
       endpoint: 'https://api.twitch.tv/helix/moderation/bans',
@@ -586,7 +580,7 @@ class TwitchAPI {
     });
   }
 
-  async unbanUser(broadcaster_id, moderator_id, user_id) {
+  unbanUser = async (broadcaster_id, moderator_id, user_id) => {
     await this.callTwitchApi({
       method: 'DELETE',
       endpoint: 'https://api.twitch.tv/helix/moderation/bans',
@@ -598,7 +592,7 @@ class TwitchAPI {
     });
   }
 
-  async getBlockedTerms(broadcaster_id, moderator_id, first, after) {
+  getBlockedTerms = async (broadcaster_id, moderator_id, first, after) => {
     var params = {
       broadcaster_id,
       moderator_id,
@@ -615,7 +609,7 @@ class TwitchAPI {
     });
   }
 
-  async getBlockedTermId(broadcaster_id, moderator_id, term) {
+  getBlockedTermId = async (broadcaster_id, moderator_id, term) => {
     var first = 100;
     var after = '';
     var isComplete = false;
@@ -639,7 +633,7 @@ class TwitchAPI {
     }
   }
 
-  async addBlockedTerm(broadcaster_id, moderator_id, text) {
+  addBlockedTerm = async (broadcaster_id, moderator_id, text) => {
     await this.callTwitchApiJson({
       method: 'POST',
       endpoint: 'https://api.twitch.tv/helix/moderation/blocked_terms',
@@ -653,7 +647,7 @@ class TwitchAPI {
     });
   }
 
-  async removeBlockedTerm(broadcaster_id, moderator_id, id) {
+  removeBlockedTerm = async (broadcaster_id, moderator_id, id) => {
     await this.callTwitchApi({
       method: 'DELETE',
       endpoint: 'https://api.twitch.tv/helix/moderation/blocked_terms',
@@ -665,7 +659,7 @@ class TwitchAPI {
     });
   }
 
-  async deleteChatMessages(broadcaster_id, moderator_id, message_id) {
+  deleteChatMessages = async (broadcaster_id, moderator_id, message_id) => {
     await this.callTwitchApi({
       method: 'DELETE',
       endpoint: 'https://api.twitch.tv/helix/moderation/chat',
@@ -677,7 +671,7 @@ class TwitchAPI {
     });
   }
 
-  async getModerators(broadcaster_id, first, after) {
+  getModerators = async (broadcaster_id, first, after) => {
     var params = {
       broadcaster_id,
       first
@@ -693,7 +687,7 @@ class TwitchAPI {
     });
   }
 
-  async getAllModerators(broadcaster_id) {
+  getAllModerators = async (broadcaster_id) => {
     var first = 100;
     var after = '';
     var isComplete = false;
@@ -717,7 +711,7 @@ class TwitchAPI {
     return moderators;
   }
 
-  async addChannelModerator(broadcaster_id, user_id) {
+  addChannelModerator = async (broadcaster_id, user_id) => {
     await this.callTwitchApi({
       method: 'POST',
       endpoint: 'https://api.twitch.tv/helix/moderation/moderators',
@@ -728,7 +722,7 @@ class TwitchAPI {
     });
   }
 
-  async removeChannelModerator(broadcaster_id, user_id) {
+  removeChannelModerator = async (broadcaster_id, user_id) => {
     await this.callTwitchApi({
       method: 'DELETE',
       endpoint: 'https://api.twitch.tv/helix/moderation/moderators',
@@ -739,7 +733,7 @@ class TwitchAPI {
     });
   }
 
-  async getVIPs(broadcaster_id, first, after) {
+  getVIPs = async (broadcaster_id, first, after) => {
     var params = {
       broadcaster_id,
       first
@@ -755,7 +749,7 @@ class TwitchAPI {
     });
   }
 
-  async getAllVIPs(broadcaster_id) {
+  getAllVIPs = async (broadcaster_id) => {
     var first = 100;
     var after = '';
     var isComplete = false;
@@ -779,7 +773,7 @@ class TwitchAPI {
     return vips;
   }
 
-  async addChannelVIP(broadcaster_id, user_id) {
+  addChannelVIP = async (broadcaster_id, user_id) => {
     await this.callTwitchApi({
       method: 'POST',
       endpoint: 'https://api.twitch.tv/helix/channels/vips',
@@ -790,7 +784,7 @@ class TwitchAPI {
     });
   }
 
-  async removeChannelVIP(broadcaster_id, user_id) {
+  removeChannelVIP = async (broadcaster_id, user_id) => {
     await this.callTwitchApi({
       method: 'DELETE',
       endpoint: 'https://api.twitch.tv/helix/channels/vips',
@@ -801,7 +795,7 @@ class TwitchAPI {
     });
   }
 
-  async updateShieldModeStatus(broadcaster_id, moderator_id, is_active) {
+  updateShieldModeStatus = async (broadcaster_id, moderator_id, is_active) => {
     await this.callTwitchApiJson({
       method: 'PUT',
       endpoint: 'https://api.twitch.tv/helix/moderation/shield_mode',
@@ -815,7 +809,7 @@ class TwitchAPI {
     });
   }
 
-  async getShieldModeStatus(broadcaster_id, moderator_id) {
+  getShieldModeStatus = async (broadcaster_id, moderator_id) => {
     return await this.callTwitchApi({
       method: 'GET',
       endpoint: 'https://api.twitch.tv/helix/moderation/shield_mode',
@@ -826,7 +820,7 @@ class TwitchAPI {
     });
   }
 
-  async warnChatUser(broadcaster_id, moderator_id, data) {
+  warnChatUser = async (broadcaster_id, moderator_id, data) => {
     await this.callTwitchApi({
       method: 'POST',
       endpoint: 'https://api.twitch.tv/helix/moderation/warnings',
@@ -840,7 +834,7 @@ class TwitchAPI {
     });
   }
 
-  async getPolls(broadcaster_id) {
+  getPolls = async (broadcaster_id) => {
     return await this.callTwitchApi({
       method: 'GET',
       endpoint: 'https://api.twitch.tv/helix/polls',
@@ -850,7 +844,7 @@ class TwitchAPI {
     });
   }
 
-  async createPoll(data) {
+  createPol = async (data) => {
     return await this.callTwitchApiJson({
       method: 'POST',
       endpoint: 'https://api.twitch.tv/helix/polls',
@@ -858,7 +852,7 @@ class TwitchAPI {
     });
   }
 
-  async endPoll(data) {
+  endPoll = async (data) => {
     await this.callTwitchApiJson({
       method: 'PATCH',
       endpoint: 'https://api.twitch.tv/helix/polls',
@@ -866,7 +860,7 @@ class TwitchAPI {
     });
   }
 
-  async getPredictions(broadcaster_id) {
+  getPredictions = async (broadcaster_id) => {
     return await this.callTwitchApi({
       method: 'GET',
       endpoint: 'https://api.twitch.tv/helix/predictions',
@@ -876,7 +870,7 @@ class TwitchAPI {
     });
   }
 
-  async createPrediction(data) {
+  createPrediction = async (data) => {
     return await this.callTwitchApiJson({
       method: 'POST',
       endpoint: 'https://api.twitch.tv/helix/predictions',
@@ -884,7 +878,7 @@ class TwitchAPI {
     });
   }
 
-  async endPrediction(data) {
+  endPrediction = async (data) => {
     await this.callTwitchApiJson({
       method: 'PATCH',
       endpoint: 'https://api.twitch.tv/helix/predictions',
@@ -892,7 +886,7 @@ class TwitchAPI {
     });
   }
 
-  async startARaid(from_broadcaster_id, to_broadcaster_id) {
+  startARaid = async (from_broadcaster_id, to_broadcaster_id) => {
     await this.callTwitchApi({
       method: 'POST',
       endpoint: 'https://api.twitch.tv/helix/raids',
@@ -903,7 +897,7 @@ class TwitchAPI {
     });
   }
 
-  async cancelARaid(broadcaster_id) {
+  cancelARaid = async (broadcaster_id) => {
     await this.callTwitchApi({
       method: 'DELETE',
       endpoint: 'https://api.twitch.tv/helix/raids',
@@ -913,7 +907,7 @@ class TwitchAPI {
     });
   }
 
-  async getFollowedStreams(user_id, first, after) {
+  getFollowedStreams = async (user_id, first, after) => {
     var params = {
       user_id,
       first
@@ -929,7 +923,7 @@ class TwitchAPI {
     });
   }
 
-  async getAllFollowedStreams(user_id) {
+  getAllFollowedStreams = async (user_id) => {
     var first = 100;
     var after = '';
     var isComplete = false;
@@ -953,7 +947,7 @@ class TwitchAPI {
     return streams;
   }
 
-  async createStreamMarker(user_id, description) {
+  createStreamMarker = async (user_id, description) => {
     await this.callTwitchApiJson({
       method: 'POST',
       endpoint: 'https://api.twitch.tv/helix/streams/markers',
@@ -964,7 +958,7 @@ class TwitchAPI {
     });
   }
 
-  async getBroadcasterSubscriptions(broadcaster_id) {
+  getBroadcasterSubscriptions = async (broadcaster_id) => {
     return await this.callTwitchApi({
       method: 'GET',
       endpoint: 'https://api.twitch.tv/helix/subscriptions',
@@ -974,7 +968,7 @@ class TwitchAPI {
     });
   }
 
-  async getChannelTeams(broadcaster_id) {
+  getChannelTeams = async (broadcaster_id) => {
     return await this.callTwitchApi({
       method: 'GET',
       endpoint: 'https://api.twitch.tv/helix/teams/channel',
@@ -985,7 +979,7 @@ class TwitchAPI {
   }
 
   
-  async getUser(id) {
+  getUser = async (id) => {
     return await this.callTwitchApi({
       method: 'GET',
       endpoint: 'https://api.twitch.tv/helix/users',
@@ -995,7 +989,7 @@ class TwitchAPI {
     });
   }
 
-  async updateUser(description) {
+  updateUser = async (description) => {
     await this.callTwitchApi({
       method: 'PUT',
       endpoint: 'https://api.twitch.tv/helix/users',
@@ -1005,7 +999,7 @@ class TwitchAPI {
     });
   }
 
-  async blockUser(target_user_id) {
+  blockUser = async (target_user_id) => {
     await this.callTwitchApi({
       method: 'PUT',
       endpoint: 'https://api.twitch.tv/helix/users/blocks',
@@ -1015,7 +1009,7 @@ class TwitchAPI {
     });
   }
 
-  async unblockUser(target_user_id) {
+  unblockUser = async (target_user_id) => {
     await this.callTwitchApi({
       method: 'DELETE',
       endpoint: 'https://api.twitch.tv/helix/users/blocks',
@@ -1025,7 +1019,7 @@ class TwitchAPI {
     });
   }
 
-  async getVideos(user_id, period, type) {
+  getVideos = async (user_id, period, type) => {
     return await this.callTwitchApi({
       method: 'GET',
       endpoint: 'https://api.twitch.tv/helix/videos',

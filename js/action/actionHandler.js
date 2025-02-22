@@ -15,7 +15,7 @@ class ActionHandler extends Handler {
    * @param {array} triggerLine contents of trigger line
    * @param {number} id of the new trigger
    */
-  addTriggerData(trigger, triggerLine, triggerId) {
+  addTriggerData = (trigger, triggerLine, triggerId) => {
     var { actions } = Parser.getInputs(triggerLine, ['actions'], true);
     // Allow action aliases
     actions.forEach(action => {
@@ -32,7 +32,7 @@ class ActionHandler extends Handler {
    * Handle the input data (take an action).
    * @param {array} triggerData contents of trigger line
    */
-  async handleData(triggerData) {
+  handleData = async (triggerData) => {
     var action = Parser.getAction(triggerData, 'Action', -1);
 
     if (action === "action") {

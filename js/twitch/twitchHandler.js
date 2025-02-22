@@ -25,13 +25,6 @@ class TwitchHandler extends Handler {
       bits: '',
       subs: ''
     }
-
-    this.init.bind(this);
-    this.onMessage.bind(this);
-    this.onCommunityGoalMessage.bind(this);
-    this.onEventMessage.bind(this);
-    this.initializePoll.bind(this);
-    this.initializePrediction.bind(this);
   }
 
   /**
@@ -126,7 +119,7 @@ class TwitchHandler extends Handler {
    * @param {string} refreshToken the Twitch API refresh token
    * @param {string} updateInitial whether or not to update the initial stored values
    */
-  updateTokens(clientId, clientSecret, code, accessToken, refreshToken, updateInitial) {
+  updateTokens = (clientId, clientSecret, code, accessToken, refreshToken, updateInitial) => {
     if (updateInitial) {
       IDBService.set('INTWC', clientId);
       IDBService.set('INTWCS', clientSecret);
@@ -169,7 +162,7 @@ class TwitchHandler extends Handler {
    * @param {array} triggerLine contents of trigger line
    * @param {number} id of the new trigger
    */
-  addTriggerData(trigger, triggerLine, triggerId) {
+  addTriggerData = (trigger, triggerLine, triggerId) => {
     trigger = trigger.toLowerCase();
     switch (trigger) {
       case 'ontwcommunitygoalprogress':
@@ -258,7 +251,7 @@ class TwitchHandler extends Handler {
    * Handle a message from the twitch pubsub.
    * @param {object} message twitch pubsub message
    */
-  onMessage(message) {
+  onMessage = (message) => {
     if (Debug.All || Debug.Twitch) {
       console.error('Twitch PubSub Message: ' + JSON.stringify(message));
     }
@@ -279,7 +272,7 @@ class TwitchHandler extends Handler {
    * Handle event messages from twitch pubsub websocket for community goals.
    * @param {Object} message twitch community goal data
    */
-  onCommunityGoalMessage(message) {
+  onCommunityGoalMessage = (message) => {
     if (message.type === 'community-goal-contribution') {
       // Check if tracking goal
       var goal = message.data.contribution.goal.title;
@@ -349,7 +342,7 @@ class TwitchHandler extends Handler {
    * @param {object} event twitch eventsub event
    * @param {object} subscription twitch eventsub subscription
    */
-  onEventMessage(event, subscription) {
+  onEventMessage = (event, subscription) => {
     if (Debug.All || Debug.Twitch) {
       console.error('Twitch EventSub Event: ' + JSON.stringify(event));
       console.error('Twitch EventSub Subscription: ' + JSON.stringify(subscription));
@@ -1076,7 +1069,7 @@ class TwitchHandler extends Handler {
    * @param {array} triggerData contents of trigger line
    * @param {array} parameters current trigger parameters
    */
-  async handleData(triggerData, parameters) {
+  handleData = async (triggerData, parameters) => {
     var action = Parser.getAction(triggerData, 'Twitch');
     switch (action) {
       case 'addblockedterm':
@@ -1931,7 +1924,7 @@ class TwitchHandler extends Handler {
     }
   }
 
-  isErrorResponse(response) {
+  isErrorResponse = (response) => {
     return response === 'Error with Twitch API';
   }
 
@@ -1939,7 +1932,7 @@ class TwitchHandler extends Handler {
    * Handle the poll data.
    * @param {array} triggerData contents of trigger line
    */
-  async handlePoll(triggerData) {
+  handlePoll = async (triggerData) => {
     var action = Parser.getAction(triggerData, 'Twitch Poll', 1);
     switch (action) {
       case 'cancel':
@@ -2009,7 +2002,7 @@ class TwitchHandler extends Handler {
   /**
    * Set up the poll object.
    */
-   initializePoll() {
+   initializePoll = () => {
      this.poll = {
        broadcaster_id: this.channelId,
        title: '',
@@ -2023,7 +2016,7 @@ class TwitchHandler extends Handler {
    * Handle the prediction data.
    * @param {array} triggerData contents of trigger line
    */
-  async handlePrediction(triggerData) {
+  handlePrediction = async (triggerData) => {
     var action = Parser.getAction(triggerData, 'Twitch Prediction', 1);
     switch (action) {
       case 'cancel':
@@ -2123,7 +2116,7 @@ class TwitchHandler extends Handler {
   /**
    * Set up the prediction object.
    */
-   initializePrediction() {
+   initializePrediction = () => {
      this.prediction = {
        broadcaster_id: this.channelId,
        title: '',

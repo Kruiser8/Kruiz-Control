@@ -6,15 +6,13 @@ class ApiHandler extends Handler {
     super('API', []);
     this.success();
     this.apiCall = {};
-
-    this.initialize.bind(this);
   }
 
   /**
    * Handle the input data (take an action).
    * @param {array} triggerData contents of trigger line
    */
-  async handleData(triggerData) {
+  handleData = async (triggerData) => {
     var action = Parser.getAction(triggerData, 'API');
     if (action === 'get') {
       var { url } = Parser.getInputs(triggerData, ['action', 'url']);
@@ -68,7 +66,7 @@ class ApiHandler extends Handler {
    * Initialize the api data if it does not exist.
    * @param {string} name webhook name
    */
-  initialize(name) {
+  initialize = (name) => {
     if (this.apiCall[name] === undefined) {
       this.apiCall[name] = {
         method: "GET",
@@ -86,7 +84,7 @@ class ApiHandler extends Handler {
    * @param {object} data parameters to send with the call
    * @param {object} headers headers to send with the call
    */
-  async callAPI(method, url, data, headers) {
+  callAPI = async (method, url, data, headers) => {
     data = data || {};
     headers = headers || {};
     var response = null;

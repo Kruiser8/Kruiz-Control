@@ -19,9 +19,6 @@ class OBSHandler extends Handler {
 
     // track current scene for use with OnOBSTransitionTo
     this.currentScene = "unset";
-
-    this.setCurrentScene.bind(this);
-    this.init.bind(this);
   }
 
   /**
@@ -29,10 +26,10 @@ class OBSHandler extends Handler {
    * @param {string} address obs websocket address
    * @param {string} password obs websocket password
    */
-  init(address, password) {
+  init = (address, password) => {
     this.obs = connectOBSWebsocket(
-      address, password, this, this.onSwitchScenes.bind(this), this.onTransitionBegin.bind(this), this.onStreamStateChange.bind(this),
-      this.onCustomMessage.bind(this), this.onSourceVisibility.bind(this), this.onSourceFilterVisibility.bind(this)
+      address, password, this, this.onSwitchScenes, this.onTransitionBegin, this.onStreamStateChange,
+      this.onCustomMessage, this.onSourceVisibility, this.onSourceFilterVisibility
     );
   }
 
@@ -40,7 +37,7 @@ class OBSHandler extends Handler {
    * Set the current OBS scene name.
    * @param {string} scene obs scene name
    */
-  setCurrentScene(scene) {
+  setCurrentScene = (scene) => {
     this.currentScene = scene;
   }
 
@@ -50,7 +47,7 @@ class OBSHandler extends Handler {
    * @param {array} triggerLine contents of trigger line
    * @param {number} id of the new trigger
    */
-  addTriggerData(trigger, triggerLine, triggerId) {
+  addTriggerData = (trigger, triggerLine, triggerId) => {
     trigger = trigger.toLowerCase();
     switch (trigger) {
       case 'onobsswitchscenes':
@@ -148,7 +145,7 @@ class OBSHandler extends Handler {
    * Handle switch scene messages from obs websocket.
    * @param {Object} data scene information
    */
-  async onSwitchScenes(data) {
+  onSwitchScenes = async (data) => {
     if (Debug.All || Debug.OBS) {
       console.error("OBS onSwitchScenes: " + JSON.stringify(data));
     }
@@ -176,7 +173,7 @@ class OBSHandler extends Handler {
    * Handle transitions from obs websocket.
    * @param {Object} data scene information
    */
-  async onTransitionBegin(data) {
+  onTransitionBegin = async (data) => {
     if (Debug.All || Debug.OBS) {
       console.error("OBS onTransitionBegin: " + JSON.stringify(data));
     }
@@ -206,7 +203,7 @@ class OBSHandler extends Handler {
   /**
    * Handle stream status change messages from obs websocket.
    */
-  onStreamStateChange(data) {
+  onStreamStateChange = (data) => {
     if (Debug.All || Debug.OBS) {
       console.error("OBS onStreamStateChange: " + JSON.stringify(data));
     }
@@ -227,7 +224,7 @@ class OBSHandler extends Handler {
    * Handle custom messages from obs websocket.
    * @param {Object} broadcast obs custom message
    */
-  onCustomMessage(broadcast) {
+  onCustomMessage = (broadcast) => {
     if (Debug.All || Debug.OBS) {
       console.error("OBS onCustomMessage: " + JSON.stringify(broadcast));
     }
@@ -253,7 +250,7 @@ class OBSHandler extends Handler {
    * Handle scene item visibility messages from obs websocket.
    * @param {Object} data scene item information
    */
-  async onSourceVisibility(data) {
+  onSourceVisibility = async (data) => {
     if (Debug.All || Debug.OBS) {
       console.error("OBS onSourceVisibility: " + JSON.stringify(data));
     }
@@ -288,7 +285,7 @@ class OBSHandler extends Handler {
    * Handle source filter visibility messages from obs websocket.
    * @param {Object} data source filter information
    */
-  async onSourceFilterVisibility(data) {
+  onSourceFilterVisibility = (data) => {
     if (Debug.All || Debug.OBS) {
       console.error("OBS onSourceFilterVisibility: " + JSON.stringify(data));
     }
@@ -319,7 +316,7 @@ class OBSHandler extends Handler {
    * Handle the input data (take an action).
    * @param {array} triggerData contents of trigger line
    */
-  async handleData(triggerData) {
+  handleData = async (triggerData) => {
     var action = Parser.getAction(triggerData, 'OBS');
     switch (action) {
       case 'addsceneitem':

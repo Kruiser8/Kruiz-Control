@@ -26,18 +26,13 @@ class ChatHandler extends Handler {
     /* OnHypeChat */
     this.onHypeChats = [];
     this.onHypeChatsInfo = {};
-
-    this.init.bind(this);
-    this.checkPermissions.bind(this);
-    this.addFollowerActions.bind(this);
-    this.onAllChat.bind(this);
   }
 
   /**
    * Initialize the chat connection with the input user.
    * @param {string} channel twitch channel to connect
    */
-  init(channel) {
+  init = (channel) => {
     this.channel = channel.toLowerCase();
     ComfyJS.onConnected = ( address, port, isFirstConnect ) => {
       console.error("Chat connected successfully");
@@ -69,7 +64,7 @@ class ChatHandler extends Handler {
    * @param {array} triggerLine contents of trigger line
    * @param {number} id of the new trigger
    */
-  addTriggerData(trigger, triggerLine, triggerId) {
+  addTriggerData = (trigger, triggerLine, triggerId) => {
     trigger = trigger.toLowerCase();
     switch (trigger) {
       case 'oncommand':
@@ -183,7 +178,7 @@ class ChatHandler extends Handler {
    * Handle the input data (take an action).
    * @param {array} triggerData contents of trigger line
    */
-  async handleData(triggerData) {
+  handleData = async (triggerData) => {
     var action = Parser.getAction(triggerData, 'Chat');
     if (action === 'send') {
       var { message } = Parser.getInputs(triggerData, ['action', 'message']);
@@ -203,7 +198,7 @@ class ChatHandler extends Handler {
    * @param {string} username twitch username that sent the message
    * @param {string} info extra information for the usability
    */
-  checkPermissions(user, flags, permissions, username, info) {
+  checkPermissions = (user, flags, permissions, username, info) => {
     user = user.toLowerCase();
     if (permissions.includes('e')) {
       return [true, 'e'];
@@ -230,7 +225,7 @@ class ChatHandler extends Handler {
    * Check if a trigger is on cooldown.
    * @param {object} info command info object
    */
-  updateCooldown(info) {
+  updateCooldown = (info) => {
     if (info.cooldown === 0) {
       return true;
     }
@@ -247,7 +242,7 @@ class ChatHandler extends Handler {
   /**
    * Called after parsing all user input.
    */
-  postParse() {
+  postParse = () => {
     // Create Keyword Regex
     if (this.keywords.length > 0) {
       this.keywordsRegex = new RegExp('(?:\\b|^|\\s)' + this.keywords.map(x => escapeRegExp(x)).join('(?:\\b|$|\\s)|(?:\\b|^|\\s)') + '(?:\\b|$|\\s)', 'gi');
@@ -436,7 +431,7 @@ class ChatHandler extends Handler {
    * @param {string} permissions usability of the command or keyword
    * @param {string} user twitch display name that sent the message
    */
-  addFollowerActions(permissions, user) {
+  addFollowerActions = (permissions, user) => {
     if (permissions.includes('n')) {
       return [
         ['Ignore', 'Twitch', 'IsFollower', user],
@@ -457,7 +452,7 @@ class ChatHandler extends Handler {
    * @param {string} user that sent the message
    * @param {data} data to send with the OnEveryChatMessage
    */
-  onAllChat(user, data) {
+  onAllChat = (user, data) => {
     // OnEveryChatMessage
     this.chatTriggers.forEach(triggerId => {
       controller.handleData(triggerId, data);

@@ -12,7 +12,7 @@ class VoicemodHandler extends Handler {
    * @param {string} address voicemod websocket address
    * @param {string} password voicemod websocket password
    */
-  init(address, apiKey) {
+  init = (address, apiKey) => {
     this.api = connectVoicemodWebsocket(
       address, apiKey
     );
@@ -22,7 +22,7 @@ class VoicemodHandler extends Handler {
    * Handle the input data (take an action).
    * @param {array} triggerData contents of trigger line
    */
-  async handleData(triggerData) {
+  handleData = async (triggerData) => {
     var action = Parser.getAction(triggerData, 'Voicemod');
     switch (action) {
       case 'background':

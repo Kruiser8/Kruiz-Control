@@ -8,11 +8,6 @@ class SLOBSHandler extends Handler {
     this.onSwitchTrigger = {};
     this.onStartTrigger = [];
     this.onStopTrigger = [];
-
-    this.init.bind(this);
-    this.onSwitchScenes.bind(this);
-    this.onStreamStart.bind(this);
-    this.onStreamStop.bind(this);
   }
 
   /**
@@ -23,9 +18,9 @@ class SLOBSHandler extends Handler {
     this.slobs = connectSLOBSWebsocket(
       this,
       token,
-      this.onSwitchScenes.bind(this),
-      this.onStreamStart.bind(this),
-      this.onStreamStop.bind(this)
+      this.onSwitchScenes,
+      this.onStreamStart,
+      this.onStreamStop
     );
   }
 
@@ -35,7 +30,7 @@ class SLOBSHandler extends Handler {
    * @param {array} triggerLine contents of trigger line
    * @param {number} id of the new trigger
    */
-  addTriggerData(trigger, triggerLine, triggerId) {
+  addTriggerData = (trigger, triggerLine, triggerId) => {
     trigger = trigger.toLowerCase();
     switch (trigger) {
       case 'onslobsswitchscenes':
@@ -64,7 +59,7 @@ class SLOBSHandler extends Handler {
    * Handle switch scene messages from slobs subscription.
    * @param {Object} data scene information
    */
-  async onSwitchScenes(data) {
+  onSwitchScenes = async (data) => {
     var sceneTriggers = [];
     if (this.onSwitch.indexOf(data.name) !== -1) {
       sceneTriggers.push(...this.onSwitchTrigger[data.name]);
@@ -85,7 +80,7 @@ class SLOBSHandler extends Handler {
   /**
    * Handle stream start messages from slobs subscription.
    */
-  onStreamStart() {
+  onStreamStart = () => {
     if (this.onStartTrigger.length > 0) {
       this.onStartTrigger.forEach(trigger => {
         controller.handleData(trigger);
@@ -96,7 +91,7 @@ class SLOBSHandler extends Handler {
   /**
    * Handle stream stop messages from slobs subscription.
    */
-  onStreamStop() {
+  onStreamStop = () => {
     if (this.onStopTrigger.length > 0) {
       this.onStopTrigger.forEach(trigger => {
         controller.handleData(trigger);
@@ -108,7 +103,7 @@ class SLOBSHandler extends Handler {
    * Handle the input data (take an action).
    * @param {array} triggerData contents of trigger line
    */
-  async handleData(triggerData) {
+  handleData = async (triggerData) => {
     var action = Parser.getAction(triggerData, 'SLOBS');
     switch (action) {
       case 'currentscene':

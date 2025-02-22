@@ -45,18 +45,14 @@ class StreamElementsAlertHandler extends Handler {
       'raid-latest': 'raid',
       'subscriber-latest': 'subscriber'
     };
-
-    this.init.bind(this);
-    this.onStreamElementsTestMessage.bind(this);
-    this.onStreamElementsMessage.bind(this);
   }
 
   /**
    * Initialize the connection to streamelements with the input token.
    * @param {string} jwtToken streamelements jwt token
    */
-  init(jwtToken) {
-    connectStreamElementsWebsocket(this, jwtToken, this.onStreamElementsTestMessage.bind(this), this.onStreamElementsMessage.bind(this));
+  init = (jwtToken) => {
+    connectStreamElementsWebsocket(this, jwtToken, this.onStreamElementsTestMessage, this.onStreamElementsMessage);
   }
 
   /**
@@ -65,7 +61,7 @@ class StreamElementsAlertHandler extends Handler {
    * @param {array} triggerLine contents of trigger line
    * @param {number} id of the new trigger
    */
-  addTriggerData(trigger, triggerLine, triggerId) {
+  addTriggerData = (trigger, triggerLine, triggerId) => {
     trigger = trigger.toLowerCase()
     this.alerts.push(this.alertMapping[trigger]);
     this.alertsTrigger[this.alertMapping[trigger]].push(triggerId);
@@ -76,7 +72,7 @@ class StreamElementsAlertHandler extends Handler {
    * Handle event messages from streamelements websocket.
    * @param {Object} message streamelements test event message
    */
-  onStreamElementsTestMessage(message) {
+  onStreamElementsTestMessage = (message) => {
     if (Debug.All || Debug.StreamElements) {
       console.error('StreamElements Message: ' + JSON.stringify(message));
     }
@@ -101,7 +97,7 @@ class StreamElementsAlertHandler extends Handler {
    * Handle event messages from streamelements websocket.
    * @param {Object} message streamelements event message
    */
-  onStreamElementsMessage(message) {
+  onStreamElementsMessage = (message) => {
     if (Debug.All || Debug.StreamElements) {
       console.error('StreamElements Message: ' + JSON.stringify(message));
     }
@@ -125,7 +121,7 @@ class StreamElementsAlertHandler extends Handler {
    * Retrieve the parameters for the bit event.
    * @param {Object} event streamelements event
    */
-  getBitParameters(event) {
+  getBitParameters = (event) => {
     return {
       'data': event,
       'amount': event.amount,
@@ -138,7 +134,7 @@ class StreamElementsAlertHandler extends Handler {
    * Retrieve the parameters for the bulk gift sub event.
    * @param {Object} event streamelements event
    */
-  getBulkGiftParameters(event) {
+  getBulkGiftParameters = (event) => {
     return {
       'data': event,
       'amount': event.amount,
@@ -150,7 +146,7 @@ class StreamElementsAlertHandler extends Handler {
    * Retrieve the parameters for the donation event.
    * @param {Object} event streamelements event
    */
-  getDonationParameters(event) {
+  getDonationParameters = (event) => {
     return {
       'data': event,
       'amount': event.amount,
@@ -163,7 +159,7 @@ class StreamElementsAlertHandler extends Handler {
    * Retrieve the parameters for the follow event.
    * @param {Object} event streamelements event
    */
-  getFollowParameters(event) {
+  getFollowParameters = (event) => {
     return {
       'data': event,
       'user': (event.displayName) ? event.displayName : event.name
@@ -174,7 +170,7 @@ class StreamElementsAlertHandler extends Handler {
    * Retrieve the parameters for the gift sub event.
    * @param {Object} event streamelements event
    */
-  getGiftSubParameters(event) {
+  getGiftSubParameters = (event) => {
     return {
       'data': event,
       'user': (event.displayName) ? event.displayName : event.name,
@@ -187,7 +183,7 @@ class StreamElementsAlertHandler extends Handler {
    * Retrieve the parameters for the host event.
    * @param {Object} event streamelements event
    */
-  getHostParameters(event) {
+  getHostParameters = (event) => {
     return {
       'data': event,
       'user': (event.displayName) ? event.displayName : event.name,
@@ -199,7 +195,7 @@ class StreamElementsAlertHandler extends Handler {
    * Retrieve the parameters for the raid event.
    * @param {Object} event streamelements event
    */
-  getRaidParameters(event) {
+  getRaidParameters = (event) => {
     return {
       'data': event,
       'user': (event.displayName) ? event.displayName : event.name,
@@ -211,7 +207,7 @@ class StreamElementsAlertHandler extends Handler {
    * Retrieve the parameters for the sub event.
    * @param {Object} event streamelements event
    */
-  getSubParameters(event) {
+  getSubParameters = (event) => {
     return {
       'data': event,
       'user': (event.displayName) ? event.displayName : event.name,

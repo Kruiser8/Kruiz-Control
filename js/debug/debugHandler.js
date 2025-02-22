@@ -20,7 +20,7 @@ class DebugHandler extends Handler {
    * Handle the input data (take an action).
    * @param {array} triggerData contents of trigger line
    */
-  async handleData(triggerData) {
+  handleData = async (triggerData) => {
     var { handler } = Parser.getInputs(triggerData, ['handler'], false, 1);
     if (handler) {
       handler = handler.toLowerCase();
