@@ -117,6 +117,10 @@ Each handler provides its own triggers and actions that can be used in a trigger
 - [OBS](#obs)
   * [Triggers](#obs-triggers)
     + [OnOBSCustomMessage](#onobscustommessage)
+    + [OnOBSRecordingPaused](#onobsrecordingpaused)
+    + [OnOBSRecordingResumed](#onobsrecordingresumed)
+    + [OnOBSRecordingStarted](#onobsrecordingstarted)
+    + [OnOBSRecordingStopped](#onobsrecordingstopped)
     + [OnOBSSourceVisibility](#onobssourcevisibility)
     + [OnOBSSourceFilterVisibility](#onobssourcefiltervisibility)
     + [OnOBSStreamStarted](#onobsstreamstarted)
@@ -1703,6 +1707,42 @@ Enables the ability to interact with and respond to OBS.
 ------------ | -------------
 **message** | The name of the custom message.
 **data** | The data included with the message (or an empty string).
+
+***
+
+#### OnOBSRecordingPaused
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when a recording is paused.
+**Format** | `OnOBSRecordingPaused`
+**Example** | `OnOBSRecordingPaused`
+
+***
+
+#### OnOBSRecordingResumed
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when a recording resumes after being paused.
+**Format** | `OnOBSRecordingResumed`
+**Example** | `OnOBSRecordingResumed`
+
+***
+
+#### OnOBSRecordingStarted
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when a recording is started.
+**Format** | `OnOBSRecordingStarted`
+**Example** | `OnOBSRecordingStarted`
+
+***
+
+#### OnOBSRecordingStopped
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when a recording is stopped.
+**Format** | `OnOBSRecordingStopped`
+**Example** | `OnOBSRecordingStopped`
 
 ***
 

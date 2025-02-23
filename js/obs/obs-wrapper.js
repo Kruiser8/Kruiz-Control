@@ -6,11 +6,12 @@
 * @param {function} onSwitchScenes handle switch scene messages
 * @param {function} onTransitionBegin handle transition starts
 * @param {function} onStreamStateChange handle stream state change messages
+* @param {function} onRecordingStateChange handle recording state change messages
 * @param {function} onCustomMessage handle custom messages
 * @param {function} onOBSSourceVisibility handle scene item visibility changes
 * @param {function} onOBSSourceFilterVisibility handle source filter visibility changes
 */
-function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTransitionBegin, onStreamStateChange, onCustomMessage, onOBSSourceVisibility, onOBSSourceFilterVisibility) {
+function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTransitionBegin, onStreamStateChange, onRecordingStateChange, onCustomMessage, onOBSSourceVisibility, onOBSSourceFilterVisibility) {
   var obs = new OBSWebSocket();
   obs.connect(address, password).then(async () => {
     const initialize = () => {
@@ -48,6 +49,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
   obs.on('CurrentProgramSceneChanged', onSwitchScenes);
   obs.on('SceneTransitionStarted', onTransitionBegin);
   obs.on('StreamStateChanged', onStreamStateChange);
+  obs.on('RecordStateChanged', onRecordingStateChange);
   obs.on('CustomEvent', onCustomMessage);
   obs.on('SceneItemEnableStateChanged', onOBSSourceVisibility);
   obs.on('SourceFilterEnableStateChanged', onOBSSourceFilterVisibility);

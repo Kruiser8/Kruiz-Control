@@ -3,13 +3,17 @@ class OBSHandler extends Handler {
    * Create a new OBS handler.
    */
   constructor() {
-    super('OBS', ['OnOBSSwitchScenes', 'OnOBSTransitionTo', 'OnOBSStreamStarted', 'OnOBSStreamStopped', 'OnOBSCustomMessage', 'OnOBSSourceVisibility', 'OnOBSSourceFilterVisibility']);
+    super('OBS', ['OnOBSSwitchScenes', 'OnOBSTransitionTo', 'OnOBSStreamStarted', 'OnOBSStreamStopped', 'OnOBSRecordingStarted', 'OnOBSRecordingPaused', 'OnOBSRecordingResumed', 'OnOBSRecordingStopped', 'OnOBSCustomMessage', 'OnOBSSourceVisibility', 'OnOBSSourceFilterVisibility']);
     this.onSwitch = [];
     this.onSwitchTrigger = {};
     this.onTransitionTo = [];
     this.onTransitionToTrigger = {};
     this.onStartTrigger = [];
     this.onStopTrigger = [];
+    this.onRecordingStartTrigger = [];
+    this.onRecordingPauseTrigger = [];
+    this.onRecordingResumeTrigger = [];
+    this.onRecordingStopTrigger = [];
     this.onCustom = [];
     this.onCustomTrigger = {};
     this.onSourceVis = {};
@@ -29,7 +33,7 @@ class OBSHandler extends Handler {
   init = (address, password) => {
     this.obs = connectOBSWebsocket(
       address, password, this, this.onSwitchScenes, this.onTransitionBegin, this.onStreamStateChange,
-      this.onCustomMessage, this.onSourceVisibility, this.onSourceFilterVisibility
+      this.onRecordingStateChange, this.onCustomMessage, this.onSourceVisibility, this.onSourceFilterVisibility
     );
   }
 
@@ -81,6 +85,18 @@ class OBSHandler extends Handler {
         break;
       case 'onobsstreamstopped':
         this.onStopTrigger.push(triggerId);
+        break;
+      case 'onobsrecordingstarted':
+        this.onRecordingStartTrigger.push(triggerId);
+        break;
+      case 'onobsrecordingpaused':
+        this.onRecordingPauseTrigger.push(triggerId);
+        break;
+      case 'onobsrecordingresumed':
+        this.onRecordingResumeTrigger.push(triggerId);
+        break;
+      case 'onobsrecordingstopped':
+        this.onRecordingStopTrigger.push(triggerId);
         break;
       case 'onobscustommessage':
         var { messages } = Parser.getInputs(triggerLine, ['messages'], true);
@@ -217,6 +233,39 @@ class OBSHandler extends Handler {
       this.onStopTrigger.forEach(trigger => {
         controller.handleData(trigger);
       })
+    }
+  }
+
+  /**
+   * Handle recording status change messages from obs websocket.
+   */
+  onRecordingStateChange = (data) => {
+    if (Debug.All || Debug.OBS) {
+      console.error("OBS onRecordingStateChange: " + JSON.stringify(data));
+    }
+
+    if (data.outputState === "OBS_WEBSOCKET_OUTPUT_STARTED" && this.onRecordingStartTrigger.length > 0) {
+      this.onRecordingStartTrigger.forEach(trigger => {
+        controller.handleData(trigger);
+      });
+    }
+
+    if (data.outputState === "OBS_WEBSOCKET_OUTPUT_PAUSED" && this.onRecordingPauseTrigger.length > 0) {
+      this.onRecordingPauseTrigger.forEach(trigger => {
+        controller.handleData(trigger);
+      });
+    }
+
+    if (data.outputState === "OBS_WEBSOCKET_OUTPUT_RESUMED" && this.onRecordingResumeTrigger.length > 0) {
+      this.onRecordingResumeTrigger.forEach(trigger => {
+        controller.handleData(trigger);
+      });
+    }
+
+    if (data.outputState === "OBS_WEBSOCKET_OUTPUT_STOPPED" && this.onRecordingStopTrigger.length > 0) {
+      this.onRecordingStopTrigger.forEach(trigger => {
+        controller.handleData(trigger);
+      });
     }
   }
 
