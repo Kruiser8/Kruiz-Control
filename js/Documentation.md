@@ -570,14 +570,14 @@ The commands, `!so`, `!sh`, `!caster`, and `!shout` will all cause the message t
 ***
 
 ## Default Parameters
-The following parameters are always available. Use the `_successful_` and `_unsuccessful_` parameters to test that the <a href="https://github.com/Kruiser8/Kruiz-Control/blob/master/settings/Settings.md#kruiz-control-settings">Kruiz Control settings</a> are correct.
+The following parameters are always available. Use the `_successful_` and `_unsuccessful_` parameters to test that the <a href="settings/Settings.md#kruiz-control-settings">Kruiz Control settings</a> are correct.
 
 #### Parameters
 | | |
 ------------ | -------------
 **\_successful\_** | A comma delimited list of handlers that initialized correctly.
 **\_unsuccessful\_** | A comma delimited list of handlers that did not initialize correctly.
-**\_kc\_event\_id\_** | A unique id for each event occurrence in Kruiz Control. If you need a unique identifier, use this. The id resets to 0 after 1,000,000,000.
+**\_kc\_event\_id\_** | A unique id (UUID) for each event occurrence in Kruiz Control. If you need a unique identifier for an event, use this.
 
 ***
 
