@@ -4,8 +4,8 @@ class ApiHandler extends Handler {
    */
   constructor() {
     super('API', []);
-    this.success();
     this.apiCall = {};
+    this.success();
   }
 
   /**

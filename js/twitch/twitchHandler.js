@@ -257,9 +257,7 @@ class TwitchHandler extends Handler {
     }
     if (message.data) {
       var data = JSON.parse(message.data);
-      if (data.type === 'RESPONSE' && data.error === '') {
-        this.success();
-      } else if (data.type == 'MESSAGE' && data.data.topic.startsWith('community-points-channel-v1.')) {
+      if (data.type == 'MESSAGE' && data.data.topic.startsWith('community-points-channel-v1.')) {
         var dataMessage = JSON.parse(data.data.message);
         if (dataMessage.type === 'community-goal-contribution' || dataMessage.type === 'community-goal-updated') {
           this.onCommunityGoalMessage(dataMessage);

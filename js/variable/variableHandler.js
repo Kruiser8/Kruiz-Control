@@ -4,10 +4,10 @@ class VariableHandler extends Handler {
    */
   constructor() {
     super('Variable', []);
-    this.success();
     this.autoload = false;
     this.globals = {};
     this.variables = {};
+    this.success();
   }
 
   /**
