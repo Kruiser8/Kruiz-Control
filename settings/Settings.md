@@ -30,22 +30,6 @@ Specify the twitch channel to connect for chatting.
 kruiser8
 ```
 
-***
-
-## MQTT
-Specify the IP (or hostname) + port to use for the MQTT websocket.
-### code.txt
-**Location:** `settings/chat/code.txt`
-
-### websocket.txt
-**Location:** `settings/mqtt/websocket.txt`
-
-```
-ws://localhost:8883
-```
-
-***
-
 ### user.txt
 **Location:** `settings/chat/user.txt`
 
@@ -60,6 +44,20 @@ exampleoauth4kruizcontrol12345
 *Reminder:*
 - _channel.txt_ specifies the channel to connect to.
 - _code.txt_ specifies the user to send messages as.
+
+***
+
+## MQTT
+Specify the IP (or hostname) + port to use for the MQTT websocket.
+### code.txt
+**Location:** `settings/chat/code.txt`
+
+### websocket.txt
+**Location:** `settings/mqtt/websocket.txt`
+
+```
+ws://localhost:8883
+```
 
 ***
 
