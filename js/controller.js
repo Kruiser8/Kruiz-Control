@@ -128,7 +128,7 @@ class Controller {
     initialTriggerParams = initialTriggerParams || {};
     var variables = await this.getParser('Variable').getVariables();
     var triggerParams = { 
-      "_kc_event_id_": uuidv4,
+      "_kc_event_id_": uuidv4(),
       ...variables,
       ...initialTriggerParams
     };
