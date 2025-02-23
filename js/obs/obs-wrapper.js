@@ -343,6 +343,26 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
     });
   };
 
+  obs.getRecordingStatus = async function() {
+    return await this.call('GetRecordStatus').then(data => {
+      return data;
+    }).catch(err => {
+      console.error(JSON.stringify(err));
+    });
+  };
+
+  obs.startRecording = async function() {
+    await this.call('StartRecord').catch(err => {
+      console.error(JSON.stringify(err));
+    });
+  };
+
+  obs.stopRecording = async function() {
+    await this.call('StopRecord').catch(err => {
+      console.error(JSON.stringify(err));
+    });
+  };
+
   obs.startReplayBuffer = async function() {
     await this.call('StartReplayBuffer').catch(err => {
       console.error(JSON.stringify(err));

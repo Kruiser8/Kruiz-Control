@@ -432,6 +432,20 @@ class OBSHandler extends Handler {
           init_y: data.y
         }
         break;
+      case 'recordingstatus':
+        var data = await this.obs.getRecordingStatus();
+        var duration = 0;
+        if (data.outputDuration && data.outputDuration !== null) {
+          var duration = data.outputDuration / 1000;
+        }
+        return {
+          is_active: data.outputActive,
+          is_paused: data.outputPaused,
+          recording_duration: duration,
+          recording_size: data.outputBytes,
+          data: data
+        }
+        break;
       case 'refresh':
         var { source } = Parser.getInputs(triggerData, ['action', 'source']);
         var source = triggerData.slice(2).join(' ');
@@ -514,6 +528,9 @@ class OBSHandler extends Handler {
           await this.obs.setFilterVisibility(source, info, status);
         }
         break;
+      case 'startrecording':
+        await this.obs.startRecording();
+        break;
       case 'startreplaybuffer':
         await this.obs.startReplayBuffer();
         break;
@@ -532,6 +549,9 @@ class OBSHandler extends Handler {
           output_skipped_frames: data.outputSkippedFrames,
           data: data
         }
+        break;
+      case 'stoprecording':
+        await this.obs.stopRecording();
         break;
       case 'stopreplaybuffer':
         await this.obs.stopReplayBuffer();

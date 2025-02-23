@@ -138,6 +138,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OBS Mute](#obs-mute)
     + [OBS Order](#obs-order)
     + [OBS Position](#obs-position)
+    + [OBS RecordingStatus](#obs-recordingstatus)
     + [OBS Refresh](#obs-refresh)
     + [OBS Rotate](#obs-rotate)
     + [OBS SaveReplayBuffer](#obs-savereplaybuffer)
@@ -149,9 +150,11 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OBS Source Filter](#obs-source-filter)
     + [OBS Source Text](#obs-source-text)
     + [OBS Source URL](#obs-source-url)
+    + [OBS StartRecording](#obs-startrecording)
     + [OBS StartReplayBuffer](#obs-startreplaybuffer)
     + [OBS StartStream](#obs-startstream)
     + [OBS Stats](#obs-stats)
+    + [OBS StopRecording](#obs-stoprecording)
     + [OBS StopReplayBuffer](#obs-stopreplaybuffer)
     + [OBS StopStream](#obs-stopstream)
     + [OBS StreamStatus](#obs-streamstatus)
@@ -1943,12 +1946,21 @@ Enables the ability to interact with and respond to OBS.
 
 ***
 
-#### OBS SaveReplayBuffer
+#### OBS RecordingStatus
 | | |
 ------------ | -------------
-**Info** | Used to save the current replay buffer.
-**Format** | `OBS SaveReplayBuffer`
-**Example** | `OBS SaveReplayBuffer`
+**Info** | Use this to get the status of the current recording.
+**Format** | `OBS RecordingStatus`
+**Example** | `OBS RecordingStatus`
+
+##### Parameters
+| | |
+------------ | -------------
+**is_active** | [true/false] Whether OBS is recording.
+**is_paused** | [true/false] Whether OBS has paused the recording.
+**recording_duration** | The duration of the file in seconds. Defaults to `0` if no recording found.
+**recording_size** | The number of bytes in the recording. May contain the size of the previous recording if not currently recording.
+**data** | The complete response from the OBS `GetRecordStatus` call.
 
 ***
 
@@ -1969,6 +1981,15 @@ Enables the ability to interact with and respond to OBS.
 **Example** | `SLOBS Rotate Webcam Camera 90`
 
 _Note: If you want the source to spin in place, right-click the source and select `Transform` > `Edit Transform`. Change the `Positional Alignment` to `Center`._
+
+***
+
+#### OBS SaveReplayBuffer
+| | |
+------------ | -------------
+**Info** | Used to save the current replay buffer.
+**Format** | `OBS SaveReplayBuffer`
+**Example** | `OBS SaveReplayBuffer`
 
 ***
 
@@ -2068,6 +2089,15 @@ _Note: The browser source does not need to be in current/active scene for this t
 
 ***
 
+#### OBS StartRecording
+| | |
+------------ | -------------
+**Info** | Used to start the recording.
+**Format** | `OBS StartRecording`
+**Example** | `OBS StartRecording`
+
+***
+
 #### OBS StartReplayBuffer
 | | |
 ------------ | -------------
@@ -2125,6 +2155,14 @@ Error "OBS is rendering {fps} FPS, skipping {render_skipped_frames} frames total
 </tr>
 </table>
 
+***
+
+#### OBS StopRecording
+| | |
+------------ | -------------
+**Info** | Used to stop the recording.
+**Format** | `OBS StopRecording`
+**Example** | `OBS StopRecording`
 
 ***
 
