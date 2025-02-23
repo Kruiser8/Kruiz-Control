@@ -12,7 +12,7 @@ class StorageEmitter {
         }
 
         if (fireOnInit && this.data.has(key)) {
-            callback(key, value);
+            callback(key, this.data.get(key));
         }
     }
 
