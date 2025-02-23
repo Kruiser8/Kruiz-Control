@@ -4,7 +4,6 @@ class VoicemodHandler extends Handler {
    */
   constructor() {
     super('Voicemod', []);
-    this.success();
   }
 
   /**
@@ -14,7 +13,7 @@ class VoicemodHandler extends Handler {
    */
   init = (address, apiKey) => {
     this.api = connectVoicemodWebsocket(
-      address, apiKey
+      address, apiKey, this.success
     );
   }
 
