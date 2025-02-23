@@ -351,6 +351,18 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
     });
   };
 
+  obs.pauseRecording = async function() {
+    await this.call('PauseRecord').catch(err => {
+      console.error(JSON.stringify(err));
+    });
+  };
+
+  obs.resumeRecording = async function() {
+    await this.call('ResumeRecord').catch(err => {
+      console.error(JSON.stringify(err));
+    });
+  };
+
   obs.startRecording = async function() {
     await this.call('StartRecord').catch(err => {
       console.error(JSON.stringify(err));

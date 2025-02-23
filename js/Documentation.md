@@ -137,9 +137,11 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OBS Media Stop](#obs-media-stop)
     + [OBS Mute](#obs-mute)
     + [OBS Order](#obs-order)
+    + [OBS PauseRecording](#obs-pauserecording)
     + [OBS Position](#obs-position)
     + [OBS RecordingStatus](#obs-recordingstatus)
     + [OBS Refresh](#obs-refresh)
+    + [OBS ResumeRecording](#obs-resumerecording)
     + [OBS Rotate](#obs-rotate)
     + [OBS SaveReplayBuffer](#obs-savereplaybuffer)
     + [OBS Scene](#obs-scene)
@@ -1931,6 +1933,15 @@ Enables the ability to interact with and respond to OBS.
 
 ***
 
+#### OBS PauseRecording
+| | |
+------------ | -------------
+**Info** | Used to pause an in-progress recording. Use [`OBS ResumeRecording`](#obs-resumerecording) to start the recording again.
+**Format** | `OBS PauseRecording`
+**Example** | `OBS PauseRecording`
+
+***
+
 #### OBS Position
 | | |
 ------------ | -------------
@@ -1970,6 +1981,15 @@ Enables the ability to interact with and respond to OBS.
 **Info** | Used to refresh a browser source in OBS.
 **Format** | `OBS Refresh <source>`
 **Example** | `OBS Refresh "Kruiz Control"`
+
+***
+
+#### OBS ResumeRecording
+| | |
+------------ | -------------
+**Info** | Used to resume a paused recording (see [`OBS PauseRecording`](#obs-pauserecording)).
+**Format** | `OBS ResumeRecording`
+**Example** | `OBS ResumeRecording`
 
 ***
 

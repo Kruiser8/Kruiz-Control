@@ -418,6 +418,9 @@ class OBSHandler extends Handler {
           await this.obs.setSceneItemIndex(scene, source, sceneItemIndex);
         }
         break;
+      case 'pauserecording':
+        await this.obs.pauseRecording();
+        break;
       case 'position':
         var { scene, item, x, y } = Parser.getInputs(triggerData, ['action', 'scene', 'item', 'x', 'y']);
         if (scene === '{current}') {
@@ -450,6 +453,9 @@ class OBSHandler extends Handler {
         var { source } = Parser.getInputs(triggerData, ['action', 'source']);
         var source = triggerData.slice(2).join(' ');
         await this.obs.refreshBrowser(source);
+        break;
+      case 'resumerecording':
+        await this.obs.resumeRecording();
         break;
       case 'rotate':
         var { scene, source, degree } = Parser.getInputs(triggerData, ['action', 'scene', 'source', 'degree']);
