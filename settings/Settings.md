@@ -36,6 +36,8 @@ kruiser8
 
 _**NOTE: Leave this file blank if you want Kruiz Control to send messages as your main Twitch account. That is, only use this if you want to send messages as a separate bot account.**_
 
+**DO NOT COPY YOUR TWITCH CODE.TXT VALUE HERE**
+
 Follow the instructions in the [Twitch Code](#code) section below. At step 5, login with the desired account. Copy the generated code into this file.
 
 ```
