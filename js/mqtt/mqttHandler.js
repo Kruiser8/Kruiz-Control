@@ -13,8 +13,8 @@ class MQTTHandler extends Handler {
    * @param {string} address obs websocket address
    * @param {string} password obs websocket password
    */
-  init(address) {
-    this.mqtt = new MQTTWebSocket(address);
+  init(address, username, password) {
+    this.mqtt = new MQTTWebSocket(address, username, password, this);
   }
 
   /**
@@ -41,6 +41,8 @@ class MQTTHandler extends Handler {
 async function mqttHandlerExport() {
   var mqttHandler = new MQTTHandler();
   var address = await readFile('settings/mqtt/websocket.txt');
-  mqttHandler.init(address.trim());
+  var username = await readFile('settings/mqtt/username.txt');
+  var password = await readFile('settings/mqtt/password.txt');
+  mqttHandler.init(address.trim(), username.trim(), password.trim());
 }
 mqttHandlerExport();
