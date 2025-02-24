@@ -48,15 +48,33 @@ exampleoauth4kruizcontrol12345
 ***
 
 ## MQTT
-Specify the IP (or hostname) + port to use for the MQTT websocket.
-### code.txt
-**Location:** `settings/chat/code.txt`
 
 ### websocket.txt
 **Location:** `settings/mqtt/websocket.txt`
 
+Specify the IP (or hostname) + port to use for the MQTT websocket.
 ```
 ws://localhost:8883
+```
+
+### username.txt
+**Location:** `settings/mqtt/username.txt`
+
+_**NOTE: Leave this file blank if your broker doesn't require authentication.**_
+
+Specify the username required by your broker, if any.
+```
+kcmqttuser
+```
+
+### password.txt
+**Location:** `settings/mqtt/password.txt`
+
+_**NOTE: Leave this file blank if your broker doesn't require authentication.**_
+
+Specify the password required by your broker, if any
+```
+p@55w0rd
 ```
 
 ***

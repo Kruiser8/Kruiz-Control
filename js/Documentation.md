@@ -115,6 +115,8 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Reset](#reset)
     + [Skip](#skip)
 - [MQTT](#mqtt)
+  * [Triggers](#mqtt-triggers)
+    + [OnMQTT](#onmqtt)
   * [Actions](#mqtt-actions)
     + [MQTT Publish](#mqtt-publish)
 - [OBS](#obs)
@@ -1692,11 +1694,25 @@ The `<optional_skip>` value allows you to specify the number of lines to skip if
 ***
 
 ## MQTT
-Enables the ability to publish messages to an MQTT broker.
+Enables the ability to publish messages to and receive messages from an MQTT broker.
 
 ### MQTT Triggers
 
-None at the moment.
+#### OnMQTT
+
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when a message is reveived on a topic.
+**Format** | `OnMQTT <topic>`
+**Example** | `OnMQTT "kc/example"`
+
+##### Parameters
+| | |
+------------ | -------------
+**topic** | The topic the message was received from.
+**message** | The content of the message.
+
+***
 
 ### MQTT Actions
 
@@ -1705,7 +1721,7 @@ None at the moment.
 ------------ | -------------
 **Info** | Used to publish a message to an MQTT broker. `<topic>` is the topic to publish to. `<message>` is the message to send.
 **Format** | `MQTT Publish <topic> <message>`
-**Example** | `MQTT Publish "chat/notification" "New follower !"`
+**Example** | `MQTT Publish "kc/notification" "New follower !"`
 
 ***
 
