@@ -25,12 +25,12 @@ class MQTTHandler extends Handler {
     var action = Parser.getAction(triggerData, 'MQTT');
     switch (action) {
       case 'publish':
-          var { topic, message } = Parser.getInputs(triggerData, ['action', 'topic', 'message']);
-          await this.mqtt.publish(topic, message);
-          break;
+        var { topic, message } = Parser.getInputs(triggerData, ['action', 'topic', 'message']);
+        await this.mqtt.publish(topic, message);
+        break;
       default:
-          console.error(`Unable to determine the MQTT <action> to be taken. Found: "${action}" within ${JSON.stringify(triggerData)}.`);
-          break;
+        console.error(`Unable to determine the MQTT <action> to be taken. Found: "${action}" within ${JSON.stringify(triggerData)}.`);
+        break;
     }
   }
 }
