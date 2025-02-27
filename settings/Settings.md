@@ -9,6 +9,7 @@ This script uses text files to improve the average user experience.
 ## Table of Contents
 
 - [Chat](#chat)
+- [MQTT](#mqtt)
 - [OBS](#obs)
 - [SLOBS](#slobs)
 - [StreamElements](#streamelements)
@@ -29,10 +30,8 @@ Specify the twitch channel to connect for chatting.
 kruiser8
 ```
 
-***
-
-### code.txt
-**Location:** `settings/chat/code.txt`
+### user.txt
+**Location:** `settings/chat/user.txt`
 
 _**NOTE: Leave this file blank if you want Kruiz Control to send messages as your main Twitch account. That is, only use this if you want to send messages as a separate bot account.**_
 
@@ -47,6 +46,38 @@ exampleoauth4kruizcontrol12345
 *Reminder:*
 - _channel.txt_ specifies the channel to connect to.
 - _code.txt_ specifies the user to send messages as.
+
+***
+
+## MQTT
+
+### websocket.txt
+**Location:** `settings/mqtt/websocket.txt`
+
+Specify the IP (or hostname) + port to use for the MQTT websocket.
+```
+ws://localhost:8883
+```
+
+### username.txt
+**Location:** `settings/mqtt/username.txt`
+
+_**NOTE: Leave this file blank if your broker doesn't require authentication.**_
+
+Specify the username required by your broker, if any.
+```
+kcmqttuser
+```
+
+### password.txt
+**Location:** `settings/mqtt/password.txt`
+
+_**NOTE: Leave this file blank if your broker doesn't require authentication.**_
+
+Specify the password required by your broker, if any
+```
+p@55w0rd
+```
 
 ***
 
