@@ -30,8 +30,8 @@ Specify the twitch channel to connect for chatting.
 kruiser8
 ```
 
-### user.txt
-**Location:** `settings/chat/user.txt`
+### code.txt
+**Location:** `settings/chat/code.txt`
 
 _**NOTE: Leave this file blank if you want Kruiz Control to send messages as your main Twitch account. That is, only use this if you want to send messages as a separate bot account.**_
 
