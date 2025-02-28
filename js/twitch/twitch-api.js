@@ -173,7 +173,7 @@ class TwitchAPI {
           console.error(`Received response for (https://id.twitch.tv/oauth2/token): ${JSON.stringify(data)}`);
         }
         if (data.access_token && data.refresh_token) {
-          console.error('Successfully refreshed your twitch token.')
+          console.error('Successfully requested your twitch token.')
           this.accessToken = data.access_token;
           this.refreshToken = data.refresh_token;
           response = {

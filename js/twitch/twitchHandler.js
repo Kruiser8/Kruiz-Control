@@ -51,6 +51,7 @@ class TwitchHandler extends Handler {
     var initClientSecret = await IDBService.get('INTWCS');
     var initCode = await IDBService.get('INTWCD');
     if (clientId != initClientId || clientSecret != initClientSecret || code != initCode) {
+      console.error("New twitch code detected. Requesting new twitch auth token.");
       try {
         var { accessToken: newAccessToken, refreshToken: newRefreshToken } = await this.api.requestAuthToken();
         accessToken = newAccessToken;

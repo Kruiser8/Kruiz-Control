@@ -43,7 +43,7 @@ class ChatHandler extends Handler {
 
     Storage.onChange("ChatOAuth", (_, value) => {
       if (Debug.All || Debug.Chat) {
-        console.error("New chat oauth value detected")
+        console.error("New chat oauth value received")
       }
       if (ComfyJS.GetClient() !== null) {
         if (Debug.All || Debug.Chat) {
@@ -249,6 +249,9 @@ class ChatHandler extends Handler {
     }
 
     ComfyJS.onCommand = ( user, command, message, flags, extra ) => {
+      if (Debug.All || Debug.Chat) {
+        console.error(`Command Received: ${JSON.stringify({user, command, message, flags, extra})}`);
+      }
       var combined = '!' + command + ' ' + message;
 
       this.onAllChat(user, {
@@ -339,6 +342,9 @@ class ChatHandler extends Handler {
     }
 
     ComfyJS.onChat = ( user, message, flags, self, extra ) => {
+      if (Debug.All || Debug.Chat) {
+        console.error(`Chat Received: ${JSON.stringify({user, command, message, flags, extra})}`);
+      }
       this.onAllChat(user, {
         user: user,
         message: message,
