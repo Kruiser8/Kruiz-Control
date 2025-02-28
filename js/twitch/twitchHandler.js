@@ -63,6 +63,7 @@ class TwitchHandler extends Handler {
     } else {
       try {
         await this.api.getChannelInformation(this.channelId);
+        accessToken = this.api.accessToken;
       } catch (error) {
         console.error(JSON.stringify(error));
       }
