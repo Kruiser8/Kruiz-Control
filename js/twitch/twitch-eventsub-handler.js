@@ -131,16 +131,6 @@ class EventSubHandler {
         version: 1
       },
       {
-        type: 'channel.chat.message',
-        data: { broadcaster_user_id: this.channelId, user_id: this.channelId },
-        version: 1
-      },
-      {
-        type: 'channel.chat.notification',
-        data: { broadcaster_user_id: this.channelId, user_id: this.channelId },
-        version: 1
-      },
-      {
         type: 'channel.subscribe',
         data: { broadcaster_user_id: this.channelId },
         version: 1
