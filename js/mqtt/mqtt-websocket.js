@@ -18,6 +18,9 @@ class MQTTWebSocket {
     this.client = mqtt.connect(this.address, options);
     this.client.on('connect', onConnect);
     this.client.on('message', (topic, message) => {
+      if (Debug.All || Debug.MQTT) {
+        console.error(`MQTT Client ${topic} message received: ${message.toString()}`);
+      }
       // message is Buffer
       var s_message = message.toString();
       this._handleCallbacks(topic, s_message);

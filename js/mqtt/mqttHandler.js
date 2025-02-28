@@ -28,6 +28,9 @@ class MQTTHandler extends Handler {
       case 'onmqtt':
         var { topic } = Parser.getInputs(triggerLine, ['topic'], true);
         this.mqtt.subscribe(topic, function (message) {
+          if (Debug.All || Debug.MQTT) {
+            console.error(`MQTT ${topic} message received: ${message}`);
+          }
           controller.handleData(triggerId, {
             topic: topic,
             message: message

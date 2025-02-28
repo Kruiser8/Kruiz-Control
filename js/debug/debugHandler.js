@@ -7,6 +7,7 @@ class DebugHandler extends Handler {
     this.success();
     this.All = false;
     this.Chat = false;
+    this.MQTT = false;
     this.OBS = false;
     this.Parser = false;
     this.SLOBS = false;
@@ -27,6 +28,9 @@ class DebugHandler extends Handler {
       switch (handler) {
         case 'chat':
           this.Chat = true;
+          break;
+        case 'mqtt':
+          this.MQTT = true;
           break;
         case 'obs':
           this.OBS = true;
