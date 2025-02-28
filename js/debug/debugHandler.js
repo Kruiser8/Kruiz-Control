@@ -11,6 +11,7 @@ class DebugHandler extends Handler {
     this.OBS = false;
     this.Parser = false;
     this.SLOBS = false;
+    this.Storage = false;
     this.StreamElements = false;
     this.Streamlabs = false;
     this.Twitch = false;
@@ -40,6 +41,9 @@ class DebugHandler extends Handler {
           break;
         case 'slobs':
           this.SLOBS = true;
+          break;
+        case 'storage':
+          this.Storage = true;
           break;
         case 'sl':
         case 'streamlabs':

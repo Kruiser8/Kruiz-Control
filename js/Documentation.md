@@ -50,6 +50,8 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Triggers](#debug-triggers)
   * [Actions](#debug-actions)
     + [Debug](#debug-1)
+    + [Debug Chat](#debug-chat)
+    + [Debug MQTT](#debug-mqtt)
     + [Debug OBS](#debug-obs)
     + [Debug Parser](#debug-parser)
     + [Debug SLOBS](#debug-slobs)
@@ -983,6 +985,24 @@ None at the moment.
 
 ***
 
+#### Debug Chat
+| | |
+------------ | -------------
+**Info** | Used to enable debugging for Chat events.
+**Format** | `Debug Chat`
+**Example** | `Debug Chat`
+
+***
+
+#### Debug MQTT
+| | |
+------------ | -------------
+**Info** | Used to enable debugging for MQTT events.
+**Format** | `Debug MQTT`
+**Example** | `Debug MQTT`
+
+***
+
 #### Debug OBS
 | | |
 ------------ | -------------
@@ -1007,6 +1027,15 @@ None at the moment.
 **Info** | Used to enable debugging for SLOBS events.
 **Format** | `Debug SLOBS`
 **Example** | `Debug SLOBS`
+
+***
+
+#### Debug Storage
+| | |
+------------ | -------------
+**Info** | Used to enable debugging of Kruiz Control's storage emitter class (used to pass the Twitch auth token internally)
+**Format** | `Debug Storage`
+**Example** | `Debug Storage`
 
 ***
 
