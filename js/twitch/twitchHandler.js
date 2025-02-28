@@ -45,6 +45,7 @@ class TwitchHandler extends Handler {
     var refreshToken = await IDBService.get('CUTWRT');
     var chatAccessToken = await IDBService.get('CUTWCAT');
     var chatRefreshToken = await IDBService.get('CUTWCRT');
+    this.useChatAuth = !!chatCode;
 
     this.api = new TwitchAPI(clientId, clientSecret, code, accessToken, refreshToken, this.updateTokens);
     var initClientId = await IDBService.get('INTWC');
@@ -70,7 +71,6 @@ class TwitchHandler extends Handler {
     }
 
     if (chatCode) {
-      this.useChatAuth = true;
       this.chatApi = new TwitchAPI(clientId, clientSecret, chatCode, chatAccessToken, chatRefreshToken, this.updateChatTokens);
       var initChatCode = await IDBService.get('INTWCCD');
 
