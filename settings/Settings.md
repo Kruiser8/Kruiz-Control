@@ -160,8 +160,8 @@ To capture Twitch events, you'll need a **Client Id** and **Client Secret** and 
 
 ### Client ID and Secret
 To capture Twitch events, you'll need a **Client Id** and **Client Secret**. To create your own,
-1. Go to https://dev.twitch.tv/login
-2. Login with your Twitch account
+1. Go to https://dev.twitch.tv/login and login with your Twitch account.
+2. Navigate to https://dev.twitch.tv/console.
 3. Once logged in, on the left sidebar click `Applications`.
 4. Click the `+ Register Your Application` button and enter the following details:
     - Name: `YOUR_USERNAME Kruiz Control` (Any name works, as long as it is unique)
