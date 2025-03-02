@@ -94,7 +94,9 @@ class TwitchHandler extends Handler {
       }
 
       setInterval(async () => {
-        console.error("Checking Chat API permissions...");
+        if (Debug.All || Debug.Twitch) {
+          console.error("Checking Chat API permissions...");
+        }
         this.chatApi.getChannelInformation(this.channelId);
       }, 300000);
     }
