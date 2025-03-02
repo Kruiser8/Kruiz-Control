@@ -44,6 +44,7 @@ class EventSubHandler {
           }
           ws.keepaliveTimeout = setTimeout(() => {
             console.error("Connection to Twitch EventSub lost");
+            ws.close();
           }, keepalive_timeout_seconds * 1000 + 100);
         };
         ws.resetTimeout();
