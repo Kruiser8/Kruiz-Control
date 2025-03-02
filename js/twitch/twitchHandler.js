@@ -93,7 +93,7 @@ class TwitchHandler extends Handler {
         }
       }
 
-      this.chatApiTimeout = setInterval(async () => {
+      setInterval(async () => {
         console.error("Checking Chat API permissions...");
         this.chatApi.getChannelInformation(this.channelId);
       }, 300000);
