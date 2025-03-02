@@ -55,6 +55,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Debug OBS](#debug-obs)
     + [Debug Parser](#debug-parser)
     + [Debug SLOBS](#debug-slobs)
+    + [Debug Storage](#debug-storage)
     + [Debug StreamElements](#debug-streamelements)
     + [Debug StreamLabs](#debug-streamlabs)
     + [Debug Twitch](#debug-twitch)
