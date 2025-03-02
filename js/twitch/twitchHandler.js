@@ -87,7 +87,7 @@ class TwitchHandler extends Handler {
       } else {
         try {
           await this.chatApi.getChannelInformation(this.channelId);
-          chatAccessToken = await IDBService.get('CUTWCAT');
+          chatAccessToken = this.chatApi.accessToken;
         } catch (error) {
           console.error(JSON.stringify(error));
         }
