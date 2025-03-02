@@ -34,6 +34,7 @@ class TwitchHandler extends Handler {
    * @param {string} clientSecret client secret for the Twitch API
    * @param {string} code the Twitch API authorization code
    * @param {string} channelId the user ID of the twitch user
+   * @param {string} chatCode the Twitch API authorization code for chatting
    */
   init = async (user, clientId, clientSecret, code, channelId, chatCode) => {
     connectPubSubWebsocket(channelId, this.onMessage);
