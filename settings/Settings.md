@@ -187,7 +187,7 @@ Some APIs and events require a user authenticated auth code. To generate one of 
     - For SLOBS, open the settings cog (bottom left) and then go to `Get Support` and click the `Show Cache Directory` option under `Cache Directory`. Open the `node-obs` folder and then the `logs` folder. Open the most recently modified file.
 4. Copy the link at the bottom of the log file, and open it in a browser.
     - The link will start with `https://id.twitch.tv/oauth2/authorize`
-5. Login to your Twitch account. This provides the ability to control your stream to the created https://dev.twitch.tv application.
+5. Login to your Twitch account. This provides the ability to control your stream via the created https://dev.twitch.tv application.
 6. After login, you'll be redirected to a link that looks like the below.
     ```
     http://localhost/?code=YOUR_CODE_HERE&scope=bits%3Aread...
