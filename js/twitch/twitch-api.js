@@ -844,7 +844,7 @@ class TwitchAPI {
     });
   }
 
-  createPol = async (data) => {
+  createPoll = async (data) => {
     return await this.callTwitchApiJson({
       method: 'POST',
       endpoint: 'https://api.twitch.tv/helix/polls',
