@@ -331,10 +331,12 @@ class EventSubHandler {
   }
 
   deleteOldSubscriptions = async () => {
-    var { total, data} = await this.api.getEventSubSubscriptions();
+    var { total, data } = await this.api.getEventSubSubscriptions();
     if (total > 0) {
       for (var i = 0; i < data.length; i++) {
-        await this.api.deleteEventSubSubscription(data[i].id);
+        if (data[i]["transport"]["session_id"] !== this.wsId) {
+          await this.api.deleteEventSubSubscription(data[i]["id"]);
+        }
       }
     }
   }
