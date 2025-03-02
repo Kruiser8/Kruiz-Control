@@ -13,10 +13,10 @@ class EventSubHandler {
     this.onMessage = onMessage;
     this.wsId = "";
 
-    this.addConnection((id) => {
+    this.addConnection(async(id) => {
       this.wsId = id;
-      this.deleteOldSubscriptions();
-      this.addSubscriptions();
+      await this.addSubscriptions();
+      await this.deleteOldSubscriptions();
     }, this.wsUrl);
   }
 
@@ -83,15 +83,19 @@ class EventSubHandler {
     ws.onclose = (event) => {
         const { code, reason } = event;
         console.error(`Twitch EventSub WebSocket connection closed. ${code}:${reason}`);
-        this.addConnection((newId) => {
+        this.addConnection(async (newId) => {
           console.error("Twitch EventSub reconnected after connection closed.")
           clearTimeout(ws.keepaliveTimeout);
-          this.wsId = newId;
-          this.deleteOldSubscriptions();
-          this.addSubscriptions();
+          if (this.wsId !== newId) {
+            this.wsId = newId;
+            await this.addSubscriptions();
+            await this.deleteOldSubscriptions();
+          }
         });
     };
   }
+
+  //// Check if API requests update the access token after a 401?
 
   resubscribe = async (type, version, condition) => {
     if (Debug.Twitch || Debug.All) {
