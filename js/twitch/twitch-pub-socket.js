@@ -51,7 +51,6 @@ function connectPubSubWebsocket(channelId, onMessage) {
 	socket.onmessage = function(message) {
 		if (message.type === "RECONNECT" || message.type === "AUTH_REVOKED") {
 			console.error(`Twitch Pubsub Received ${message.type} Message`);
-			connectPubSubWebsocket(channelId, onMessage);
 			socket.close();
 		} else if (message.type === "PONG") {
 			console.error('Twitch Pubsub Received Pong Message');
