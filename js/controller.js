@@ -23,7 +23,7 @@ class Controller {
    * @param {string} name name to use for the parser
    * @param {Handler} instance parser object to add
    */
-  addParser(name, instance) {
+  addParser = (name, instance) => {
     this.parsers[name.toLowerCase()] = instance;
   }
 
@@ -31,7 +31,7 @@ class Controller {
    * Add to the list of successfully initialized parsers.
    * @param {string} name name to use for the parser
    */
-  addSuccess(name) {
+  addSuccess = (name) => {
     if (this.successful.indexOf(name) === -1) {
       this.successful.push(name.toLowerCase());
     }
@@ -40,7 +40,7 @@ class Controller {
   /**
    * Retrieve a list of parsers that failed to initialize.
    */
-  getUnsuccessful() {
+  getUnsuccessful = () => {
     var unsuccessful = [];
     Object.keys(this.parsers).forEach((parser, i) => {
       if (this.successful.indexOf(parser) === -1) {
@@ -55,7 +55,7 @@ class Controller {
    * @param {string} name name of the handler
    * @return {Handler|null} the parser or null if none exists
    */
-  getParser(name) {
+  getParser = (name) => {
     name = name.toLowerCase();
     if (this.parsers[name]) {
       return this.parsers[name];
@@ -69,7 +69,7 @@ class Controller {
    * @param {string} trigger id of the trigger
    * @param {string} name name of parser that handles the trigger
    */
-  addTrigger(trigger, name) {
+  addTrigger = (trigger, name) => {
     this.triggers[trigger.toLowerCase()] = name.toLowerCase();
   }
 
@@ -78,7 +78,7 @@ class Controller {
    * @param {string} trigger name of the trigger
    * @return {Handler|null} the parser or null if none exists
    */
-  getTrigger(trigger) {
+  getTrigger = (trigger) => {
     trigger = trigger.toLowerCase();
     if (this.triggers[trigger]) {
       return this.triggers[trigger];
@@ -94,25 +94,25 @@ class Controller {
    * @param {array} triggerLine contents of trigger line
    * @param {number} id of the new trigger
    */
-  addTriggerData(trigger, triggerLine, triggerId) {
+  addTriggerData = (trigger, triggerLine, triggerId) => {
     this.initTriggers.push(triggerId);
   }
 
   /**
    * Called before parsing user input.
    */
-  preParse() {
+  preParse = () => {
     return;
   }
 
   /**
    * Called after parsing all user input.
    */
-  postParse() {
+  postParse = () => {
     return;
   }
 
-  runInit() {
+  runInit = () => {
     this.initTriggers.forEach(triggerId => {
       this.handleData(triggerId);
     });
@@ -124,11 +124,11 @@ class Controller {
    * @param {object} initialTriggerParams initial parameters for this event
    * @param {string} actionsToInsert actions to add at the start of the event
    */
-  async handleData(triggerId, initialTriggerParams, actionsToInsert) {
+  handleData = async (triggerId, initialTriggerParams, actionsToInsert) => {
     initialTriggerParams = initialTriggerParams || {};
     var variables = await this.getParser('Variable').getVariables();
     var triggerParams = { 
-      "_kc_event_id_": uuidv4,
+      "_kc_event_id_": uuidv4(),
       ...variables,
       ...initialTriggerParams
     };
@@ -154,7 +154,7 @@ class Controller {
    * Perform the trigger content.
    * @param {Object} triggerInfo id and params of the trigger
    */
-  async performTrigger(triggerInfo, callback) {
+  performTrigger = async (triggerInfo, callback) => {
     try {
       var toSkip = 0;
       var triggerId = triggerInfo.triggerId;
@@ -290,7 +290,7 @@ class Controller {
    * @param {array} data action to perform
    * @param {object} parameters current event parameters
    */
-  async runTrigger(data, parameters) {
+  runTrigger = async (data, parameters) => {
     var parserName = data[0].toLowerCase();
     if (parserName === 'delay') {
       // Custom delay handler
@@ -435,7 +435,7 @@ class Controller {
    * @param {array} data line information
    * @return {Object} whether or not to continue the trigger.
    */
-  handleIf(data) {
+  handleIf = (data) => {
     var result = false;
     var i = 1;
     var skip = 0;
@@ -482,7 +482,7 @@ class Controller {
    * @param {string} rightArg right argument
    * @return {Object} whether or not to continue the trigger.
    */
-  handleComparison(leftArg, comparator, rightArg) {
+  handleComparison = (leftArg, comparator, rightArg) => {
     var result = false;
 
     if (comparator === '=' || comparator === '==') {
@@ -515,7 +515,7 @@ class Controller {
    * @param {array} data input text to parse
    * @param {boolean} useAsync create an async handler for the triggers
    */
-  parseInput(data, useAsync) {
+  parseInput = (data, useAsync) => {
     // Pre Parser when no triggers added
     if (this.triggerCount === 0) {
       for (var handler in this.parsers) {
@@ -575,7 +575,7 @@ class Controller {
 
     // Create async for file
     if (useAsync && triggerIds.length > 0) {
-      var asyncQueue = async.queue(this.performTrigger.bind(this), 1);
+      var asyncQueue = async.queue(this.performTrigger, 1);
       var asyncId = this.triggerAsync.length;
       this.triggerAsync.push(asyncQueue);
       for(var id = 0; id < triggerIds.length; id++) {
@@ -587,7 +587,7 @@ class Controller {
   /**
    * Post parse after all triggers read
    */
-  doneParsing() {
+  doneParsing = () => {
     for (var handler in this.parsers) {
       this.parsers[handler].postParse();
     }

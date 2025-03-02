@@ -66,17 +66,15 @@ class StreamlabsHandler extends Handler {
     };
     this.alertIds = [];
     this.alertIdsNoSync = [];
-    this.onSLMessageQueue = async.queue(this.parseStreamlabsMessage.bind(this), 1);
-
-    this.init.bind(this);
+    this.onSLMessageQueue = async.queue(this.parseStreamlabsMessage, 1);
   }
 
   /**
    * Initialize the connection to streamlabs with the input token.
    * @param {string} socketToken streamlabs socket api token
    */
-  init(socketToken) {
-    connectStreamlabsWebsocket(this, socketToken, this.onStreamlabsMessage.bind(this));
+  init = (socketToken) => {
+    connectStreamlabsWebsocket(this, socketToken, this.onStreamlabsMessage);
   }
 
   /**
@@ -85,7 +83,7 @@ class StreamlabsHandler extends Handler {
    * @param {array} triggerLine contents of trigger line
    * @param {number} id of the new trigger
    */
-  addTriggerData(trigger, triggerLine, triggerId) {
+  addTriggerData = (trigger, triggerLine, triggerId) => {
     trigger = trigger.toLowerCase();
     if (trigger.endsWith('nosync')) {
       this.alertsNoSync.push(this.alertMapping[trigger]);
@@ -101,7 +99,7 @@ class StreamlabsHandler extends Handler {
    * Handle event messages from streamlabs websocket.
    * @param {Object} message streamlabs event message
    */
-  onStreamlabsMessage(message) {
+  onStreamlabsMessage = (message) => {
     if (Debug.All || Debug.Streamlabs) {
       console.error('Streamlabs Message: ' + JSON.stringify(message));
     }
@@ -112,7 +110,7 @@ class StreamlabsHandler extends Handler {
    * Handle event messages from streamlabs websocket.
    * @param {Object} message streamlabs event message
    */
-  async parseStreamlabsMessage(message, callback) {
+  parseStreamlabsMessage = async (message, callback) => {
     if (message.type === 'alertPlaying') {
       if (this.alertIds.indexOf(message.message['_id']) === -1) {
         this.alertIds.push(message.message['_id']);
@@ -152,7 +150,7 @@ class StreamlabsHandler extends Handler {
    * Retrieve the parameters for the bit event.
    * @param {Object} message streamlabs event message
    */
-  getBitParameters(message) {
+  getBitParameters = (message) => {
     return {
       'data': message,
       'amount': message.amount,
@@ -165,7 +163,7 @@ class StreamlabsHandler extends Handler {
    * Retrieve the parameters for the donation event.
    * @param {Object} message streamlabs event message
    */
-  getDonationParameters(message) {
+  getDonationParameters = (message) => {
    return {
      'data': message,
      'amount': (message.payload && message.payload.amount) ? message.payload.amount : message.amount,
@@ -179,7 +177,7 @@ class StreamlabsHandler extends Handler {
    * Retrieve the parameters for the tiltify donation event.
    * @param {Object} message streamlabs event message
    */
-  getTiltifyDonationParameters(message) {
+  getTiltifyDonationParameters = (message) => {
     return {
       'data': message,
       'amount': (message.payload && message.payload.amount) ? message.payload.amount : message.amount,
@@ -193,7 +191,7 @@ class StreamlabsHandler extends Handler {
    * Retrieve the parameters for the patreon pledge event.
    * @param {Object} message streamlabs event message
    */
-  getPatreonPledgeParameters(message) {
+  getPatreonPledgeParameters = (message) => {
     return {
       'data': message,
       'amount': (message.payload && message.payload.amount) ? message.payload.amount : message.amount,
@@ -206,7 +204,7 @@ class StreamlabsHandler extends Handler {
    * Retrieve the parameters for the follow event.
    * @param {Object} message streamlabs event message
    */
-  getFollowParameters(message) {
+  getFollowParameters = (message) => {
     return {
       'data': message,
       'user': message.name
@@ -217,7 +215,7 @@ class StreamlabsHandler extends Handler {
    * Retrieve the parameters for the gift sub event.
    * @param {Object} message streamlabs event message
    */
-  getGiftSubParameters(message) {
+  getGiftSubParameters = (message) => {
     var gifter = message.gifter_display_name;
     if (!gifter) {
       gifter = message.gifter;
@@ -246,7 +244,7 @@ class StreamlabsHandler extends Handler {
    * Retrieve the parameters for the gift sub event.
    * @param {Object} message streamlabs event message
    */
-  getCommunityGiftSubParameters(message) {
+  getCommunityGiftSubParameters = (message) => {
     var gifter = message.gifter_display_name;
     if (!gifter) {
       gifter = message.gifter;
@@ -269,7 +267,7 @@ class StreamlabsHandler extends Handler {
    * Retrieve the parameters for the host event.
    * @param {Object} message streamlabs event message
    */
-  getHostParameters(message) {
+  getHostParameters = (message) => {
     return {
       'data': message,
       'user': message.name,
@@ -281,7 +279,7 @@ class StreamlabsHandler extends Handler {
    * Retrieve the parameters for the raid event.
    * @param {Object} message streamlabs event message
    */
-  getRaidParameters(message) {
+  getRaidParameters = (message) => {
     return {
       'data': message,
       'user': message.name,
@@ -293,7 +291,7 @@ class StreamlabsHandler extends Handler {
    * Retrieve the parameters for the sub event.
    * @param {Object} message streamlabs event message
    */
-  getSubParameters(message) {
+  getSubParameters = (message) => {
     var name = message.display_name;
     if (!name) {
       name = message.name;

@@ -6,9 +6,12 @@ class DebugHandler extends Handler {
     super('Debug', []);
     this.success();
     this.All = false;
+    this.Chat = false;
+    this.MQTT = false;
     this.OBS = false;
     this.Parser = false;
     this.SLOBS = false;
+    this.Storage = false;
     this.StreamElements = false;
     this.Streamlabs = false;
     this.Twitch = false;
@@ -19,11 +22,17 @@ class DebugHandler extends Handler {
    * Handle the input data (take an action).
    * @param {array} triggerData contents of trigger line
    */
-  async handleData(triggerData) {
+  handleData = async (triggerData) => {
     var { handler } = Parser.getInputs(triggerData, ['handler'], false, 1);
     if (handler) {
       handler = handler.toLowerCase();
       switch (handler) {
+        case 'chat':
+          this.Chat = true;
+          break;
+        case 'mqtt':
+          this.MQTT = true;
+          break;
         case 'obs':
           this.OBS = true;
           break;
@@ -32,6 +41,9 @@ class DebugHandler extends Handler {
           break;
         case 'slobs':
           this.SLOBS = true;
+          break;
+        case 'storage':
+          this.Storage = true;
           break;
         case 'sl':
         case 'streamlabs':

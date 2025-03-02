@@ -8,15 +8,13 @@ class DiscordHandler extends Handler {
     this.webhookMessageIds = {};
     this.webhooks = {};
     this.success();
-
-    this.initialize.bind(this);
   }
 
   /**
    * Handle the input data (take an action).
    * @param {array} triggerData contents of trigger line
    */
-  async handleData(triggerData) {
+  handleData = async (triggerData) => {
     var action = Parser.getAction(triggerData, 'Discord');
 
     switch (action) {
@@ -167,7 +165,7 @@ class DiscordHandler extends Handler {
    * Initialize the webhook data if it does not exist.
    * @param {string} name webhook name
    */
-  initialize(name) {
+  initialize = (name) => {
     if (!this.webhooks[name]) {
       this.webhooks[name] = { content: "", url: this.webhookUrls[name], embed: {}, file: "" };
     }

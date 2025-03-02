@@ -9,6 +9,7 @@ This script uses text files to improve the average user experience.
 ## Table of Contents
 
 - [Chat](#chat)
+- [MQTT](#mqtt)
 - [OBS](#obs)
 - [SLOBS](#slobs)
 - [StreamElements](#streamelements)
@@ -21,29 +22,62 @@ This script uses text files to improve the average user experience.
 
 ## Chat
 
-### oauth.txt
-**Location:** `settings/chat/oauth.txt`
+### channel.txt
+**Location:** `settings/chat/channel.txt`
 
-In order to send messages on twitch, the script needs a twitch IRC auth token.
-
-Get an IRC auth token here: [http://twitchapps.com/tmi/](http://twitchapps.com/tmi/)
-```
-oauth:exampleoauth4kruizcontrol12345
-```
-
-***
-
-### user.txt
-**Location:** `settings/chat/user.txt`
-
-Specify the twitch channel to connect to chat.
+Specify the twitch channel to connect for chatting.
 ```
 kruiser8
 ```
 
-*Note:*
-- _user.txt_ specifies the channel to connect to.
-- _oauth.txt_ specifies the user to send messages as.
+### code.txt
+**Location:** `settings/chat/code.txt`
+
+_**NOTE: Leave this file blank if you want Kruiz Control to send messages as your main Twitch account. That is, only use this if you want to send messages as a separate bot account.**_
+
+**DO NOT COPY YOUR TWITCH CODE.TXT VALUE HERE**
+
+Follow the instructions in the [Twitch Code](#code) section below. At step 5, login with the desired account. Copy the generated code into this file.
+
+```
+exampleoauth4kruizcontrol12345
+```
+
+*Reminder:*
+- _channel.txt_ specifies the channel to connect to.
+- _code.txt_ specifies the user to send messages as.
+
+***
+
+## MQTT
+
+### websocket.txt
+**Location:** `settings/mqtt/websocket.txt`
+
+Specify the IP (or hostname) + port to use for the MQTT websocket.
+```
+ws://localhost:8883
+```
+
+### username.txt
+**Location:** `settings/mqtt/username.txt`
+
+_**NOTE: Leave this file blank if your broker doesn't require authentication.**_
+
+Specify the username required by your broker, if any.
+```
+kcmqttuser
+```
+
+### password.txt
+**Location:** `settings/mqtt/password.txt`
+
+_**NOTE: Leave this file blank if your broker doesn't require authentication.**_
+
+Specify the password required by your broker, if any
+```
+p@55w0rd
+```
 
 ***
 
@@ -126,39 +160,40 @@ To capture Twitch events, you'll need a **Client Id** and **Client Secret** and 
 
 ### Client ID and Secret
 To capture Twitch events, you'll need a **Client Id** and **Client Secret**. To create your own,
-- Go to https://dev.twitch.tv/login
-- Login with your Twitch account
-- Once logged in, on the left sidebar click `Applications`.
-- Click the `+ Register Your Application` button and enter the following details:
-  - Name: `YOUR_USERNAME Kruiz Control` (Any name works, as long as it is unique)
-  - OAuth Redirect URLs: `http://localhost`
-  - Category: `Chat Bot`
-- Click the `Create` button at the bottom.
-- Click the `Manage` button on the right hand side for the application you created.
-- Copy the **Client ID** value and put it in the `settings/twitch/clientId.txt` file.
-- Click the `New Secret` button, confirm the prompt, and copy and paste the value into the `settings/twitch/clientSecret.txt` file.
+1. Go to https://dev.twitch.tv/login and login with your Twitch account.
+2. Navigate to https://dev.twitch.tv/console.
+3. Once logged in, on the left sidebar click `Applications`.
+4. Click the `+ Register Your Application` button and enter the following details:
+    - Name: `YOUR_USERNAME Kruiz Control` (Any name works, as long as it is unique)
+    - OAuth Redirect URLs: `http://localhost`
+    - Category: `Chat Bot`
+5. Click the `Create` button at the bottom.
+6. Click the `Manage` button on the right hand side for the application you created.
+7. Copy the **Client ID** value and put it in the `settings/twitch/clientId.txt` file.
+8. Click the `New Secret` button, confirm the prompt, and copy and paste the value into the `settings/twitch/clientSecret.txt` file.
 
 ### Code
 Some APIs and events require a user authenticated auth code. To generate one of these, first follow the Client ID and Secret instructions to update the `settings/twitch/clientId.txt` and `settings/twitch/clientSecret.txt` files. Then follow the below steps:
-- Add the below to your Kruiz Control `triggers.txt` file to add an authentication link to your OBS or SLOBS log file.
-```
-### Twitch Authenticate ###
-OnInit
-Twitch Authenticate
-Error {auth_url}
-```
-- Reset Kruiz Control to generate the link.
-- Open your OBS or SLOBS log file to find the URL.
-  - For OBS, go to `Help` > `Log Files` > `View Current Log`.
-  - For SLOBS, open the settings cog (bottom left) and then go to `Get Support` and click the `Show Cache Directory` option under `Cache Directory`. Open the `node-obs` folder and then the `logs` folder. Open the most recently modified file.
-- Copy the link at the bottom of the log file, and open it in a browser.
-- Login to your Twitch account. This provides the ability to control your stream to the created https://dev.twitch.tv application.
-- After login, you'll be redirected to a link that looks like the below.
-```
-http://localhost/?code=YOUR_CODE_HERE&scope=bits%3Aread+channel%3Aedit...
-```
-- Copy the `YOUR_CODE_HERE` value and put that into your `settings/twitch/code.txt` file.
-- Once you have generated a code, you can remove the `### Twitch Authenticate ###` event from your `triggers.txt` file.
+1. Add the below to your Kruiz Control `triggers.txt` file to add an authentication link to your OBS or SLOBS log file.
+    ```
+    ### Twitch Authenticate ###
+    OnInit
+    Twitch Authenticate
+    Error {auth_url}
+    ```
+2. Reset Kruiz Control (refresh the browser source) to generate the link .
+3. Open your OBS or SLOBS log file to find the URL.
+    - For OBS, go to `Help` > `Log Files` > `View Current Log`.
+    - For SLOBS, open the settings cog (bottom left) and then go to `Get Support` and click the `Show Cache Directory` option under `Cache Directory`. Open the `node-obs` folder and then the `logs` folder. Open the most recently modified file.
+4. Copy the link at the bottom of the log file, and open it in a browser.
+    - The link will start with `https://id.twitch.tv/oauth2/authorize`
+5. Login to your Twitch account. This provides the ability to control your stream via the created https://dev.twitch.tv application.
+6. After login, you'll be redirected to a link that looks like the below.
+    ```
+    http://localhost/?code=YOUR_CODE_HERE&scope=bits%3Aread...
+    ```
+7. Copy the `YOUR_CODE_HERE` value and put that into your `settings/twitch/code.txt` file.
+8. Once you have generated a code, you can remove the `### Twitch Authenticate ###` event from your `triggers.txt` file.
 
 
 ### clientId.txt
@@ -203,7 +238,7 @@ Use the below settings to toggle how Variables are configured in Kruiz Control.
 
 **Format:** `<on/off>`
 
-Specify whether or not Kruiz Control should automatically load all variables (session and global) without having to use [`Variable Load`](https://github.com/Kruiser8/Kruiz-Control/blob/master/js/Documentation.md#variable-load) or [`Variable Global Load`](https://github.com/Kruiser8/Kruiz-Control/blob/master/js/Documentation.md#variable-global-load).
+Specify whether or not Kruiz Control should automatically load all variables (session and global) without having to use [`Variable Load`](js/Documentation.md#variable-load) or [`Variable Global Load`](js/Documentation.md#variable-global-load).
 
 (Default) If set to `off`, variables must be loaded before they can be used.
 

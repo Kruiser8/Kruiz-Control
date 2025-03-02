@@ -9,20 +9,12 @@ class ListHandler extends Handler {
     super('List', []);
     this.success();
     this.lists = {};
-
-    this.initialize.bind(this);
-    this.add.bind(this);
-    this.set.bind(this);
-    this.getIndexValue.bind(this);
-    this.get.bind(this);
-    this.getIndex.bind(this);
-    this.remove.bind(this);
   }
 
   /**
    * Called after parsing all user input.
    */
-  async postParse() {
+  postParse = async () => {
     this.global_lists = await IDBService.get(this.GLOBAL_LIST_KEY) || [];
     for (const list_id of this.global_lists) {
       this.lists[list_id] = await IDBService.get(`${this.GLOBAL_LIST_KEY_PREFIX}${list_id}`) || [];
@@ -33,7 +25,7 @@ class ListHandler extends Handler {
    * Handle the input data (take an action).
    * @param {array} triggerData contents of trigger line
    */
-  async handleData(triggerData) {
+  handleData = async (triggerData) => {
     var action = Parser.getAction(triggerData, 'List');
 
     switch (action) {
@@ -134,7 +126,7 @@ class ListHandler extends Handler {
    * Set up the list for the given name (if one doesn't exist).
    * @param {string} name of the list
    */
-   initialize(name) {
+   initialize = (name) => {
      if (this.lists[name] === undefined) {
        this.lists[name] = [];
      }
@@ -146,7 +138,7 @@ class ListHandler extends Handler {
    * @param {string} value to add to the list
    * @param {string} index to add the value in the list
    */
-  add(name, value, index) {
+  add = (name, value, index) => {
     if (!isNaN(index) && index < this.lists[name].length && index >= 0) {
       this.lists[name].splice(index, 0, value);
       if (this.global_lists.indexOf(name) !== -1) {
@@ -168,7 +160,7 @@ class ListHandler extends Handler {
    * @param {string} index to add the value in the list
    * @param {string} value to add to the list
    */
-  set(name, index, value) {
+  set = (name, index, value) => {
     if (!isNaN(index) && index < this.lists[name].length && index >= 0) {
       this.lists[name][index] = value;
       if (this.global_lists.indexOf(name) !== -1) {
@@ -183,7 +175,7 @@ class ListHandler extends Handler {
    * @param {string} name of the list
    * @param {string} index to retrieve a numeric value
    */
-  getIndexValue(name, index) {
+  getIndexValue = (name, index) => {
     if (this.lists[name].length == 0) {
       return -1;
     }
@@ -206,7 +198,7 @@ class ListHandler extends Handler {
    * @param {string} name of the list
    * @param {string} index to add the value in the list
    */
-  get(name, index) {
+  get = (name, index) => {
     var intIndex = this.getIndexValue(name, index);
     return this.getIndex(name, intIndex);
   }
@@ -216,7 +208,7 @@ class ListHandler extends Handler {
    * @param {string} name of the list
    * @param {string} index to add the value in the list
    */
-  getIndex(name, index) {
+  getIndex = (name, index) => {
     if (index >= 0 && index < this.lists[name].length) {
       return { value: this.lists[name][index], index: index, position: index + 1 };
     } else {
@@ -229,7 +221,7 @@ class ListHandler extends Handler {
    * @param {string} name of the list
    * @param {string} index to add the value in the list
    */
-  remove(name, index) {
+  remove = (name, index) => {
     var intIndex = this.getIndexValue(name, index);
     var response = this.getIndex(name, intIndex);
     if (intIndex != -1) {
@@ -246,7 +238,7 @@ class ListHandler extends Handler {
    * @param {string} name of the list
    * @param {array} items to add to the named list
    */
-  createList(name, items) {
+  createList = (name, items) => {
     this.initialize(name);
     items.forEach(item => {
       this.add(name, item);

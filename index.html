@@ -8,6 +8,8 @@
 			}
 			loadKeyval()
 		</script>
+		<!-- MQTT -->
+		<script src="https://unpkg.com/mqtt@5.10.3/dist/mqtt.js"></script>
 		<!-- JQuery -->
 		<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 		<!-- SockJS for SLOBS -->
@@ -18,9 +20,8 @@
 		<script src="https://cdn.jsdelivr.net/npm/comfy.js@latest/dist/comfy.min.js"></script>
 		<!-- UUID -->
 		<script src="https://cdn.jsdelivr.net/npm/uuid@latest/dist/umd/uuidv4.min.js"></script>
-		<!-- TES (Twitch EventSub) -->
-		<script src="https://cdn.jsdelivr.net/gh/mitchwadair/tesjs@v1.0.3/dist/tes.min.js"></script>
 		<script src="js/utils/utils.js"></script>
+		<script src="js/utils/storage-emitter.js"></script>
 		<script src="js/utils/shlex.js"></script>
 		<script src="js/utils/idb-service.js"></script>
 		<script src="js/utils/async.js"></script>
@@ -42,7 +43,7 @@
 		<script src="js/discord/discordHandler.js"></script>
 		<script src="js/tts/ttsHandler.js"></script>
 		<script src="js/twitch/twitch-api.js"></script>
-		<script src="js/twitch/twitch-eventsub-socket.js"></script>
+		<script src="js/twitch/twitch-eventsub-handler.js"></script>
 		<script src="js/twitch/twitch-pub-socket.js"></script>
 		<script src="js/twitch/twitchHandler.js"></script>
 		<script src="js/voicemod/voicemod-socket.js"></script>
@@ -55,6 +56,8 @@
 		<script src="js/streamlabs/streamlabsHandler.js"></script>
 		<script src="js/streamElementsAlert/streamElements-socket.js"></script>
 		<script src="js/streamElementsAlert/streamElementsAlertHandler.js"></script>
+		<script src="js/mqtt/mqtt-websocket.js"></script>
+		<script src="js/mqtt/mqttHandler.js"></script>
 		<script src="js/index.js"></script>
 	</head>
 	<body>

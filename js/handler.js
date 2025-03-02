@@ -18,7 +18,7 @@ class Handler {
   /**
    * Register trigger as successfully initialized.
    */
-  success() {
+  success = () => {
     controller.addSuccess(this.parserName);
   }
 
@@ -28,7 +28,7 @@ class Handler {
    * @param {array} triggerLine contents of trigger line
    * @param {number} id of the new trigger
    */
-  addTriggerData(trigger, triggerLine, triggerId) {
+  addTriggerData = (trigger, triggerLine, triggerId) => {
     return;
   }
 
@@ -37,21 +37,21 @@ class Handler {
    * @param {array} triggerData contents of trigger line
    * @param {array} triggerParams current trigger parameters
    */
-  async handleData(triggerData, triggerParams) {
+  handleData = async (triggerData, triggerParams) => {
     return;
   }
 
   /**
    * Called before parsing user input.
    */
-  preParse() {
+  preParse = () => {
     return;
   }
 
   /**
    * Called after parsing all user input.
    */
-  postParse() {
+  postParse = () => {
     return;
   }
 }

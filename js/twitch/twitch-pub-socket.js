@@ -8,9 +8,13 @@ function connectPubSubWebsocket(channelId, onMessage) {
 	var socket = new WebSocket('wss://pubsub-edge.twitch.tv');
 
 	var nonce = randomString(18);
+	var wasOpened = false;
 
 	// WS OnOpen event : authenticate
 	socket.onopen = function() {
+		console.error('Twitch Pubsub Websocket Opened');
+		wasOpened = true;
+
 		// Create authentication payload and request required events
 		var auth = {
 			"type": "LISTEN",
@@ -21,22 +25,37 @@ function connectPubSubWebsocket(channelId, onMessage) {
 				],
 			}
 		};
+
 		// Send authentication payload to Twitch PubSub
 		socket.send(JSON.stringify(auth));
 	};
 
 	setInterval(function() {
-		socket.send(JSON.stringify({
-			"type": "PING"
-		}));
+		setTimeout(function() {
+			socket.send(JSON.stringify({
+				"type": "PING"
+			}));
+		}, Math.random() * 10000 + 1000);
 	}, 240000);
 
 	// Ws OnClose : try reconnect
 	socket.onclose = function() {
-		socket = null;
 		console.error('Twitch Pubsub Websocket Closed');
+		socket = null;
+		if (wasOpened) {
+			connectPubSubWebsocket(channelId, onMessage);
+		}
 	};
 
 	// WS OnMessage event : handle events
-	socket.onmessage = onMessage;
+	socket.onmessage = function(message) {
+		if (message.type === "RECONNECT" || message.type === "AUTH_REVOKED") {
+			console.error(`Twitch Pubsub Received ${message.type} Message`);
+			socket.close();
+		} else if (message.type === "PONG") {
+			console.error('Twitch Pubsub Received Pong Message');
+		} else {
+			onMessage(message);
+		}
+	};
 };

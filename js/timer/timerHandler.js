@@ -4,10 +4,10 @@ class TimerHandler extends Handler {
    */
   constructor() {
     super('Timer', ['OnTimer']);
-    this.success();
     this.timerNames = [];
     this.timers = {};
     this.intervals = {};
+    this.success();
   }
 
   /**
@@ -16,7 +16,7 @@ class TimerHandler extends Handler {
    * @param {array} triggerLine contents of trigger line
    * @param {number} id of the new trigger
    */
-  addTriggerData(trigger, triggerLine, triggerId) {
+  addTriggerData = (trigger, triggerLine, triggerId) => {
     var { name, interval, temp } = Parser.getInputs(triggerLine, ['name', 'interval', 'temp'], false, 1);
 
     interval = parseFloat(interval);
@@ -40,7 +40,7 @@ class TimerHandler extends Handler {
    * Handle the input data (take an action).
    * @param {array} triggerData contents of trigger line
    */
-  async handleData(triggerData) {
+  handleData = async (triggerData) => {
     var action = Parser.getAction(triggerData, 'Timer');
     // Timer Reset Name
     if (action === 'reset' || action === 'start') {
@@ -65,7 +65,7 @@ class TimerHandler extends Handler {
   /**
    * Called after parsing all user input.
    */
-  postParse() {
+  postParse = () => {
     this.timerNames.forEach((name) => {
       this.timers[name].forEach((timer) => {
         var triggerId = timer[0];

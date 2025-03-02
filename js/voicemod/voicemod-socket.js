@@ -2,8 +2,9 @@
  * Connect to the Voicemod websocket.
  * @param {string} address host for the Voicemod API
  * @param {string} apiKey Voicemod API key
+ * @param {Function} onConnect Function to call when Voicemod is connected
  */
-function connectVoicemodWebsocket(address, apiKey) {
+function connectVoicemodWebsocket(address, apiKey, onConnect) {
   var promises = {};
   var apiWrapper = {};
 
@@ -14,6 +15,7 @@ function connectVoicemodWebsocket(address, apiKey) {
     if (Debug.Voicemod || Debug.All) {
       console.error('Successfully opened the voicemod websocket');
     }
+    onConnect();
     send('registerClient', {
       clientKey: apiKey
     });

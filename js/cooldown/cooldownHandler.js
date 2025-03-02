@@ -15,7 +15,7 @@ class CooldownHandler extends Handler {
   /**
   * Called after parsing all user input.
   */
-  async postParse() {
+  postParse = async () => {
     this.global_cooldowns = await IDBService.get(this.GLOBAL_COOLDOWN_KEY) || [];
     for (const cooldown_id of this.global_cooldowns) {
       this.cooldowns[cooldown_id] = await IDBService.get(`${this.GLOBAL_COOLDOWN_KEY_PREFIX}${cooldown_id}`) || [];
@@ -26,7 +26,7 @@ class CooldownHandler extends Handler {
   * Handle the input data (take an action).
   * @param {array} triggerData contents of trigger line
   */
-  async handleData(triggerData) {
+  handleData = async (triggerData) => {
     var action = Parser.getAction(triggerData, 'Cooldown');
     if (action === 'global') {
       action = Parser.getAction(triggerData, 'Cooldown', 1);
@@ -83,7 +83,7 @@ class CooldownHandler extends Handler {
   * @param {string} name name of the cooldown
   * @return {Object} whether or not to continue the trigger.
   */
-  checkCooldown(name) {
+  checkCooldown = (name) => {
     var response = {};
     response[name] = false;
     var curTime = new Date().getTime();
@@ -102,7 +102,7 @@ class CooldownHandler extends Handler {
   * @param {numeric} duration duration of the cooldown
   * @return {Object} whether or not to continue the trigger.
   */
-  handleCooldown(name, duration) {
+  handleCooldown = (name, duration) => {
     var response = {"continue": false};
     duration = duration * 1000; // convert to milliseconds
     var curTime = new Date().getTime();

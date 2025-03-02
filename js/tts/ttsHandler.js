@@ -13,7 +13,7 @@ class TTSHandler extends Handler {
    * @param {array} triggerData contents of trigger line
    * @param {array} parameters current trigger parameters
    */
-  async handleData(triggerData, parameters) {
+  handleData = async (triggerData, parameters) => {
     var action = Parser.getAction(triggerData, 'TTS');
     if (action === 'stop') {
       window.speechSynthesis.cancel();
@@ -88,7 +88,7 @@ class TTSHandler extends Handler {
   /**
    *  Initialize the internal list of voices
    */
-  async initializeVoices() {
+  initializeVoices = async () => {
     var voices = window.speechSynthesis.getVoices();
     if (voices.length === 0) {
       await timeout(1000);
@@ -101,7 +101,7 @@ class TTSHandler extends Handler {
    * Update the internal voice dictionary.
    * @param {array} voices list of SpeechSynthesisVoice objects
    */
-  updateVoices(voices) {
+  updateVoices = (voices) => {
     this.voices = {};
     voices.forEach(voice => {
       this.voices[voice.name] = voice;

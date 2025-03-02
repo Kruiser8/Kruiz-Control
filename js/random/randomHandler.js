@@ -11,7 +11,7 @@ class RandomHandler extends Handler {
    * Handle the input data (take an action).
    * @param {array} triggerData contents of trigger line
    */
-  async handleData(triggerData) {
+  handleData = async (triggerData) => {
     var action = Parser.getAction(triggerData, 'Random');
     if (action == 'number') {
       var { tmpmin, tmpmax } = Parser.getInputs(triggerData, ['action', 'tmpmin', 'tmpmax'], false, 2);

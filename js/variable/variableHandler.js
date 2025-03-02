@@ -4,17 +4,17 @@ class VariableHandler extends Handler {
    */
   constructor() {
     super('Variable', []);
-    this.success();
     this.autoload = false;
     this.globals = {};
     this.variables = {};
+    this.success();
   }
 
   /**
    * Initialize the variable handler with the input settings.
    * @param {string} autoload on/off to toggle variables autoloading
    */
-  init(autoload) {
+  init = (autoload) => {
     this.autoload = autoload.toLowerCase() === "on" ? true : false;
     if (this.autoload) {
       this.loadGlobalVariables();
@@ -25,7 +25,7 @@ class VariableHandler extends Handler {
    * Handle the input data (take an action).
    * @param {array} triggerData contents of trigger line
    */
-  async handleData(triggerData) {
+  handleData = async (triggerData) => {
     var action = Parser.getAction(triggerData, 'Variable');
     if (action === 'global') {
       action = Parser.getAction(triggerData, 'Variable', 1)
@@ -80,7 +80,7 @@ class VariableHandler extends Handler {
   /**
    * Retrieve all variables (session and global).
    */
-  async getVariables() {
+  getVariables = async () => {
     if (this.autoload) {
       return {
         ...this.globals,
@@ -94,7 +94,7 @@ class VariableHandler extends Handler {
   /**
    * Load all global variables from storage.
    */
-  async loadGlobalVariables() {
+  loadGlobalVariables = async () => {
     this.globals = await IDBService.entries();
   }
 }

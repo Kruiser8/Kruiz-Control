@@ -50,9 +50,12 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Triggers](#debug-triggers)
   * [Actions](#debug-actions)
     + [Debug](#debug-1)
+    + [Debug Chat](#debug-chat)
+    + [Debug MQTT](#debug-mqtt)
     + [Debug OBS](#debug-obs)
     + [Debug Parser](#debug-parser)
     + [Debug SLOBS](#debug-slobs)
+    + [Debug Storage](#debug-storage)
     + [Debug StreamElements](#debug-streamelements)
     + [Debug StreamLabs](#debug-streamlabs)
     + [Debug Twitch](#debug-twitch)
@@ -114,9 +117,18 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Play Stop](#play-stop)
     + [Reset](#reset)
     + [Skip](#skip)
+- [MQTT](#mqtt)
+  * [Triggers](#mqtt-triggers)
+    + [OnMQTT](#onmqtt)
+  * [Actions](#mqtt-actions)
+    + [MQTT Publish](#mqtt-publish)
 - [OBS](#obs)
   * [Triggers](#obs-triggers)
     + [OnOBSCustomMessage](#onobscustommessage)
+    + [OnOBSRecordingPaused](#onobsrecordingpaused)
+    + [OnOBSRecordingResumed](#onobsrecordingresumed)
+    + [OnOBSRecordingStarted](#onobsrecordingstarted)
+    + [OnOBSRecordingStopped](#onobsrecordingstopped)
     + [OnOBSSourceVisibility](#onobssourcevisibility)
     + [OnOBSSourceFilterVisibility](#onobssourcefiltervisibility)
     + [OnOBSStreamStarted](#onobsstreamstarted)
@@ -137,8 +149,11 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OBS Media Stop](#obs-media-stop)
     + [OBS Mute](#obs-mute)
     + [OBS Order](#obs-order)
+    + [OBS PauseRecording](#obs-pauserecording)
     + [OBS Position](#obs-position)
+    + [OBS RecordingStatus](#obs-recordingstatus)
     + [OBS Refresh](#obs-refresh)
+    + [OBS ResumeRecording](#obs-resumerecording)
     + [OBS Rotate](#obs-rotate)
     + [OBS SaveReplayBuffer](#obs-savereplaybuffer)
     + [OBS Scene](#obs-scene)
@@ -149,9 +164,11 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OBS Source Filter](#obs-source-filter)
     + [OBS Source Text](#obs-source-text)
     + [OBS Source URL](#obs-source-url)
+    + [OBS StartRecording](#obs-startrecording)
     + [OBS StartReplayBuffer](#obs-startreplaybuffer)
     + [OBS StartStream](#obs-startstream)
     + [OBS Stats](#obs-stats)
+    + [OBS StopRecording](#obs-stoprecording)
     + [OBS StopReplayBuffer](#obs-stopreplaybuffer)
     + [OBS StopStream](#obs-stopstream)
     + [OBS StreamStatus](#obs-streamstatus)
@@ -252,6 +269,8 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnTWCharityProgress](#ontwcharityprogress)
     + [OnTWCharityStarted](#ontwcharitystarted)
     + [OnTWCharityStopped](#ontwcharitystopped)
+    + [OnTWChatClear](#ontwchatclear)
+    + [OnTWChatClearUser](#ontwchatclearuser)
     + [OnTWCheer](#ontwcheer)
     + [OnTWFollow](#ontwfollow)
     + [OnTWGoalCompleted](#ontwgoalcompleted)
@@ -282,8 +301,11 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnTWSub](#ontwsub)
     + [OnTWSubGift](#ontwsubgift)
     + [OnTWSubMessage](#ontwsubmessage)
+    + [OnTWSuspiciousUser](#ontwsuspicioususer)
     + [OnTWTimeout](#ontwtimeout)
     + [OnTWUnban](#ontwunban)
+    + [OnTWUnVIP](#ontwunvip)
+    + [OnTWVIP](#ontwvip)
   * [Actions](#twitch-actions)
     + [Twitch AddBlockedTerm](#twitch-addblockedterm)
     + [Twitch AdSchedule](#twitch-adschedule)
@@ -565,14 +587,14 @@ The commands, `!so`, `!sh`, `!caster`, and `!shout` will all cause the message t
 ***
 
 ## Default Parameters
-The following parameters are always available. Use the `_successful_` and `_unsuccessful_` parameters to test that the <a href="https://github.com/Kruiser8/Kruiz-Control/blob/master/settings/Settings.md#kruiz-control-settings">Kruiz Control settings</a> are correct.
+The following parameters are always available. Use the `_successful_` and `_unsuccessful_` parameters to test that the <a href="settings/Settings.md#kruiz-control-settings">Kruiz Control settings</a> are correct.
 
 #### Parameters
 | | |
 ------------ | -------------
 **\_successful\_** | A comma delimited list of handlers that initialized correctly.
 **\_unsuccessful\_** | A comma delimited list of handlers that did not initialize correctly.
-**\_kc\_event\_id\_** | A unique id for each event occurrence in Kruiz Control. If you need a unique identifier, use this. The id resets to 0 after 1,000,000,000.
+**\_kc\_event\_id\_** | A unique id (UUID) for each event occurrence in Kruiz Control. If you need a unique identifier for an event, use this.
 
 ***
 
@@ -964,6 +986,24 @@ None at the moment.
 
 ***
 
+#### Debug Chat
+| | |
+------------ | -------------
+**Info** | Used to enable debugging for Chat events.
+**Format** | `Debug Chat`
+**Example** | `Debug Chat`
+
+***
+
+#### Debug MQTT
+| | |
+------------ | -------------
+**Info** | Used to enable debugging for MQTT events.
+**Format** | `Debug MQTT`
+**Example** | `Debug MQTT`
+
+***
+
 #### Debug OBS
 | | |
 ------------ | -------------
@@ -988,6 +1028,15 @@ None at the moment.
 **Info** | Used to enable debugging for SLOBS events.
 **Format** | `Debug SLOBS`
 **Example** | `Debug SLOBS`
+
+***
+
+#### Debug Storage
+| | |
+------------ | -------------
+**Info** | Used to enable debugging of Kruiz Control's storage emitter class (used to pass the Twitch auth token internally)
+**Format** | `Debug Storage`
+**Example** | `Debug Storage`
 
 ***
 
@@ -1674,6 +1723,38 @@ The `<optional_skip>` value allows you to specify the number of lines to skip if
 
 ***
 
+## MQTT
+Enables the ability to publish messages to and receive messages from an MQTT broker.
+
+### MQTT Triggers
+
+#### OnMQTT
+
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when a message is reveived on a topic.
+**Format** | `OnMQTT <topic>`
+**Example** | `OnMQTT "kc/example"`
+
+##### Parameters
+| | |
+------------ | -------------
+**topic** | The topic the message was received from.
+**message** | The content of the message.
+
+***
+
+### MQTT Actions
+
+#### MQTT Publish
+| | |
+------------ | -------------
+**Info** | Used to publish a message to an MQTT broker. `<topic>` is the topic to publish to. `<message>` is the message to send.
+**Format** | `MQTT Publish <topic> <message>`
+**Example** | `MQTT Publish "kc/notification" "New follower !"`
+
+***
+
 ## OBS
 Enables the ability to interact with and respond to OBS.
 
@@ -1693,6 +1774,42 @@ Enables the ability to interact with and respond to OBS.
 ------------ | -------------
 **message** | The name of the custom message.
 **data** | The data included with the message (or an empty string).
+
+***
+
+#### OnOBSRecordingPaused
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when a recording is paused.
+**Format** | `OnOBSRecordingPaused`
+**Example** | `OnOBSRecordingPaused`
+
+***
+
+#### OnOBSRecordingResumed
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when a recording resumes after being paused.
+**Format** | `OnOBSRecordingResumed`
+**Example** | `OnOBSRecordingResumed`
+
+***
+
+#### OnOBSRecordingStarted
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when a recording is started.
+**Format** | `OnOBSRecordingStarted`
+**Example** | `OnOBSRecordingStarted`
+
+***
+
+#### OnOBSRecordingStopped
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when a recording is stopped.
+**Format** | `OnOBSRecordingStopped`
+**Example** | `OnOBSRecordingStopped`
 
 ***
 
@@ -1923,6 +2040,15 @@ Enables the ability to interact with and respond to OBS.
 
 ***
 
+#### OBS PauseRecording
+| | |
+------------ | -------------
+**Info** | Used to pause an in-progress recording. Use [`OBS ResumeRecording`](#obs-resumerecording) to start the recording again.
+**Format** | `OBS PauseRecording`
+**Example** | `OBS PauseRecording`
+
+***
+
 #### OBS Position
 | | |
 ------------ | -------------
@@ -1938,12 +2064,21 @@ Enables the ability to interact with and respond to OBS.
 
 ***
 
-#### OBS SaveReplayBuffer
+#### OBS RecordingStatus
 | | |
 ------------ | -------------
-**Info** | Used to save the current replay buffer.
-**Format** | `OBS SaveReplayBuffer`
-**Example** | `OBS SaveReplayBuffer`
+**Info** | Use this to get the status of the current recording.
+**Format** | `OBS RecordingStatus`
+**Example** | `OBS RecordingStatus`
+
+##### Parameters
+| | |
+------------ | -------------
+**is_active** | [true/false] Whether OBS is recording.
+**is_paused** | [true/false] Whether OBS has paused the recording.
+**recording_duration** | The duration of the file in seconds. Defaults to `0` if no recording found.
+**recording_size** | The number of bytes in the recording. May contain the size of the previous recording if not currently recording.
+**data** | The complete response from the OBS `GetRecordStatus` call.
 
 ***
 
@@ -1956,6 +2091,15 @@ Enables the ability to interact with and respond to OBS.
 
 ***
 
+#### OBS ResumeRecording
+| | |
+------------ | -------------
+**Info** | Used to resume a paused recording (see [`OBS PauseRecording`](#obs-pauserecording)).
+**Format** | `OBS ResumeRecording`
+**Example** | `OBS ResumeRecording`
+
+***
+
 #### OBS Rotate
 | | |
 ------------ | -------------
@@ -1964,6 +2108,15 @@ Enables the ability to interact with and respond to OBS.
 **Example** | `SLOBS Rotate Webcam Camera 90`
 
 _Note: If you want the source to spin in place, right-click the source and select `Transform` > `Edit Transform`. Change the `Positional Alignment` to `Center`._
+
+***
+
+#### OBS SaveReplayBuffer
+| | |
+------------ | -------------
+**Info** | Used to save the current replay buffer.
+**Format** | `OBS SaveReplayBuffer`
+**Example** | `OBS SaveReplayBuffer`
 
 ***
 
@@ -2063,6 +2216,15 @@ _Note: The browser source does not need to be in current/active scene for this t
 
 ***
 
+#### OBS StartRecording
+| | |
+------------ | -------------
+**Info** | Used to start the recording.
+**Format** | `OBS StartRecording`
+**Example** | `OBS StartRecording`
+
+***
+
 #### OBS StartReplayBuffer
 | | |
 ------------ | -------------
@@ -2120,6 +2282,14 @@ Error "OBS is rendering {fps} FPS, skipping {render_skipped_frames} frames total
 </tr>
 </table>
 
+***
+
+#### OBS StopRecording
+| | |
+------------ | -------------
+**Info** | Used to stop the recording.
+**Format** | `OBS StopRecording`
+**Example** | `OBS StopRecording`
 
 ***
 
@@ -3314,6 +3484,37 @@ Enables the ability to run actions when channel point rewards are redeemed.
 
 ***
 
+#### OnTWChatClear
+| | |
+------------ | -------------
+**Info** | Triggers when a moderator or bot clears all messages from the chat room.
+**Format** | `OnTWChatClear`
+**Example** | `OnTWChatClear`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWChatClearUser
+| | |
+------------ | -------------
+**Info** | Triggers when a moderator or bot clears all messages for a specific user.
+**Format** | `OnTWChatClearUser`
+**Example** | `OnTWChatClearUser`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user ID of the user that had their messages cleared.
+**login** | The user login of the user that had their messages cleared.
+**name** | The user display name of the user that had their messages cleared.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
 #### OnTWCheer
 | | |
 ------------ | -------------
@@ -3892,6 +4093,24 @@ _Note: Bit voting is not currently supported, however Twitch provides these valu
 
 ***
 
+#### OnTWSuspiciousUser
+| | |
+------------ | -------------
+**Info** | Triggers when a chat message has been sent from a suspicious user.
+**Format** | `OnTWSuspiciousUser`
+**Example** | `OnTWSuspiciousUser`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user id of the suspicious user that sent the message.
+**login** | The user login of the suspicious user that sent the message.
+**name** | The user display name of the suspicious user that sent the message.
+**type** | The type of suspicious user, i.e. `ban_evader`. `unknown` if no type provided by Twitch.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
 #### OnTWTimeout
 | | |
 ------------ | -------------
@@ -3929,6 +4148,40 @@ _Note: Bit voting is not currently supported, however Twitch provides these valu
 
 ***
 
+#### OnTWUnVIP
+| | |
+------------ | -------------
+**Info** | Triggers when a VIP is removed from the channel.
+**Format** | `OnTWUnVIP`
+**Example** | `OnTWUnVIP`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user id of the user who was removed as a VIP.
+**login** | The user login of the user who was removed as a VIP.
+**name** | The user display name of the user who was removed as a VIP.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWVIP
+| | |
+------------ | -------------
+**Info** | Triggers when a VIP is added to the channel.
+**Format** | `OnTWVIP`
+**Example** | `OnTWVIP`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user id of the user who was added as a VIP.
+**login** | The user login of the user who was added as a VIP.
+**name** | The user display name of the user who was added as a VIP.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
 ### Twitch Actions
 
 #### Twitch AddBlockedTerm
@@ -3952,12 +4205,11 @@ _Note: Bit voting is not currently supported, however Twitch provides these valu
 | | |
 ------------ | -------------
 **data** | The complete response from the Twitch Ad Schedule API.
-**next_ad_time** | The number of seconds until the next scheduled ad.
+**next_ad_time** | The number of seconds until the next scheduled ad. The value is `-1` if no upcoming ad is scheduled.
 **next_ad_duration** | The duration (in seconds) of the next scheduled ad.
 **preroll_free_time** | The amount (in seconds) of pre-roll free time remaining for the channel.
 **next_snooze_time** | The number of seconds until the broadcaster receives an additional ad snooze.
 **snooze_count** | The number of snoozes available for the broadcaster.
-
 
 ***
 

@@ -6,18 +6,27 @@
 * @param {function} onSwitchScenes handle switch scene messages
 * @param {function} onTransitionBegin handle transition starts
 * @param {function} onStreamStateChange handle stream state change messages
+* @param {function} onRecordingStateChange handle recording state change messages
 * @param {function} onCustomMessage handle custom messages
 * @param {function} onOBSSourceVisibility handle scene item visibility changes
 * @param {function} onOBSSourceFilterVisibility handle source filter visibility changes
 */
-function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTransitionBegin, onStreamStateChange, onCustomMessage, onOBSSourceVisibility, onOBSSourceFilterVisibility) {
+function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTransitionBegin, onStreamStateChange, onRecordingStateChange, onCustomMessage, onOBSSourceVisibility, onOBSSourceFilterVisibility) {
   var obs = new OBSWebSocket();
   obs.connect(address, password).then(async () => {
-    obs.getVersion().then(data => {
-      console.error(`Kruiz Control connected to the OBS Websocket v${data.obsWebSocketVersion}`);
-    });
-    obsHandler.setCurrentScene(await obs.getCurrentScene());
-    obsHandler.success();
+    const initialize = () => {
+      obs.getVersion().then(async data => {
+        if (data === undefined) {
+          console.error("Initial OBS request failed. Retrying...")
+          setTimeout(initialize, 500);
+        } else {
+          console.error(`Kruiz Control connected to the OBS Websocket v${data.obsWebSocketVersion}`);
+          obsHandler.setCurrentScene(await obs.getCurrentScene());
+          obsHandler.success();
+        }
+      });
+    }
+    initialize();
   }).catch(err => { // Promise convention dictates you have a catch on every chain.
     console.error(JSON.stringify(err));
   });
@@ -41,6 +50,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
   obs.on('CurrentProgramSceneChanged', onSwitchScenes);
   obs.on('SceneTransitionStarted', onTransitionBegin);
   obs.on('StreamStateChanged', onStreamStateChange);
+  obs.on('RecordStateChanged', onRecordingStateChange);
   obs.on('CustomEvent', onCustomMessage);
   obs.on('SceneItemEnableStateChanged', onOBSSourceVisibility);
   obs.on('SourceFilterEnableStateChanged', onOBSSourceFilterVisibility);
@@ -332,6 +342,38 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
 
   obs.stopStream = async function() {
     await this.call('StopStream').catch(err => {
+      console.error(JSON.stringify(err));
+    });
+  };
+
+  obs.getRecordingStatus = async function() {
+    return await this.call('GetRecordStatus').then(data => {
+      return data;
+    }).catch(err => {
+      console.error(JSON.stringify(err));
+    });
+  };
+
+  obs.pauseRecording = async function() {
+    await this.call('PauseRecord').catch(err => {
+      console.error(JSON.stringify(err));
+    });
+  };
+
+  obs.resumeRecording = async function() {
+    await this.call('ResumeRecord').catch(err => {
+      console.error(JSON.stringify(err));
+    });
+  };
+
+  obs.startRecording = async function() {
+    await this.call('StartRecord').catch(err => {
+      console.error(JSON.stringify(err));
+    });
+  };
+
+  obs.stopRecording = async function() {
+    await this.call('StopRecord').catch(err => {
       console.error(JSON.stringify(err));
     });
   };

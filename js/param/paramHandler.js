@@ -12,7 +12,7 @@ class ParamHandler extends Handler {
    * @param {array} triggerData contents of trigger line
    * @param {array} parameters current trigger parameters
    */
-  async handleData(triggerData, parameters) {
+   handleData = async (triggerData, parameters) => {
     var action = Parser.getAction(triggerData);
 
     switch (action) {

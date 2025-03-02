@@ -15,7 +15,7 @@ class MessageHandler extends Handler {
    * @param {array} triggerLine contents of trigger line
    * @param {number} id of the new trigger
    */
-  addTriggerData(trigger, triggerLine, triggerId) {
+  addTriggerData = (trigger, triggerLine, triggerId) => {
     var { messages } = Parser.getInputs(triggerLine, ['messages'], true);
     // Handles aliases for OnMessage
     messages.forEach(message => {
@@ -31,7 +31,7 @@ class MessageHandler extends Handler {
    * Handle the input data (take an action).
    * @param {array} triggerData contents of trigger line
    */
-  async handleData(triggerData) {
+  handleData = async (triggerData) => {
     var action = Parser.getAction(triggerData, 'Message');
     if (action === 'send') {
       var { message, data } = Parser.getInputs(triggerData, ['action', 'message', 'data'], false, 1);
