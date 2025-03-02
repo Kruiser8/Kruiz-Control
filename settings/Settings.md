@@ -181,7 +181,7 @@ Some APIs and events require a user authenticated auth code. To generate one of 
     Twitch Authenticate
     Error {auth_url}
     ```
-2. Reset Kruiz Control to generate the link.
+2. Reset Kruiz Control (refresh the browser source) to generate the link .
 3. Open your OBS or SLOBS log file to find the URL.
     - For OBS, go to `Help` > `Log Files` > `View Current Log`.
     - For SLOBS, open the settings cog (bottom left) and then go to `Get Support` and click the `Show Cache Directory` option under `Cache Directory`. Open the `node-obs` folder and then the `logs` folder. Open the most recently modified file.
