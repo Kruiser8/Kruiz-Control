@@ -13,7 +13,7 @@ class EventSubHandler {
     this.onMessage = onMessage;
     this.wsId = "";
 
-    this.addConnection(async(id) => {
+    this.addConnection(async (id) => {
       this.wsId = id;
       await this.addSubscriptions();
       await this.deleteOldSubscriptions();
