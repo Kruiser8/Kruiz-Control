@@ -26,6 +26,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
         }
       });
     }
+    initialize();
   }).catch(err => { // Promise convention dictates you have a catch on every chain.
     console.error(JSON.stringify(err));
   });
