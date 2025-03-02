@@ -14,7 +14,7 @@ class MQTTHandler extends Handler {
    * @param {string} address username to use for the connection, if any
    * @param {string} address password to use for the connection, if any
    */
-  init(address, username, password) {
+  init = (address, username, password) => {
     this.mqtt = new MQTTWebSocket(address, username, password, this);
   }
 
@@ -24,7 +24,7 @@ class MQTTHandler extends Handler {
    * @param {array} triggerLine contents of trigger line
    * @param {number} id of the new trigger
    */
-  addTriggerData(trigger, triggerLine, triggerId) {
+  addTriggerData = (trigger, triggerLine, triggerId) => {
     trigger = trigger.toLowerCase();
     switch (trigger) {
       case 'onmqtt':
@@ -45,7 +45,7 @@ class MQTTHandler extends Handler {
    * Handle the input data (take an action).
    * @param {array} triggerData contents of trigger line
    */
-  async handleData(triggerData) {
+  handleData = async (triggerData) => {
     var action = Parser.getAction(triggerData, 'MQTT');
     switch (action) {
       case 'publish':
