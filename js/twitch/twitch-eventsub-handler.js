@@ -96,8 +96,6 @@ class EventSubHandler {
     };
   }
 
-  //// Check if API requests update the access token after a 401?
-
   resubscribe = async (type, version, condition) => {
     if (Debug.Twitch || Debug.All) {
         console.error(`Resubscribing to ${type}`);
