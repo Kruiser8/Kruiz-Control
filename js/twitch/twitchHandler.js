@@ -37,7 +37,6 @@ class TwitchHandler extends Handler {
    * @param {string} chatCode the Twitch API authorization code for chatting
    */
   init = async (user, clientId, clientSecret, code, channelId, chatCode) => {
-    connectPubSubWebsocket(channelId, this.onMessage);
     this.user = user;
     this.channelId = channelId;
     this.initializePoll();
@@ -112,6 +111,7 @@ class TwitchHandler extends Handler {
       console.error(JSON.stringify(error));
       console.error(error);
     }
+    connectPubSubWebsocket(channelId, this.onMessage);
     this.success();
   }
 
