@@ -7,7 +7,9 @@ class TimerHandler extends Handler {
     this.timerNames = [];
     this.timers = {};
     this.intervals = {};
+    
     this.success();
+    this.initialized();
   }
 
   /**

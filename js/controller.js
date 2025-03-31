@@ -10,11 +10,15 @@ class Controller {
     this.triggerAsyncMap = {};
     this.triggerAsync = [];
     this.successful = [];
+    this.initialized = {};
+    this.started = false;
+    this.initializedQueue = async.queue(this.addInitializedAsync, 1);
     this.initTriggers = [];
     this.playAudio = {};
     this.addParser('controller', this);
     this.addTrigger('OnInit', 'controller');
     this.addSuccess('controller');
+    this.addInitialized('controller');
     this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
   }
 
@@ -25,6 +29,7 @@ class Controller {
    */
   addParser = (name, instance) => {
     this.parsers[name.toLowerCase()] = instance;
+    this.initialized[name.toLowerCase()] = false;
   }
 
   /**
@@ -34,6 +39,27 @@ class Controller {
   addSuccess = (name) => {
     if (this.successful.indexOf(name) === -1) {
       this.successful.push(name.toLowerCase());
+    }
+  }
+
+  /**
+   * Add to the list of initialized parsers.
+   * @param {string} name name to use for the parser
+   */
+  addInitialized = (name) => {
+    this.initializedQueue.push(name.toLowerCase());
+  }
+
+  /**
+   * Add to the list of initialized parsers in a queue.
+   * @param {string} name name to use for the parser
+   */
+  addInitializedAsync = async (name, callback) => {
+    this.initialized[name] = true;
+    if (!this.started && Object.values(this.initialized).every(Boolean)) {
+      console.error("all done... run init");
+      this.started = true;
+      this.runInit();
     }
   }
 

@@ -4,7 +4,6 @@ class DebugHandler extends Handler {
    */
   constructor() {
     super('Debug', []);
-    this.success();
     this.All = false;
     this.Chat = false;
     this.MQTT = false;
@@ -16,6 +15,9 @@ class DebugHandler extends Handler {
     this.Streamlabs = false;
     this.Twitch = false;
     this.Voicemod = false;
+
+    this.success();
+    this.initialized();
   }
 
   /**

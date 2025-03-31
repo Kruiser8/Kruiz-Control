@@ -17,7 +17,6 @@
   };
 
   socket.onopen = () => {
-    slobsHandler.success();
     slobsSocket.sendSLOBS("auth", "TcpServerService", [token])
     slobsSocket.sendSLOBS("getScenes", "ScenesService");
     slobsSocket.sendSLOBS("activeScene", "ScenesService");
@@ -25,6 +24,9 @@
     slobsSocket.sendSLOBS("sceneAdded", "ScenesService");
     slobsSocket.sendSLOBS("sceneRemoved", "ScenesService");
     slobsSocket.sendSLOBS("streamingStatusChange", "StreamingService");
+
+    slobsHandler.success();
+    slobsHandler.initialized();
   };
 
   socket.onmessage = (e) => {
@@ -65,7 +67,8 @@
   };
 
   socket.onclose = (e) => {
-    console.log('Closed SLOBS connection', e);
+    console.error('Closed SLOBS connection');
+    slobsHandler.initialized();
   };
 
   slobsSocket.getCurrentScene = function() {

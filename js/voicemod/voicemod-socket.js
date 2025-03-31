@@ -3,8 +3,9 @@
  * @param {string} address host for the Voicemod API
  * @param {string} apiKey Voicemod API key
  * @param {Function} onConnect Function to call when Voicemod is connected
+ * @param {Function} onInitialize Function to call when Voicemod is initialized (regardless of connection status)
  */
-function connectVoicemodWebsocket(address, apiKey, onConnect) {
+function connectVoicemodWebsocket(address, apiKey, onConnect, onInitialize) {
   var promises = {};
   var apiWrapper = {};
 
@@ -23,6 +24,7 @@ function connectVoicemodWebsocket(address, apiKey, onConnect) {
 
   websocket.onclose = (evt) => {
     console.error('Voicemod websocket connection closed');
+    onInitialize();
   };
 
   websocket.onerror = (err) => {

@@ -18,6 +18,13 @@ class Handler {
   /**
    * Register trigger as successfully initialized.
    */
+  initialized = () => {
+    controller.addInitialized(this.parserName);
+  }
+
+  /**
+   * Register trigger as successfully initialized.
+   */
   success = () => {
     controller.addSuccess(this.parserName);
   }

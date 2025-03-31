@@ -4,9 +4,11 @@ class MessageHandler extends Handler {
    */
   constructor() {
     super('Message', ['OnMessage']);
-    this.success();
     this.messages = [];
     this.messagesTriggers = {};
+
+    this.success();
+    this.initialized();
   }
 
   /**

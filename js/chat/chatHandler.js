@@ -38,6 +38,14 @@ class ChatHandler extends Handler {
       console.error("Chat connected successfully");
       if (isFirstConnect) {
         this.success();
+        this.initialized();
+      }
+    }
+
+    ComfyJS.onError = (error) => {
+      if (error.includes("Login authentication failed")) {
+        console.error("Unable to connect to Chat");
+        this.initialized();
       }
     }
 
