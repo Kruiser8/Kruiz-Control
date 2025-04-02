@@ -65,9 +65,9 @@ class TimerHandler extends Handler {
   }
 
   /**
-   * Called after parsing all user input.
+   * Called once all handlers are ready.
    */
-  postParse = () => {
+  onInit = () => {
     this.timerNames.forEach((name) => {
       this.timers[name].forEach((timer) => {
         var triggerId = timer[0];

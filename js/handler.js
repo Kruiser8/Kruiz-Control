@@ -61,4 +61,11 @@ class Handler {
   postParse = () => {
     return;
   }
+
+  /**
+   * Called once all handlers are ready.
+   */
+  onInit = () => {
+    return;
+  }
 }

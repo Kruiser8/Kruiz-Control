@@ -143,7 +143,21 @@ class Controller {
     return;
   }
 
+  /**
+   * Called once all handlers are ready.
+   */
+  onInit = () => {
+    return;
+  }
+
+  /**
+   * Run the controller OnInit process.
+   */
   runInit = () => {
+    for (var handler in this.parsers) {
+      this.parsers[handler].onInit();
+    }
+
     this.initTriggers.forEach(triggerId => {
       this.handleData(triggerId);
     });
