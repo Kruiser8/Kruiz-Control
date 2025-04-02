@@ -49,6 +49,31 @@ exampleoauth4kruizcontrol12345
 
 ***
 
+## Debug
+The debug config is used to enable more logging from components within Kruiz Control. This can help investigate issues. 
+
+_**NOTE: This file should not be modified unless necessary for advanced debugging. Most users can skip this.**_
+
+### config.txt
+**Location:** `settings/debug/config.txt`
+
+```
+all=false
+chat=false
+controller=false
+mqtt=false
+obs=false
+parser=false
+slobs=false
+storage=false
+streamelements=false
+streamlabs=false
+twitch=false
+voicemod=false
+```
+
+***
+
 ## MQTT
 
 ### websocket.txt

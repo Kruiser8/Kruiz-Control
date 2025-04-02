@@ -22,6 +22,27 @@ class DebugHandler extends Handler {
   }
 
   /**
+   * Initialize the debug settings with the provided config.
+   * @param {string} config debug configuration
+   */
+  init = (config) => {
+    var lines = config.split(/\r\n|\n/);
+    lines.forEach(line => {
+      var [handler, shouldCheck] = line.split("=");
+      if (shouldCheck.toLowerCase().trim() === "true") {
+        var triggerData = ["Debug"]
+        if (handler.toLowerCase() !== "all") {
+          triggerData.push(handler);
+        }
+        this.handleData(triggerData);
+      }
+    });
+    for(var property in this){
+      console.error(`Debug ${property}: ${this[property]}`);
+    }
+  }
+
+  /**
    * Handle the input data (take an action).
    * @param {array} triggerData contents of trigger line
    */
@@ -78,7 +99,9 @@ class DebugHandler extends Handler {
  * Create a handler
  */
 let Debug;
-function debugHandlerExport() {
+async function debugHandlerExport() {
   Debug = new DebugHandler();
+  var config = await readFile('settings/debug/config.txt');
+  Debug.init(config.trim());
 }
 debugHandlerExport();
