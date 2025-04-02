@@ -55,9 +55,14 @@ class Controller {
    * @param {string} name name to use for the parser
    */
   addInitializedAsync = async (name, callback) => {
+    if (Debug.All || Debug.Controller) {
+      console.error(`Initialized the ${name} handler.`)
+    }
     this.initialized[name] = true;
     if (!this.started && Object.values(this.initialized).every(Boolean)) {
-      console.error("all done... run init");
+      if (Debug.All || Debug.Controller) {
+        console.error("Completed initialization. Runing OnInit events.")
+      }
       this.started = true;
       this.runInit();
     }
