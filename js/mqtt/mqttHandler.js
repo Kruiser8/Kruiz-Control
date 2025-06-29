@@ -4,16 +4,19 @@ class MQTTHandler extends Handler {
    */
   constructor() {
     super('MQTT', ['OnMQTT']);
+    this.mqtt = null;
+    this.queue = [];
   }
 
   /**
    * Initialize the connection to MQTT broker with the input settings.
    * @param {string} address broker websocket address
-   * @param {string} address username to use for the connection, if any
-   * @param {string} address password to use for the connection, if any
+   * @param {string} username to use for the connection, if any
+   * @param {string} password to use for the connection, if any
    */
   init = (address, username, password) => {
-    this.mqtt = new MQTTWebSocket(address, username, password, this.success);
+    this.mqtt = new MQTTWebSocket(address, username, password);
+    this._processQueue();
   }
 
   /**
@@ -26,8 +29,8 @@ class MQTTHandler extends Handler {
     trigger = trigger.toLowerCase();
     switch (trigger) {
       case 'onmqtt':
-        var { topic } = Parser.getInputs(triggerLine, ['topic'], true);
-        this.mqtt.subscribe(topic, function (message) {
+        var { topic } = Parser.getInputs(triggerLine, ['topic']);
+        this._queueSubscription(topic, function (message) {
           if (Debug.All || Debug.MQTT) {
             console.error(`MQTT ${topic} message received: ${message}`);
           }
@@ -56,6 +59,23 @@ class MQTTHandler extends Handler {
       default:
         console.error(`Unable to determine the MQTT <action> to be taken. Found: "${action}" within ${JSON.stringify(triggerData)}.`);
         break;
+    }
+  }
+
+  _queueSubscription = (topic, callback) => {
+    if (this.mqtt && this.mqtt.client && this.mqtt.client.connected) {
+      this.mqtt.subscribe(topic, callback);
+    } else {
+      this.queue.push({ topic, callback });
+    }
+  }
+
+  _processQueue = () => {
+    while (this.queue.length > 0) {
+      const { topic, callback } = this.queue.shift();
+      if (this.mqtt && this.mqtt.client && this.mqtt.client.connected) {
+        this.mqtt.subscribe(topic, callback);
+      }
     }
   }
 }
