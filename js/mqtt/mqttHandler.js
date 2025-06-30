@@ -73,7 +73,7 @@ class MQTTHandler extends Handler {
   _processQueue = () => {
     while (this.queue.length > 0) {
       const { topic, callback } = this.queue.shift();
-      if (this.mqtt && this.mqtt.client && this.mqtt.client.connected) {
+      if (this.mqtt && this.mqtt.client) {
         this.mqtt.subscribe(topic, callback);
       }
     }
