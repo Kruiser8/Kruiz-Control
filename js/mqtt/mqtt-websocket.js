@@ -43,12 +43,11 @@ class MQTTWebSocket {
       this.topics[topic] = [];
       if (this.client && this.client.connected) {
         this.client.subscribe(topic);
+    	this.topics[topic].push(callback);
       } else {
         this.queue.push({ topic, callback });
       }
     }
-    console.error(`MQTT subscribe to ${topic}`);
-    this.topics[topic].push(callback);
   }
 
   _processQueue = () => {
