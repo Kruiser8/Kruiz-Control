@@ -1,6 +1,6 @@
 class MQTTWebSocket {
 
-  constructor(address, username, password) {
+  constructor(address, username, password, onConnect) {
     this.address = address;
     this.topics = [];
     this.queue = [];
