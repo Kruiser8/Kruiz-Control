@@ -17,8 +17,8 @@ class MQTTWebSocket {
     }
 
     this.client = mqtt.connect(this.address, options);
-    this.client.on('connect', () => { 
-      console.error(`MQTT connected on ${address}`);
+    this.client.on('connect', () => {
+      onConnect;
       this._processQueue();
     });
     this.client.on('message', (topic, message) => {
