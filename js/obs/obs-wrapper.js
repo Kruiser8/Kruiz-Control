@@ -23,11 +23,13 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
           console.error(`Kruiz Control connected to the OBS Websocket v${data.obsWebSocketVersion}`);
           obsHandler.setCurrentScene(await obs.getCurrentScene());
           obsHandler.success();
+          obsHandler.initialized();
         }
       });
     }
     initialize();
   }).catch(err => { // Promise convention dictates you have a catch on every chain.
+    obsHandler.initialized();
     console.error(JSON.stringify(err));
   });
 

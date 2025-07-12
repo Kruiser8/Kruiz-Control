@@ -15,8 +15,11 @@ class MQTTHandler extends Handler {
    * @param {string} password to use for the connection, if any
    */
   init = (address, username, password) => {
-    this.mqtt = new MQTTWebSocket(address, username, password);
-    this._processQueue();
+    this.mqtt = new MQTTWebSocket(address, username, password, () => {
+      this.success();
+      this.initialized();
+      this._processQueue();
+    }, this.initialized);
   }
 
   /**

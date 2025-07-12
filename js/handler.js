@@ -18,6 +18,13 @@ class Handler {
   /**
    * Register trigger as successfully initialized.
    */
+  initialized = () => {
+    controller.addInitialized(this.parserName);
+  }
+
+  /**
+   * Register trigger as successfully initialized.
+   */
   success = () => {
     controller.addSuccess(this.parserName);
   }
@@ -52,6 +59,13 @@ class Handler {
    * Called after parsing all user input.
    */
   postParse = () => {
+    return;
+  }
+
+  /**
+   * Called once all handlers are ready.
+   */
+  onInit = () => {
     return;
   }
 }

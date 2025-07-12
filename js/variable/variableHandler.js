@@ -7,7 +7,9 @@ class VariableHandler extends Handler {
     this.autoload = false;
     this.globals = {};
     this.variables = {};
+    
     this.success();
+    this.initialized();
   }
 
   /**

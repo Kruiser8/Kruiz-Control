@@ -7,8 +7,10 @@ class ListHandler extends Handler {
    */
   constructor() {
     super('List', []);
-    this.success();
     this.lists = {};
+
+    this.success();
+    this.initialized();
   }
 
   /**

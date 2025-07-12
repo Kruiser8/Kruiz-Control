@@ -37,7 +37,7 @@ class TwitchHandler extends Handler {
    * @param {string} chatCode the Twitch API authorization code for chatting
    */
   init = async (user, clientId, clientSecret, code, channelId, chatCode) => {
-    connectPubSubWebsocket(channelId, this.onMessage);
+    var successful = true;
     this.user = user;
     this.channelId = channelId;
     this.initializePoll();
@@ -60,6 +60,7 @@ class TwitchHandler extends Handler {
         refreshToken = newRefreshToken;
         this.updateTokens(clientId, clientSecret, code, accessToken, refreshToken, true);
       } catch (error) {
+        successful = false;
         console.error(JSON.stringify(error));
       }
     } else {
@@ -67,6 +68,7 @@ class TwitchHandler extends Handler {
         await this.api.getChannelInformation(this.channelId);
         accessToken = this.api.accessToken;
       } catch (error) {
+        successful = false;
         console.error(JSON.stringify(error));
       }
     }
@@ -82,6 +84,7 @@ class TwitchHandler extends Handler {
           chatAccessToken = newChatAccessToken;
           this.updateChatTokens(clientId, clientSecret, chatCode, newChatAccessToken, newChatRefreshToken, true);
         } catch (error) {
+          successful = false;
           console.error(JSON.stringify(error));
         }
       } else {
@@ -89,6 +92,7 @@ class TwitchHandler extends Handler {
           await this.chatApi.getChannelInformation(this.channelId);
           chatAccessToken = this.chatApi.accessToken;
         } catch (error) {
+          successful = false;
           console.error(JSON.stringify(error));
         }
       }
@@ -109,10 +113,16 @@ class TwitchHandler extends Handler {
     try {
       this.eventSub = new EventSubHandler(this.api, this.channelId, this.onEventMessage);
     } catch (error) {
+      successful = false;
       console.error(JSON.stringify(error));
       console.error(error);
     }
-    this.success();
+    connectPubSubWebsocket(channelId, this.onMessage);
+    
+    if (successful) {
+      this.success();
+    }
+    this.initialized();
   }
 
   /**

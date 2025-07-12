@@ -37,7 +37,4 @@ async function readFileTriggers(data) {
   }
 
   controller.doneParsing();
-  setTimeout(function() {
-    controller.runInit();
-  }, 2000);
 }

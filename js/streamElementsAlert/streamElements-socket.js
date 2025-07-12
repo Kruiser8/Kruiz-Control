@@ -6,28 +6,46 @@
  * @param {method} onEvent method to call when events are received
  */
 function connectStreamElementsWebsocket(streamElementHandler, token, onTestEvent, onEvent) {
+  var connection_error = false;
+
   const socket = io('https://realtime.streamelements.com', {
       transports: ['websocket']
   });
+
   // Socket connected
-  socket.on('connect', function() {
-    console.log('Successfully connected to the streamelements websocket');
-    streamElementHandler.success();
+  socket.on('connect', () => {
     socket.emit('authenticate', {
         method: 'jwt',
         token: token
     });
+    connection_error = false;
+  });
+
+  socket.on('connect_error', () => {
+    if (!connection_error) {
+      connection_error = true;
+
+      console.error("StreamElements failed to connect properly.");
+      streamElementHandler.initialized();
+    }
   });
 
   // Socket got disconnected
-  socket.on('disconnect', function() {
-    console.log('Disconnected from websocket');
+  socket.on('disconnect', () => {
+    console.error('Disconnected from StreamElements websocket');
   });
 
   // Socket is authenticated
-  socket.on('authenticated', function(data) {
-    const channelId = data.channelId;
-    console.log(`Successfully connected to channel ${channelId}`);
+  socket.on('authenticated', () => {
+    streamElementHandler.success();
+    streamElementHandler.initialized();
+    console.error(`Successfully connected to StreamElements`);
+  });
+
+  // Socket failed to authenticate
+  socket.on('unauthorized', () => {
+    console.error("Unable to authenticate with StreamElements websocket.")
+    streamElementHandler.initialized();
   });
 
   socket.on('event:test', onTestEvent);

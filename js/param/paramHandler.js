@@ -5,6 +5,7 @@ class ParamHandler extends Handler {
   constructor() {
     super('Param', []);
     this.success();
+    this.initialized();
   }
 
   /**
