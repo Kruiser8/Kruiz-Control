@@ -18,8 +18,10 @@ class MQTTWebSocket {
 
     this.client = mqtt.connect(this.address, options);
     this.client.on('connect', () => {
+	  if (Debug.All || Debug.MQTT) {
+        console.error(`MQTT Client connected.`);
+      }
       onConnect;
-      this._processQueue();
     });
     this.client.on('message', (topic, message) => {
       if (Debug.All || Debug.MQTT) {
@@ -42,22 +44,8 @@ class MQTTWebSocket {
     if (this.topics[topic] === undefined) {
       this.topics[topic] = [];
 	}
-    if (this.client && this.client.connected) {
-      this.client.subscribe(topic);
-      this.topics[topic].push(callback);
-    } else {
-      this.queue.push({ topic, callback });
-    }
-  }
-
-  _processQueue = () => {
-    while (this.queue.length > 0) {
-      const { topic, callback } = this.queue.shift();
-      if (this.client && this.client.connected) {
-        this.client.subscribe(topic);
-      }
-      this.topics[topic].push(callback);
-    }
+    this.client.subscribe(topic);
+    this.topics[topic].push(callback);
   }
 
   _handleCallbacks = (topic, message) => {
