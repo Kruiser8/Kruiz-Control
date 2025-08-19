@@ -31,6 +31,7 @@ class ChatHandler extends Handler {
   /**
    * Initialize the chat connection with the input user.
    * @param {string} channel twitch channel to connect
+   * @param {string} user twitch user to send messages as
    */
   init = (channel, user) => {
     this.channel = channel.toLowerCase();
