@@ -1,6 +1,7 @@
 all=false
 chat=false
 controller=false
+debug=false
 mqtt=false
 obs=false
 parser=false

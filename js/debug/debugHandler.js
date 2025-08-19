@@ -7,6 +7,7 @@ class DebugHandler extends Handler {
     this.All = false;
     this.Chat = false;
     this.Controller = false;
+    this.Debug = false;
     this.MQTT = false;
     this.OBS = false;
     this.Parser = false;
@@ -37,8 +38,13 @@ class DebugHandler extends Handler {
         this.handleData(triggerData);
       }
     });
-    for(var property in this){
-      console.error(`Debug ${property}: ${this[property]}`);
+
+    if (this.All || this.Debug) {
+      for(var property in this){
+        if (typeof this[property] !== "function" && property !== "parserName") {
+          console.error(`Debug ${property}: ${this[property]}`);
+        }
+      }
     }
   }
 
@@ -56,6 +62,9 @@ class DebugHandler extends Handler {
           break;
         case 'controller':
           this.Controller = true;
+          break;
+        case 'debug':
+          this.Debug = true;
           break;
         case 'mqtt':
           this.MQTT = true;
