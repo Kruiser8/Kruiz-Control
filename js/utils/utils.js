@@ -108,12 +108,17 @@ async function readFile(file) {
   return response;
 }
 
+let userIdMap = {};
 /**
  * Get the user's id and send to the callback.
  * @param {string} user name user
  * @param {function} callback function to call with file data
  */
 async function getIdFromUser(user) {
+  if (user in userIdMap) {
+    return userIdMap[user];
+  }
+
   var response = "";
   await $.ajax({
     url: 'https://decapi.me/twitch/id/' + user,
@@ -131,6 +136,8 @@ async function getIdFromUser(user) {
     console.error(`Unable to get the ID for the input user: ${user}`);
     return '';
   }
+
+  userIdMap[user] = response;
 
   return response;
 }
