@@ -52,6 +52,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Debug](#debug-1)
     + [Debug Chat](#debug-chat)
     + [Debug Controller](#debug-controller)
+    + [Debug Debug](#debug-debug)
     + [Debug MQTT](#debug-mqtt)
     + [Debug OBS](#debug-obs)
     + [Debug Parser](#debug-parser)
@@ -1002,6 +1003,15 @@ None at the moment.
 **Info** | Used to enable debugging for internal event handling.
 **Format** | `Debug Controller`
 **Example** | `Debug Controller`
+
+***
+
+#### Debug Debug
+| | |
+------------ | -------------
+**Info** | Used to enable debugging for internal debug handling.
+**Format** | `Debug Debug`
+**Example** | `Debug Debug`
 
 ***
 
