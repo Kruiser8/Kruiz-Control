@@ -46,6 +46,7 @@ class TwitchAPI {
       'user:manage:whispers',
       'user:read:chat',
       'user:read:follows',
+      'user:read:whispers',
       'user:write:chat'
     ].map(scope => encodeURIComponent(scope));
     return `https://id.twitch.tv/oauth2/authorize?response_type=code&client_id=${this.clientId}&redirect_uri=http://localhost&scope=${scopes.join('%20')}`;
