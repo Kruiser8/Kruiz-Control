@@ -32,8 +32,9 @@ class ChatHandler extends Handler {
    * Initialize the chat connection with the input user.
    * @param {string} channel twitch channel to connect
    */
-  init = (channel) => {
+  init = (channel, user) => {
     this.channel = channel.toLowerCase();
+    this.user = user;
     ComfyJS.onConnected = ( address, port, isFirstConnect ) => {
       console.error("Chat connected successfully");
       if (isFirstConnect) {
@@ -193,7 +194,11 @@ class ChatHandler extends Handler {
       ComfyJS.Say(message);
     } else if (action === 'whisper') {
       var { user, message } = Parser.getInputs(triggerData, ['action', 'user', 'message']);
-      ComfyJS.Whisper(message, user);
+      return {
+        actions: [
+          ["Ignore", "Twitch", "Whisper", this.user, user, message]
+        ]
+      };
     }
     return;
   }
@@ -547,6 +552,7 @@ class ChatHandler extends Handler {
 async function chatHandlerExport() {
   var chat = new ChatHandler();
   var channel = await readFile('settings/chat/channel.txt');
-  chat.init(channel.trim());
+  var user = await readFile('settings/chat/user.txt');
+  chat.init(channel.trim(), user.trim());
 }
 chatHandlerExport();

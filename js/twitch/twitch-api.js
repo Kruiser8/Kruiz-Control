@@ -1031,4 +1031,18 @@ class TwitchAPI {
       }
     });
   }
+
+  sendWhisper = async (from_user_id, to_user_id, message) => {
+    await this.callTwitchApiJson({
+      method: 'POST',
+      endpoint: 'https://api.twitch.tv/helix/whispers',
+      params: {
+        from_user_id,
+        to_user_id
+      },
+      data: {
+        message
+      }
+    });
+  }
 }

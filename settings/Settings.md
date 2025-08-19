@@ -46,6 +46,17 @@ exampleoauth4kruizcontrol12345
 *Reminder:*
 - _channel.txt_ specifies the channel to connect to.
 - _code.txt_ specifies the user to send messages as.
+- _user.txt_ specifies the username to send messages as.
+
+### user.txt
+**Location:** `settings/chat/user.txt`
+
+Specify the twitch user used to send messages.
+```
+kruiser8
+```
+
+_**NOTE: This setting is only required if the `settings/chat/code.txt` file is updated.**_
 
 ***
 

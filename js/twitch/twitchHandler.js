@@ -118,7 +118,7 @@ class TwitchHandler extends Handler {
       console.error(error);
     }
     connectPubSubWebsocket(channelId, this.onMessage);
-    
+
     if (successful) {
       this.success();
     }
@@ -1933,6 +1933,18 @@ class TwitchHandler extends Handler {
         var user_id = await getIdFromUser(user);
 
         await this.api.warnChatUser(this.channelId, this.channelId, { user_id, reason });
+        break;
+      case 'whisper':
+        var { from_user, to_user, message } = Parser.getInputs(triggerData, ['action', 'from_user', 'to_user', 'message']);
+        var to_user_id = await getIdFromUser(to_user);
+
+        if (this.useChatAuth) {
+          var from_user_id = await getIdFromUser(from_user);
+          await this.chatApi.sendWhisper(from_user_id, to_user_id, message);
+        } else {
+          await this.api.sendWhisper(this.channelId, to_user_id, message);
+        }
+
         break;
     }
   }
