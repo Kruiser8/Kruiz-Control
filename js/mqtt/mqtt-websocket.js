@@ -3,7 +3,6 @@ class MQTTWebSocket {
   constructor(address, username, password, onConnect, onClose) {
     this.address = address;
     this.topics = [];
-    this.queue = [];
 
     const options = {
       // Clean session
@@ -21,7 +20,7 @@ class MQTTWebSocket {
 	  if (Debug.All || Debug.MQTT) {
         console.error(`MQTT Client connected.`);
       }
-      onConnect;
+      onConnect();
     });
     this.client.on('offline', onClose)
     this.client.on('message', (topic, message) => {
