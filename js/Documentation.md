@@ -2039,7 +2039,9 @@ y | The y position of the source
 ##### Parameters
 | | |
 ------------ | -------------
-**source_types#** | The numbered source types returned by OBS. These can be used when creating a source with `OBS CreateSource`.zz
+**source_type#** | The source types returned by OBS. Replace `#` with a number, starting at 1 and ending at `source_type_count`.
+**source_type_count** | The number of source types retrieved.
+**data** | The complete response from the OBS websocket.
 
 ***
 

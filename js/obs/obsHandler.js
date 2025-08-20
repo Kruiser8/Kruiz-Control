@@ -439,7 +439,15 @@ class OBSHandler extends Handler {
         break;
       case 'getsourcetypes':
         var data = await this.obs.getInputKindList();
-        return { source_types: data.inputKinds }
+        var sourceTypes = {};
+        for (var i = 0; i < data.inputKinds.length; i++) {
+          sourceTypes[`source_type${i+1}`] = data.inputKinds[i];
+        }
+        return { 
+          data,
+          source_types: data.inputKinds,
+          ...sourceTypes
+        };
         break;  
       case 'isscenesourcevisible':
         var { scene, source } = Parser.getInputs(triggerData, ['action', 'scene', 'source']);
