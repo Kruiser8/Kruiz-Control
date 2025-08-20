@@ -382,7 +382,7 @@ class OBSHandler extends Handler {
       case 'addsceneitem':
         var { sceneName, sourceName, status } = Parser.getInputs(triggerData, ['action', 'sceneName', 'sourceName', 'status'], false, 1);
         status = (status && status.toLowerCase() === 'off') ? false : true;
-        await this.obs.addSceneItem(sceneName, sourceName, status)
+        await this.obs.addSceneItem(sceneName, sourceName, status);
         break;
       case 'createsource':
         var { sceneName, inputKind, inputName, sceneItemEnabled } = Parser.getInputs(triggerData, ['action', 'sceneName', 'inputKind', 'inputName', 'sceneItemEnabled']);
@@ -430,7 +430,7 @@ class OBSHandler extends Handler {
         var { sceneName, sceneItemName } = Parser.getInputs(triggerData, ['action', 'sceneName', 'sceneItemName']);
         var data = await this.obs.getSceneItemTransform(sceneName, sceneItemName);
         var transform = data.sceneItemTransform;
-        return { top: transform.cropTop, left: transform.cropLeft, bottom: transform.cropBottom, right: transform.cropRight }
+        return { top: transform.cropTop, left: transform.cropLeft, bottom: transform.cropBottom, right: transform.cropRight };
         break;
       case 'getposition':
         var { sceneName, sceneItemName } = Parser.getInputs(triggerData, ['action', 'sceneName', 'sceneItemName']);
