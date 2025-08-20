@@ -82,23 +82,6 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
     });
   }
 
-  obs.getSceneItemCount = async function(scene, source) {
-    var count = 0;
-    await obs.call('GetSceneItemList', {
-      sceneName: scene,
-    }).then(data => {
-      for (var item of data.sceneItems) {
-        if (item.sourceName == source) {
-          count++;
-        }
-      }
-    }).catch(async err => {
-      console.error(JSON.stringify(err));
-    });
-
-    return count;
-  }
-
   obs.getSceneItemName = async function(scene, sceneItemId) {
     return await this.call('GetSceneItemList', {
       sceneName: scene
@@ -310,7 +293,6 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
     if (!scene) {
       scene = await this.getCurrentScene();
     }
-    var count = await this.getSceneItemCount(scene, source);
     await this.call('RemoveSceneItem', {
       'sceneItemId': await this.getSceneItemId(scene, source),
       'sceneName': scene,
