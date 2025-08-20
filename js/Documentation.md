@@ -139,8 +139,15 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnOBSTransitionTo](#onobstransitionto)
   * [Actions](#obs-actions)
     + [OBS AddSceneItem](#obs-addsceneitem)
+    + [OBS CreateSource](#obs-createsource)
+    + [OBS Crop](#obs-crop)
     + [OBS CurrentScene](#obs-currentscene)
+    + [OBS DuplicateSceneItem](#obs-duplicatesceneitem)
     + [OBS Flip](#obs-flip)
+    + [OBS GetCrop](#obs-getcrop)
+    + [OBS GetPosition](#obs-getposition)
+    + [OBS GetSourceSettings](#obs-getsourcesettings)
+    + [OBS GetSourceTypes](#obs-getsourcetypes)
     + [OBS IsSceneSourceVisible](#obs-isscenesourcevisible)
     + [OBS IsSourceActive](#obs-issourceactive)
     + [OBS Media Duration](#obs-media-duration)
@@ -155,6 +162,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OBS Position](#obs-position)
     + [OBS RecordingStatus](#obs-recordingstatus)
     + [OBS Refresh](#obs-refresh)
+    + [OBS RemoveSceneItem](#obs-removesceneitem)
     + [OBS ResumeRecording](#obs-resumerecording)
     + [OBS Rotate](#obs-rotate)
     + [OBS SaveReplayBuffer](#obs-savereplaybuffer)
@@ -1924,6 +1932,40 @@ Enables the ability to interact with and respond to OBS.
 
 ***
 
+#### OBS CreateSource
+| | |
+------------ | -------------
+**Info** | Used to create a new source in the specified scene. `<scene>` is the scene to create the source. `<type>` is the source type to create--you can find what kinds of sources are available using `OBS GetSourceTypes`. `<source>` is the name of the source to create. `<on/off>` (default: `on`) is an optional visibility that determines if the source is visible when it's added.
+**Format** | `OBS CreateSource <scene> <type> <source> <on/off>`
+**Example** | `OBS CreateSource BeeScene image_source Bee on` (or `OBS CreateSource BeeScene "Image Source" Bee on`)
+**Note 1** | OBS source types look like `image_source` or `text_gdiplus_v3`, and don't always correspond perfectly to the name you see in OBS, so you should use `OBS GetSourceTypes` to see the list of type names.
+**Note 2** | If the source name `<source>` already exists, the command will find an unused name by adding a number to the end. So if the source `Bee` already exists, the command will try to create a source `Bee 1`. If `Bee 1` also exists, it will try to create `Bee 2` and so on until it finds an unused source name. The final name of the created source is returned as a parameter.
+
+##### Parameters
+| | |
+------------ | -------------
+**source_name** | The name of the created source.
+**uuid** | The UUID of the created scene item
+**id** | The numeric ID of the scene item in the scene
+
+***
+
+#### OBS Crop
+| | |
+------------ | -------------
+**Info** | Used to set the cropping on a source. `<scene>` is the scene containing the source, `<source>` is the source to crop, `<top>`, `<left>`, `<bottom>`, and `<right>` specify the number of pixels to crop from each side of the source.
+**Format** | `OBS Crop <scene> <source> <top> <left> <bottom> <right>`
+**Example** | `OBS Crop BeeScene Bee 10 16 10 32`
+
+##### Parameters
+| | |
+------------ | -------------
+**init_top** | The initial value of the top crop before cropping the source.
+**init_left** | The initial value of the left crop before cropping the source.
+**init_bottom** | The initial value of the bottom crop before cropping the source.
+**init_right** | The initial value of the right crop before cropping the source.
+***
+
 #### OBS CurrentScene
 | | |
 ------------ | -------------
@@ -1938,12 +1980,78 @@ Enables the ability to interact with and respond to OBS.
 
 ***
 
+#### OBS DuplicateSceneItem
+| | |
+------------ | -------------
+**Info** | Used to duplicate a source as a reference in OBS. `<scene>` is the scene the source is in. `<source>` is the name of the source to duplicate. `<dest>` (default: `<scene>`) is an optional scene name that determines the scene the duplicate is placed in.
+**Format** | `OBS DuplicateSceneItem <scene> <source> <dest>`
+**Example** | `OBS DuplicateSceneItem BeeScene Bee OtherScene`
+
+***
+
 #### OBS Flip
 | | |
 ------------ | -------------
 **Info** | Used to flip a source in OBS.
 **Format** | `OBS Flip <scene> <source> <x/y>`
 **Example** | `OBS Flip Webcam Camera x`
+
+***
+
+#### OBS GetCrop
+| | |
+------------ | -------------
+**Info** | Gets the crop for a source in a given scene in OBS. `<scene>` is the scene the source is in. `<source>` is the source to get the crop for. Note that the same source can have different crops in different scenes.
+**Format** | `OBS GetCrop <scene> <source>`
+**Example** | `OBS GetCrop Webcam Camera`
+
+##### Parameters
+| | |
+------------ | -------------
+top | The number of pixels cropped from the top of the source
+left | The number of pixels cropped from the left side of the source
+bottom | The number of pixels cropped from the bottom of the source
+right | The number of pixels cropped from the right side of the source
+
+***
+
+#### OBS GetPosition
+| | |
+------------ | -------------
+**Info** | Gets the position for a source in a given scene in OBS. `<scene>` is the scene the source is in. `<source>` is the source to get the position for. Note that the same source can have different positions in different scenes.
+**Format** | `OBS GetPosition <scene> <source>`
+**Example** | `OBS GetPosition Webcam Camera`
+
+##### Parameters
+| | |
+------------ | -------------
+x | The x position of the source
+y | The y position of the source
+
+***
+
+#### OBS GetSourceSettings
+| | |
+------------ | -------------
+**Info** | Gets the settings for a source in OBS. `<source>` is the source to get the settings for. Different source types will have different settings available to them.
+**Format** | `OBS GetSourceSettings <source>`
+**Example** | `OBS GetSourceSettings Webcam`
+
+_The parameters returned by this command will vary with the source type._
+
+***
+
+#### OBS GetSourceTypes
+| | |
+------------ | -------------
+**Info** | Gets the source types available in OBS. Different source types may be available depending on what plugins you have installed.
+**Format** | `OBS GetSourceTypes`
+**Example** | `OBS GetSourceTypes`
+
+##### Parameters
+| | |
+------------ | -------------
+**source_types#** | The numbered source types returned by OBS. These can be used when creating a source with `OBS CreateSource`.zz
 
 ***
 
@@ -2109,6 +2217,15 @@ Enables the ability to interact with and respond to OBS.
 **Info** | Used to refresh a browser source in OBS.
 **Format** | `OBS Refresh <source>`
 **Example** | `OBS Refresh "Kruiz Control"`
+
+***
+
+#### OBS RemoveSceneItem
+| | |
+------------ | -------------
+**Info** | Used to remove an instance of a source from a scene in OBS. `<scene>` is the scene the source is in. `<source>` is the name of the source to remove. Note that if this is the last instance of `<source>` anywhere in the scene collection, OBS will delete the source.
+**Format** | `OBS RemoveSceneItem <scene> <source>`
+**Example** | `OBS RemoveSceneItem BeeScene Bee`
 
 ***
 
