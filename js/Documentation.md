@@ -146,7 +146,6 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OBS Flip](#obs-flip)
     + [OBS GetCrop](#obs-getcrop)
     + [OBS GetPosition](#obs-getposition)
-    + [OBS GetSourceSettings](#obs-getsourcesettings)
     + [OBS GetSourceTypes](#obs-getsourcetypes)
     + [OBS IsSceneSourceVisible](#obs-isscenesourcevisible)
     + [OBS IsSourceActive](#obs-issourceactive)
@@ -2027,17 +2026,6 @@ right | The number of pixels cropped from the right side of the source
 ------------ | -------------
 x | The x position of the source
 y | The y position of the source
-
-***
-
-#### OBS GetSourceSettings
-| | |
------------- | -------------
-**Info** | Gets the settings for a source in OBS. `<source>` is the source to get the settings for. Different source types will have different settings available to them.
-**Format** | `OBS GetSourceSettings <source>`
-**Example** | `OBS GetSourceSettings Webcam`
-
-_The parameters returned by this command will vary with the source type._
 
 ***
 
