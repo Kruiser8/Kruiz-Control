@@ -314,7 +314,6 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
     await this.call('RemoveSceneItem', {
       'sceneItemId': await this.getSceneItemId(scene, source),
       'sceneName': scene,
-      'destinationSceneName': scene,
     }).catch(err => {
       console.error(JSON.stringify(err));
     });
