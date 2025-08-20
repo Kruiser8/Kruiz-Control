@@ -161,7 +161,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OBS Position](#obs-position)
     + [OBS RecordingStatus](#obs-recordingstatus)
     + [OBS Refresh](#obs-refresh)
-    + [OBS RemoveSceneItem](#obs-removesceneitem)
+    + [OBS RemoveSource](#obs-removesource)
     + [OBS ResumeRecording](#obs-resumerecording)
     + [OBS Rotate](#obs-rotate)
     + [OBS SaveReplayBuffer](#obs-savereplaybuffer)
@@ -2210,12 +2210,12 @@ y | The y position of the source
 
 ***
 
-#### OBS RemoveSceneItem
+#### OBS RemoveSource
 | | |
 ------------ | -------------
-**Info** | Used to remove an instance of a source from a scene in OBS. `<scene>` is the scene the source is in. `<source>` is the name of the source to remove. Note that if this is the last instance of `<source>` anywhere in the scene collection, OBS will delete the source.
-**Format** | `OBS RemoveSceneItem <scene> <source>`
-**Example** | `OBS RemoveSceneItem BeeScene Bee`
+**Info** | Used to remove an instance of a source from a scene in OBS. `<scene>` is the scene the source is in. `<source>` is the name of the source to remove. Note that if this is the last instance of `<source>` anywhere in the scene collection, OBS will delete the source. If multiple sources exist in a scene with the given name, the first one _should_ be deleted.
+**Format** | `OBS RemoveSource <scene> <source>`
+**Example** | `OBS RemoveSource BeeScene Bee`
 
 ***
 

@@ -577,7 +577,7 @@ class OBSHandler extends Handler {
           await this.obs.setSceneItemRotation(scene, source, degree);
         }
         break;
-      case 'removesceneitem':
+      case 'removesource':
         var { sceneName, sourceName, status } = Parser.getInputs(triggerData, ['action', 'sceneName', 'sourceName'], false, 1);
         await this.obs.removeSceneItem(sourceName, sceneName)
         break;
