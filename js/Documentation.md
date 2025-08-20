@@ -142,7 +142,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OBS CreateSource](#obs-createsource)
     + [OBS Crop](#obs-crop)
     + [OBS CurrentScene](#obs-currentscene)
-    + [OBS DuplicateSceneItem](#obs-duplicatesceneitem)
+    + [OBS DuplicateSource](#obs-duplicatesource)
     + [OBS Flip](#obs-flip)
     + [OBS GetCrop](#obs-getcrop)
     + [OBS GetPosition](#obs-getposition)
@@ -1980,12 +1980,12 @@ _Note: OBS source types look like `image_source` or `text_gdiplus_v3`, and don't
 
 ***
 
-#### OBS DuplicateSceneItem
+#### OBS DuplicateSource
 | | |
 ------------ | -------------
 **Info** | Used to duplicate a source as a reference in OBS. `<scene>` is the scene the source is in. `<source>` is the name of the source to duplicate. `<dest>` (default: `<scene>`) is an optional scene name that determines the scene the duplicate is placed in.
-**Format** | `OBS DuplicateSceneItem <scene> <source> <dest>`
-**Example** | `OBS DuplicateSceneItem BeeScene Bee OtherScene`
+**Format** | `OBS DuplicateSource <scene> <source> <dest>`
+**Example** | `OBS DuplicateSource BeeScene Bee OtherScene`
 
 ***
 
