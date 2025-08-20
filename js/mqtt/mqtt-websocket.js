@@ -43,8 +43,8 @@ class MQTTWebSocket {
   subscribe = async (topic, callback) => {
     if (this.topics[topic] === undefined) {
       this.topics[topic] = [];
-	}
-    this.client.subscribe(topic);
+      this.client.subscribe(topic);
+    }
     this.topics[topic].push(callback);
   }
 
