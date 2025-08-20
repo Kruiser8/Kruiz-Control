@@ -289,7 +289,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
     });
   };
 
-  obs.removeSceneItem = async function(source, scene) {
+  obs.removeSceneItem = async function(scene, source) {
     if (!scene) {
       scene = await this.getCurrentScene();
     }

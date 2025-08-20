@@ -2219,6 +2219,8 @@ y | The y position of the source
 **Format** | `OBS RemoveSource <scene> <source>`
 **Example** | `OBS RemoveSource BeeScene Bee`
 
+_Note: `OBS RemoveSource` does not support removing sources within groups (folders)._
+
 ***
 
 #### OBS ResumeRecording

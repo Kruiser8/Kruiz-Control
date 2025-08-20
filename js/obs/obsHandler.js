@@ -578,6 +578,10 @@ class OBSHandler extends Handler {
         var source = triggerData.slice(2).join(' ');
         await this.obs.refreshBrowser(source);
         break;
+      case 'removesource':
+        var { scene, source } = Parser.getInputs(triggerData, ['action', 'scene', 'source']);
+        await this.obs.removeSceneItem(scene, source)
+        break;
       case 'resumerecording':
         await this.obs.resumeRecording();
         break;
@@ -588,10 +592,6 @@ class OBSHandler extends Handler {
         if (!isNaN(degree)) {
           await this.obs.setSceneItemRotation(scene, source, degree);
         }
-        break;
-      case 'removesource':
-        var { sceneName, sourceName, status } = Parser.getInputs(triggerData, ['action', 'sceneName', 'sourceName'], false, 1);
-        await this.obs.removeSceneItem(sourceName, sceneName)
         break;
       case 'savereplaybuffer':
         await this.obs.saveReplayBuffer();
