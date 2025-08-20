@@ -542,7 +542,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
       if (err.code === 600) {
         var group = await this.getSourceGroupName(scene, source);
         if (group) {
-          await this.setSceneItemPosition(group, source, x, y);
+          await this.setSceneItemCrop(group, source, top, left, bottom, right);
           return;
         }
       }
