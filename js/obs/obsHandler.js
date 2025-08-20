@@ -404,7 +404,12 @@ class OBSHandler extends Handler {
         cropBottom = parseFloat(cropBottom);
         cropRight = parseFloat(cropRight);
         await this.obs.setSceneItemCrop(sceneName, sceneItemName, cropTop, cropLeft, cropBottom, cropRight);
-        return { init_top: data.cropTop, init_left: data.cropLeft, init_bottom: data.cropBottom, init_right: data.cropRight }
+        return { 
+          init_top: data.sceneItemTransform.cropTop, 
+          init_left: data.sceneItemTransform.cropLeft, 
+          init_bottom: data.sceneItemTransform.cropBottom,
+          init_right: data.sceneItemTransform.cropRight
+        };
         break;
       case 'currentscene':
         var currentScene = await this.obs.getCurrentScene();
