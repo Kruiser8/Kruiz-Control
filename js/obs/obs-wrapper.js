@@ -82,6 +82,23 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
     });
   }
 
+  obs.getSceneItemCount = async function(scene, source) {
+    var count = 0;
+    await obs.call('GetSceneItemList', {
+      sceneName: scene,
+    }).then(data => {
+      for (var item of data.sceneItems) {
+        if (item.sourceName == source) {
+          count++;
+        }
+      }
+    }).catch(async err => {
+      console.error(JSON.stringify(err));
+    });
+
+    return count;
+  }
+
   obs.getSceneItemName = async function(scene, sceneItemId) {
     return await this.call('GetSceneItemList', {
       sceneName: scene
@@ -246,6 +263,74 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
           return;
         }
       }
+      console.error(JSON.stringify(err));
+    });
+  };
+
+  obs.duplicateSceneItem = async function(source, scene, dest) {
+    if (!scene) {
+      scene = await this.getCurrentScene();
+    }
+    return await this.call('DuplicateSceneItem', {
+      'sceneItemId': await this.getSceneItemId(scene, source),
+      'sceneName': scene,
+      'destinationSceneName': dest,
+    }).catch(err => {
+      console.error(JSON.stringify(err));
+    });
+  };
+
+  obs.getInputKindList = async function() {
+    return await this.call('GetInputKindList', 
+      {}).then(data => {
+        return data;
+      }).catch(err => {
+        console.error(JSON.stringify(err))
+    });
+  };
+
+  obs.createInput = async function(scene, input_kind, input_name, enabled) {
+    if (!input_name) {
+      input_name = input_kind;
+    }
+    var used_input_name = input_name;
+    var count = 0;
+
+    while (count >= 0) {
+      var data = await this.call('CreateInput', {
+        'sceneName': scene,
+        'inputName': used_input_name,
+        'inputKind': input_kind,
+        'sceneItemEnabled': enabled,
+      }).then(data => {
+        data = { source_name: used_input_name, uuid: data.inputUuid, id: data.sceneItemId }
+        return data;
+      }).catch(err => {
+        if (err.code == 601) {
+          count += 1;
+          used_input_name = [input_name, count].join(' ');
+        } else {
+          console.error(JSON.stringify(err))
+          count = -1;
+        }
+      })
+
+      if (data) {
+        return data;
+      }
+    }
+  };
+
+  obs.removeSceneItem = async function(source, scene) {
+    if (!scene) {
+      scene = await this.getCurrentScene();
+    }
+    var count = await this.getSceneItemCount(scene, source);
+    await this.call('RemoveSceneItem', {
+      'sceneItemId': await this.getSceneItemId(scene, source),
+      'sceneName': scene,
+      'destinationSceneName': scene,
+    }).catch(err => {
       console.error(JSON.stringify(err));
     });
   };
@@ -464,6 +549,28 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
       'sceneItemTransform': {
         'positionX': x,
         'positionY': y
+      }
+    }).catch(async err => {
+      if (err.code === 600) {
+        var group = await this.getSourceGroupName(scene, source);
+        if (group) {
+          await this.setSceneItemPosition(group, source, x, y);
+          return;
+        }
+      }
+      console.error(JSON.stringify(err));
+    });
+  };
+
+  obs.setSceneItemCrop = async function(scene, source, top, left, bottom, right) {
+    await this.call('SetSceneItemTransform', {
+      'sceneName': scene,
+      'sceneItemId': await this.getSceneItemId(scene, source),
+      'sceneItemTransform': {
+        'cropTop': top,
+        'cropLeft': left,
+        'cropBottom': bottom,
+        'cropRight': right,
       }
     }).catch(async err => {
       if (err.code === 600) {

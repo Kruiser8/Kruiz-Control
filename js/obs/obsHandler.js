@@ -373,9 +373,40 @@ class OBSHandler extends Handler {
         status = (status && status.toLowerCase() === 'off') ? false : true;
         await this.obs.addSceneItem(sceneName, sourceName, status)
         break;
+      case 'createsource':
+        var { sceneName, inputKind, inputName, sceneItemEnabled } = Parser.getInputs(triggerData, ['action', 'sceneName', 'inputKind', 'inputName', 'sceneItemEnabled']);
+
+        inputKind = inputKind.toLowerCase().replace(" ", "_");
+        console.error("inputKind: " + inputKind);
+
+        if (sceneItemEnabled == 'off') {
+          sceneItemEnabled = false;
+        } else {
+          sceneItemEnabled = true;
+        }
+
+        return await this.obs.createInput(sceneName, inputKind, inputName, sceneItemEnabled)
+        break;
+      case 'crop':
+        var { sceneName, sceneItemName, cropTop, cropLeft, cropBottom, cropRight } = Parser.getInputs(triggerData, ['action', 'sceneName', 'sceneItemName', 'cropTop', 'cropLeft', 'cropBottom', 'cropRight']);
+        var data = await this.obs.getSceneItemTransform(sceneName, sceneItemName);
+        cropTop = parseFloat(cropTop);
+        cropLeft = parseFloat(cropLeft);
+        cropBottom = parseFloat(cropBottom);
+        cropRight = parseFloat(cropRight);
+        await this.obs.setSceneItemCrop(sceneName, sceneItemName, cropTop, cropLeft, cropBottom, cropRight);
+        return { init_top: data.cropTop, init_left: data.cropLeft, init_bottom: data.cropBottom, init_right: data.cropRight }
+        break;
       case 'currentscene':
         var currentScene = await this.obs.getCurrentScene();
         return {current_scene: currentScene};
+        break;
+      case 'duplicatesceneitem':
+        var { sceneName, sourceName, destSceneName } = Parser.getInputs(triggerData, ['action', 'sceneName', 'sourceName', 'destSceneName'], false, 1);
+        if (!destSceneName) {
+          destSceneName = sceneName;
+        }
+        await this.obs.duplicateSceneItem(sourceName, sceneName, destSceneName)
         break;
       case 'flip':
         var { scene, source, direction } = Parser.getInputs(triggerData, ['action', 'scene', 'source', 'direction']);
@@ -386,6 +417,26 @@ class OBSHandler extends Handler {
           await this.obs.setSceneItemSize(scene, source, -1 * sceneItemTransform.scaleX, sceneItemTransform.scaleY);
         }
         break;
+      case 'getcrop':
+        var { sceneName, sceneItemName } = Parser.getInputs(triggerData, ['action', 'sceneName', 'sceneItemName']);
+        var data = await this.obs.getSceneItemTransform(sceneName, sceneItemName);
+        var transform = data.sceneItemTransform;
+        return { top: transform.cropTop, left: transform.cropLeft, bottom: transform.cropBottom, right: transform.cropRight }
+        break;
+      case 'getposition':
+        var { sceneName, sceneItemName } = Parser.getInputs(triggerData, ['action', 'sceneName', 'sceneItemName']);
+        var data = await this.obs.getSceneItemTransform(sceneName, sceneItemName);
+        return { x: data.sceneItemTransform.positionX, y: data.sceneItemTransform.positionY }
+        break;
+      case 'getsourcesettings':
+        var { inputName } = Parser.getInputs(triggerData, ['action', 'inputName'])
+        var data = await this.obs.getInputSettings(inputName);
+        return data;
+        break;
+      case 'getsourcetypes':
+        var data = await this.obs.getInputKindList();
+        return { source_types: data.inputKinds }
+        break;  
       case 'isscenesourcevisible':
         var { scene, source } = Parser.getInputs(triggerData, ['action', 'scene', 'source']);
         if (scene === '{current}') {
@@ -513,6 +564,10 @@ class OBSHandler extends Handler {
         if (!isNaN(degree)) {
           await this.obs.setSceneItemRotation(scene, source, degree);
         }
+        break;
+      case 'removesceneitem':
+        var { sceneName, sourceName, status } = Parser.getInputs(triggerData, ['action', 'sceneName', 'sourceName'], false, 1);
+        await this.obs.removeSceneItem(sourceName, sceneName)
         break;
       case 'savereplaybuffer':
         await this.obs.saveReplayBuffer();
