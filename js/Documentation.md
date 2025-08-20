@@ -131,8 +131,8 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnOBSRecordingResumed](#onobsrecordingresumed)
     + [OnOBSRecordingStarted](#onobsrecordingstarted)
     + [OnOBSRecordingStopped](#onobsrecordingstopped)
-    + [OnOBSSourceVisibility](#onobssourcevisibility)
     + [OnOBSSourceFilterVisibility](#onobssourcefiltervisibility)
+    + [OnOBSSourceVisibility](#onobssourcevisibility)
     + [OnOBSStreamStarted](#onobsstreamstarted)
     + [OnOBSStreamStopped](#onobsstreamstopped)
     + [OnOBSSwitchScenes](#onobsswitchscenes)
@@ -1850,13 +1850,14 @@ Enables the ability to interact with and respond to OBS.
 #### OnOBSSourceVisibility
 | | |
 ------------ | -------------
-**Info** | Used to trigger a set of actions when a source's visibility is changed.
+**Info** | Used to trigger a set of actions when a source's visibility is changed. Using `*` as the `<source>` will execute the trigger for all source visibility changes within a scene.
 **Format** | `OnOBSSourceVisibility <scene> <source> <on/off/toggle>`
 **Example** | `OnOBSSourceVisibility Webcam Camera off`
 
 ##### Parameters
 | | |
 ------------ | -------------
+**source** | The name of the source that changed visibility.
 **visible** | The current visibility setting.
 
 ***

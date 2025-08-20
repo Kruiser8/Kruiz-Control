@@ -310,12 +310,22 @@ class OBSHandler extends Handler {
 
     var sourceTriggers = [];
     for (var scene of scenes) {
-      if (scene in this.onSourceVis && item in this.onSourceVis[scene]) {
-        if (this.onSourceVis[scene][item].indexOf(visibility) !== -1) {
-          sourceTriggers.push(...this.onSourceVisTrigger[`${scene}|${item}|${String(visibility)}`]);
+      if (scene in this.onSourceVis) {
+        if (item in this.onSourceVis[scene]) {
+          if (this.onSourceVis[scene][item].indexOf(visibility) !== -1) {
+            sourceTriggers.push(...this.onSourceVisTrigger[`${scene}|${item}|${String(visibility)}`]);
+          }
+          if (this.onSourceVis[scene][item].indexOf('toggle') !== -1) {
+            sourceTriggers.push(...this.onSourceVisTrigger[`${scene}|${item}|toggle`]);
+          }
         }
-        if (this.onSourceVis[scene][item].indexOf('toggle') !== -1) {
-          sourceTriggers.push(...this.onSourceVisTrigger[`${scene}|${item}|toggle`]);
+        if ("*" in this.onSourceVis[scene]) {
+          if (this.onSourceVis[scene]["*"].indexOf(visibility) !== -1) {
+            sourceTriggers.push(...this.onSourceVisTrigger[`${scene}|*|${String(visibility)}`]);
+          }
+          if (this.onSourceVis[scene]["*"].indexOf('toggle') !== -1) {
+            sourceTriggers.push(...this.onSourceVisTrigger[`${scene}|*|toggle`]);
+          }
         }
       }
     }
@@ -324,6 +334,7 @@ class OBSHandler extends Handler {
       sourceTriggers.sort((a,b) => a-b);
       sourceTriggers.forEach(triggerId => {
         controller.handleData(triggerId, {
+          source: item,
           visible: visibility
         });
       });
