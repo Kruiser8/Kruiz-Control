@@ -7,6 +7,7 @@ class ActionHandler extends Handler {
     this.actions = [];
     this.actionsTriggers = {};
     this.success();
+    this.initialized();
   }
 
   /**

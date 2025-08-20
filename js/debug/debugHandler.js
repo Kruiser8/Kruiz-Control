@@ -4,9 +4,10 @@ class DebugHandler extends Handler {
    */
   constructor() {
     super('Debug', []);
-    this.success();
     this.All = false;
     this.Chat = false;
+    this.Controller = false;
+    this.Debug = false;
     this.MQTT = false;
     this.OBS = false;
     this.Parser = false;
@@ -16,6 +17,35 @@ class DebugHandler extends Handler {
     this.Streamlabs = false;
     this.Twitch = false;
     this.Voicemod = false;
+
+    this.success();
+    this.initialized();
+  }
+
+  /**
+   * Initialize the debug settings with the provided config.
+   * @param {string} config debug configuration
+   */
+  init = (config) => {
+    var lines = config.split(/\r\n|\n/);
+    lines.forEach(line => {
+      var [handler, shouldCheck] = line.split("=");
+      if (shouldCheck.toLowerCase().trim() === "true") {
+        var triggerData = ["Debug"]
+        if (handler.toLowerCase() !== "all") {
+          triggerData.push(handler);
+        }
+        this.handleData(triggerData);
+      }
+    });
+
+    if (this.All || this.Debug) {
+      for(var property in this){
+        if (typeof this[property] !== "function" && property !== "parserName") {
+          console.error(`Debug ${property}: ${this[property]}`);
+        }
+      }
+    }
   }
 
   /**
@@ -29,6 +59,12 @@ class DebugHandler extends Handler {
       switch (handler) {
         case 'chat':
           this.Chat = true;
+          break;
+        case 'controller':
+          this.Controller = true;
+          break;
+        case 'debug':
+          this.Debug = true;
           break;
         case 'mqtt':
           this.MQTT = true;
@@ -72,7 +108,9 @@ class DebugHandler extends Handler {
  * Create a handler
  */
 let Debug;
-function debugHandlerExport() {
+async function debugHandlerExport() {
   Debug = new DebugHandler();
+  var config = await readFile('settings/debug/config.txt');
+  Debug.init(config.trim());
 }
 debugHandlerExport();

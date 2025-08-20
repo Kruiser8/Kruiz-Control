@@ -6,6 +6,7 @@ class ApiHandler extends Handler {
     super('API', []);
     this.apiCall = {};
     this.success();
+    this.initialized();
   }
 
   /**

@@ -1,0 +1,13 @@
+all=false
+chat=false
+controller=false
+debug=false
+mqtt=false
+obs=false
+parser=false
+slobs=false
+storage=false
+streamelements=false
+streamlabs=false
+twitch=false
+voicemod=false

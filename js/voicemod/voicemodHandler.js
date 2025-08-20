@@ -13,7 +13,7 @@ class VoicemodHandler extends Handler {
    */
   init = (address, apiKey) => {
     this.api = connectVoicemodWebsocket(
-      address, apiKey, this.success
+      address, apiKey, this.success, this.initialized
     );
   }
 

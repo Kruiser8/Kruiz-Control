@@ -5,7 +5,9 @@ class TTSHandler extends Handler {
   constructor() {
     super('TTS', []);
     this.voices = {};
+    
     this.success();
+    this.initialized();
   }
 
   /**

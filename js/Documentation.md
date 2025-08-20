@@ -51,6 +51,8 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Actions](#debug-actions)
     + [Debug](#debug-1)
     + [Debug Chat](#debug-chat)
+    + [Debug Controller](#debug-controller)
+    + [Debug Debug](#debug-debug)
     + [Debug MQTT](#debug-mqtt)
     + [Debug OBS](#debug-obs)
     + [Debug Parser](#debug-parser)
@@ -129,16 +131,22 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnOBSRecordingResumed](#onobsrecordingresumed)
     + [OnOBSRecordingStarted](#onobsrecordingstarted)
     + [OnOBSRecordingStopped](#onobsrecordingstopped)
-    + [OnOBSSourceVisibility](#onobssourcevisibility)
     + [OnOBSSourceFilterVisibility](#onobssourcefiltervisibility)
+    + [OnOBSSourceVisibility](#onobssourcevisibility)
     + [OnOBSStreamStarted](#onobsstreamstarted)
     + [OnOBSStreamStopped](#onobsstreamstopped)
     + [OnOBSSwitchScenes](#onobsswitchscenes)
     + [OnOBSTransitionTo](#onobstransitionto)
   * [Actions](#obs-actions)
     + [OBS AddSceneItem](#obs-addsceneitem)
+    + [OBS CreateSource](#obs-createsource)
+    + [OBS Crop](#obs-crop)
     + [OBS CurrentScene](#obs-currentscene)
+    + [OBS DuplicateSource](#obs-duplicatesource)
     + [OBS Flip](#obs-flip)
+    + [OBS GetCrop](#obs-getcrop)
+    + [OBS GetPosition](#obs-getposition)
+    + [OBS GetSourceTypes](#obs-getsourcetypes)
     + [OBS IsSceneSourceVisible](#obs-isscenesourcevisible)
     + [OBS IsSourceActive](#obs-issourceactive)
     + [OBS Media Duration](#obs-media-duration)
@@ -153,6 +161,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OBS Position](#obs-position)
     + [OBS RecordingStatus](#obs-recordingstatus)
     + [OBS Refresh](#obs-refresh)
+    + [OBS RemoveSource](#obs-removesource)
     + [OBS ResumeRecording](#obs-resumerecording)
     + [OBS Rotate](#obs-rotate)
     + [OBS SaveReplayBuffer](#obs-savereplaybuffer)
@@ -995,6 +1004,24 @@ None at the moment.
 
 ***
 
+#### Debug Controller
+| | |
+------------ | -------------
+**Info** | Used to enable debugging for internal event handling.
+**Format** | `Debug Controller`
+**Example** | `Debug Controller`
+
+***
+
+#### Debug Debug
+| | |
+------------ | -------------
+**Info** | Used to enable debugging for internal debug handling.
+**Format** | `Debug Debug`
+**Example** | `Debug Debug`
+
+***
+
 #### Debug MQTT
 | | |
 ------------ | -------------
@@ -1830,13 +1857,14 @@ Enables the ability to interact with and respond to OBS.
 #### OnOBSSourceVisibility
 | | |
 ------------ | -------------
-**Info** | Used to trigger a set of actions when a source's visibility is changed.
+**Info** | Used to trigger a set of actions when a source's visibility is changed. Using `*` as the `<source>` will execute the trigger for all source visibility changes within a scene.
 **Format** | `OnOBSSourceVisibility <scene> <source> <on/off/toggle>`
 **Example** | `OnOBSSourceVisibility Webcam Camera off`
 
 ##### Parameters
 | | |
 ------------ | -------------
+**source** | The name of the source that changed visibility.
 **visible** | The current visibility setting.
 
 ***
@@ -1903,6 +1931,40 @@ Enables the ability to interact with and respond to OBS.
 
 ***
 
+#### OBS CreateSource
+| | |
+------------ | -------------
+**Info** | Used to create a new source in the specified scene. `<scene>` is the scene to create the source. `<type>` is the source type to create. The types of sources are available using [`OBS GetSourceTypes`](#obs-getsourcetypes). `<source>` is the name of the source to create. `<on/off>` (default: `on`) is an optional visibility that determines if the source is visible when it's added.
+**Format** | `OBS CreateSource <scene> <type> <source> <on/off>`
+**Example** | `OBS CreateSource BeeScene image_source Bee on`
+
+_Note: OBS source types look like `image_source` or `text_gdiplus_v3`, and don't always correspond perfectly to the name you see in OBS, so you should use `OBS GetSourceTypes` to see the list of type names._
+
+##### Parameters
+| | |
+------------ | -------------
+**source_name** | The name of the created source.
+**uuid** | The UUID of the created scene item
+**id** | The numeric ID of the scene item in the scene
+
+***
+
+#### OBS Crop
+| | |
+------------ | -------------
+**Info** | Used to set the cropping on a source. `<scene>` is the scene containing the source, `<source>` is the source to crop, `<top>`, `<left>`, `<bottom>`, and `<right>` specify the number of pixels to crop from each side of the source.
+**Format** | `OBS Crop <scene> <source> <top> <left> <bottom> <right>`
+**Example** | `OBS Crop BeeScene Bee 10 16 10 32`
+
+##### Parameters
+| | |
+------------ | -------------
+**init_top** | The initial value of the top crop before cropping the source.
+**init_left** | The initial value of the left crop before cropping the source.
+**init_bottom** | The initial value of the bottom crop before cropping the source.
+**init_right** | The initial value of the right crop before cropping the source.
+***
+
 #### OBS CurrentScene
 | | |
 ------------ | -------------
@@ -1917,12 +1979,71 @@ Enables the ability to interact with and respond to OBS.
 
 ***
 
+#### OBS DuplicateSource
+| | |
+------------ | -------------
+**Info** | Used to duplicate a source as a reference in OBS. `<scene>` is the scene the source is in. `<source>` is the name of the source to duplicate. `<dest>` (default: `<scene>`) is an optional scene name that determines the scene the duplicate is placed in.
+**Format** | `OBS DuplicateSource <scene> <source> <dest>`
+**Example** | `OBS DuplicateSource BeeScene Bee OtherScene`
+
+_Note: `OBS DuplicateSource` does not support duplicating sources within groups (folders)._
+
+***
+
 #### OBS Flip
 | | |
 ------------ | -------------
 **Info** | Used to flip a source in OBS.
 **Format** | `OBS Flip <scene> <source> <x/y>`
 **Example** | `OBS Flip Webcam Camera x`
+
+***
+
+#### OBS GetCrop
+| | |
+------------ | -------------
+**Info** | Gets the crop for a source in a given scene in OBS. `<scene>` is the scene the source is in. `<source>` is the source to get the crop for. Note that the same source can have different crops in different scenes.
+**Format** | `OBS GetCrop <scene> <source>`
+**Example** | `OBS GetCrop Webcam Camera`
+
+##### Parameters
+| | |
+------------ | -------------
+top | The number of pixels cropped from the top of the source
+left | The number of pixels cropped from the left side of the source
+bottom | The number of pixels cropped from the bottom of the source
+right | The number of pixels cropped from the right side of the source
+
+***
+
+#### OBS GetPosition
+| | |
+------------ | -------------
+**Info** | Gets the position for a source in a given scene in OBS. `<scene>` is the scene the source is in. `<source>` is the source to get the position for. Note that the same source can have different positions in different scenes.
+**Format** | `OBS GetPosition <scene> <source>`
+**Example** | `OBS GetPosition Webcam Camera`
+
+##### Parameters
+| | |
+------------ | -------------
+x | The x position of the source
+y | The y position of the source
+
+***
+
+#### OBS GetSourceTypes
+| | |
+------------ | -------------
+**Info** | Gets the source types available in OBS. Different source types may be available depending on what plugins you have installed.
+**Format** | `OBS GetSourceTypes`
+**Example** | `OBS GetSourceTypes`
+
+##### Parameters
+| | |
+------------ | -------------
+**source_type#** | The source types returned by OBS. Replace `#` with a number, starting at 1 and ending at `source_type_count`.
+**source_type_count** | The number of source types retrieved.
+**data** | The complete response from the OBS websocket.
 
 ***
 
@@ -2088,6 +2209,17 @@ Enables the ability to interact with and respond to OBS.
 **Info** | Used to refresh a browser source in OBS.
 **Format** | `OBS Refresh <source>`
 **Example** | `OBS Refresh "Kruiz Control"`
+
+***
+
+#### OBS RemoveSource
+| | |
+------------ | -------------
+**Info** | Used to remove an instance of a source from a scene in OBS. `<scene>` is the scene the source is in. `<source>` is the name of the source to remove. Note that if this is the last instance of `<source>` anywhere in the scene collection, OBS will delete the source. If multiple sources exist in a scene with the given name, the source created first _should_ be deleted.
+**Format** | `OBS RemoveSource <scene> <source>`
+**Example** | `OBS RemoveSource BeeScene Bee`
+
+_Note: `OBS RemoveSource` does not support removing sources within groups (folders)._
 
 ***
 

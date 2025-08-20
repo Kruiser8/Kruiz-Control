@@ -23,11 +23,13 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
           console.error(`Kruiz Control connected to the OBS Websocket v${data.obsWebSocketVersion}`);
           obsHandler.setCurrentScene(await obs.getCurrentScene());
           obsHandler.success();
+          obsHandler.initialized();
         }
       });
     }
     initialize();
   }).catch(err => { // Promise convention dictates you have a catch on every chain.
+    obsHandler.initialized();
     console.error(JSON.stringify(err));
   });
 
@@ -244,6 +246,57 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
           return;
         }
       }
+      console.error(JSON.stringify(err));
+    });
+  };
+
+  obs.duplicateSceneItem = async function(scene, source, dest) {
+    if (!scene) {
+      scene = await this.getCurrentScene();
+    }
+    return await this.call('DuplicateSceneItem', {
+      'sceneItemId': await this.getSceneItemId(scene, source),
+      'sceneName': scene,
+      'destinationSceneName': dest,
+    }).catch(err => {
+      console.error(JSON.stringify(err));
+    });
+  };
+
+  obs.getInputKindList = async function() {
+    return await this.call('GetInputKindList', 
+      {}).then(data => {
+        return data;
+      }).catch(err => {
+        console.error(JSON.stringify(err))
+    });
+  };
+
+  obs.createInput = async function(scene, input_kind, input_name, enabled) {
+    if (!input_name) {
+      input_name = input_kind;
+    }
+
+    return await this.call('CreateInput', {
+      'sceneName': scene,
+      'inputName': input_name,
+      'inputKind': input_kind,
+      'sceneItemEnabled': enabled,
+    }).then(_ => {
+      return input_name;
+    }).catch(err => {
+      console.error(JSON.stringify(err));
+    });
+  };
+
+  obs.removeSceneItem = async function(scene, source) {
+    if (!scene) {
+      scene = await this.getCurrentScene();
+    }
+    await this.call('RemoveSceneItem', {
+      'sceneItemId': await this.getSceneItemId(scene, source),
+      'sceneName': scene,
+    }).catch(err => {
       console.error(JSON.stringify(err));
     });
   };
@@ -468,6 +521,28 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
         var group = await this.getSourceGroupName(scene, source);
         if (group) {
           await this.setSceneItemPosition(group, source, x, y);
+          return;
+        }
+      }
+      console.error(JSON.stringify(err));
+    });
+  };
+
+  obs.setSceneItemCrop = async function(scene, source, top, left, bottom, right) {
+    await this.call('SetSceneItemTransform', {
+      'sceneName': scene,
+      'sceneItemId': await this.getSceneItemId(scene, source),
+      'sceneItemTransform': {
+        'cropTop': top,
+        'cropLeft': left,
+        'cropBottom': bottom,
+        'cropRight': right,
+      }
+    }).catch(async err => {
+      if (err.code === 600) {
+        var group = await this.getSourceGroupName(scene, source);
+        if (group) {
+          await this.setSceneItemCrop(group, source, top, left, bottom, right);
           return;
         }
       }

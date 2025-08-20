@@ -31,13 +31,23 @@ class ChatHandler extends Handler {
   /**
    * Initialize the chat connection with the input user.
    * @param {string} channel twitch channel to connect
+   * @param {string} user twitch user to send messages as
    */
-  init = (channel) => {
+  init = (channel, user) => {
     this.channel = channel.toLowerCase();
+    this.user = user;
     ComfyJS.onConnected = ( address, port, isFirstConnect ) => {
       console.error("Chat connected successfully");
       if (isFirstConnect) {
         this.success();
+        this.initialized();
+      }
+    }
+
+    ComfyJS.onError = (error) => {
+      if (error.includes("Login authentication failed")) {
+        console.error("Unable to connect to Chat");
+        this.initialized();
       }
     }
 
@@ -185,7 +195,11 @@ class ChatHandler extends Handler {
       ComfyJS.Say(message);
     } else if (action === 'whisper') {
       var { user, message } = Parser.getInputs(triggerData, ['action', 'user', 'message']);
-      ComfyJS.Whisper(message, user);
+      return {
+        actions: [
+          ["Ignore", "Twitch", "Whisper", this.user, user, message]
+        ]
+      };
     }
     return;
   }
@@ -236,6 +250,88 @@ class ChatHandler extends Handler {
       return true;
     } else {
       return false;
+    }
+  }
+
+  onMessage = (user, message, flags, extra) => {
+    // Check for matching command and user permission
+    var command = message.split(' ')[0].toLowerCase();
+    var toCheck = this.commandsOther;
+    if (command.charAt(0) === "!") {
+      toCheck = this.commands;
+      command = command.substring(1);
+    }
+    if(toCheck.indexOf(command) != -1) {
+      var args = Parser.splitLine(message).slice(1);
+      var chatArgs = {};
+      for (var i = 0; i < args.length; i++) {
+        chatArgs[`arg${i+1}`] = args[i];
+      }
+
+      this.commandsInfo[command].forEach(info => {
+        var username = extra.username || extra.fromUserLogin;
+        var [canUseCommand, grantingPermission] = this.checkPermissions(user, flags, info.permission, username, info.info);
+        if ((canUseCommand || info.permission.includes('f')) && this.updateCooldown(info)) {
+          var after = args.join(' ');
+          controller.handleData(info.trigger,
+            {
+              command: command,
+              user: user,
+              message: message,
+              message_id: extra.id || '',
+              after: after,
+              data: {
+                user: user,
+                command: command,
+                message: message,
+                after: after,
+                flags: flags,
+                extra: extra
+              },
+              arg_count: args.length,
+              ...chatArgs
+            },
+            canUseCommand && grantingPermission !== 'n' ? [] : this.addFollowerActions(info.permission, user)
+          );
+        }
+      });
+    }
+    // Otherwise, check for keyword match
+    else {
+      var result = message.match(this.keywordsRegex);
+      if (result) {
+        var args = Parser.splitLine(message);
+        var chatArgs = {};
+        for (var i = 0; i < args.length; i++) {
+          chatArgs[`arg${i+1}`] = args[i];
+        }
+        var match = result[0].trim().toLowerCase();
+        this.keywordsInfo[match].forEach(info => {
+          // Check if user has permission to trigger keyword
+          var username = extra.username || extra.fromUserLogin;
+          var [canUseCommand, grantingPermission] = this.checkPermissions(user, flags, info.permission, username, info.info);
+          if ((canUseCommand || info.permission.includes('f')) && this.updateCooldown(info)) {
+            controller.handleData(info.trigger,
+              {
+                user: user,
+                keyword: match,
+                message: message,
+                message_id: extra.id || '',
+                data: {
+                  user: user,
+                  keyword: match,
+                  message: message,
+                  flags: flags,
+                  extra: extra
+                },
+                arg_count: args.length,
+                ...chatArgs
+              },
+              canUseCommand && grantingPermission !== 'n' ? [] : this.addFollowerActions(info.permission, user)
+            );
+          }
+        });
+      }
     }
   }
 
@@ -341,9 +437,16 @@ class ChatHandler extends Handler {
       }
     }
 
+    ComfyJS.onWhisper = ( user, message, flags, self, extra ) => {
+      if (Debug.All || Debug.Chat) {
+        console.error(`Whisper Received: ${JSON.stringify({user, message, flags, extra})}`);
+      }
+      this.onMessage(user, message, flags, extra);
+    }
+
     ComfyJS.onChat = ( user, message, flags, self, extra ) => {
       if (Debug.All || Debug.Chat) {
-        console.error(`Chat Received: ${JSON.stringify({user, command, message, flags, extra})}`);
+        console.error(`Chat Received: ${JSON.stringify({user, message, flags, extra})}`);
       }
       this.onAllChat(user, {
         user: user,
@@ -356,79 +459,9 @@ class ChatHandler extends Handler {
           extra: extra
         }
       });
-
-      // Check for matching command and user permission
-      var command = message.split(' ')[0].toLowerCase();
-      if(this.commandsOther.indexOf(command) != -1) {
-        var args = Parser.splitLine(message).slice(1);
-        var chatArgs = {};
-        for (var i = 0; i < args.length; i++) {
-          chatArgs[`arg${i+1}`] = args[i];
-        }
-        this.commandsInfo[command].forEach(info => {
-          var [canUseCommand, grantingPermission] = this.checkPermissions(user, flags, info.permission, extra.username, info.info);
-          if ((canUseCommand || info.permission.includes('f')) && this.updateCooldown(info)) {
-            var after = args.join(' ');
-            controller.handleData(info.trigger,
-              {
-                command: command,
-                user: user,
-                message: message,
-                message_id: extra.id || '',
-                after: after,
-                data: {
-                  user: user,
-                  command: command,
-                  message: message,
-                  after: after,
-                  flags: flags,
-                  extra: extra
-                },
-                arg_count: args.length,
-                ...chatArgs
-              },
-              canUseCommand && grantingPermission !== 'n' ? [] : this.addFollowerActions(info.permission, user)
-            );
-          }
-        });
-      }
-      // Otherwise, check for keyword match
-      else {
-        var result = message.match(this.keywordsRegex);
-        if (result) {
-          var args = Parser.splitLine(message);
-          var chatArgs = {};
-          for (var i = 0; i < args.length; i++) {
-            chatArgs[`arg${i+1}`] = args[i];
-          }
-          var match = result[0].trim().toLowerCase();
-          this.keywordsInfo[match].forEach(info => {
-            // Check if user has permission to trigger keyword
-            var [canUseCommand, grantingPermission] = this.checkPermissions(user, flags, info.permission, extra.username, info.info);
-            if ((canUseCommand || info.permission.includes('f')) && this.updateCooldown(info)) {
-              controller.handleData(info.trigger,
-                {
-                  user: user,
-                  keyword: match,
-                  message: message,
-                  message_id: extra.id || '',
-                  data: {
-                    user: user,
-                    keyword: match,
-                    message: message,
-                    flags: flags,
-                    extra: extra
-                  },
-                  arg_count: args.length,
-                  ...chatArgs
-                },
-                canUseCommand && grantingPermission !== 'n' ? [] : this.addFollowerActions(info.permission, user)
-              );
-            }
-          });
-        }
-      }
+      this.onMessage(user, message, flags, extra);
     }
+
     return;
   }
 
@@ -520,6 +553,7 @@ class ChatHandler extends Handler {
 async function chatHandlerExport() {
   var chat = new ChatHandler();
   var channel = await readFile('settings/chat/channel.txt');
-  chat.init(channel.trim());
+  var user = await readFile('settings/chat/user.txt');
+  chat.init(channel.trim(), user.trim());
 }
 chatHandlerExport();

@@ -310,12 +310,22 @@ class OBSHandler extends Handler {
 
     var sourceTriggers = [];
     for (var scene of scenes) {
-      if (scene in this.onSourceVis && item in this.onSourceVis[scene]) {
-        if (this.onSourceVis[scene][item].indexOf(visibility) !== -1) {
-          sourceTriggers.push(...this.onSourceVisTrigger[`${scene}|${item}|${String(visibility)}`]);
+      if (scene in this.onSourceVis) {
+        if (item in this.onSourceVis[scene]) {
+          if (this.onSourceVis[scene][item].indexOf(visibility) !== -1) {
+            sourceTriggers.push(...this.onSourceVisTrigger[`${scene}|${item}|${String(visibility)}`]);
+          }
+          if (this.onSourceVis[scene][item].indexOf('toggle') !== -1) {
+            sourceTriggers.push(...this.onSourceVisTrigger[`${scene}|${item}|toggle`]);
+          }
         }
-        if (this.onSourceVis[scene][item].indexOf('toggle') !== -1) {
-          sourceTriggers.push(...this.onSourceVisTrigger[`${scene}|${item}|toggle`]);
+        if ("*" in this.onSourceVis[scene]) {
+          if (this.onSourceVis[scene]["*"].indexOf(visibility) !== -1) {
+            sourceTriggers.push(...this.onSourceVisTrigger[`${scene}|*|${String(visibility)}`]);
+          }
+          if (this.onSourceVis[scene]["*"].indexOf('toggle') !== -1) {
+            sourceTriggers.push(...this.onSourceVisTrigger[`${scene}|*|toggle`]);
+          }
         }
       }
     }
@@ -324,6 +334,7 @@ class OBSHandler extends Handler {
       sourceTriggers.sort((a,b) => a-b);
       sourceTriggers.forEach(triggerId => {
         controller.handleData(triggerId, {
+          source: item,
           visible: visibility
         });
       });
@@ -371,11 +382,47 @@ class OBSHandler extends Handler {
       case 'addsceneitem':
         var { sceneName, sourceName, status } = Parser.getInputs(triggerData, ['action', 'sceneName', 'sourceName', 'status'], false, 1);
         status = (status && status.toLowerCase() === 'off') ? false : true;
-        await this.obs.addSceneItem(sceneName, sourceName, status)
+        await this.obs.addSceneItem(sceneName, sourceName, status);
+        break;
+      case 'createsource':
+        var { sceneName, inputKind, inputName, sceneItemEnabled } = Parser.getInputs(triggerData, ['action', 'sceneName', 'inputKind', 'inputName', 'sceneItemEnabled']);
+
+        if (sceneItemEnabled == 'off') {
+          sceneItemEnabled = false;
+        } else {
+          sceneItemEnabled = true;
+        }
+
+        var usedName = await this.obs.createInput(sceneName, inputKind, inputName, sceneItemEnabled);
+        return { source: usedName };
+        break;
+      case 'crop':
+        var { sceneName, sceneItemName, cropTop, cropLeft, cropBottom, cropRight } = Parser.getInputs(triggerData, ['action', 'sceneName', 'sceneItemName', 'cropTop', 'cropLeft', 'cropBottom', 'cropRight']);
+        var data = await this.obs.getSceneItemTransform(sceneName, sceneItemName);
+        cropTop = parseFloat(cropTop);
+        cropLeft = parseFloat(cropLeft);
+        cropBottom = parseFloat(cropBottom);
+        cropRight = parseFloat(cropRight);
+        await this.obs.setSceneItemCrop(sceneName, sceneItemName, cropTop, cropLeft, cropBottom, cropRight);
+        
+        var transform = data.sceneItemTransform;
+        return { 
+          init_top: transform.cropTop, 
+          init_left: transform.cropLeft, 
+          init_bottom: transform.cropBottom,
+          init_right: transform.cropRight
+        };
         break;
       case 'currentscene':
         var currentScene = await this.obs.getCurrentScene();
         return {current_scene: currentScene};
+        break;
+      case 'duplicatesource':
+        var { scene, source, destSceneName } = Parser.getInputs(triggerData, ['action', 'scene', 'source', 'destSceneName'], false, 1);
+        if (!destSceneName) {
+          destSceneName = scene;
+        }
+        await this.obs.duplicateSceneItem(scene, source, destSceneName);
         break;
       case 'flip':
         var { scene, source, direction } = Parser.getInputs(triggerData, ['action', 'scene', 'source', 'direction']);
@@ -386,6 +433,34 @@ class OBSHandler extends Handler {
           await this.obs.setSceneItemSize(scene, source, -1 * sceneItemTransform.scaleX, sceneItemTransform.scaleY);
         }
         break;
+      case 'getcrop':
+        var { sceneName, sceneItemName } = Parser.getInputs(triggerData, ['action', 'sceneName', 'sceneItemName']);
+        var data = await this.obs.getSceneItemTransform(sceneName, sceneItemName);
+        var transform = data.sceneItemTransform;
+        return { 
+          top: transform.cropTop,
+          left: transform.cropLeft,
+          bottom: transform.cropBottom,
+          right: transform.cropRight
+        };
+        break;
+      case 'getposition':
+        var { sceneName, sceneItemName } = Parser.getInputs(triggerData, ['action', 'sceneName', 'sceneItemName']);
+        var data = await this.obs.getSceneItemTransform(sceneName, sceneItemName);
+        return { x: data.sceneItemTransform.positionX, y: data.sceneItemTransform.positionY };
+        break;
+      case 'getsourcetypes':
+        var data = await this.obs.getInputKindList();
+        var sourceTypes = {};
+        for (var i = 0; i < data.inputKinds.length; i++) {
+          sourceTypes[`source_type${i+1}`] = data.inputKinds[i];
+        }
+        return { 
+          data,
+          source_type_count: data.inputKinds.length,
+          ...sourceTypes
+        };
+        break;  
       case 'isscenesourcevisible':
         var { scene, source } = Parser.getInputs(triggerData, ['action', 'scene', 'source']);
         if (scene === '{current}') {
@@ -502,6 +577,10 @@ class OBSHandler extends Handler {
         var { source } = Parser.getInputs(triggerData, ['action', 'source']);
         var source = triggerData.slice(2).join(' ');
         await this.obs.refreshBrowser(source);
+        break;
+      case 'removesource':
+        var { scene, source } = Parser.getInputs(triggerData, ['action', 'scene', 'source']);
+        await this.obs.removeSceneItem(scene, source)
         break;
       case 'resumerecording':
         await this.obs.resumeRecording();

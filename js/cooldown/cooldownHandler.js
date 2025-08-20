@@ -7,9 +7,10 @@ class CooldownHandler extends Handler {
   */
   constructor() {
     super('Cooldown', []);
-    this.success();
-
     this.cooldowns = {};
+
+    this.success();
+    this.initialized();
   }
 
   /**

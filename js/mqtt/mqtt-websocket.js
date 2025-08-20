@@ -1,6 +1,6 @@
 class MQTTWebSocket {
 
-  constructor(address, username, password, onConnect) {
+  constructor(address, username, password, onConnect, onClose) {
     this.address = address;
     this.topics = [];
 
@@ -16,7 +16,13 @@ class MQTTWebSocket {
     }
 
     this.client = mqtt.connect(this.address, options);
-    this.client.on('connect', onConnect);
+    this.client.on('connect', () => {
+	  if (Debug.All || Debug.MQTT) {
+        console.error(`MQTT Client connected.`);
+      }
+      onConnect();
+    });
+    this.client.on('offline', onClose)
     this.client.on('message', (topic, message) => {
       if (Debug.All || Debug.MQTT) {
         console.error(`MQTT Client ${topic} message received: ${message.toString()}`);
@@ -28,7 +34,7 @@ class MQTTWebSocket {
   }
 
   publish = async (topic, message) => {
-    if (!this.client.connected) {
+    if (!this.client || !this.client.connected) {
       return;
     }
     this.client.publish(topic, message);

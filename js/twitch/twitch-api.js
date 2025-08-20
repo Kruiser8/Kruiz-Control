@@ -46,6 +46,7 @@ class TwitchAPI {
       'user:manage:whispers',
       'user:read:chat',
       'user:read:follows',
+      'user:read:whispers',
       'user:write:chat'
     ].map(scope => encodeURIComponent(scope));
     return `https://id.twitch.tv/oauth2/authorize?response_type=code&client_id=${this.clientId}&redirect_uri=http://localhost&scope=${scopes.join('%20')}`;
@@ -1027,6 +1028,20 @@ class TwitchAPI {
         user_id,
         type,
         period
+      }
+    });
+  }
+
+  sendWhisper = async (from_user_id, to_user_id, message) => {
+    await this.callTwitchApiJson({
+      method: 'POST',
+      endpoint: 'https://api.twitch.tv/helix/whispers',
+      params: {
+        from_user_id,
+        to_user_id
+      },
+      data: {
+        message
       }
     });
   }
