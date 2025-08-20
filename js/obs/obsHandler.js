@@ -388,7 +388,6 @@ class OBSHandler extends Handler {
         var { sceneName, inputKind, inputName, sceneItemEnabled } = Parser.getInputs(triggerData, ['action', 'sceneName', 'inputKind', 'inputName', 'sceneItemEnabled']);
 
         inputKind = inputKind.toLowerCase().replace(" ", "_");
-        console.error("inputKind: " + inputKind);
 
         if (sceneItemEnabled == 'off') {
           sceneItemEnabled = false;
