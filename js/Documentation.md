@@ -1935,11 +1935,11 @@ Enables the ability to interact with and respond to OBS.
 #### OBS CreateSource
 | | |
 ------------ | -------------
-**Info** | Used to create a new source in the specified scene. `<scene>` is the scene to create the source. `<type>` is the source type to create--you can find what kinds of sources are available using `OBS GetSourceTypes`. `<source>` is the name of the source to create. `<on/off>` (default: `on`) is an optional visibility that determines if the source is visible when it's added.
+**Info** | Used to create a new source in the specified scene. `<scene>` is the scene to create the source. `<type>` is the source type to create. The types of sources are available using [`OBS GetSourceTypes`](#obs-getsourcetypes). `<source>` is the name of the source to create. `<on/off>` (default: `on`) is an optional visibility that determines if the source is visible when it's added.
 **Format** | `OBS CreateSource <scene> <type> <source> <on/off>`
-**Example** | `OBS CreateSource BeeScene image_source Bee on` (or `OBS CreateSource BeeScene "Image Source" Bee on`)
-**Note 1** | OBS source types look like `image_source` or `text_gdiplus_v3`, and don't always correspond perfectly to the name you see in OBS, so you should use `OBS GetSourceTypes` to see the list of type names.
-**Note 2** | If the source name `<source>` already exists, the command will find an unused name by adding a number to the end. So if the source `Bee` already exists, the command will try to create a source `Bee 1`. If `Bee 1` also exists, it will try to create `Bee 2` and so on until it finds an unused source name. The final name of the created source is returned as a parameter.
+**Example** | `OBS CreateSource BeeScene image_source Bee on`
+
+_Note: OBS source types look like `image_source` or `text_gdiplus_v3`, and don't always correspond perfectly to the name you see in OBS, so you should use `OBS GetSourceTypes` to see the list of type names._
 
 ##### Parameters
 | | |

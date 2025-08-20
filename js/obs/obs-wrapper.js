@@ -293,32 +293,17 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
     if (!input_name) {
       input_name = input_kind;
     }
-    var used_input_name = input_name;
-    var count = 0;
 
-    while (count >= 0) {
-      var data = await this.call('CreateInput', {
-        'sceneName': scene,
-        'inputName': used_input_name,
-        'inputKind': input_kind,
-        'sceneItemEnabled': enabled,
-      }).then(data => {
-        data = { source_name: used_input_name, uuid: data.inputUuid, id: data.sceneItemId }
-        return data;
-      }).catch(err => {
-        if (err.code == 601) {
-          count += 1;
-          used_input_name = [input_name, count].join(' ');
-        } else {
-          console.error(JSON.stringify(err))
-          count = -1;
-        }
-      })
-
-      if (data) {
-        return data;
-      }
-    }
+    return await this.call('CreateInput', {
+      'sceneName': scene,
+      'inputName': input_name,
+      'inputKind': input_kind,
+      'sceneItemEnabled': enabled,
+    }).then(_ => {
+      return input_name;
+    }).catch(err => {
+      console.error(JSON.stringify(err));
+    });
   };
 
   obs.removeSceneItem = async function(source, scene) {

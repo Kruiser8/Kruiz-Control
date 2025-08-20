@@ -387,15 +387,14 @@ class OBSHandler extends Handler {
       case 'createsource':
         var { sceneName, inputKind, inputName, sceneItemEnabled } = Parser.getInputs(triggerData, ['action', 'sceneName', 'inputKind', 'inputName', 'sceneItemEnabled']);
 
-        inputKind = inputKind.toLowerCase().replace(" ", "_");
-
         if (sceneItemEnabled == 'off') {
           sceneItemEnabled = false;
         } else {
           sceneItemEnabled = true;
         }
 
-        return await this.obs.createInput(sceneName, inputKind, inputName, sceneItemEnabled)
+        var usedName = await this.obs.createInput(sceneName, inputKind, inputName, sceneItemEnabled);
+        return { source: usedName };
         break;
       case 'crop':
         var { sceneName, sceneItemName, cropTop, cropLeft, cropBottom, cropRight } = Parser.getInputs(triggerData, ['action', 'sceneName', 'sceneItemName', 'cropTop', 'cropLeft', 'cropBottom', 'cropRight']);
