@@ -404,11 +404,13 @@ class OBSHandler extends Handler {
         cropBottom = parseFloat(cropBottom);
         cropRight = parseFloat(cropRight);
         await this.obs.setSceneItemCrop(sceneName, sceneItemName, cropTop, cropLeft, cropBottom, cropRight);
+        
+        var transform = data.sceneItemTransform;
         return { 
-          init_top: data.sceneItemTransform.cropTop, 
-          init_left: data.sceneItemTransform.cropLeft, 
-          init_bottom: data.sceneItemTransform.cropBottom,
-          init_right: data.sceneItemTransform.cropRight
+          init_top: transform.cropTop, 
+          init_left: transform.cropLeft, 
+          init_bottom: transform.cropBottom,
+          init_right: transform.cropRight
         };
         break;
       case 'currentscene':
@@ -435,7 +437,12 @@ class OBSHandler extends Handler {
         var { sceneName, sceneItemName } = Parser.getInputs(triggerData, ['action', 'sceneName', 'sceneItemName']);
         var data = await this.obs.getSceneItemTransform(sceneName, sceneItemName);
         var transform = data.sceneItemTransform;
-        return { top: transform.cropTop, left: transform.cropLeft, bottom: transform.cropBottom, right: transform.cropRight };
+        return { 
+          top: transform.cropTop,
+          left: transform.cropLeft,
+          bottom: transform.cropBottom,
+          right: transform.cropRight
+        };
         break;
       case 'getposition':
         var { sceneName, sceneItemName } = Parser.getInputs(triggerData, ['action', 'sceneName', 'sceneItemName']);
