@@ -2215,7 +2215,7 @@ y | The y position of the source
 #### OBS RemoveSource
 | | |
 ------------ | -------------
-**Info** | Used to remove an instance of a source from a scene in OBS. `<scene>` is the scene the source is in. `<source>` is the name of the source to remove. Note that if this is the last instance of `<source>` anywhere in the scene collection, OBS will delete the source. If multiple sources exist in a scene with the given name, the first one _should_ be deleted.
+**Info** | Used to remove an instance of a source from a scene in OBS. `<scene>` is the scene the source is in. `<source>` is the name of the source to remove. Note that if this is the last instance of `<source>` anywhere in the scene collection, OBS will delete the source. If multiple sources exist in a scene with the given name, the source created first _should_ be deleted.
 **Format** | `OBS RemoveSource <scene> <source>`
 **Example** | `OBS RemoveSource BeeScene Bee`
 
