@@ -457,7 +457,7 @@ class OBSHandler extends Handler {
         }
         return { 
           data,
-          source_types: data.inputKinds,
+          source_type_count: data.inputKinds.length,
           ...sourceTypes
         };
         break;  
