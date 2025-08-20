@@ -416,11 +416,11 @@ class OBSHandler extends Handler {
         return {current_scene: currentScene};
         break;
       case 'duplicatesource':
-        var { sceneName, sourceName, destSceneName } = Parser.getInputs(triggerData, ['action', 'sceneName', 'sourceName', 'destSceneName'], false, 1);
+        var { scene, source, destSceneName } = Parser.getInputs(triggerData, ['action', 'scene', 'source', 'destSceneName'], false, 1);
         if (!destSceneName) {
-          destSceneName = sceneName;
+          destSceneName = scene;
         }
-        await this.obs.duplicateSceneItem(sourceName, sceneName, destSceneName);
+        await this.obs.duplicateSceneItem(scene, source, destSceneName);
         break;
       case 'flip':
         var { scene, source, direction } = Parser.getInputs(triggerData, ['action', 'scene', 'source', 'direction']);

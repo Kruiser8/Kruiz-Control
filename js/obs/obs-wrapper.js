@@ -250,7 +250,7 @@ function connectOBSWebsocket(address, password, obsHandler, onSwitchScenes, onTr
     });
   };
 
-  obs.duplicateSceneItem = async function(source, scene, dest) {
+  obs.duplicateSceneItem = async function(scene, source, dest) {
     if (!scene) {
       scene = await this.getCurrentScene();
     }

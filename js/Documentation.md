@@ -1986,6 +1986,8 @@ _Note: OBS source types look like `image_source` or `text_gdiplus_v3`, and don't
 **Format** | `OBS DuplicateSource <scene> <source> <dest>`
 **Example** | `OBS DuplicateSource BeeScene Bee OtherScene`
 
+_Note: `OBS DuplicateSource` does not support duplicating sources within groups (folders)._
+
 ***
 
 #### OBS Flip
