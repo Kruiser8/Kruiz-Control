@@ -72,6 +72,7 @@ _**NOTE: This file should not be modified unless necessary for advanced debuggin
 all=false
 chat=false
 controller=false
+debug=false
 mqtt=false
 obs=false
 parser=false
