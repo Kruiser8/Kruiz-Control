@@ -55,7 +55,7 @@ class Controller {
    * @param {string} name name to use for the parser
    */
   addInitializedAsync = async (name, callback) => {
-    if (Debug.All || Debug.Controller) {
+    if (typeof Debug !== "undefined" && (Debug.All || Debug.Controller)) {
       console.error(`Initialized the ${name} handler.`)
     }
     this.initialized[name] = true;
