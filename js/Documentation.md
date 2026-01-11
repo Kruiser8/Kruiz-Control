@@ -270,6 +270,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnTWCommunityGoalStart](#ontwcommunitygoalstart)
     + [OnTWAd](#ontwad)
     + [OnTWBan](#ontwban)
+    + [OnTWBits](#ontwbits)
     + [OnTWChannelPoint](#ontwchannelpoint)
     + [OnTWChannelPointCompleted](#ontwchannelpointcompleted)
     + [OnTWChannelPointRejected](#ontwchannelpointrejected)
@@ -3449,6 +3450,25 @@ Enables the ability to run actions when channel point rewards are redeemed.
 **mod** | The user name of the issuer of the ban.
 **reason** | The reason given for the ban.
 **data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWBits
+| | |
+------------ | -------------
+**Info** | Triggers when bits are used in the channel. Triggers for cheers, power-ups, and combos.
+**Format** | `OnTWBits`
+**Example** | `OnTWBits`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user ID of the user using bits.
+**login** | The user login of the user using bits.
+**name** | The user display name of the user using bits.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+**amount** | The amount of bits cheered by the user.
+**message** | The message included with the bits. This will be an empty string if no message is included.
 
 ***
 

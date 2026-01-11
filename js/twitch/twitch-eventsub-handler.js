@@ -109,6 +109,11 @@ class EventSubHandler {
   addSubscriptions = async () => {
     const subscriptions = [
       {
+        type: 'channel.bits.use',
+        data: { broadcaster_user_id: this.channelId },
+        version: "1"
+      },
+      {
         type: 'channel.update',
         data: { broadcaster_user_id: this.channelId },
         version: "2"
