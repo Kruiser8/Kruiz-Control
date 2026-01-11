@@ -265,9 +265,6 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Timer Stop](#timer-stop)
 - [Twitch](#twitch)
   * [Triggers](#twitch-triggers)
-    + [OnTWCommunityGoalComplete](#ontwcommunitygoalcomplete)
-    + [OnTWCommunityGoalProgress](#ontwcommunitygoalprogress)
-    + [OnTWCommunityGoalStart](#ontwcommunitygoalstart)
     + [OnTWAd](#ontwad)
     + [OnTWBan](#ontwban)
     + [OnTWBits](#ontwbits)
@@ -282,6 +279,9 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnTWChatClear](#ontwchatclear)
     + [OnTWChatClearUser](#ontwchatclearuser)
     + [OnTWCheer](#ontwcheer)
+    + [OnTWCommunityGoalComplete](#ontwcommunitygoalcomplete)
+    + [OnTWCommunityGoalProgress](#ontwcommunitygoalprogress)
+    + [OnTWCommunityGoalStart](#ontwcommunitygoalstart)
     + [OnTWFollow](#ontwfollow)
     + [OnTWGoalCompleted](#ontwgoalcompleted)
     + [OnTWGoalFailed](#ontwgoalfailed)
@@ -3359,65 +3359,6 @@ Enables the ability to run actions when channel point rewards are redeemed.
 
 ### Twitch Triggers
 
-#### OnCommunityGoalComplete
-| | |
------------- | -------------
-**Info** | Used to trigger a set of actions when a community goal is completed. Using `*` as the `<goal_title>` will execute the trigger for all channel point rewards.
-**Format** | `OnCommunityGoalComplete <goal_title>`
-**Format w/ Aliases** | `OnCommunityGoalComplete <goal_title1> <goal_title2> ...`
-**Example** | `OnCommunityGoalComplete "Example Goal"`
-**Example w/ Aliases** | `OnCommunityGoalComplete "Example Goal" "Extra Sunday Stream" ...`
-
-##### Parameters
-| | |
------------- | -------------
-**goal** | The title of the community goal.
-**user** | The display name of the user that completed the goal.
-**amount** | The amount of points donated to complete the goal.
-**user_total** | The total amount of points contributed by the user.
-**progress** | The current amount of points contributed towards the goal.
-**total** | The amount of points required to complete the goal.
-**data** | The complete json community goal message (for use with [Function](#function)).
-
-#### OnCommunityGoalProgress
-| | |
------------- | -------------
-**Info** | Used to trigger a set of actions when a user contributes towards a goal. Using `*` as the `<goal_title>` will execute the trigger for all channel point rewards.
-**Format** | `OnCommunityGoalProgress <goal_title>`
-**Format w/ Aliases** | `OnCommunityGoalProgress <goal_title1> <goal_title2> ...`
-**Example** | `OnCommunityGoalProgress "Example Goal"`
-**Example w/ Aliases** | `OnCommunityGoalProgress "Example Goal" "Extra Sunday Stream" ...`
-
-##### Parameters
-| | |
------------- | -------------
-**goal** | The title of the community goal.
-**user** | The display name of the user that completed the goal.
-**amount** | The amount of points donated to complete the goal.
-**user_total** | The total amount of points contributed by the user.
-**progress** | The current amount of points contributed towards the goal.
-**total** | The amount of points required to complete the goal.
-**data** | The complete json community goal message (for use with [Function](#function)).
-
-***
-
-#### OnCommunityGoalStart
-| | |
------------- | -------------
-**Info** | Used to trigger a set of actions when the streamer starts a goal. Using `*` as the `<goal_title>` will execute the trigger for all channel point rewards.
-**Format** | `OnCommunityGoalStart <goal_title>`
-**Format w/ Aliases** | `OnCommunityGoalStart <goal_title1> <goal_title2> ...`
-**Example** | `OnCommunityGoalStart "Example Goal"`
-**Example w/ Aliases** | `OnCommunityGoalStart "Example Goal" "Extra Sunday Stream" ...`
-
-##### Parameters
-| | |
------------- | -------------
-**goal** | The title of the community goal.
-**data** | The complete json community goal message (for use with [Function](#function)).
-
-***
-
 #### OnTWAd
 | | |
 ------------ | -------------
@@ -3684,6 +3625,65 @@ Enables the ability to run actions when channel point rewards are redeemed.
 **amount** | The number of bits cheered.
 **is_anonymous** | Whether the user cheered anonymously or not.
 **data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWCommunityGoalComplete
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when a community goal is completed. Using `*` as the `<goal_title>` will execute the trigger for all channel point rewards.
+**Format** | `OnTWCommunityGoalComplete <goal_title>`
+**Format w/ Aliases** | `OnTWCommunityGoalComplete <goal_title1> <goal_title2> ...`
+**Example** | `OnTWCommunityGoalComplete "Example Goal"`
+**Example w/ Aliases** | `OnTWCommunityGoalComplete "Example Goal" "Extra Sunday Stream" ...`
+
+##### Parameters
+| | |
+------------ | -------------
+**goal** | The title of the community goal.
+**user** | The display name of the user that completed the goal.
+**amount** | The amount of points donated to complete the goal.
+**user_total** | The total amount of points contributed by the user.
+**progress** | The current amount of points contributed towards the goal.
+**total** | The amount of points required to complete the goal.
+**data** | The complete json community goal message (for use with [Function](#function)).
+
+#### OnTWCommunityGoalProgress
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when a user contributes towards a goal. Using `*` as the `<goal_title>` will execute the trigger for all channel point rewards.
+**Format** | `OnTWCommunityGoalProgress <goal_title>`
+**Format w/ Aliases** | `OnTWCommunityGoalProgress <goal_title1> <goal_title2> ...`
+**Example** | `OnTWCommunityGoalProgress "Example Goal"`
+**Example w/ Aliases** | `OnTWCommunityGoalProgress "Example Goal" "Extra Sunday Stream" ...`
+
+##### Parameters
+| | |
+------------ | -------------
+**goal** | The title of the community goal.
+**user** | The display name of the user that completed the goal.
+**amount** | The amount of points donated to complete the goal.
+**user_total** | The total amount of points contributed by the user.
+**progress** | The current amount of points contributed towards the goal.
+**total** | The amount of points required to complete the goal.
+**data** | The complete json community goal message (for use with [Function](#function)).
+
+***
+
+#### OnTWCommunityGoalStart
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when the streamer starts a goal. Using `*` as the `<goal_title>` will execute the trigger for all channel point rewards.
+**Format** | `OnTWCommunityGoalStart <goal_title>`
+**Format w/ Aliases** | `OnTWCommunityGoalStart <goal_title1> <goal_title2> ...`
+**Example** | `OnTWCommunityGoalStart "Example Goal"`
+**Example w/ Aliases** | `OnTWCommunityGoalStart "Example Goal" "Extra Sunday Stream" ...`
+
+##### Parameters
+| | |
+------------ | -------------
+**goal** | The title of the community goal.
+**data** | The complete json community goal message (for use with [Function](#function)).
 
 ***
 
