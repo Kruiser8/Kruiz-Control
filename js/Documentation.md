@@ -146,6 +146,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OBS Flip](#obs-flip)
     + [OBS GetCrop](#obs-getcrop)
     + [OBS GetPosition](#obs-getposition)
+    + [OBS GetSize](#obs-getsize)
     + [OBS GetSourceTypes](#obs-getsourcetypes)
     + [OBS IsSceneSourceVisible](#obs-isscenesourcevisible)
     + [OBS IsSourceActive](#obs-issourceactive)
@@ -2029,6 +2030,21 @@ right | The number of pixels cropped from the right side of the source
 ------------ | -------------
 x | The x position of the source
 y | The y position of the source
+
+***
+
+#### OBS GetSize
+| | |
+------------ | -------------
+**Info** | Gets the size for a source in a given scene in OBS. `<scene>` is the scene the source is in. `<source>` is the source to get the size for.
+**Format** | `OBS GetSize <scene> <source>`
+**Example** | `OBS GetSize Webcam Camera`
+
+##### Parameters
+| | |
+------------ | -------------
+width | The width of the source
+height | The height of the source
 
 ***
 
