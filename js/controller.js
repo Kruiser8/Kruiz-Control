@@ -464,6 +464,12 @@ class Controller {
       var parser = this.getParser("list");
       parser.createList(name, keys);
     }
+    else if (parserName === 'args') {
+      var { value, args } = Parser.getInputs(data, ['value', 'args'], true);
+      var valueArgs = Parser.getInputs([null, ...Parser.splitLine(value)], args);
+      console.error(JSON.stringify(valueArgs));
+      return valueArgs;
+    }
     else {
       // Get parser and run trigger content
       var parser = this.getParser(parserName);

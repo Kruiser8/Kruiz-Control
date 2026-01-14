@@ -105,6 +105,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Triggers](#miscellaneous-triggers)
     + [OnInit](#oninit)
   * [Actions](#miscellaneous-actions)
+    + [Args](#args)
     + [AsyncFunction](#asyncfunction)
     + [Delay](#delay)
     + [Error](#error)
@@ -1506,6 +1507,40 @@ A small selection of actions that are included for increased usability.
 ***
 
 ### Miscellaneous Actions
+
+#### Args
+| | |
+------------ | -------------
+**Info** | Used to parse a given input into the specified named args (or parameters).
+**Format** | `Args <value> <arg>`
+**Format w/ Aliases** | `Args <value> <arg1> <arg2> <arg3>`
+**Example w/ Multiple Args** | `Args "FirstItem SecondItem" <item1> <item2>`
+
+##### Parameters
+| | |
+------------ | -------------
+**\<arg\>** | Returns a value for each `<arg>` value specified.
+
+##### Example Usage
+
+<table>
+<tr>
+<td>Parses the input to a command for a specified scene and source to hide.</td>
+</tr>
+<tr>
+<td>
+
+```m
+OnCommand b 0 !hide
+Args {after} {scene} {source}
+OBS SceneSource {scene} {source} off
+```
+
+</td>
+</tr>
+</table>
+
+***
 
 #### AsyncFunction
 `AsyncFunction` is an alternate to [`Function`](#function) that allows you to call javascript code using the `await` keyword. This is for advanced use cases that require API calls, promises, etc. For more information, please see this [documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/AsyncFunction).
