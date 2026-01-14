@@ -191,6 +191,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Triggers](#param-triggers)
   * [Actions](#param-actions)
     + [Param Add](#param-add)
+    + [Param Contains](#param-contains)
     + [Param Copy](#param-copy)
     + [Param Create](#param-create)
     + [Param Exists](#param-exists)
@@ -2586,6 +2587,20 @@ None at the moment.
 | | |
 ------------ | -------------
 **\<parameter\>** | The lowercased parameter value where **\<parameter\>** is the name of the parameter.
+
+***
+
+#### Param Contains
+| | |
+------------ | -------------
+**Info** | Checks if the specified text exists within a parameter. `<parameter>` is the name of the existing parameter. `<value>` is the value to look for in the parameter. `Param Contains` differs from `Param Keyword` as it is case sensitive and does not require whitespace around the searched text
+**Format** | `Param Contains <parameter> <value>`
+**Example** | `Param Contains after "app"`
+
+##### Parameters
+| | |
+------------ | -------------
+**contains** | [true/false] Whether or not the value was found in the parameter.
 
 ***
 
