@@ -80,6 +80,11 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Discord Title](#discord-title)
     + [Discord Update](#discord-update)
     + [Discord Url](#discord-url)
+- [File](#file)
+  * [Triggers](#file-triggers)
+    + [OnFileUpdated](#onfileupdated)
+  * [Actions](#file-actions)
+    + [File Read](#file-read)
 - [List](#list)
   * [Triggers](#list-triggers)
   * [Actions](#list-actions)
@@ -1273,6 +1278,43 @@ None at the moment.
 
 ***
 
+## File
+A small handler to allow you to read files. Files may need to be referenced via relative paths instead of absolute paths. That is, use `example.txt`, `folder/example.txt`, or `../folder/example.txt` instead of `C:/Users/PC/Documents/folder/example.txt`.
+
+As a best practice, wrap file paths in quotation marks. Example: `"folder/example.txt"`.
+
+### File Triggers
+
+#### OnFileUpdated
+| | |
+------------ | -------------
+**Info** | Triggers when a file updates. `<file>` indicates the name of the file to check for updates.
+**Format** | `OnFileUpdated <file>`
+**Example** | `OnFileUpdated "users/champion.txt"`
+
+##### Parameters
+| | |
+------------ | -------------
+**content** | The text content of the updated file.
+
+***
+
+### File Actions
+
+#### File Read
+| | |
+------------ | -------------
+**Info** | Reads a file locally. `<file>` indicates the name of the file to read.
+**Format** | `File Read <file>`
+**Example** | `File Read "users/champion.txt"`
+
+##### Parameters
+| | |
+------------ | -------------
+**content** | The text content of the file.
+
+***
+
 ## List
 A small handler to allow you to store and update lists of items.
 
@@ -1454,7 +1496,7 @@ _Note: The above example, `List Export MyList`, would return the parameter **MyL
 #### List Unique
 | | |
 ------------ | -------------
-**Info** | Remove any duplicates from the list.  `<list>` is the name of the list to update.
+**Info** | Remove any duplicates from the list. `<list>` is the name of the list to update.
 **Format** | `List Unique <list>`
 **Example** | `List Unique MyList`
 
