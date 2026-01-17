@@ -28,6 +28,9 @@ class Parser {
 
         // If failed to parse, look for a multi-line input
         if (!isParsed) {
+          if (Debug.All || Debug.Parser) {
+            console.error(`Line ${i+1} failed to parse, looking for multi-line input starting at: ${line}`);
+          }
           var j = i;
           var compiledLine = lines[i];
           while(!isParsed && j < lines.length) {
