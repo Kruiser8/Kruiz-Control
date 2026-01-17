@@ -109,9 +109,14 @@ class EventSubHandler {
   addSubscriptions = async () => {
     const subscriptions = [
       {
+        type: 'channel.bits.use',
+        data: { broadcaster_user_id: this.channelId },
+        version: "1"
+      },
+      {
         type: 'channel.update',
         data: { broadcaster_user_id: this.channelId },
-        version: 1
+        version: "2"
       },
       {
         type: 'channel.follow',
@@ -121,202 +126,202 @@ class EventSubHandler {
       {
         type: 'channel.ad_break.begin',
         data: { broadcaster_user_id: this.channelId },
-        version: 1
+        version: "1"
       },
       {
         type: 'channel.chat.clear',
         data: { broadcaster_user_id: this.channelId, user_id: this.channelId },
-        version: 1
+        version: "1"
       },
       {
         type: 'channel.chat.clear_user_messages',
         data: { broadcaster_user_id: this.channelId, user_id: this.channelId },
-        version: 1
+        version: "1"
       },
       {
         type: 'channel.subscribe',
         data: { broadcaster_user_id: this.channelId },
-        version: 1
+        version: "1"
       },
       {
         type: 'channel.subscription.gift',
         data: { broadcaster_user_id: this.channelId },
-        version: 1
+        version: "1"
       },
       {
         type: 'channel.subscription.message',
         data: { broadcaster_user_id: this.channelId },
-        version: 1
+        version: "1"
       },
       {
         type: 'channel.cheer',
         data: { broadcaster_user_id: this.channelId },
-        version: 1
+        version: "1"
       },
       {
         type: 'channel.raid',
         data: { to_broadcaster_user_id: this.channelId },
-        version: 1
+        version: "1"
       },
       {
         type: 'channel.ban',
         data: { broadcaster_user_id: this.channelId },
-        version: 1
+        version: "1"
       },
       {
         type: 'channel.unban',
         data: { broadcaster_user_id: this.channelId },
-        version: 1
+        version: "1"
       },
       {
         type: 'channel.moderator.add',
         data: { broadcaster_user_id: this.channelId },
-        version: 1
+        version: "1"
       },
       {
         type: 'channel.moderator.remove',
         data: { broadcaster_user_id: this.channelId },
-        version: 1
+        version: "1"
       },
       {
         type: 'channel.channel_points_custom_reward_redemption.add',
         data: { broadcaster_user_id: this.channelId },
-        version: 1
+        version: "1"
       },
       {
         type: 'channel.channel_points_custom_reward_redemption.update',
         data: { broadcaster_user_id: this.channelId },
-        version: 1
+        version: "1"
       },
       {
         type: 'channel.poll.begin',
         data: { broadcaster_user_id: this.channelId },
-        version: 1
+        version: "1"
       },
       {
         type: 'channel.poll.progress',
         data: { broadcaster_user_id: this.channelId },
-        version: 1
+        version: "1"
       },
       {
         type: 'channel.poll.end',
         data: { broadcaster_user_id: this.channelId },
-        version: 1
+        version: "1"
       },
       {
         type: 'channel.prediction.begin',
         data: { broadcaster_user_id: this.channelId },
-        version: 1
+        version: "1"
       },
       {
         type: 'channel.prediction.progress',
         data: { broadcaster_user_id: this.channelId },
-        version: 1
+        version: "1"
       },
       {
         type: 'channel.prediction.lock',
         data: { broadcaster_user_id: this.channelId },
-        version: 1
+        version: "1"
       },
       {
         type: 'channel.prediction.end',
         data: { broadcaster_user_id: this.channelId },
-        version: 1
+        version: "1"
       },
       {
         type: 'channel.suspicious_user.message',
         data: { broadcaster_user_id: this.channelId, moderator_user_id: this.channelId },
-        version: 1
+        version: "1"
       },
       {
         type: 'channel.vip.add',
         data: { broadcaster_user_id: this.channelId },
-        version: 1
+        version: "1"
       },
       {
         type: 'channel.vip.remove',
         data: { broadcaster_user_id: this.channelId },
-        version: 1
+        version: "1"
       },
       {
         type: 'channel.charity_campaign.donate',
         data: { broadcaster_user_id: this.channelId },
-        version: 1
+        version: "1"
       },
       {
         type: 'channel.charity_campaign.start',
         data: { broadcaster_user_id: this.channelId },
-        version: 1
+        version: "1"
       },
       {
         type: 'channel.charity_campaign.progress',
         data: { broadcaster_user_id: this.channelId },
-        version: 1
+        version: "1"
       },
       {
         type: 'channel.charity_campaign.stop',
         data: { broadcaster_user_id: this.channelId },
-        version: 1
+        version: "1"
       },
       {
         type: 'channel.goal.begin',
         data: { broadcaster_user_id: this.channelId },
-        version: 1
+        version: "1"
       },
       {
         type: 'channel.goal.progress',
         data: { broadcaster_user_id: this.channelId },
-        version: 1
+        version: "1"
       },
       {
         type: 'channel.goal.end',
         data: { broadcaster_user_id: this.channelId },
-        version: 1
+        version: "1"
       },
       {
         type: 'channel.hype_train.begin',
         data: { broadcaster_user_id: this.channelId },
-        version: 1
+        version: "2"
       },
       {
         type: 'channel.hype_train.progress',
         data: { broadcaster_user_id: this.channelId },
-        version: 1
+        version: "2"
       },
       {
         type: 'channel.hype_train.end',
         data: { broadcaster_user_id: this.channelId },
-        version: 1
+        version: "2"
       },
       {
         type: 'channel.shield_mode.begin',
         data: { broadcaster_user_id: this.channelId, moderator_user_id: this.channelId },
-        version: 1
+        version: "1"
       },
       {
         type: 'channel.shield_mode.end',
         data: { broadcaster_user_id: this.channelId, moderator_user_id: this.channelId },
-        version: 1
+        version: "1"
       },
       {
         type: 'channel.shoutout.create',
         data: { broadcaster_user_id: this.channelId, moderator_user_id: this.channelId },
-        version: 1
+        version: "1"
       },
       {
         type: 'channel.shoutout.receive',
         data: { broadcaster_user_id: this.channelId, moderator_user_id: this.channelId },
-        version: 1
+        version: "1"
       },
       {
         type: 'stream.online',
         data: { broadcaster_user_id: this.channelId },
-        version: 1
+        version: "1"
       },
       {
         type: 'stream.offline',
         data: { broadcaster_user_id: this.channelId },
-        version: 1
+        version: "1"
       }
     ];
 

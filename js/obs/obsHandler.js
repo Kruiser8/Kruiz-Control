@@ -449,6 +449,14 @@ class OBSHandler extends Handler {
         var data = await this.obs.getSceneItemTransform(sceneName, sceneItemName);
         return { x: data.sceneItemTransform.positionX, y: data.sceneItemTransform.positionY };
         break;
+      case 'getsize':
+        var { sceneName, sceneItemName } = Parser.getInputs(triggerData, ['action', 'sceneName', 'sceneItemName']);
+        var data = await this.obs.getSceneItemSize(sceneName, sceneItemName);
+        return {
+          height: data.height,
+          width: data.width
+        }
+        break;
       case 'getsourcetypes':
         var data = await this.obs.getInputKindList();
         var sourceTypes = {};

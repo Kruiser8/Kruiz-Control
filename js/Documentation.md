@@ -80,6 +80,11 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Discord Title](#discord-title)
     + [Discord Update](#discord-update)
     + [Discord Url](#discord-url)
+- [File](#file)
+  * [Triggers](#file-triggers)
+    + [OnFileUpdated](#onfileupdated)
+  * [Actions](#file-actions)
+    + [File Read](#file-read)
 - [List](#list)
   * [Triggers](#list-triggers)
   * [Actions](#list-actions)
@@ -105,6 +110,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Triggers](#miscellaneous-triggers)
     + [OnInit](#oninit)
   * [Actions](#miscellaneous-actions)
+    + [Args](#args)
     + [AsyncFunction](#asyncfunction)
     + [Delay](#delay)
     + [Error](#error)
@@ -146,6 +152,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OBS Flip](#obs-flip)
     + [OBS GetCrop](#obs-getcrop)
     + [OBS GetPosition](#obs-getposition)
+    + [OBS GetSize](#obs-getsize)
     + [OBS GetSourceTypes](#obs-getsourcetypes)
     + [OBS IsSceneSourceVisible](#obs-isscenesourcevisible)
     + [OBS IsSourceActive](#obs-issourceactive)
@@ -189,6 +196,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
   * [Triggers](#param-triggers)
   * [Actions](#param-actions)
     + [Param Add](#param-add)
+    + [Param Contains](#param-contains)
     + [Param Copy](#param-copy)
     + [Param Create](#param-create)
     + [Param Exists](#param-exists)
@@ -265,11 +273,9 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Timer Stop](#timer-stop)
 - [Twitch](#twitch)
   * [Triggers](#twitch-triggers)
-    + [OnTWCommunityGoalComplete](#ontwcommunitygoalcomplete)
-    + [OnTWCommunityGoalProgress](#ontwcommunitygoalprogress)
-    + [OnTWCommunityGoalStart](#ontwcommunitygoalstart)
     + [OnTWAd](#ontwad)
     + [OnTWBan](#ontwban)
+    + [OnTWBits](#ontwbits)
     + [OnTWChannelPoint](#ontwchannelpoint)
     + [OnTWChannelPointCompleted](#ontwchannelpointcompleted)
     + [OnTWChannelPointRejected](#ontwchannelpointrejected)
@@ -281,6 +287,9 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnTWChatClear](#ontwchatclear)
     + [OnTWChatClearUser](#ontwchatclearuser)
     + [OnTWCheer](#ontwcheer)
+    + [OnTWCommunityGoalComplete](#ontwcommunitygoalcomplete)
+    + [OnTWCommunityGoalProgress](#ontwcommunitygoalprogress)
+    + [OnTWCommunityGoalStart](#ontwcommunitygoalstart)
     + [OnTWFollow](#ontwfollow)
     + [OnTWGoalCompleted](#ontwgoalcompleted)
     + [OnTWGoalFailed](#ontwgoalfailed)
@@ -1269,6 +1278,43 @@ None at the moment.
 
 ***
 
+## File
+A small handler to allow you to read files. Files may need to be referenced via relative paths instead of absolute paths. That is, use `example.txt`, `folder/example.txt`, or `../folder/example.txt` instead of `C:/Users/PC/Documents/folder/example.txt`.
+
+As a best practice, wrap file paths in quotation marks. Example: `"folder/example.txt"`.
+
+### File Triggers
+
+#### OnFileUpdated
+| | |
+------------ | -------------
+**Info** | Triggers when a file updates. `<file>` indicates the name of the file to check for updates.
+**Format** | `OnFileUpdated <file>`
+**Example** | `OnFileUpdated "users/champion.txt"`
+
+##### Parameters
+| | |
+------------ | -------------
+**content** | The text content of the updated file.
+
+***
+
+### File Actions
+
+#### File Read
+| | |
+------------ | -------------
+**Info** | Reads a file locally. `<file>` indicates the name of the file to read.
+**Format** | `File Read <file>`
+**Example** | `File Read "users/champion.txt"`
+
+##### Parameters
+| | |
+------------ | -------------
+**content** | The text content of the file.
+
+***
+
 ## List
 A small handler to allow you to store and update lists of items.
 
@@ -1450,7 +1496,7 @@ _Note: The above example, `List Export MyList`, would return the parameter **MyL
 #### List Unique
 | | |
 ------------ | -------------
-**Info** | Remove any duplicates from the list.  `<list>` is the name of the list to update.
+**Info** | Remove any duplicates from the list. `<list>` is the name of the list to update.
 **Format** | `List Unique <list>`
 **Example** | `List Unique MyList`
 
@@ -1504,6 +1550,41 @@ A small selection of actions that are included for increased usability.
 ***
 
 ### Miscellaneous Actions
+
+#### Args
+| | |
+------------ | -------------
+**Info** | Used to parse a given input into the specified named args (or parameters).
+**Format** | `Args <value> <arg>`
+**Format w/ Aliases** | `Args <value> <arg1> <arg2> <arg3>`
+**Example w/ Multiple Args** | `Args "FirstItem SecondItem" <item1> <item2>`
+
+##### Parameters
+| | |
+------------ | -------------
+**\<arg\>** | Returns a value for each `<arg>` value specified.
+
+##### Example Usage
+
+<table>
+<tr>
+<td>Parses the input to a command for a specified scene and source to hide.</td>
+</tr>
+<tr>
+<td>
+
+```m
+# Example Usage: !hide Game GameSource
+OnCommand b 0 !hide
+Args {after} {scene} {source}
+OBS SceneSource {scene} {source} off
+```
+
+</td>
+</tr>
+</table>
+
+***
 
 #### AsyncFunction
 `AsyncFunction` is an alternate to [`Function`](#function) that allows you to call javascript code using the `await` keyword. This is for advanced use cases that require API calls, promises, etc. For more information, please see this [documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/AsyncFunction).
@@ -2031,6 +2112,21 @@ y | The y position of the source
 
 ***
 
+#### OBS GetSize
+| | |
+------------ | -------------
+**Info** | Gets the size for a source in a given scene in OBS. `<scene>` is the scene the source is in. `<source>` is the source to get the size for.
+**Format** | `OBS GetSize <scene> <source>`
+**Example** | `OBS GetSize Webcam Camera`
+
+##### Parameters
+| | |
+------------ | -------------
+width | The width of the source
+height | The height of the source
+
+***
+
 #### OBS GetSourceTypes
 | | |
 ------------ | -------------
@@ -2534,6 +2630,20 @@ None at the moment.
 | | |
 ------------ | -------------
 **\<parameter\>** | The lowercased parameter value where **\<parameter\>** is the name of the parameter.
+
+***
+
+#### Param Contains
+| | |
+------------ | -------------
+**Info** | Checks if the specified text exists within a parameter. `<parameter>` is the name of the existing parameter. `<value>` is the value to look for in the parameter. `Param Contains` differs from `Param Keyword` as it is case sensitive and does not require whitespace around the searched text
+**Format** | `Param Contains <parameter> <value>`
+**Example** | `Param Contains after "app"`
+
+##### Parameters
+| | |
+------------ | -------------
+**contains** | [true/false] Whether or not the value was found in the parameter.
 
 ***
 
@@ -3358,65 +3468,6 @@ Enables the ability to run actions when channel point rewards are redeemed.
 
 ### Twitch Triggers
 
-#### OnCommunityGoalComplete
-| | |
------------- | -------------
-**Info** | Used to trigger a set of actions when a community goal is completed. Using `*` as the `<goal_title>` will execute the trigger for all channel point rewards.
-**Format** | `OnCommunityGoalComplete <goal_title>`
-**Format w/ Aliases** | `OnCommunityGoalComplete <goal_title1> <goal_title2> ...`
-**Example** | `OnCommunityGoalComplete "Example Goal"`
-**Example w/ Aliases** | `OnCommunityGoalComplete "Example Goal" "Extra Sunday Stream" ...`
-
-##### Parameters
-| | |
------------- | -------------
-**goal** | The title of the community goal.
-**user** | The display name of the user that completed the goal.
-**amount** | The amount of points donated to complete the goal.
-**user_total** | The total amount of points contributed by the user.
-**progress** | The current amount of points contributed towards the goal.
-**total** | The amount of points required to complete the goal.
-**data** | The complete json community goal message (for use with [Function](#function)).
-
-#### OnCommunityGoalProgress
-| | |
------------- | -------------
-**Info** | Used to trigger a set of actions when a user contributes towards a goal. Using `*` as the `<goal_title>` will execute the trigger for all channel point rewards.
-**Format** | `OnCommunityGoalProgress <goal_title>`
-**Format w/ Aliases** | `OnCommunityGoalProgress <goal_title1> <goal_title2> ...`
-**Example** | `OnCommunityGoalProgress "Example Goal"`
-**Example w/ Aliases** | `OnCommunityGoalProgress "Example Goal" "Extra Sunday Stream" ...`
-
-##### Parameters
-| | |
------------- | -------------
-**goal** | The title of the community goal.
-**user** | The display name of the user that completed the goal.
-**amount** | The amount of points donated to complete the goal.
-**user_total** | The total amount of points contributed by the user.
-**progress** | The current amount of points contributed towards the goal.
-**total** | The amount of points required to complete the goal.
-**data** | The complete json community goal message (for use with [Function](#function)).
-
-***
-
-#### OnCommunityGoalStart
-| | |
------------- | -------------
-**Info** | Used to trigger a set of actions when the streamer starts a goal. Using `*` as the `<goal_title>` will execute the trigger for all channel point rewards.
-**Format** | `OnCommunityGoalStart <goal_title>`
-**Format w/ Aliases** | `OnCommunityGoalStart <goal_title1> <goal_title2> ...`
-**Example** | `OnCommunityGoalStart "Example Goal"`
-**Example w/ Aliases** | `OnCommunityGoalStart "Example Goal" "Extra Sunday Stream" ...`
-
-##### Parameters
-| | |
------------- | -------------
-**goal** | The title of the community goal.
-**data** | The complete json community goal message (for use with [Function](#function)).
-
-***
-
 #### OnTWAd
 | | |
 ------------ | -------------
@@ -3449,6 +3500,25 @@ Enables the ability to run actions when channel point rewards are redeemed.
 **mod** | The user name of the issuer of the ban.
 **reason** | The reason given for the ban.
 **data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWBits
+| | |
+------------ | -------------
+**Info** | Triggers when bits are used in the channel. Triggers for cheers, power-ups, and combos.
+**Format** | `OnTWBits`
+**Example** | `OnTWBits`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user ID of the user using bits.
+**login** | The user login of the user using bits.
+**name** | The user display name of the user using bits.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+**amount** | The amount of bits cheered by the user.
+**message** | The message included with the bits. This will be an empty string if no message is included.
 
 ***
 
@@ -3664,6 +3734,65 @@ Enables the ability to run actions when channel point rewards are redeemed.
 **amount** | The number of bits cheered.
 **is_anonymous** | Whether the user cheered anonymously or not.
 **data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWCommunityGoalComplete
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when a community goal is completed. Using `*` as the `<goal_title>` will execute the trigger for all channel point rewards.
+**Format** | `OnTWCommunityGoalComplete <goal_title>`
+**Format w/ Aliases** | `OnTWCommunityGoalComplete <goal_title1> <goal_title2> ...`
+**Example** | `OnTWCommunityGoalComplete "Example Goal"`
+**Example w/ Aliases** | `OnTWCommunityGoalComplete "Example Goal" "Extra Sunday Stream" ...`
+
+##### Parameters
+| | |
+------------ | -------------
+**goal** | The title of the community goal.
+**user** | The display name of the user that completed the goal.
+**amount** | The amount of points donated to complete the goal.
+**user_total** | The total amount of points contributed by the user.
+**progress** | The current amount of points contributed towards the goal.
+**total** | The amount of points required to complete the goal.
+**data** | The complete json community goal message (for use with [Function](#function)).
+
+#### OnTWCommunityGoalProgress
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when a user contributes towards a goal. Using `*` as the `<goal_title>` will execute the trigger for all channel point rewards.
+**Format** | `OnTWCommunityGoalProgress <goal_title>`
+**Format w/ Aliases** | `OnTWCommunityGoalProgress <goal_title1> <goal_title2> ...`
+**Example** | `OnTWCommunityGoalProgress "Example Goal"`
+**Example w/ Aliases** | `OnTWCommunityGoalProgress "Example Goal" "Extra Sunday Stream" ...`
+
+##### Parameters
+| | |
+------------ | -------------
+**goal** | The title of the community goal.
+**user** | The display name of the user that completed the goal.
+**amount** | The amount of points donated to complete the goal.
+**user_total** | The total amount of points contributed by the user.
+**progress** | The current amount of points contributed towards the goal.
+**total** | The amount of points required to complete the goal.
+**data** | The complete json community goal message (for use with [Function](#function)).
+
+***
+
+#### OnTWCommunityGoalStart
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when the streamer starts a goal. Using `*` as the `<goal_title>` will execute the trigger for all channel point rewards.
+**Format** | `OnTWCommunityGoalStart <goal_title>`
+**Format w/ Aliases** | `OnTWCommunityGoalStart <goal_title1> <goal_title2> ...`
+**Example** | `OnTWCommunityGoalStart "Example Goal"`
+**Example w/ Aliases** | `OnTWCommunityGoalStart "Example Goal" "Extra Sunday Stream" ...`
+
+##### Parameters
+| | |
+------------ | -------------
+**goal** | The title of the community goal.
+**data** | The complete json community goal message (for use with [Function](#function)).
 
 ***
 

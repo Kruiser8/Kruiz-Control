@@ -17,28 +17,6 @@ class ParamHandler extends Handler {
     var action = Parser.getAction(triggerData);
 
     switch (action) {
-      case 'create':
-        var { name, value } = Parser.getInputs(triggerData, ['action', 'name', 'value']);
-        return { [name]: value };
-        break;
-      case 'lower':
-        var { name } = Parser.getInputs(triggerData, ['action', 'name']);
-        if (parameters.hasOwnProperty(name)) {
-          return { [name]: parameters[name].toLowerCase() };
-        }
-        break;
-      case 'upper':
-        var { name } = Parser.getInputs(triggerData, ['action', 'name']);
-        if (parameters.hasOwnProperty(name)) {
-          return { [name]: parameters[name].toUpperCase() };
-        }
-        break;
-      case 'proper':
-        var { name } = Parser.getInputs(triggerData, ['action', 'name']);
-        if (parameters.hasOwnProperty(name)) {
-          return { [name]: parameters[name].toProperCase() };
-        }
-        break;
       case 'add':
         var { name, value } = Parser.getInputs(triggerData, ['action', 'name', 'value']);
         if (parameters.hasOwnProperty(name)) {
@@ -49,33 +27,9 @@ class ParamHandler extends Handler {
           }
         }
         break;
-      case 'subtract':
+      case 'contains':
         var { name, value } = Parser.getInputs(triggerData, ['action', 'name', 'value']);
-        if (parameters.hasOwnProperty(name)) {
-          value = parseFloat(value);
-          var paramValue = parseFloat(parameters[name]);
-          if (!isNaN(value) && !isNaN(paramValue)) {
-            return { [name]: paramValue - value };
-          }
-        }
-        break;
-      case 'negate':
-        var { name } = Parser.getInputs(triggerData, ['action', 'name']);
-        if (parameters.hasOwnProperty(name)) {
-          switch(String(parameters[name]).toLowerCase()) {
-            case "false":
-            case "no":
-            case "0":
-            case "":
-              return { [name]: true };
-            default:
-              return { [name]: false };
-          }
-        }
-        break;
-      case 'exists':
-        var { name } = Parser.getInputs(triggerData, ['action', 'name']);
-        return { exists: parameters.hasOwnProperty(name) };
+        return { contains: parameters[name].indexOf(value) !== -1 };
         break;
       case 'copy':
         var { name, toName } = Parser.getInputs(triggerData, ['action', 'name', 'toName']);
@@ -83,11 +37,13 @@ class ParamHandler extends Handler {
           return { [toName]: parameters[name] };
         }
         break;
-      case 'replace':
-        var { name, toReplace, replacement } = Parser.getInputs(triggerData, ['action', 'name', 'toReplace', 'replacement']);
-        if (parameters.hasOwnProperty(name)) {
-          return { [name]: parameters[name].replace(new RegExp(escapeRegExp(toReplace), 'g'), () => replacement) };
-        }
+      case 'create':
+        var { name, value } = Parser.getInputs(triggerData, ['action', 'name', 'value']);
+        return { [name]: value };
+        break;
+      case 'exists':
+        var { name } = Parser.getInputs(triggerData, ['action', 'name']);
+        return { exists: parameters.hasOwnProperty(name) };
         break;
       case 'keyword':
         var { name, keywords } = Parser.getInputs(triggerData, ['action', 'name', 'keywords'], true);
@@ -106,6 +62,54 @@ class ParamHandler extends Handler {
             });
           }
           return { matched, match, keywords: result };
+        }
+        break;
+      case 'lower':
+        var { name } = Parser.getInputs(triggerData, ['action', 'name']);
+        if (parameters.hasOwnProperty(name)) {
+          return { [name]: parameters[name].toLowerCase() };
+        }
+        break;
+      case 'negate':
+        var { name } = Parser.getInputs(triggerData, ['action', 'name']);
+        if (parameters.hasOwnProperty(name)) {
+          switch(String(parameters[name]).toLowerCase()) {
+            case "false":
+            case "no":
+            case "0":
+            case "":
+              return { [name]: true };
+            default:
+              return { [name]: false };
+          }
+        }
+        break;
+      case 'proper':
+        var { name } = Parser.getInputs(triggerData, ['action', 'name']);
+        if (parameters.hasOwnProperty(name)) {
+          return { [name]: parameters[name].toProperCase() };
+        }
+        break;
+      case 'replace':
+        var { name, toReplace, replacement } = Parser.getInputs(triggerData, ['action', 'name', 'toReplace', 'replacement']);
+        if (parameters.hasOwnProperty(name)) {
+          return { [name]: parameters[name].replace(new RegExp(escapeRegExp(toReplace), 'g'), () => replacement) };
+        }
+        break;
+      case 'subtract':
+        var { name, value } = Parser.getInputs(triggerData, ['action', 'name', 'value']);
+        if (parameters.hasOwnProperty(name)) {
+          value = parseFloat(value);
+          var paramValue = parseFloat(parameters[name]);
+          if (!isNaN(value) && !isNaN(paramValue)) {
+            return { [name]: paramValue - value };
+          }
+        }
+        break;
+      case 'upper':
+        var { name } = Parser.getInputs(triggerData, ['action', 'name']);
+        if (parameters.hasOwnProperty(name)) {
+          return { [name]: parameters[name].toUpperCase() };
         }
         break;
       default:
