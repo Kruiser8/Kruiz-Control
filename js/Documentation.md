@@ -1574,6 +1574,7 @@ A small selection of actions that are included for increased usability.
 <td>
 
 ```m
+# Example Usage: !hide Game GameSource
 OnCommand b 0 !hide
 Args {after} {scene} {source}
 OBS SceneSource {scene} {source} off
