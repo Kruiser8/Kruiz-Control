@@ -202,6 +202,8 @@ class Controller {
   performTrigger = async (triggerInfo, callback) => {
     try {
       var toSkip = 0;
+      var isJumping = false;
+      var jumpLabel = "";
       var triggerId = triggerInfo.triggerId;
       var triggerParams = triggerInfo.triggerParams;
       var actionsToInsert = triggerInfo.actionsToInsert;
@@ -227,6 +229,14 @@ class Controller {
         var parserName = data[0].toLowerCase();
         if (toSkip > 0 && parserName !== 'ignore') {
           toSkip--;
+          continue;
+        }
+
+        // Check if jumping to a label...
+        if (isJumping && parserName == 'label' && data.slice(1).join(' ') == jumpLabel) {
+          isJumping = false;
+          continue;
+        } else if (isJumping) {
           continue;
         }
 
@@ -315,6 +325,11 @@ class Controller {
             );
             delete runParams.loops;
             delete runParams.lines;
+          }
+
+          if (runParams.label) {
+            isJumping = true;
+            jumpLabel = runParams.label;
           }
 
           // Recreate regex with new params
@@ -469,6 +484,13 @@ class Controller {
       var valueArgs = Parser.getInputs([null, ...Parser.splitLine(value)], args);
       console.error(JSON.stringify(valueArgs));
       return valueArgs;
+    }
+    else if (parserName === 'label') {
+      return;
+    }
+    else if (parserName === 'jump') {
+      var { label } = Parser.getInputs(data, ['label']);
+      return { label };
     }
     else {
       // Get parser and run trigger content

@@ -119,6 +119,8 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Globals](#globals)
     + [If](#if)
     + [Ignore](#ignore)
+    + [Jump](#jump)
+    + [Label](#label)
     + [Log](#log)
     + [Loop](#loop)
     + [Play](#play)
@@ -1769,6 +1771,24 @@ The `<optional_skip>` value allows you to specify the number of lines to skip if
 **Example** | `Ignore Chat Send "Hello world"`
 **Example w/ Single Argument** | `Ignore "Chat Send 'Hello world'"`
 
+***
+
+#### Jump
+| | |
+------------ | -------------
+**Info** | Used to skip (or jump) to the specified [`Label`](#label). `<label>` is the name of the [`Label`](#label) to jump to. This can be used to skip functionality without having to count lines.
+**Format** | `Jump <label>`
+**Example** | `Jump MyCustomLabel`
+
+***
+
+#### Label
+| | |
+------------ | -------------
+**Info** | Used to mark (or label) a line in an event so that it can be skipped to with a [`Jump`](#jump) action. `<label>` is the name to give to the label.
+**Format** | `Label <label>`
+**Example** | `Label MyCustomLabel`
+ 
 ***
 
 #### Log
