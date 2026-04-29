@@ -120,6 +120,16 @@ class ParamHandler extends Handler {
           return { [name]: parameters[name].replace(new RegExp(escapeRegExp(toReplace), 'g'), () => replacement) };
         }
         break;
+      case 'round':
+        var { name, value } = Parser.getInputs(triggerData, ['action', 'name', 'value']);
+        if (parameters.hasOwnProperty(name)) {
+          value = parseFloat(value);
+          var paramValue = parseFloat(parameters[name]);
+          if (!isNaN(value) && !isNaN(paramValue)) {
+            return { [name]: paramValue.toFixed(value) };
+          }
+        }
+        break;
       case 'subtract':
         var { name, value } = Parser.getInputs(triggerData, ['action', 'name', 'value']);
         if (parameters.hasOwnProperty(name)) {

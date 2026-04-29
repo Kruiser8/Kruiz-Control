@@ -209,6 +209,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Param Negate](#param-negate)
     + [Param Proper](#param-proper)
     + [Param Replace](#param-replace)
+    + [Param Round](#param-round)
     + [Param Subtract](#param-subtract)
     + [Param Upper](#param-upper)
 - [Random](#random)
@@ -2810,6 +2811,20 @@ None at the moment.
 | | |
 ------------ | -------------
 **\<parameter\>** | The new parameter value where **\<parameter\>** is the name of the parameter.
+
+***
+
+#### Param Round
+| | |
+------------ | -------------
+**Info** | Round the existing parameter to the specified number of decimal places. `<parameter>` is the name of the existing parameter. `<number>` is the number of decimal places to round. Trailing `0`s are kept, so `1.5` rounded to 2 decimal places will be `1.50`.
+**Format** | `Param Round <parameter> <number>`
+**Example** | `Param Round Percentage 2`
+
+##### Parameters
+| | |
+------------ | -------------
+**\<name\>** | The updated parameter value where **\<name\>** is the name of the parameter.
 
 ***
 
