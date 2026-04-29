@@ -120,7 +120,7 @@ Play 45 nowait MashiahMusic__Kygo-Style-Melody.wav
 ```
 
 ### fileTriggers.txt and the triggers folder
-When you need actions to be run one-after-another, create a file in the _triggers_ folder and add the name of the folder to _fileTriggers.txt_.
+When you need actions to be run one-after-another, create a file in the _triggers_ folder and add the name of the file to _fileTriggers.txt_.
 
 As an example, here's a setup to make sure multiple scene changes don't happen simultaneously.
 
