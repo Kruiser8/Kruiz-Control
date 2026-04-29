@@ -201,9 +201,11 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Param Contains](#param-contains)
     + [Param Copy](#param-copy)
     + [Param Create](#param-create)
+    + [Param Divide](#param-divide)
     + [Param Exists](#param-exists)
     + [Param Keyword](#param-keyword)
     + [Param Lower](#param-lower)
+    + [Param Multiply](#param-multiply)
     + [Param Negate](#param-negate)
     + [Param Proper](#param-proper)
     + [Param Replace](#param-replace)
@@ -2695,6 +2697,20 @@ None at the moment.
 
 ***
 
+#### Param Divide
+| | |
+------------ | -------------
+**Info** | Divides an existing parameter by the given amount. `<parameter>` is the name of the existing parameter. `<number>` is the value to divide by.
+**Format** | `Param Divide <parameter> <number>`
+**Example** | `Param Divide Total 100`
+
+##### Parameters
+| | |
+------------ | -------------
+**\<parameter\>** | The lowercased parameter value where **\<parameter\>** is the name of the parameter.
+
+***
+
 #### Param Exists
 | | |
 ------------ | -------------
@@ -2733,6 +2749,20 @@ None at the moment.
 **Info** | Lowercase the value within a parameter. `<parameter>` is the name of the existing parameter.
 **Format** | `Param Lower <parameter>`
 **Example** | `Param Lower user`
+
+##### Parameters
+| | |
+------------ | -------------
+**\<parameter\>** | The lowercased parameter value where **\<parameter\>** is the name of the parameter.
+
+***
+
+#### Param Multiply
+| | |
+------------ | -------------
+**Info** | Multiplies an existing parameter by the given amount. `<parameter>` is the name of the existing parameter. `<number>` is the value to multiply by.
+**Format** | `Param Multiply <parameter> <number>`
+**Example** | `Param Multiply Time 1000`
 
 ##### Parameters
 | | |
