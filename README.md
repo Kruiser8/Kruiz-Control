@@ -171,8 +171,7 @@ There are a number of ways to support this project.
 
 - Support Kruiser through <a href="https://patreon.com/kruiser8">Patreon</a>.
 - <a href="https://github.com/Kruiser8/Kruiz-Control-Documentation">Translate the documentation</a>.
-- Help others in the <a href="https://discord.gg/wU3ZK3Q">Support Discord</a>.
-- Contribute ideas for the <a href="https://trello.com/b/oIV3q6Im/kruiz-control">roadmap</a>.
+- Help others and contribute ideas in the <a href="https://discord.gg/wU3ZK3Q">Support Discord</a>.
 - Spread the word!
 
 I do take commissions to implement custom functionality when necessary. Please reach out if you have a specific request.
