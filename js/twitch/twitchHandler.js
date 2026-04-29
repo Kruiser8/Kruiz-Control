@@ -1103,6 +1103,16 @@ class TwitchHandler extends Handler {
           await this.api.addBlockedTerm(this.channelId, this.channelId, terms[i]);
         }
         break;
+      case 'addsuspicioususer':
+        var { user } = Parser.getInputs(triggerData, ['action', 'user']);
+        var user_id = await getIdFromUser(user);
+
+        var data = { 
+          user_id,
+          status: "ACTIVE_MONITORING"
+        };
+        await this.api.addSuspicousUser(this.channelId, this.channelId, data);
+        break;
       case 'adschedule':
         var response = await this.api.getAdSchedule(this.channelId);
 
@@ -1601,6 +1611,11 @@ class TwitchHandler extends Handler {
 
           await this.api.removeBlockedTerm(this.channelId, this.channelId, term_id);
         }
+        break;
+      case 'removesuspicioususer':
+        var { user } = Parser.getInputs(triggerData, ['action', 'user']);
+        var user_id = await getIdFromUser(user);
+        await this.api.removeSuspicousUser(this.channelId, this.channelId, user_id);
         break;
       case 'reward':
         var { reward, status } = Parser.getInputs(triggerData, ['action', 'reward', 'status']);

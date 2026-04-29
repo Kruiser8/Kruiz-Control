@@ -331,6 +331,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnTWVIP](#ontwvip)
   * [Actions](#twitch-actions)
     + [Twitch AddBlockedTerm](#twitch-addblockedterm)
+    + [Twitch AddSuspiciousUser](#twitch-addsuspicioususer)
     + [Twitch AdSchedule](#twitch-adschedule)
     + [Twitch Announcement](#twitch-announcement)
     + [Twitch Auth](#twitch-auth)
@@ -385,6 +386,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Twitch Raid](#twitch-raid)
     + [Twitch Reject](#twitch-reject)
     + [Twitch RemoveBlockedTerm](#twitch-removeblockedterm)
+    + [Twitch RemoveSuspiciousUser](#twitch-removesuspicioususer)
     + [Twitch Reward](#twitch-reward)
     + [Twitch RewardCost](#twitch-rewardcost)
     + [Twitch RewardDescription](#twitch-rewarddescription)
@@ -4520,6 +4522,15 @@ _Note: Bit voting is not currently supported, however Twitch provides these valu
 
 ***
 
+#### Twitch AddSuspiciousUser
+| | |
+------------ | -------------
+**Info** | Adds a suspicious user status to a chatter on the broadcaster's channel. This allows for easy monitoring of a user's messages. `<user>` is the Twitch user to add as a suspicious user.
+**Format** | `Twitch AddSuspiciousUser <user>`
+**Example** | `Twitch AddSuspiciousUser testUser`
+
+***
+
 #### Twitch AdSchedule
 | | |
 ------------ | -------------
@@ -5260,6 +5271,15 @@ _Note: Due to a Twitch API restriction, in order for Kruiz Control to interact w
 **Format** | `Twitch RemoveBlockedTerm <term>`
 **Example** | `Twitch RemoveBlockedTerm "bad word"`
 **Example w/ Aliases** | `Twitch RemoveBlockedTerm "phrase to block" "bad term"`
+
+***
+
+#### Twitch RemoveSuspiciousUser
+| | |
+------------ | -------------
+**Info** | Remove a suspicious user status from a chatter on the broadcaster's channel. `<user>` is the Twitch user to add as a suspicious user.
+**Format** | `Twitch RemoveSuspiciousUser <user>`
+**Example** | `Twitch RemoveSuspiciousUser testUser`
 
 ***
 

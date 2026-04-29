@@ -36,6 +36,7 @@ class TwitchAPI {
       'moderator:manage:chat_settings',
       'moderator:manage:shield_mode',
       'moderator:manage:shoutouts',
+      'moderator:manage:suspicious_users',
       'moderator:manage:warnings',
       'moderator:read:chatters',
       'moderator:read:followers',
@@ -831,6 +832,30 @@ class TwitchAPI {
       },
       data: {
         data
+      }
+    });
+  }
+
+  addSuspicousUser = async (broadcaster_id, moderator_id, data) => {
+    await this.callTwitchApi({
+      method: 'POST',
+      endpoint: 'https://api.twitch.tv/helix/moderation/suspicious_users',
+      params: {
+        broadcaster_id,
+        moderator_id
+      },
+      data
+    });
+  }
+
+  removeSuspicousUser = async (broadcaster_id, moderator_id, user_id) => {
+    await this.callTwitchApi({
+      method: 'DELETE',
+      endpoint: 'https://api.twitch.tv/helix/moderation/suspicious_users',
+      params: {
+        broadcaster_id,
+        moderator_id,
+        user_id
       }
     });
   }
