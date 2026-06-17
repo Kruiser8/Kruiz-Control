@@ -1768,17 +1768,21 @@ The following `<comparator>` values are valid: `=`, `<`, `>`, `<=`, `>=`, `!=` (
 
 Multiple comparisons can be combined in one **If** line using the following `<conjunction>` values: `and`, `or`.
 
-The `<optional_skip>` value allows you to specify the number of lines to skip if the criteria is not met. This value is completely optional and allows for advanced logic handling. When skipping lines, multi-line inputs are considered one line and comments are not considered.
+The `<optional_skip_or_label>` value is completely optional and allows for advanced logic handling. This input allows you to either:
+
+- Specify the number of lines to [`Skip`](#skip) if the criteria is not met. When skipping lines, multi-line inputs are considered one line and comments are not considered. 
+
+- [`Jump`](#jump) to the specified [`Label`](#label) if the criteria is not met. When providing a label, the label must not be numeric (i.e. it must return `NaN` when passed to [`parseInt`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseInt)).
 
 
 | | |
 ------------ | -------------
 **Info** | Used to determine whether or not the trigger should complete the rest of the actions.
-**Format** | `If <optional_skip> <value_a> <comparator> <value_b> <conjunction> <value_c> <comparator> <value_d> ...`
+**Format** | `If <optional_skip_or_label> <value_a> <comparator> <value_b> <conjunction> <value_c> <comparator> <value_d> ...`
 **Example (single comparison)** | `If {amount} >= 100`
 **Example (single comparison with skip value)** | `If 3 {amount} >= 100`
 **Example (two comparisons)** | `If {amount} >= 100 and {amount} < 1000`
-**Example (two comparisons with skip value)** | `If 2 {amount} >= 100 and {amount} < 1000`
+**Example (two comparisons with label value)** | `If NextAmount {amount} >= 100 and {amount} < 1000`
 **Example (multiple comparisons)** | `If {amount} >= 100 and {amount} < 1000 and {amount} != 123`
 **Example (multiple comparisons with skip value)** | `If 6 {amount} >= 100 and {amount} < 1000 and {amount} != 123`
 

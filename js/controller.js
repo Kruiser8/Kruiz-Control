@@ -540,8 +540,10 @@ class Controller {
       var rightArg = data[3];
       result = this.handleComparison(leftArg, comparator, rightArg);
     }
-    if (skip > 0 && ! result) {
+    if (skip > 0 && !result) {
       return { skip: skip };
+    } else if (isNaN(skip) && !result) {
+      return { label: data[1] };
     } else {
       return { continue: result };
     }
