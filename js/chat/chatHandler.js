@@ -85,11 +85,20 @@ class ChatHandler extends Handler {
           if (permission.includes('u')) {
             inputs.splice(1, 0, 'info');
           }
+          if (permission.includes('l')) {
+            inputs.splice(1, 0, 'info');
+          }
         }
         var { permission, info, cooldown, commands } = Parser.getInputs(triggerLine, inputs, true);
         permission = permission.toLowerCase();
-        info = info ? info.toLowerCase() : "";
-        info = info.split(',')
+        if (info) {
+          if (permission.includes('u')) {
+            info = info.toLowerCase();
+          }
+          info = info.split(',');
+        } else {
+          info = "";
+        }
 
         cooldown = parseInt(cooldown);
         if (isNaN(cooldown)) {
@@ -230,6 +239,16 @@ class ChatHandler extends Handler {
       return [true, 'u'];
     } else if (permissions.includes('n') && !flags.founder && !flags.subscriber && !flags.vip && !flags.mod && this.channel !== user) {
       return [true, 'n']
+    } else if (permissions.includes('l')) {
+      var listParser = controller.getParser("list");
+
+      for (var i = 0; i < info.length; i++) {
+        var listName = info[i];
+        var list = listParser.lists[listName];
+        if (list && list.some(item => item.toLowerCase() === user)) {
+          return [true, 'l'];
+        }
+      }
     }
 
     return [false, ''];
