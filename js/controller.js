@@ -406,6 +406,9 @@ class Controller {
           await new Promise((resolve) => {
             this.playAudio[parameters['_kc_event_id_']].push(resolve);
             audio.onended = () => {
+              audio.src = '';
+              audio.remove();
+              audio.srcObject = null;
               gainNode.disconnect();
               source = null;
               gainNode = null;
@@ -417,6 +420,9 @@ class Controller {
                 // Automatic playback started!
               }).catch(function(error) {
                 console.error(`[${error.code}] ${error.name}: ${error.message}`);
+                audio.src = '';
+                audio.remove();
+                audio.srcObject = null;
                 gainNode.disconnect();
                 source = null;
                 gainNode = null;
@@ -427,6 +433,9 @@ class Controller {
         } else {
           audio.play();
           audio.onended = () => {
+            audio.src = '';
+            audio.remove();
+            audio.srcObject = null;
             gainNode.disconnect();
             source = null;
             gainNode = null;
