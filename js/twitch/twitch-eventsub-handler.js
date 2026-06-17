@@ -194,6 +194,11 @@ class EventSubHandler {
         version: "1"
       },
       {
+        type: 'channel.custom_power_up_redemption.add',
+        data: { broadcaster_user_id: this.channelId },
+        version: "1"
+      },
+      {
         type: 'channel.poll.begin',
         data: { broadcaster_user_id: this.channelId },
         version: "1"

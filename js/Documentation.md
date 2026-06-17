@@ -322,6 +322,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnTWHypeTrainStart](#ontwhypetrainstart)
     + [OnTWModAdd](#ontwmodadd)
     + [OnTWModRemove](#ontwmodremove)
+    + [OnTWPowerUp](#ontwpowerup)
     + [OnTWPoll](#ontwpoll)
     + [OnTWPollEnd](#ontwpollend)
     + [OnTWPollUpdate](#ontwpollupdate)
@@ -4253,6 +4254,28 @@ Enables the ability to run actions when channel point rewards are redeemed.
 **id** | The user ID of the removed moderator.
 **login** | The user login of the removed moderator.
 **name** | The user display name of the removed moderator.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
+#### OnTWPowerUp
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when a power up is redeemed. Using `*` as the `<power_up_name>` will execute the trigger for all power ups.
+**Format** | `OnTWPowerUp <power_up_name>`
+**Format w/ Aliases** | `OnTWPowerUp <power_up_name1> <power_up_name2> ...`
+**Example** | `OnTWPowerUp "Example PowerUp"`
+**Example w/ Aliases** | `OnTWPowerUp "Resize" "Left View"`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user ID of the user that redeemed the reward.
+**login** | The user login of the user that redeemed the reward.
+**name** | The user display name of the user that redeemed the reward.
+**power_up** | The name of the power up.
+**power_up_id** | The id of the power up.
+**redemption_id** | The id of the power up redemption.
 **data** | The complete Twitch EventSub event data (for use with [Function](#function)).
 
 ***
