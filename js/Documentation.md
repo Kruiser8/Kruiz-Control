@@ -2494,7 +2494,7 @@ _Note: The text source does not need to be in current/active scene for this to t
 #### OBS Source URL
 | | |
 ------------ | -------------
-**Info** | Used to change the URL of a browser source in OBS.
+**Info** | Used to change the URL of a browser source in OBS. This does not work when the source has `Local file` selected in OBS. `<url>` can be a path to a local file.
 **Format** | `OBS Source <source> URL <url>`
 **Example** | `OBS Source "Browser" URL "https://github.com/Kruiser8/Kruiz-Control"`
 
