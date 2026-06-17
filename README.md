@@ -120,9 +120,9 @@ Play 45 nowait MashiahMusic__Kygo-Style-Melody.wav
 ```
 
 ### fileTriggers.txt and the triggers folder
-When you need actions to be run one-after-another, create a file in the _triggers_ folder and add the name of the file to _fileTriggers.txt_.
+When you need events to be run one-after-another, create a file in the _triggers_ folder and add the name of the file to _fileTriggers.txt_.
 
-As an example, here's a setup to make sure multiple scene changes don't happen simultaneously.
+As an example, here's a setup to make sure multiple OBS scene changing events don't happen simultaneously.
 
 #### _fileTriggers.txt_
 ```
@@ -132,12 +132,26 @@ obs.txt
 ```m
 OnSLDonation
 OBS Scene DonationCelebration
-Delay 4
 
 OnCommand mb 0 !brb
 OBS Scene BRB
-Delay 5
 ```
+
+#### #noqueue
+If you want to organize your events into files but don't want the events to queue (run one-after-another), then add `#noqueue` as the top line of the file. This will prevent the events from queueing within the file.
+
+The below allows both events to run simultaneously.
+
+Example: _triggers/obs.txt_
+```m
+#noqueue
+OnSLDonation
+OBS Scene DonationCelebration
+
+OnCommand mb 0 !brb
+OBS Scene BRB
+```
+
 
 ### sounds folder
 In order to use a sound with [`Play`](js/Documentation.md#play), add the sound file to the *sounds* folder. The supported audio formats are mp3, wav, and ogg.

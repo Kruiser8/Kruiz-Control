@@ -614,6 +614,10 @@ class Controller {
     var lines = data.split(/\r\n|\n/);
     var allLineData = Parser.parseCommands(lines);
 
+    if (lines.length > 0 && lines[0].trim() === "#noqueue") {
+      useAsync = false;
+    }
+
     // Parse all lines
     for (var i = 0; i < allLineData.length; i++) {
       var lineData = allLineData[i];
