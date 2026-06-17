@@ -269,6 +269,21 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [TTS](#tts)
     + [TTS Stop](#tts-stop)
     + [TTS Voices](#tts-voices)
+- [Time](#time)
+  * [Triggers](#time-triggers)
+  * [Actions](#time-actions)
+    + [Time AmPm](#time-ampm)
+    + [Time Date](#time-date)
+    + [Time Day](#time-day)
+    + [Time DayOfTheWeek](#time-dayoftheweek)
+    + [Time Format](#time-format)
+    + [Time Hour](#time-hour)
+    + [Time Minutes](#time-minutes)
+    + [Time Month](#time-month)
+    + [Time Seconds](#time-seconds)
+    + [Time Time](#time-time)
+    + [Time Timestamp](#time-timestamp)
+    + [Time Year](#time-year)
 - [Timer](#timer)
   * [Triggers](#timer-triggers)
     + [OnTimer](#ontimer)
@@ -3484,6 +3499,172 @@ Chat Send {value}
 </td>
 </tr>
 </table>
+
+***
+
+## Time
+Enables the ability to interact with aspects of time (days, time, etc.).
+
+### Time Trigger
+None at the moment.
+
+***
+
+### Time Actions
+
+#### Time AMPM
+| | |
+------------ | -------------
+**Info** | Used to check whether the current time is for AM or PM.
+**Format** | `Time AMPM`
+**Example** | `Time AMPM`
+
+##### Parameters
+| | |
+------------ | -------------
+**ampm** | `AM` or `PM`.
+
+***
+
+#### Time Date
+| | |
+------------ | -------------
+**Info** | Used to get the current date in the current locale's format.
+**Format** | `Time Date`
+**Example** | `Time Date`
+
+##### Parameters
+| | |
+------------ | -------------
+**date** | The current date in the current locale's format. For `en-US`, this is `mm/dd/YYYY`. For `en-GB`, this is `dd/mm/YYYY`.
+
+***
+
+#### Time Day
+| | |
+------------ | -------------
+**Info** | Used to get the numerical day of the current date.
+**Format** | `Time Day`
+**Example** | `Time Day`
+
+##### Parameters
+| | |
+------------ | -------------
+**day** | The numerical day of the current date. For June 10th, the value would be `10`.
+
+***
+
+#### Time DayOfTheWeek
+| | |
+------------ | -------------
+**Info** | Used to get the name of the current day.
+**Format** | `Time DayOfTheWeek`
+**Example** | `Time DayOfTheWeek`
+**Alternate Format** | `Time DOTW`
+
+##### Parameters
+| | |
+------------ | -------------
+**weekday** | The name of the current day, i.e. `Wednesday`.
+
+***
+
+#### Time Hour
+| | |
+------------ | -------------
+**Info** | Used to get the current hour in 24-hour time. `<use24Hour>` is an optional true/false value (defaults to false) to return the hhour in a 24-hour format.
+**Format** | `Time Hour <use24Hour>`
+**Example** | `Time Hour`
+**Example w/ use24Hour** | `Time Hour true`
+
+##### Parameters
+| | |
+------------ | -------------
+**hour** | The current hour from `1` to `12` or `0` to `23` if `<use24Hour>` is `true.
+
+***
+
+#### Time Minutes
+| | |
+------------ | -------------
+**Info** | Used to get the current minute.
+**Format** | `Time Minutes`
+**Example** | `Time Minutes`
+
+##### Parameters
+| | |
+------------ | -------------
+**minutes** | The current minute from `0` to `59`.
+
+***
+
+#### Time Month
+| | |
+------------ | -------------
+**Info** | Used to get the current minute.
+**Format** | `Time Month`
+**Example** | `Time Month`
+
+##### Parameters
+| | |
+------------ | -------------
+**month** | The name of the current month, i.e. `June`.
+
+***
+
+#### Time Seconds
+| | |
+------------ | -------------
+**Info** | Used to get the current seconds.
+**Format** | `Time Seconds`
+**Example** | `Time Seconds`
+
+##### Parameters
+| | |
+------------ | -------------
+**seconds** | The current minute from `0` to `59`.
+
+***
+
+#### Time Time
+| | |
+------------ | -------------
+**Info** | Used to get the current time.
+**Format** | `Time Time`
+**Example** | `Time Time`
+
+##### Parameters
+| | |
+------------ | -------------
+**time** | The current time, i.e. `1:15:30 PM`.
+
+***
+
+#### Time Timestamp
+| | |
+------------ | -------------
+**Info** | Used to get the current date and time.
+**Format** | `Time Timestamp`
+**Example** | `Time Timestamp`
+
+##### Parameters
+| | |
+------------ | -------------
+**timestamp** | The current date and time, i.e. `6/10/2026, 11:22:30 PM`.
+
+***
+
+#### Time Year
+| | |
+------------ | -------------
+**Info** | Used to get the current year.
+**Format** | `Time Year`
+**Example** | `Time Year`
+
+##### Parameters
+| | |
+------------ | -------------
+**year** | The current year.
 
 ***
 
