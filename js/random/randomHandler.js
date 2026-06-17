@@ -1,6 +1,6 @@
 class RandomHandler extends Handler {
   /**
-   * Create a new Chat handler.
+   * Create a new Random handler.
    */
   constructor() {
     super('Random', []);
