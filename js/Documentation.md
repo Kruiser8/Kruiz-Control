@@ -383,6 +383,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Twitch Mod](#twitch-mod)
     + [Twitch Marker](#twitch-marker)
     + [Twitch Mods](#twitch-mods)
+    + [Twitch Pin](#twitch-pin)
     + [Twitch Poll Cancel](#twitch-prediction-cancel)
     + [Twitch Poll Choice](#twitch-prediction-choice)
     + [Twitch Poll Clear](#twitch-prediction-clear)
@@ -424,6 +425,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Twitch UniqueChat](#twitch-uniquechat)
     + [Twitch UniqueChatOff](#twitch-uniquechatoff)
     + [Twitch Unmod](#twitch-unmod)
+    + [Twitch Unpin](#twitch-unpin)
     + [Twitch Unraid](#twitch-unraid)
     + [Twitch UnVIP](#twitch-unvip)
     + [Twitch User](#twitch-user)
@@ -5244,6 +5246,22 @@ _Note: Due to a Twitch API restriction, in order for Kruiz Control to interact w
 
 ***
 
+#### Twitch Pin
+| | |
+------------ | -------------
+**Info** | Sends and pins a message to the broadcaster's twitch chat using the broadcaster's account. `<message>` is the message to pin. `<optional_duration>` is the number of seconds to pin the message, between 30 and 1800. When `<optional_duration>` is not provided, the message is pinned until the end of the stream.
+**Format** | `Twitch Pin <message> <optional_duration>`
+**Example** | `Twitch Pin "Check this out!"`
+**Example w/ duration** | `Twitch Pin "Check this out!" 60`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Send Message API.
+**message_id** | The id of the pinned message.
+
+***
+
 #### Twitch Poll Cancel
 | | |
 ------------ | -------------
@@ -5724,6 +5742,15 @@ _Note: Due to a Twitch API restriction, in order for Kruiz Control to interact w
 **Info** | Remove moderator status from a user in the broadcaster's chat room. `<user>` is the Twitch user to update.
 **Format** | `Twitch Unmod <user>`
 **Example** | `Twitch Unmod testUser`
+
+***
+
+#### Twitch Unpin
+| | |
+------------ | -------------
+**Info** | Unpin a message in the broadcaster's twitch chat. `<message_id>` is the id of the message to unpin.
+**Format** | `Twitch Unpin <message_id>`
+**Example** | `Twitch Unpin {message_id}`
 
 ***
 

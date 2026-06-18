@@ -1624,6 +1624,18 @@ class TwitchHandler extends Handler {
           ...modArgs
         };
         break;
+      case 'pin':
+        var { message, duration = null } = Parser.getInputs(triggerData, ['action', 'message', 'duration'], false, 1);
+        var response = await this.api.sendChatMessage(this.channelId, this.channelId, message, true);
+        if (response?.data) {
+          var message_id = response.data[0].message_id;
+          await this.api.updatePinnedChatMessage(this.channelId, this.channelId, message_id, duration);
+          return {
+            data: response,
+            message_id: message_id
+          }
+        }
+        break;
       case 'poll':
         return await this.handlePoll(triggerData);
         break;
@@ -1894,6 +1906,10 @@ class TwitchHandler extends Handler {
         var user_id = await getIdFromUser(user);
 
         await this.api.removeChannelModerator(this.channelId, user_id);
+        break;
+      case 'unpin':
+        var { message_id } = Parser.getInputs(triggerData, ['action', 'message_id']);
+        await this.api.unpinChatMessage(this.channelId, this.channelId, message_id);
         break;
       case 'unraid':
         await this.api.cancelARaid(this.channelId);
