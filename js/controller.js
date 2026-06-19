@@ -202,6 +202,8 @@ class Controller {
   performTrigger = async (triggerInfo, callback) => {
     try {
       var toSkip = 0;
+      var isJumping = false;
+      var jumpLabel = "";
       var triggerId = triggerInfo.triggerId;
       var triggerParams = triggerInfo.triggerParams;
       var actionsToInsert = triggerInfo.actionsToInsert;
@@ -227,6 +229,14 @@ class Controller {
         var parserName = data[0].toLowerCase();
         if (toSkip > 0 && parserName !== 'ignore') {
           toSkip--;
+          continue;
+        }
+
+        // Check if jumping to a label...
+        if (isJumping && parserName == 'label' && data.slice(1).join(' ') == jumpLabel) {
+          isJumping = false;
+          continue;
+        } else if (isJumping) {
           continue;
         }
 
@@ -317,6 +327,11 @@ class Controller {
             delete runParams.lines;
           }
 
+          if (runParams.label) {
+            isJumping = true;
+            jumpLabel = runParams.label;
+          }
+
           // Recreate regex with new params
           Object.keys(runParams).forEach(attribute => {
             triggerParams[attribute] = runParams[attribute];
@@ -391,6 +406,9 @@ class Controller {
           await new Promise((resolve) => {
             this.playAudio[parameters['_kc_event_id_']].push(resolve);
             audio.onended = () => {
+              audio.src = '';
+              audio.remove();
+              audio.srcObject = null;
               gainNode.disconnect();
               source = null;
               gainNode = null;
@@ -402,6 +420,9 @@ class Controller {
                 // Automatic playback started!
               }).catch(function(error) {
                 console.error(`[${error.code}] ${error.name}: ${error.message}`);
+                audio.src = '';
+                audio.remove();
+                audio.srcObject = null;
                 gainNode.disconnect();
                 source = null;
                 gainNode = null;
@@ -412,6 +433,9 @@ class Controller {
         } else {
           audio.play();
           audio.onended = () => {
+            audio.src = '';
+            audio.remove();
+            audio.srcObject = null;
             gainNode.disconnect();
             source = null;
             gainNode = null;
@@ -470,6 +494,13 @@ class Controller {
       console.error(JSON.stringify(valueArgs));
       return valueArgs;
     }
+    else if (parserName === 'label') {
+      return;
+    }
+    else if (parserName === 'jump') {
+      var { label } = Parser.getInputs(data, ['label']);
+      return { label };
+    }
     else {
       // Get parser and run trigger content
       var parser = this.getParser(parserName);
@@ -518,8 +549,10 @@ class Controller {
       var rightArg = data[3];
       result = this.handleComparison(leftArg, comparator, rightArg);
     }
-    if (skip > 0 && ! result) {
+    if (skip > 0 && !result) {
       return { skip: skip };
+    } else if (isNaN(skip) && !result) {
+      return { label: data[1] };
     } else {
       return { continue: result };
     }
@@ -580,6 +613,10 @@ class Controller {
     data = data.trim();
     var lines = data.split(/\r\n|\n/);
     var allLineData = Parser.parseCommands(lines);
+
+    if (lines.length > 0 && lines[0].trim() === "#noqueue") {
+      useAsync = false;
+    }
 
     // Parse all lines
     for (var i = 0; i < allLineData.length; i++) {

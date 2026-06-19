@@ -3,10 +3,12 @@ class TwitchHandler extends Handler {
    * Create a new Timer handler.
    */
   constructor() {
-    super('Twitch', ['OnTWBits', 'OnTWCommunityGoalStart', 'OnTWCommunityGoalProgress', 'OnTWCommunityGoalComplete', 'OnTWChannelUpdate', 'OnTWFollow', 'OnTWAd', 'OnTWChatClear', 'OnTWChatClearUser', 'OnTWSub', 'OnTWSubEnd', 'OnTWSubGift', 'OnTWSubMessage', 'OnTWCheer', 'OnTWRaid', 'OnTWBan', 'OnTWTimeout', 'OnTWUnban', 'OnTWModAdd', 'OnTWModRemove', 'OnTWChannelPoint', 'OnTWChannelPointCompleted', 'OnTWChannelPointRejected', 'OnTWPoll', 'OnTWPollUpdate', 'OnTWPollEnd', 'OnTWPrediction', 'OnTWPredictionUpdate', 'OnTWPredictionLock', 'OnTWPredictionEnd', 'OnTWSuspiciousUser', 'OnTWVIP', 'OnTWUnVIP', 'OnTWHypeTrainStart', 'OnTWHypeTrainConductor', 'OnTWHypeTrainProgress', 'OnTWHypeTrainLevel', 'OnTWHypeTrainEnd', 'OnTWCharityDonation', 'OnTWCharityStarted', 'OnTWCharityProgress', 'OnTWCharityStopped', 'OnTWShieldStart', 'OnTWShieldStop', 'OnTWShoutout', 'OnTWShoutoutReceived', 'OnTWGoalStarted', 'OnTWGoalProgress', 'OnTWGoalCompleted', 'OnTWGoalFailed', 'OnTWStreamStarted', 'OnTWStreamStopped']);
+    super('Twitch', ['OnTWBits', 'OnTWCommunityGoalStart', 'OnTWCommunityGoalProgress', 'OnTWCommunityGoalComplete', 'OnTWChannelUpdate', 'OnTWFollow', 'OnTWAd', 'OnTWChatClear', 'OnTWChatClearUser', 'OnTWSub', 'OnTWSubEnd', 'OnTWSubGift', 'OnTWSubMessage', 'OnTWCheer', 'OnTWRaid', 'OnTWBan', 'OnTWTimeout', 'OnTWUnban', 'OnTWModAdd', 'OnTWModRemove', 'OnTWChannelPoint', 'OnTWChannelPointCompleted', 'OnTWChannelPointRejected', 'OnTWPowerUp', 'OnTWPoll', 'OnTWPollUpdate', 'OnTWPollEnd', 'OnTWPrediction', 'OnTWPredictionUpdate', 'OnTWPredictionLock', 'OnTWPredictionEnd', 'OnTWSuspiciousUser', 'OnTWVIP', 'OnTWUnVIP', 'OnTWHypeTrainStart', 'OnTWHypeTrainConductor', 'OnTWHypeTrainProgress', 'OnTWHypeTrainLevel', 'OnTWHypeTrainEnd', 'OnTWCharityDonation', 'OnTWCharityStarted', 'OnTWCharityProgress', 'OnTWCharityStopped', 'OnTWShieldStart', 'OnTWShieldStop', 'OnTWShoutout', 'OnTWShoutoutReceived', 'OnTWGoalStarted', 'OnTWGoalProgress', 'OnTWGoalCompleted', 'OnTWGoalFailed', 'OnTWStreamStarted', 'OnTWStreamStopped']);
     this.useChatAuth = false;
     this.rewards = [];
     this.rewardsTrigger = {};
+    this.powerUps = [];
+    this.powerUpsTrigger = {};
     this.completedRewards = [];
     this.completedRewardsTrigger = {};
     this.rejectedRewards = [];
@@ -249,6 +251,18 @@ class TwitchHandler extends Handler {
             this.rejectedRewardsTrigger[reward] = [];
             this.rejectedRewards.push(reward);
             this.rejectedRewardsTrigger[reward].push(triggerId);
+          }
+        });
+        break;
+      case 'ontwpowerup':
+        var { powerUps } = Parser.getInputs(triggerLine, ['powerUps'], true);
+        powerUps.forEach(powerUp => {
+          if (this.powerUps.indexOf(powerUp) !== -1) {
+            this.powerUpsTrigger[powerUp].push(triggerId);
+          } else {
+            this.powerUpsTrigger[powerUp] = [];
+            this.powerUps.push(powerUp);
+            this.powerUpsTrigger[powerUp].push(triggerId);
           }
         });
         break;
@@ -626,6 +640,34 @@ class TwitchHandler extends Handler {
               });
             });
           }
+        }
+        break;
+      case 'channel.custom_power_up_redemption.add':
+        var powerUp = event.reward.title;
+        var onPowerUpTriggers = [];
+
+        if (this.powerUps.indexOf(powerUp) !== -1) {
+          // Handle triggers
+          onPowerUpTriggers.push(...this.powerUpsTrigger[powerUp]);
+        }
+        if (this.powerUps.indexOf('*') !== -1) {
+          // Handle triggers
+          onPowerUpTriggers.push(...this.powerUpsTrigger['*']);
+        }
+
+        if (onPowerUpTriggers.length > 0) {
+          onPowerUpTriggers.sort((a,b) => a-b);
+          onPowerUpTriggers.forEach(triggerId => {
+            controller.handleData(triggerId, {
+              data: event,
+              id: event.user_id,
+              login: event.user_login,
+              name: event.user_name,
+              power_up: event.reward.title,
+              redemption_id: event.id,
+              power_up_id: event.reward.id
+            });
+          });
         }
         break;
       case 'channel.poll.begin':
@@ -1103,6 +1145,16 @@ class TwitchHandler extends Handler {
           await this.api.addBlockedTerm(this.channelId, this.channelId, terms[i]);
         }
         break;
+      case 'addsuspicioususer':
+        var { user } = Parser.getInputs(triggerData, ['action', 'user']);
+        var user_id = await getIdFromUser(user);
+
+        var data = { 
+          user_id,
+          status: "ACTIVE_MONITORING"
+        };
+        await this.api.addSuspicousUser(this.channelId, this.channelId, data);
+        break;
       case 'adschedule':
         var response = await this.api.getAdSchedule(this.channelId);
 
@@ -1572,6 +1624,18 @@ class TwitchHandler extends Handler {
           ...modArgs
         };
         break;
+      case 'pin':
+        var { message, duration = null } = Parser.getInputs(triggerData, ['action', 'message', 'duration'], false, 1);
+        var response = await this.api.sendChatMessage(this.channelId, this.channelId, message, true);
+        if (response?.data) {
+          var message_id = response.data[0].message_id;
+          await this.api.updatePinnedChatMessage(this.channelId, this.channelId, message_id, duration);
+          return {
+            data: response,
+            message_id: message_id
+          }
+        }
+        break;
       case 'poll':
         return await this.handlePoll(triggerData);
         break;
@@ -1601,6 +1665,11 @@ class TwitchHandler extends Handler {
 
           await this.api.removeBlockedTerm(this.channelId, this.channelId, term_id);
         }
+        break;
+      case 'removesuspicioususer':
+        var { user } = Parser.getInputs(triggerData, ['action', 'user']);
+        var user_id = await getIdFromUser(user);
+        await this.api.removeSuspicousUser(this.channelId, this.channelId, user_id);
         break;
       case 'reward':
         var { reward, status } = Parser.getInputs(triggerData, ['action', 'reward', 'status']);
@@ -1837,6 +1906,10 @@ class TwitchHandler extends Handler {
         var user_id = await getIdFromUser(user);
 
         await this.api.removeChannelModerator(this.channelId, user_id);
+        break;
+      case 'unpin':
+        var { message_id } = Parser.getInputs(triggerData, ['action', 'message_id']);
+        await this.api.unpinChatMessage(this.channelId, this.channelId, message_id);
         break;
       case 'unraid':
         await this.api.cancelARaid(this.channelId);

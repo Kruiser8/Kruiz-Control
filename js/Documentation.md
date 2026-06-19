@@ -119,6 +119,8 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Globals](#globals)
     + [If](#if)
     + [Ignore](#ignore)
+    + [Jump](#jump)
+    + [Label](#label)
     + [Log](#log)
     + [Loop](#loop)
     + [Play](#play)
@@ -199,12 +201,15 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Param Contains](#param-contains)
     + [Param Copy](#param-copy)
     + [Param Create](#param-create)
+    + [Param Divide](#param-divide)
     + [Param Exists](#param-exists)
     + [Param Keyword](#param-keyword)
     + [Param Lower](#param-lower)
+    + [Param Multiply](#param-multiply)
     + [Param Negate](#param-negate)
     + [Param Proper](#param-proper)
     + [Param Replace](#param-replace)
+    + [Param Round](#param-round)
     + [Param Subtract](#param-subtract)
     + [Param Upper](#param-upper)
 - [Random](#random)
@@ -264,6 +269,21 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [TTS](#tts)
     + [TTS Stop](#tts-stop)
     + [TTS Voices](#tts-voices)
+- [Time](#time)
+  * [Triggers](#time-triggers)
+  * [Actions](#time-actions)
+    + [Time AmPm](#time-ampm)
+    + [Time Date](#time-date)
+    + [Time Day](#time-day)
+    + [Time DayOfTheWeek](#time-dayoftheweek)
+    + [Time Format](#time-format)
+    + [Time Hour](#time-hour)
+    + [Time Minutes](#time-minutes)
+    + [Time Month](#time-month)
+    + [Time Seconds](#time-seconds)
+    + [Time Time](#time-time)
+    + [Time Timestamp](#time-timestamp)
+    + [Time Year](#time-year)
 - [Timer](#timer)
   * [Triggers](#timer-triggers)
     + [OnTimer](#ontimer)
@@ -302,6 +322,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnTWHypeTrainStart](#ontwhypetrainstart)
     + [OnTWModAdd](#ontwmodadd)
     + [OnTWModRemove](#ontwmodremove)
+    + [OnTWPowerUp](#ontwpowerup)
     + [OnTWPoll](#ontwpoll)
     + [OnTWPollEnd](#ontwpollend)
     + [OnTWPollUpdate](#ontwpollupdate)
@@ -326,6 +347,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [OnTWVIP](#ontwvip)
   * [Actions](#twitch-actions)
     + [Twitch AddBlockedTerm](#twitch-addblockedterm)
+    + [Twitch AddSuspiciousUser](#twitch-addsuspicioususer)
     + [Twitch AdSchedule](#twitch-adschedule)
     + [Twitch Announcement](#twitch-announcement)
     + [Twitch Auth](#twitch-auth)
@@ -361,6 +383,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Twitch Mod](#twitch-mod)
     + [Twitch Marker](#twitch-marker)
     + [Twitch Mods](#twitch-mods)
+    + [Twitch Pin](#twitch-pin)
     + [Twitch Poll Cancel](#twitch-prediction-cancel)
     + [Twitch Poll Choice](#twitch-prediction-choice)
     + [Twitch Poll Clear](#twitch-prediction-clear)
@@ -380,6 +403,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Twitch Raid](#twitch-raid)
     + [Twitch Reject](#twitch-reject)
     + [Twitch RemoveBlockedTerm](#twitch-removeblockedterm)
+    + [Twitch RemoveSuspiciousUser](#twitch-removesuspicioususer)
     + [Twitch Reward](#twitch-reward)
     + [Twitch RewardCost](#twitch-rewardcost)
     + [Twitch RewardDescription](#twitch-rewarddescription)
@@ -401,6 +425,7 @@ Each handler provides its own triggers and actions that can be used in a trigger
     + [Twitch UniqueChat](#twitch-uniquechat)
     + [Twitch UniqueChatOff](#twitch-uniquechatoff)
     + [Twitch Unmod](#twitch-unmod)
+    + [Twitch Unpin](#twitch-unpin)
     + [Twitch Unraid](#twitch-unraid)
     + [Twitch UnVIP](#twitch-unvip)
     + [Twitch User](#twitch-user)
@@ -758,7 +783,7 @@ Chat triggers use a `<permission>` parameter to specify who can use a command. T
 - *n* - Check if a user has _none_ of the permissions above.
 - *e* - Everyone
 
-Additionally, you can use *u* as the permission to specify a user or group of users that can use a command or keyword. In this case, `<optional_info>` is required to specify the user. The username input is case insensitive. If multiple users are provided, they must be comma delimited without any spaces.
+You can use *u* as the permission to specify a user or group of users that can use a command or keyword. In this case, `<optional_info>` is required to specify the user. The username input is case insensitive. If multiple users are provided, they must be comma delimited without any spaces.
 
 **Example**:
 ```
@@ -767,6 +792,19 @@ OnCommand u kruiser8 10 !secret
 **Example w/ Multiple Users**:
 ```
 OnCommand u kruiser8,kruizbot 10 !secret
+```
+
+You can also use *l* as the permission to specify a [List](#list) or group of lists and see if any of the lists contains the user that used the command or keyword.
+
+**Note: The *u* and *l* permission may not be used together.**
+
+**Example**:
+```
+OnCommand l MyCustomList 10 !secret
+```
+**Example w/ Multiple Lists**:
+```
+OnCommand l MyCustomList,MyCustomOtherList 10 !secret
 ```
 
 Chat triggers also use a `<cooldown>` parameter to put the command or keyword on cooldown for the specified number of seconds. The `<cooldown>` can be any number 0 or higher.
@@ -1745,17 +1783,21 @@ The following `<comparator>` values are valid: `=`, `<`, `>`, `<=`, `>=`, `!=` (
 
 Multiple comparisons can be combined in one **If** line using the following `<conjunction>` values: `and`, `or`.
 
-The `<optional_skip>` value allows you to specify the number of lines to skip if the criteria is not met. This value is completely optional and allows for advanced logic handling. When skipping lines, multi-line inputs are considered one line and comments are not considered.
+The `<optional_skip_or_label>` value is completely optional and allows for advanced logic handling. This input allows you to either:
+
+- Specify the number of lines to [`Skip`](#skip) if the criteria is not met. When skipping lines, multi-line inputs are considered one line and comments are not considered. 
+
+- [`Jump`](#jump) to the specified [`Label`](#label) if the criteria is not met. When providing a label, the label must not be numeric (i.e. it must return `NaN` when passed to [`parseInt`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseInt)).
 
 
 | | |
 ------------ | -------------
 **Info** | Used to determine whether or not the trigger should complete the rest of the actions.
-**Format** | `If <optional_skip> <value_a> <comparator> <value_b> <conjunction> <value_c> <comparator> <value_d> ...`
+**Format** | `If <optional_skip_or_label> <value_a> <comparator> <value_b> <conjunction> <value_c> <comparator> <value_d> ...`
 **Example (single comparison)** | `If {amount} >= 100`
 **Example (single comparison with skip value)** | `If 3 {amount} >= 100`
 **Example (two comparisons)** | `If {amount} >= 100 and {amount} < 1000`
-**Example (two comparisons with skip value)** | `If 2 {amount} >= 100 and {amount} < 1000`
+**Example (two comparisons with label value)** | `If NextAmount {amount} >= 100 and {amount} < 1000`
 **Example (multiple comparisons)** | `If {amount} >= 100 and {amount} < 1000 and {amount} != 123`
 **Example (multiple comparisons with skip value)** | `If 6 {amount} >= 100 and {amount} < 1000 and {amount} != 123`
 
@@ -1769,6 +1811,24 @@ The `<optional_skip>` value allows you to specify the number of lines to skip if
 **Example** | `Ignore Chat Send "Hello world"`
 **Example w/ Single Argument** | `Ignore "Chat Send 'Hello world'"`
 
+***
+
+#### Jump
+| | |
+------------ | -------------
+**Info** | Used to skip (or jump) to the specified [`Label`](#label). `<label>` is the name of the [`Label`](#label) to jump to. This can be used to skip functionality without having to count lines.
+**Format** | `Jump <label>`
+**Example** | `Jump MyCustomLabel`
+
+***
+
+#### Label
+| | |
+------------ | -------------
+**Info** | Used to mark (or label) a line in an event so that it can be skipped to with a [`Jump`](#jump) action or [`If`](#if) condition failure. `<label>` is the name to give to the label.
+**Format** | `Label <label>`
+**Example** | `Label MyCustomLabel`
+ 
 ***
 
 #### Log
@@ -2436,7 +2496,7 @@ _Note: The text source does not need to be in current/active scene for this to t
 #### OBS Source URL
 | | |
 ------------ | -------------
-**Info** | Used to change the URL of a browser source in OBS.
+**Info** | Used to change the URL of a browser source in OBS. This does not work when the source has `Local file` selected in OBS. `<url>` can be a path to a local file.
 **Format** | `OBS Source <source> URL <url>`
 **Example** | `OBS Source "Browser" URL "https://github.com/Kruiser8/Kruiz-Control"`
 
@@ -2675,6 +2735,20 @@ None at the moment.
 
 ***
 
+#### Param Divide
+| | |
+------------ | -------------
+**Info** | Divides an existing parameter by the given amount. `<parameter>` is the name of the existing parameter. `<number>` is the value to divide by.
+**Format** | `Param Divide <parameter> <number>`
+**Example** | `Param Divide Total 100`
+
+##### Parameters
+| | |
+------------ | -------------
+**\<parameter\>** | The lowercased parameter value where **\<parameter\>** is the name of the parameter.
+
+***
+
 #### Param Exists
 | | |
 ------------ | -------------
@@ -2713,6 +2787,20 @@ None at the moment.
 **Info** | Lowercase the value within a parameter. `<parameter>` is the name of the existing parameter.
 **Format** | `Param Lower <parameter>`
 **Example** | `Param Lower user`
+
+##### Parameters
+| | |
+------------ | -------------
+**\<parameter\>** | The lowercased parameter value where **\<parameter\>** is the name of the parameter.
+
+***
+
+#### Param Multiply
+| | |
+------------ | -------------
+**Info** | Multiplies an existing parameter by the given amount. `<parameter>` is the name of the existing parameter. `<number>` is the value to multiply by.
+**Format** | `Param Multiply <parameter> <number>`
+**Example** | `Param Multiply Time 1000`
 
 ##### Parameters
 | | |
@@ -2760,6 +2848,20 @@ None at the moment.
 | | |
 ------------ | -------------
 **\<parameter\>** | The new parameter value where **\<parameter\>** is the name of the parameter.
+
+***
+
+#### Param Round
+| | |
+------------ | -------------
+**Info** | Round the existing parameter to the specified number of decimal places. `<parameter>` is the name of the existing parameter. `<number>` is the number of decimal places to round. Trailing `0`s are kept, so `1.5` rounded to 2 decimal places will be `1.50`.
+**Format** | `Param Round <parameter> <number>`
+**Example** | `Param Round Percentage 2`
+
+##### Parameters
+| | |
+------------ | -------------
+**\<name\>** | The updated parameter value where **\<name\>** is the name of the parameter.
 
 ***
 
@@ -3420,6 +3522,172 @@ Chat Send {value}
 
 ***
 
+## Time
+Enables the ability to interact with aspects of time (days, time, etc.).
+
+### Time Trigger
+None at the moment.
+
+***
+
+### Time Actions
+
+#### Time AMPM
+| | |
+------------ | -------------
+**Info** | Used to check whether the current time is for AM or PM.
+**Format** | `Time AMPM`
+**Example** | `Time AMPM`
+
+##### Parameters
+| | |
+------------ | -------------
+**ampm** | `AM` or `PM`.
+
+***
+
+#### Time Date
+| | |
+------------ | -------------
+**Info** | Used to get the current date in the current locale's format.
+**Format** | `Time Date`
+**Example** | `Time Date`
+
+##### Parameters
+| | |
+------------ | -------------
+**date** | The current date in the current locale's format. For `en-US`, this is `mm/dd/YYYY`. For `en-GB`, this is `dd/mm/YYYY`.
+
+***
+
+#### Time Day
+| | |
+------------ | -------------
+**Info** | Used to get the numerical day of the current date.
+**Format** | `Time Day`
+**Example** | `Time Day`
+
+##### Parameters
+| | |
+------------ | -------------
+**day** | The numerical day of the current date. For June 10th, the value would be `10`.
+
+***
+
+#### Time DayOfTheWeek
+| | |
+------------ | -------------
+**Info** | Used to get the name of the current day.
+**Format** | `Time DayOfTheWeek`
+**Example** | `Time DayOfTheWeek`
+**Alternate Format** | `Time DOTW`
+
+##### Parameters
+| | |
+------------ | -------------
+**weekday** | The name of the current day, i.e. `Wednesday`.
+
+***
+
+#### Time Hour
+| | |
+------------ | -------------
+**Info** | Used to get the current hour in 24-hour time. `<use24Hour>` is an optional true/false value (defaults to false) to return the hhour in a 24-hour format.
+**Format** | `Time Hour <use24Hour>`
+**Example** | `Time Hour`
+**Example w/ use24Hour** | `Time Hour true`
+
+##### Parameters
+| | |
+------------ | -------------
+**hour** | The current hour from `1` to `12` or `0` to `23` if `<use24Hour>` is `true.
+
+***
+
+#### Time Minutes
+| | |
+------------ | -------------
+**Info** | Used to get the current minute.
+**Format** | `Time Minutes`
+**Example** | `Time Minutes`
+
+##### Parameters
+| | |
+------------ | -------------
+**minutes** | The current minute from `0` to `59`.
+
+***
+
+#### Time Month
+| | |
+------------ | -------------
+**Info** | Used to get the current minute.
+**Format** | `Time Month`
+**Example** | `Time Month`
+
+##### Parameters
+| | |
+------------ | -------------
+**month** | The name of the current month, i.e. `June`.
+
+***
+
+#### Time Seconds
+| | |
+------------ | -------------
+**Info** | Used to get the current seconds.
+**Format** | `Time Seconds`
+**Example** | `Time Seconds`
+
+##### Parameters
+| | |
+------------ | -------------
+**seconds** | The current minute from `0` to `59`.
+
+***
+
+#### Time Time
+| | |
+------------ | -------------
+**Info** | Used to get the current time.
+**Format** | `Time Time`
+**Example** | `Time Time`
+
+##### Parameters
+| | |
+------------ | -------------
+**time** | The current time, i.e. `1:15:30 PM`.
+
+***
+
+#### Time Timestamp
+| | |
+------------ | -------------
+**Info** | Used to get the current date and time.
+**Format** | `Time Timestamp`
+**Example** | `Time Timestamp`
+
+##### Parameters
+| | |
+------------ | -------------
+**timestamp** | The current date and time, i.e. `6/10/2026, 11:22:30 PM`.
+
+***
+
+#### Time Year
+| | |
+------------ | -------------
+**Info** | Used to get the current year.
+**Format** | `Time Year`
+**Example** | `Time Year`
+
+##### Parameters
+| | |
+------------ | -------------
+**year** | The current year.
+
+***
+
 ## Timer
 Enables the ability to run actions on a time interval.
 
@@ -4009,6 +4277,28 @@ Enables the ability to run actions when channel point rewards are redeemed.
 
 ***
 
+#### OnTWPowerUp
+| | |
+------------ | -------------
+**Info** | Used to trigger a set of actions when a power up is redeemed. Using `*` as the `<power_up_name>` will execute the trigger for all power ups.
+**Format** | `OnTWPowerUp <power_up_name>`
+**Format w/ Aliases** | `OnTWPowerUp <power_up_name1> <power_up_name2> ...`
+**Example** | `OnTWPowerUp "Example PowerUp"`
+**Example w/ Aliases** | `OnTWPowerUp "Resize" "Left View"`
+
+##### Parameters
+| | |
+------------ | -------------
+**id** | The user ID of the user that redeemed the reward.
+**login** | The user login of the user that redeemed the reward.
+**name** | The user display name of the user that redeemed the reward.
+**power_up** | The name of the power up.
+**power_up_id** | The id of the power up.
+**redemption_id** | The id of the power up redemption.
+**data** | The complete Twitch EventSub event data (for use with [Function](#function)).
+
+***
+
 #### OnTWPoll
 | | |
 ------------ | -------------
@@ -4452,6 +4742,15 @@ _Note: Bit voting is not currently supported, however Twitch provides these valu
 **Format** | `Twitch AddBlockedTerm <term>`
 **Example** | `Twitch AddBlockedTerm "bad word"`
 **Example w/ Aliases** | `Twitch AddBlockedTerm "phrase to block" "bad term"`
+
+***
+
+#### Twitch AddSuspiciousUser
+| | |
+------------ | -------------
+**Info** | Adds a suspicious user status to a chatter on the broadcaster's channel. This allows for easy monitoring of a user's messages. `<user>` is the Twitch user to add as a suspicious user.
+**Format** | `Twitch AddSuspiciousUser <user>`
+**Example** | `Twitch AddSuspiciousUser testUser`
 
 ***
 
@@ -4947,6 +5246,22 @@ _Note: Due to a Twitch API restriction, in order for Kruiz Control to interact w
 
 ***
 
+#### Twitch Pin
+| | |
+------------ | -------------
+**Info** | Sends and pins a message to the broadcaster's twitch chat using the broadcaster's account. `<message>` is the message to pin. `<optional_duration>` is the number of seconds to pin the message, between 30 and 1800. When `<optional_duration>` is not provided, the message is pinned until the end of the stream.
+**Format** | `Twitch Pin <message> <optional_duration>`
+**Example** | `Twitch Pin "Check this out!"`
+**Example w/ duration** | `Twitch Pin "Check this out!" 60`
+
+##### Parameters
+| | |
+------------ | -------------
+**data** | The complete response from the Twitch Send Message API.
+**message_id** | The id of the pinned message.
+
+***
+
 #### Twitch Poll Cancel
 | | |
 ------------ | -------------
@@ -5198,6 +5513,15 @@ _Note: Due to a Twitch API restriction, in order for Kruiz Control to interact w
 
 ***
 
+#### Twitch RemoveSuspiciousUser
+| | |
+------------ | -------------
+**Info** | Remove a suspicious user status from a chatter on the broadcaster's channel. `<user>` is the Twitch user to add as a suspicious user.
+**Format** | `Twitch RemoveSuspiciousUser <user>`
+**Example** | `Twitch RemoveSuspiciousUser testUser`
+
+***
+
 #### Twitch Reward
 | | |
 ------------ | -------------
@@ -5418,6 +5742,15 @@ _Note: Due to a Twitch API restriction, in order for Kruiz Control to interact w
 **Info** | Remove moderator status from a user in the broadcaster's chat room. `<user>` is the Twitch user to update.
 **Format** | `Twitch Unmod <user>`
 **Example** | `Twitch Unmod testUser`
+
+***
+
+#### Twitch Unpin
+| | |
+------------ | -------------
+**Info** | Unpin a message in the broadcaster's twitch chat. `<message_id>` is the id of the message to unpin.
+**Format** | `Twitch Unpin <message_id>`
+**Example** | `Twitch Unpin {message_id}`
 
 ***
 

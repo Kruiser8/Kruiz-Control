@@ -36,6 +36,7 @@ class TwitchAPI {
       'moderator:manage:chat_settings',
       'moderator:manage:shield_mode',
       'moderator:manage:shoutouts',
+      'moderator:manage:suspicious_users',
       'moderator:manage:warnings',
       'moderator:read:chatters',
       'moderator:read:followers',
@@ -460,6 +461,47 @@ class TwitchAPI {
     });
   }
 
+  sendChatMessage = async (broadcaster_id, sender_id, message, pin) => {
+    return await this.callTwitchApi({
+      method: 'POST',
+      endpoint: 'https://api.twitch.tv/helix/chat/messages',
+      params: {
+        broadcaster_id,
+        sender_id,
+        message,
+        pin
+      }
+    });
+  }
+
+  unpinChatMessage = async (broadcaster_id, moderator_id, message_id) => {
+    return await this.callTwitchApi({
+      method: 'DELETE',
+      endpoint: 'https://api.twitch.tv/helix/chat/pins',
+      params: {
+        broadcaster_id,
+        moderator_id,
+        message_id
+      }
+    });
+  }
+
+  updatePinnedChatMessage = async (broadcaster_id, moderator_id, message_id, duration_seconds) => {
+    var params = {
+      broadcaster_id,
+      moderator_id,
+      message_id
+    }
+    if (duration_seconds) {
+      params["duration_seconds"] = duration_seconds;
+    }
+    await this.callTwitchApi({
+      method: 'PATCH',
+      endpoint: 'https://api.twitch.tv/helix/chat/pins',
+      params
+    });
+  }
+
   getUserChatColor = async (user_id) => {
     return await this.callTwitchApi({
       method: 'GET',
@@ -831,6 +873,30 @@ class TwitchAPI {
       },
       data: {
         data
+      }
+    });
+  }
+
+  addSuspicousUser = async (broadcaster_id, moderator_id, data) => {
+    await this.callTwitchApi({
+      method: 'POST',
+      endpoint: 'https://api.twitch.tv/helix/moderation/suspicious_users',
+      params: {
+        broadcaster_id,
+        moderator_id
+      },
+      data
+    });
+  }
+
+  removeSuspicousUser = async (broadcaster_id, moderator_id, user_id) => {
+    await this.callTwitchApi({
+      method: 'DELETE',
+      endpoint: 'https://api.twitch.tv/helix/moderation/suspicious_users',
+      params: {
+        broadcaster_id,
+        moderator_id,
+        user_id
       }
     });
   }

@@ -9,6 +9,7 @@ This script uses text files to improve the average user experience.
 ## Table of Contents
 
 - [Chat](#chat)
+- [Debug](#debug)
 - [MQTT](#mqtt)
 - [OBS](#obs)
 - [SLOBS](#slobs)

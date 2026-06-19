@@ -41,6 +41,20 @@ class ParamHandler extends Handler {
         var { name, value } = Parser.getInputs(triggerData, ['action', 'name', 'value']);
         return { [name]: value };
         break;
+      case 'divide':
+        var { name, value } = Parser.getInputs(triggerData, ['action', 'name', 'value']);
+        if (parameters.hasOwnProperty(name)) {
+          value = parseFloat(value);
+          var paramValue = parseFloat(parameters[name]);
+          if (!isNaN(value) && !isNaN(paramValue)) {
+            if (value == 0) {
+              console.error("Param Divide cannot divide a value by zero (0).");
+              return;
+            }
+            return { [name]: paramValue / value };
+          }
+        }
+        break;
       case 'exists':
         var { name } = Parser.getInputs(triggerData, ['action', 'name']);
         return { exists: parameters.hasOwnProperty(name) };
@@ -70,6 +84,16 @@ class ParamHandler extends Handler {
           return { [name]: parameters[name].toLowerCase() };
         }
         break;
+      case 'multiply':
+        var { name, value } = Parser.getInputs(triggerData, ['action', 'name', 'value']);
+        if (parameters.hasOwnProperty(name)) {
+          value = parseFloat(value);
+          var paramValue = parseFloat(parameters[name]);
+          if (!isNaN(value) && !isNaN(paramValue)) {
+            return { [name]: paramValue * value };
+          }
+        }
+        break;
       case 'negate':
         var { name } = Parser.getInputs(triggerData, ['action', 'name']);
         if (parameters.hasOwnProperty(name)) {
@@ -94,6 +118,16 @@ class ParamHandler extends Handler {
         var { name, toReplace, replacement } = Parser.getInputs(triggerData, ['action', 'name', 'toReplace', 'replacement']);
         if (parameters.hasOwnProperty(name)) {
           return { [name]: parameters[name].replace(new RegExp(escapeRegExp(toReplace), 'g'), () => replacement) };
+        }
+        break;
+      case 'round':
+        var { name, value } = Parser.getInputs(triggerData, ['action', 'name', 'value']);
+        if (parameters.hasOwnProperty(name)) {
+          value = parseFloat(value);
+          var paramValue = parseFloat(parameters[name]);
+          if (!isNaN(value) && !isNaN(paramValue)) {
+            return { [name]: paramValue.toFixed(value) };
+          }
         }
         break;
       case 'subtract':
