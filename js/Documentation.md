@@ -1825,7 +1825,7 @@ The `<optional_skip_or_label>` value is completely optional and allows for advan
 #### Label
 | | |
 ------------ | -------------
-**Info** | Used to mark (or label) a line in an event so that it can be skipped to with a [`Jump`](#jump) action. `<label>` is the name to give to the label.
+**Info** | Used to mark (or label) a line in an event so that it can be skipped to with a [`Jump`](#jump) action or [`If`](#if) condition failure. `<label>` is the name to give to the label.
 **Format** | `Label <label>`
 **Example** | `Label MyCustomLabel`
  
