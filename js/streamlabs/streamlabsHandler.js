@@ -112,8 +112,8 @@ class StreamlabsHandler extends Handler {
    */
   parseStreamlabsMessage = async (message, callback) => {
     if (message.type === 'alertPlaying') {
-      if (this.alertIds.indexOf(message.message['_id']) === -1) {
-        this.alertIds.push(message.message['_id']);
+      if (this.alertIds.indexOf(message.message.payload['_id']) === -1) {
+        this.alertIds.push(message.message.payload['_id']);
         var type = message.message.type;
         if (type === 'subscription' && message.message.gifter_display_name) {
           type = 'gift_sub';
