@@ -4278,9 +4278,12 @@ Enables the ability to run actions when channel point rewards are redeemed.
 ***
 
 #### OnTWPowerUp
+
+_Note: This only triggers for **custom** power ups. `Message Effects`, `Gigantify an Emote`, and `On-Screen Celebration` are not captured._
+
 | | |
 ------------ | -------------
-**Info** | Used to trigger a set of actions when a power up is redeemed. Using `*` as the `<power_up_name>` will execute the trigger for all power ups.
+**Info** | Used to trigger a set of actions when a custom power up is redeemed. Using `*` as the `<power_up_name>` will execute the trigger for all power ups.
 **Format** | `OnTWPowerUp <power_up_name>`
 **Format w/ Aliases** | `OnTWPowerUp <power_up_name1> <power_up_name2> ...`
 **Example** | `OnTWPowerUp "Example PowerUp"`
