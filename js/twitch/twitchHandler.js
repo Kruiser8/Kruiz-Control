@@ -643,7 +643,7 @@ class TwitchHandler extends Handler {
         }
         break;
       case 'channel.custom_power_up_redemption.add':
-        var powerUp = event.reward.title;
+        var powerUp = event.custom_power_up.title;
         var onPowerUpTriggers = [];
 
         if (this.powerUps.indexOf(powerUp) !== -1) {
@@ -663,9 +663,9 @@ class TwitchHandler extends Handler {
               id: event.user_id,
               login: event.user_login,
               name: event.user_name,
-              power_up: event.reward.title,
+              power_up: event.custom_power_up.title,
               redemption_id: event.id,
-              power_up_id: event.reward.id
+              power_up_id: event.custom_power_up.id
             });
           });
         }
